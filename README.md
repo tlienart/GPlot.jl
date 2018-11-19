@@ -53,6 +53,5 @@ If you want animation and an overall more mature plotting library with imperativ
 
 ## Todo
 
-* `erase!`  should reset plot counter
 * `lstyle`
     - 9229 should also work (see p21), `split_digits(a::Int)=parse.(Int, [e for e ∈ string(a)])`

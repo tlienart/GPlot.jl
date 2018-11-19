@@ -83,4 +83,4 @@ function Figure(id::String)
 end
 
 
-erase!(fig::Figure) = (take!(fig.g); fig)
+erase!(fig::Figure) = (take!(fig.g); fig.axes=Vector{Axes}(); fig)

@@ -54,12 +54,12 @@ plot!(x1, y2, color="indianred")
 plot!(x2, y3, marker="fcircle")
 
 assemble_figure(f)
-# XXX
-###########
 
 const GLE_APP_PATH = "/Applications/QGLE.app/Contents/bin"
 
-
+run(`bash -c "$GLE_APP_PATH/gle -d pdf $GP_TMP_PATH/test.gle $GP_TMP_PATH/test.pdf"`)
+# XXX
+###########
 
 # XXX temporary fill in
 function Base.show(io::IO, ::MIME"image/png", fig::Figure)
