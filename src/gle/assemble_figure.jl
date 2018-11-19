@@ -1,7 +1,7 @@
 function assemble_figure(f::Figure{GLE})
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
-    "\nset " |> g
+    "\nset" |> g
     apply_textstyle!(g, f.textstyle)
 
     # XXX XXX XXX XXX XXX XXX
@@ -10,7 +10,7 @@ function assemble_figure(f::Figure{GLE})
     apply_axes!(g, f.axes[1])
     "\nend graph" |> g
     # deal with proper dir
-    write(expanduser("~/.julia/dev/GPlot.jl/sandbox/$(f.id).gle"), take!(g.io))
+    write("$GP_TMP_PATH/$(f.id).gle", take!(g))
 end
 
 function assemble_figure(f::Figure{Gnuplot})

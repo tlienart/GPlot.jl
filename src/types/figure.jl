@@ -19,11 +19,11 @@ TicksLabels(p) = TicksLabels(prefix=p)
 
 @with_kw mutable struct Ticks
     prefix   ::String                     # x, y, x2, y2, z ✓
-    off      ::Option{Bool}           = ∅ # whether to suppress them ✓
-    linestyle::Option{LineStyle}      = ∅ # how the ticks look ✓
-    length   ::Option{Float}          = ∅ # how long the ticks ✓
-    places   ::Option{VF}             = ∅ # where the ticks are ✓
-    symticks ::Option{Bool}           = ∅ # draws ticks on 2 sides of spine ✓
+    off      ::Option{Bool}      = ∅ # whether to suppress them ✓
+    linestyle::Option{LineStyle} = ∅ # how the ticks look ✓
+    length   ::Option{Float}     = ∅ # how long the ticks ✓
+    places   ::Option{VF}        = ∅ # where the ticks are ✓
+    symticks ::Option{Bool}      = ∅ # draws ticks on 2 sides of spine ✓
 end
 Ticks(p) = Ticks(prefix=p)
 
@@ -31,15 +31,15 @@ Ticks(p) = Ticks(prefix=p)
     prefix     ::String                  # x, y, x2, y2, z
     ticks      ::Ticks                   # ticks of the axis ✓
     tickslabels::TicksLabels             # labels of the ticks ✓
-    title      ::Option{Title}       = ∅ # title of the axis ✓
-    off        ::Option{Bool}        = ∅ # if true, axis is not shown ✓
-    base       ::Option{Float}       = ∅ # scale font and ticks ✓
-    textstyle  ::Option{TextStyle}   = ∅ # parent textstyle of axis ✓
-    lwidth     ::Option{Float}       = ∅ # width of the axis spine ✓
-    grid       ::Option{Bool}        = ∅ # ? draw ⟂ lines to that axis ✓
-    log        ::Option{Bool}        = ∅ # log scale ✓
-    min        ::Option{Float}       = ∅ # minimum span of the axis ✓
-    max        ::Option{Float}       = ∅ # maximum span of the axis ✓
+    title      ::Option{Title}     = ∅ # title of the axis ✓
+    off        ::Option{Bool}      = ∅ # if true, axis is not shown ✓
+    base       ::Option{Float}     = ∅ # scale font and ticks ✓
+    textstyle  ::Option{TextStyle} = ∅ # parent textstyle of axis ✓
+    lwidth     ::Option{Float}     = ∅ # width of the axis spine ✓
+    grid       ::Option{Bool}      = ∅ # ? draw ⟂ lines to that axis ✓
+    log        ::Option{Bool}      = ∅ # log scale ✓
+    min        ::Option{Float}     = ∅ # minimum span of the axis ✓
+    max        ::Option{Float}     = ∅ # maximum span of the axis ✓
 end
 Axis(p) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
 
@@ -74,10 +74,13 @@ function Figure(id, g)
     GP_ALLFIGS[id] = λ
     return λ
 end
-Figure()   = Figure("fig_" * randstring(3))
+Figure() = Figure("fig_" * randstring(3))
 
 function Figure(id::String)
     get(GP_ALLFIGS, id) do
         Figure(id, GP_BACKEND())
     end
 end
+
+
+erase!(fig::Figure) = (take!(fig.g); fig)

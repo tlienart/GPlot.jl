@@ -4,9 +4,16 @@
     color::Option{Colorant} = ∅
 end
 
-@with_kw struct LineStyle
-    lstyle::Int
-    lwidth::Option{Int}     = ∅
+@with_kw mutable struct LineStyle
+    lstyle::Option{Int}     = ∅
+    lwidth::Option{Float}   = ∅
     smooth::Option{Bool}    = ∅
     color::Option{Colorant} = ∅
+end
+
+@with_kw mutable struct MarkerStyle
+    marker::Option{String}      = ∅
+    msize::Option{Float}        = ∅
+    facecolor::Option{Colorant} = ∅
+    edgecolor::Option{Colorant} = ∅
 end

@@ -36,7 +36,7 @@ function apply_ticks!(g::GLE, t::Ticks)
         isdef(t.linestyle) && apply_linestyle!(g, t.linestyle)
     end
     # [x]places pos1 pos2 ...
-    isdef(t.places)   && "\n\t$(t.prefix)places $(vec2str(t.places))" |> g
+    isdef(t.places) && "\n\t$(t.prefix)places $(vec2str(t.places))" |> g
     # [x]xaxis symticks
     isdef(t.symticks) && "\n\t$(t.prefix)axis symticks" |> g
     return g
@@ -60,6 +60,7 @@ function apply_axis!(g::GLE, a::Axis)
     return g
 end
 
+
 function apply_axes!(g::GLE, a::Axes2D)
     isdef(a.size) && "\n\tsize $(a[1]) $(a[2])" |> g
     foreach(a -> apply_axis!(g, a), (a.xaxis, a.x2axis, a.yaxis, a.y2axis))
@@ -67,6 +68,7 @@ function apply_axes!(g::GLE, a::Axes2D)
     apply_drawings!(g, a.drawings)
     return g
 end
+
 
 function apply_axes!(g::GLE, a::Axes3D)
     throw(NotImplementedError("apply_axes:GLE/3D"))

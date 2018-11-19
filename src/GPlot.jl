@@ -6,7 +6,8 @@ using DelimitedFiles
 using Random
 
 import Base.show,
-       Base.|>
+       Base.|>,
+       Base.take!
 
 include("utils.jl")
 
@@ -17,28 +18,42 @@ include("types/style.jl")
 include("types/drawing.jl")
 include("types/figure.jl")
 
-# --
+include("gle/dictionaries.jl")
+include("gle/set_property.jl")
+
 include("gle/apply_style.jl")
 include("gle/apply_drawing.jl")
 include("gle/apply_ax.jl")
-
 include("gle/assemble_figure.jl")
 
 #include("gnuplot/apply_figure.jl")
 
-# --
-
+include("set_properties.jl")
 include("plot.jl")
 
-const GP_ALLFIGS = Dict{String, Figure}()
-const GP_CURFIG = Ref{String}("")
+
+const GP_ALLFIGS  = Dict{String, Figure}()
+const GP_CURFIG   = Ref{String}("")
+const GP_TMP_PATH = expanduser("~/.julia/dev/GPlot.jl/sandbox/") # mktempdir()
+
+get_curfig() = GP_ALLFIGS[GP_CURFIG.x]
 
 ###########
 # XXX
-f = plot(randn(10, 2))
-l = f.axes[1].elements[1]
-g = GLE() # should be part of f
-apply_line2d(g, l)
+f = Figure("test")
+erase!(f)
+
+x1 = range(-2, stop=2, length=100)
+y1 = @. exp(-x1 * sin(x1))
+y2 = @. exp(-x1 * cos(x1))
+x2 = range(0, stop=2, length=25)
+y3 = @. sqrt(x2)
+
+plot!(x1, y1, color="darkblue", lwidth=0.02, lstyle=2)
+plot!(x1, y2, color="indianred")
+plot!(x2, y3, marker="fcircle")
+
+assemble_figure(f)
 # XXX
 ###########
 

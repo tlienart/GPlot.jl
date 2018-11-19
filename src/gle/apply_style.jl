@@ -7,10 +7,9 @@ end
 
 
 function apply_linestyle!(g::GLE, ls::LineStyle)
-    "line lstyle $(ls.lstyle)" |> g
+    isdef(ls.lstyle) && "lstyle $(ls.lstyle)" |> g
     isdef(ls.lwidth) && "lwidth $(ls.lwidth)"        |> g
     isdef(ls.color)  && "color $(col2str(ls.color))" |> g
-    # only for dn lines
-    isdef(ls.smooth) && "smooth"                     |> g
+    isdef(ls.smooth) && "smooth"                     |> g # only for dn lines
     return g
 end

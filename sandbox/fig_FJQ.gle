@@ -1,5 +1,0 @@
-size 8.0 6.0
-set  font psh hei 0.2
-begin graph
-	d1 line lstyle 0 color rgba(0.392, 0.584, 0.929, 1.0) smooth marker fcircle msize 0.05
-end graph 

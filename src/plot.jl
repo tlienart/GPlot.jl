@@ -1,27 +1,26 @@
-function plot(xy::MF, fig=Figure())
+function plot!(fig::Figure, xy::MF; opt...)
 
     # NOTE axes pick (current axes or new)
-    # NOTE smooth pick (and options pick)
 
     push!(fig.axes, Axes2D())
 
-    ls = LineStyle(
-            lstyle = 0,
-            smooth = true,
-            color  = parse(Colorant, "cornflowerblue")
-            )
-    m = Markers(
-            marker = "fcircle",
-            msize  = 0.05,
-            color  = parse(Colorant, "indianred")
-            )
-    line = Line2D(
-            xy      = xy,
-            lstyle  = ls,
-            markers = m
-            )
+    line = Line2D(xy = xy)
+
+    set_properties!(fig.g, line; opt...)
 
     push!(fig.axes[1].drawings, line)
 
     return fig
 end
+
+plot!(xy::MF; opt...) = plot!(get_curfig(), xy; opt...)
+
+# XXX need check length
+plot!(fig::Figure, x::AVF, y::AVF; opt...) = plot!(fig, hcat(x, y); opt...)
+plot!(x::AVF, y::AVF; opt...) = plot!(get_curfig(), x, y; opt...)
+
+
+plot(xy::MF; opt...) = plot!(Figure(), xy; opt...)
+
+# XXX need check length
+plot(x::AVF, y::AVF; opt...) = plot(hcat(x, y); opt...)

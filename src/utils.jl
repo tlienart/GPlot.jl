@@ -16,9 +16,12 @@ Gnuplot() = Gnuplot(IOBuffer())
 
 |>(s, b::Backend) = write(b.io, s, " ")
 
+take!(b::Backend) = take!(b.io)
+
 
 const Float = Float64
 const VF    = Vector{Float}
+const AVF   = AbstractVector{Float}
 const MF    = Matrix{Float}
 const Option{T} = Union{Nothing, T}
 const ∅ = nothing
@@ -32,7 +35,7 @@ function col2str(col::T) where T<:Colorant
     crgba = convert(RGBA, col)
     r, g, b, a = crgba.r, crgba.g, crgba.b, crgba.alpha
     r, g, b, a = round3d.([r, g, b, a])
-    return "rgba($r, $g, $b, $a)"
+    return "rgba($r,$g,$b,$a)"
 end
 
 
@@ -44,6 +47,16 @@ struct NotImplementedError <: Exception
     msg::String
 end
 NotImplementedError(s) = NotImplementedError("[$s] hasn't been implemented.")
+
+struct UnknownOptionError <: Exception
+    msg::String
+end
+UnknownOptionError(s, o) = UnknownOptionError("[$s] is not recognised as a valid option name for $(typeof(o)).")
+
+struct OptionValueError <: Exception
+    msg::String
+end
+OptionValueError(s, v) = OptionValueError("[$s] value given ($v) did not meet the expected format.")
 
 
 gle_no_support(s) = GP_VERBOSE &&
