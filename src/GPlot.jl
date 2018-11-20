@@ -55,7 +55,10 @@ assemble_figure(f)
 
 const GLE_APP_PATH = "/Applications/QGLE.app/Contents/bin"
 
-run(`bash -c "$GLE_APP_PATH/gle -d pdf $GP_TMP_PATH/test.gle $GP_TMP_PATH/test.pdf"`)
+
+# XXX if fig.transparency --> use -cairo option
+
+run(`bash -c "$GLE_APP_PATH/gle -d pdf -vb 0 $GP_TMP_PATH/test.gle -o $GP_TMP_PATH/test.pdf"`)
 # XXX
 ###########
 

@@ -1,20 +1,20 @@
 @with_kw mutable struct Title
-    text     ::String                # GLE ✓
-    prefix   ::Option{String}    = ∅ # x, x2, y, y2, z GLE ✓
-    textstyle::Option{TextStyle} = ∅ # GLE ✓
-    dist     ::Option{Float}     = ∅ # distance labels - title GLE ✓
+    text     ::String                # ✓
+    prefix   ::Option{String}    = ∅ # ✓ x, x2, y, y2, z
+    textstyle::Option{TextStyle} = ∅ # ✓
+    dist     ::Option{Float}     = ∅ # ✓ distance labels - title
 end
 
 
 @with_kw mutable struct TicksLabels
-    prefix   ::String                     # A🚫
-    off      ::Option{Bool}           = ∅ # whether to suppress the labels A🚫
-    textstyle::Option{TextStyle}      = ∅ # textstyle A🚫
-    angle    ::Option{Float}          = ∅ # rotation of labels A🚫
-    format   ::Option{String}         = ∅ # format of the ticks labels A🚫
-    shift    ::Option{Float}          = ∅ # move labels to left/right A🚫
-    dist     ::Option{Float}          = ∅ # ⟂ distance to spine A🚫
-    names    ::Option{Vector{String}} = ∅ # replaces numeric labeling A🚫
+    prefix   ::String                     # ✓
+    off      ::Option{Bool}           = ∅ # ✓ whether to suppress the labels
+    textstyle::Option{TextStyle}      = ∅ # ⁠✓ textstyle
+    angle    ::Option{Float}          = ∅ # ✓ rotation of labels
+    format   ::Option{String}         = ∅ # A🚫 format of the ticks labels
+    shift    ::Option{Float}          = ∅ # ✓ move labels to left/right
+    dist     ::Option{Float}          = ∅ # ✓ ⟂ distance to spine
+    names    ::Option{Vector{String}} = ∅ # ✓ replaces numeric labeling
 end
 TicksLabels(p) = TicksLabels(prefix=p)
 
@@ -51,13 +51,14 @@ abstract type Axes end
 
 
 @with_kw mutable struct Axes2D <: Axes
-    xaxis   ::Axis                       = Axis("x")         # ✓
-    x2axis  ::Axis                       = Axis("x2")        # ✓
-    yaxis   ::Axis                       = Axis("y")         # ✓
-    y2axis  ::Axis                       = Axis("y2")        # ✓
+    xaxis   ::Axis                       = Axis("x")  # A🚫
+    x2axis  ::Axis                       = Axis("x2") # A🚫
+    yaxis   ::Axis                       = Axis("y")  # A🚫
+    y2axis  ::Axis                       = Axis("y2") # A🚫
     drawings::Vector{Drawing}            = Vector{Drawing}() #
-    title   ::Option{Title}              = ∅                 # ✓
-    size    ::Option{Tuple{Float,Float}} = ∅                 # ✓
+    title   ::Option{Title}              = ∅ # A🚫
+    size    ::Option{Tuple{Float,Float}} = ∅ # ✓ (width cm, height cm)
+    math    ::Option{Bool}               = ∅ # ✓ axis crossing (0, 0)
 end
 
 
@@ -67,12 +68,13 @@ mutable struct Axes3D <: Axes end
 @with_kw mutable struct Figure{B<:Backend}
     id::String                # unique identifier of the figure
     g::B
-    axes::Vector{Axes} = Vector{Axes}() # all the subplots (≥1)
+    axes::Vector{Axes}               = [Axes()] # all the subplots (≥1)
     # options
-    size     ::Tuple{Float,Float} = (8., 6.) # ✓
-    textstyle::TextStyle          = TextStyle(font="psh", hei=0.2) # ✓
-    texlabels::Option{Bool}       = ∅ # true if has tex ✓
-    texscale ::Option{Float}      = ∅ # scale latex to scale * hei (def=1) ✓
+    size        ::Tuple{Float,Float} = (8., 6.) # A🚫
+    textstyle   ::TextStyle          = TextStyle(font="psh", hei=0.2) # A🚫
+    texlabels   ::Option{Bool}       = ∅ # true if has tex A🚫
+    texscale    ::Option{Float}      = ∅ # scale latex * hei (def=1) A🚫
+    transparency::Option{Bool}       = ∅ # if true, use cairo device 🚫
 end
 
 

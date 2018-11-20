@@ -1,24 +1,17 @@
-function plot!(fig::Figure, xy::MF; opt...)
-
-    # NOTE axes pick (current axes or new)
-
-    push!(fig.axes, Axes2D())
-
+function plot!(axes::Axes2D, xy::MF; opt...)
     line = Line2D(xy = xy)
-
     set_properties!(fig.g, line; opt...)
-
-    push!(fig.axes[1].drawings, line)
-
-    return fig
+    push!(axes.drawings, line)
+    return axes
 end
 
-plot!(xy::MF; opt...) = plot!(get_curfig(), xy; opt...)
+function plot!(axes::Axes, x::AVF, y::AVF; opt...)
+    @assert length(x) == length(y) "x and y must have the same length"
+    plot!(axes, hcat(x, y); opt...)
+end
 
-# XXX need check length
-plot!(fig::Figure, x::AVF, y::AVF; opt...) = plot!(fig, hcat(x, y); opt...)
-plot!(x::AVF, y::AVF; opt...) = plot!(get_curfig(), x, y; opt...)
-
+plot!(xy::MF; opt...) = plot!(get_curaxes(), xy; opt...)
+plot!(x::AVF, y::AVF; opt...) = plot!(get_curaxes(), x, y; opt...)
 
 plot(xy::MF; opt...) = plot!(Figure(), xy; opt...)
 

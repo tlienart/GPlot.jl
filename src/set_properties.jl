@@ -30,3 +30,9 @@ function set_properties!(b::Backend, line::Line2D; opts...)
     end
     return line
 end
+
+const TITLE_OPTIONS = Dict{Symbol, Function}(
+    :font => set_font!,
+    :fontsize => set_hei!,
+    :color => set_color!
+)

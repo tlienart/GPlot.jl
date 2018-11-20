@@ -65,6 +65,7 @@ end
 
 
 function apply_axes!(g::GLE, a::Axes2D)
+    isdef(a.math) && "\n\tmath"                 |> g
     isdef(a.size) && "\n\tsize $(a[1]) $(a[2])" |> g
     foreach(a -> apply_axis!(g, a), (a.xaxis, a.x2axis, a.yaxis, a.y2axis))
     isdef(a.title) && apply_title!(g, a.title)

@@ -1,11 +1,24 @@
 # Todo
 
+## ongoing
+
+* plot! should mutate axes/current axes, not fig --> need a `get_curaxes`
+* start systematic testing or it will become a mess very quickly
+
+--------
+
 (GLE support first)
 
 ## Gen
 
 * [ ] testing transparency (should be able to import fig in beamer with gray background without whiteout)
 * [ ] color palette via [colorschemes](https://github.com/JuliaGraphics/ColorSchemes.jl)
+* [ ] to avoid ticks names and ticks labels not having the same size, only allow a function with `(ticksplaces, [ticksnames=...])` and not just ticksnames.
+
+
+## Output
+
+* [ ] allow specify no background via `-transparent` option and `png` device (see what matplotlib does?)
 
 ## 2D
 
