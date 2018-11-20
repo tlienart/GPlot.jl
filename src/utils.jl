@@ -25,6 +25,7 @@ const AVF   = AbstractVector{Float}
 const MF    = Matrix{Float}
 const Option{T} = Union{Nothing, T}
 const ∅ = nothing
+const PT_TO_CM = 0.0352778 # 1pt in cm
 
 isdef(el) = !(el === nothing)
 

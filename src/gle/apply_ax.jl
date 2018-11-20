@@ -1,11 +1,12 @@
 function apply_title!(g::GLE, t::Title)
     # [x]title ...
-    tt = "title $(t.title)"
+    tt = "title $(t.text)"
     isdef(t.prefix)    && "$(t.prefix)$tt" |> g
     isdef(t.dist)      && "dist $(t.dist)" |> g
     isdef(t.textstyle) && apply_textstyle!(g, t.textstyle)
     return g
 end
+
 
 function apply_tickslabels!(g::GLE, t::TicksLabels)
     # [x]names "names1" ...
@@ -27,6 +28,7 @@ function apply_tickslabels!(g::GLE, t::TicksLabels)
     return g
 end
 
+
 function apply_ticks!(g::GLE, t::Ticks)
     # [x]ticks ...
     any(isdef, (t.off, t.linestyle)) && begin
@@ -41,6 +43,7 @@ function apply_ticks!(g::GLE, t::Ticks)
     isdef(t.symticks) && "\n\t$(t.prefix)axis symticks" |> g
     return g
 end
+
 
 function apply_axis!(g::GLE, a::Axis)
     apply_ticks!(g, a.ticks)

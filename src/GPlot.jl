@@ -26,8 +26,6 @@ include("gle/apply_drawing.jl")
 include("gle/apply_ax.jl")
 include("gle/assemble_figure.jl")
 
-#include("gnuplot/apply_figure.jl")
-
 include("set_properties.jl")
 include("plot.jl")
 

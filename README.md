@@ -40,7 +40,8 @@ This package therefore offers one way to bypass the "time-to-first-plot" which c
 
 If you prefer a grammar of graphics style syntax, check out [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl) or [VegaLite.jl](https://github.com/fredo-dedup/VegaLite.jl).
 If you want animation and an overall more mature plotting library with imperative syntax, check out [Plots.jl](https://github.com/JuliaPlots/Plots.jl), [Makie.jl](https://github.com/JuliaPlots/Makie.jl), [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl),  [PGFPlots.jl](https://github.com/JuliaTeX/PGFPlots.jl) or [PGFPlotsX.jl](https://github.com/KristofferC/PGFPlotsX.jl).
-(There's probably other libraries that I've missed out.)
+
+(And more: [Winston.jl](https://github.com/JuliaGraphics/Winston.jl), [Gaston.jl](https://github.com/mbaz/Gaston.jl), ...)
 
 ## What's going on
 
@@ -48,8 +49,6 @@ If you want animation and an overall more mature plotting library with imperativ
 * (**upcoming**) Allow both GLE and Gnuplot as backend. Different than Gaston as no attempt at being interactive.
 
 ## Notes
-
-* everything in cm, for font, conversion is `10pt = 0.352778cm` could do `const pt = 0.352778` but it's potentially clashing name, maybe better to have a function that takes point and does the conversion itself.
 
 ## Todo
 
