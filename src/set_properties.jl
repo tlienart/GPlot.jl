@@ -21,14 +21,12 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :marker          => set_marker!, # markerstyle ...
     :msize           => set_msize!,
     :markersize      => set_msize!,
-    :mfcol           => set_mfcol!,
-    :mfacecol        => set_mfcol!,
-    :mfacecolor      => set_mfcol!,
-    :markerfacecolor => set_mfcol!,
-    :mecol           => set_mecol!,
-    :medgecol        => set_mecol!,
-    :medgecolor      => set_mecol!,
-    :markeredgecolor => set_mecol!,
+    :mcol            => set_mcol!,
+    :markercol       => set_mcol!,
+    :markercolor     => set_mcol!,
+    :mfacecol        => set_mcol!,
+    :mfacecolor      => set_mcol!,
+    :markerfacecolor => set_mcol!,
     )
 
 set_properties!(::Type{B}, line::Line2D; opts...) where B =

@@ -37,8 +37,17 @@ end
 # --------------------
 
 function set_lstyle!(::Type{GLE}, obj, v)
-    ((v isa Int) && (v ≥ 0)) || throw(OptionValueError("lstyle", v))
-    obj.linestyle.lstyle = v
+    if v isa Int
+        v ≥ 0 || throw(OptionValueError("lstyle", v))
+        obj.linestyle.lstyle = v
+    elseif v isa String
+        obj.linestyle.lstyle = get(GLE_LSTYLES, v) do
+            (v == "none") || throw(OptionValueError("lstyle", v))
+            -1
+        end
+    else
+        throw(OptionValueError("lstyle", v))
+    end
     return
 end
 
@@ -72,9 +81,7 @@ function set_msize!(::Type{GLE}, obj, v)
     return
 end
 
-function set_mfcol!(::Type{GLE}, obj, v)
-    gle_no_support("setting the marker face color.")
-end
+set_mcol!(g::Type{GLE}, obj, v) = set_color!(g, obj, :markerstyle, v)
 
 function set_mecol!(::Type{GLE}, obj, v)
     gle_no_support("setting the marker edge color.")

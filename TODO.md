@@ -3,7 +3,6 @@
 ## ongoing
 
 * start systematic testing or it will become a mess very quickly
-* [ ] manage lstyle, default should be a line, use string, use style "none" for no line, parse the style so that can feed via dictionary things like "--". 
 
 --------
 

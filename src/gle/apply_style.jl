@@ -16,9 +16,8 @@ end
 
 
 function apply_markerstyle!(g::GLE, m::MarkerStyle)
-    isdef(m.marker) && "marker $(m.marker)" |> g
-    isdef(m.msize)  && "msize $(m.msize)"   |> g
-    isdef(m.facecolor) && gle_no_support("setting the marker face color.")
-    isdef(m.edgecolor) && gle_no_support("setting the marker edge color.")
+    isdef(m.marker) && "marker $(m.marker)"        |> g
+    isdef(m.msize)  && "msize $(m.msize)"          |> g
+    isdef(m.color)  && "color $(col2str(m.color))" |> g
     return g
 end

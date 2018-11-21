@@ -64,6 +64,13 @@ const GLE_MARKERS = Dict{String, String}(
     "snake"     => "snake"      ,
     )
 
+const GLE_LSTYLES = Dict{String, Int}(
+    "-"    => 0,
+    "--"   => 9,
+    "-."   => 8
+    )
+
+
 
 const GLE_FONTS = Dict{String, String}(
     "roman"                 => "rm"     ,
