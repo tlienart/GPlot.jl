@@ -1,3 +1,13 @@
+function set_properties!(::Type{B}, dict, obj; opts...) where B<:Backend
+    for optname ∈ opts.itr
+        setprop! = get(dict, optname) do
+            throw(UnknownOptionError(optname, obj))
+        end
+        setprop!(B, obj, opts[optname])
+    end
+    return obj
+end
+
 const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :ls              => set_lstyle!, # linestyle ...
     :lstyle          => set_lstyle!,
@@ -21,18 +31,15 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :markeredgecolor => set_mecol!,
     )
 
-function set_properties!(b::Backend, line::Line2D; opts...)
-    for optname ∈ opts.itr
-        setprop! = get(LINE2D_OPTIONS, optname) do
-            throw(UnknownOptionError(optname, line))
-        end
-        setprop!(b, line, opts[optname])
-    end
-    return line
-end
+set_properties!(::Type{B}, line::Line2D; opts...) where B =
+    set_properties!(B, LINE2D_OPTIONS, line; opts...)
 
 const TITLE_OPTIONS = Dict{Symbol, Function}(
-    :font => set_font!,
+    :font     => set_font!,
     :fontsize => set_hei!,
-    :color => set_color!
-)
+    :col      => set_color!,
+    :color    => set_color!
+    )
+
+set_properties!(::Type{B}, title::Title; opts...) where B =
+    set_properties!(B, TITLE_OPTIONS, title; opts...)

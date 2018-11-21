@@ -1,5 +1,3 @@
-isjupyter = isdefined(Main, :IJulia) && Main.IJulia.inited
-
 abstract type Backend end
 
 struct GLE <: Backend
@@ -7,30 +5,20 @@ struct GLE <: Backend
 end
 GLE() = GLE(IOBuffer())
 
-
 struct Gnuplot <: Backend
     io::IOBuffer
 end
 Gnuplot() = Gnuplot(IOBuffer())
 
-
 |>(s, b::Backend) = write(b.io, s, " ")
-
 take!(b::Backend) = take!(b.io)
 
+#######################################
 
-const Float = Float64
-const VF    = Vector{Float}
-const AVF   = AbstractVector{Float}
-const MF    = Matrix{Float}
-const Option{T} = Union{Nothing, T}
-const ∅ = nothing
-const PT_TO_CM = 0.0352778 # 1pt in cm
-
-isdef(el) = !(el === nothing)
+isdef(el)   = !(el === nothing)
+isanydef(o) = any(isdef, (getfield(o, f) for f ∈ fieldnames(typeof(o))))
 
 round3d(x) = round(Float(x), digits=3)
-
 
 function col2str(col::T) where T<:Colorant
     crgba = convert(RGBA, col)
@@ -39,26 +27,24 @@ function col2str(col::T) where T<:Colorant
     return "rgba($r,$g,$b,$a)"
 end
 
-
 vec2str(v::Vector{T}) where T<:Real = prod("$vi " for vi ∈ v)
 vec2str(v::Vector{String}) = prod("\"$vi\" " for vi ∈ v)
 
+#######################################
 
 struct NotImplementedError <: Exception
     msg::String
+    NotImplementedError(s) = new("[$s] hasn't been implemented.")
 end
-NotImplementedError(s) = NotImplementedError("[$s] hasn't been implemented.")
 
 struct UnknownOptionError <: Exception
     msg::String
+    UnknownOptionError(s, o) = new("[$s] is not recognised as a valid option name for $(typeof(o)).")
 end
-UnknownOptionError(s, o) = UnknownOptionError("[$s] is not recognised as a valid option name for $(typeof(o)).")
 
 struct OptionValueError <: Exception
     msg::String
+    OptionValueError(s, v) = new("[$s] value given ($v) did not meet the expected format.")
 end
-OptionValueError(s, v) = OptionValueError("[$s] value given ($v) did not meet the expected format.")
 
-
-gle_no_support(s) = GP_VERBOSE &&
-    println("🚫  GLE does not support $s [ignoring]")
+gle_no_support(s) = GP_VERBOSE && println("🚫  GLE does not support $s [ignoring]")

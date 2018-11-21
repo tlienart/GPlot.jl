@@ -1,10 +1,13 @@
 function apply_drawing!(g::GLE, line::Line2D, el_counter::Int=1)
-    faux = "$GP_TMP_PATH/$(get_curfig().id)_auxdat_$el_counter.csv"
+    faux = "$GP_TMP_PATH/$(gcf().id)_auxdat_$el_counter.csv"
     writedlm(faux, line.xy)
     "\n\tdata \"$faux\""    |> g
-    "\n\td$el_counter line" |> g
-    isdef(line.linestyle)   && apply_linestyle!(g, line.linestyle)
-    isdef(line.markerstyle) && apply_markerstyle!(g, line.markerstyle)
+    "\n\td$el_counter" |> g
+    if any(isdef, (getfield(line.linestyle, f) for f ∈ (:lstyle, :lwidth)))
+        "line" |> g
+    end
+    apply_linestyle!(g, line.linestyle)
+    apply_markerstyle!(g, line.markerstyle)
     return g
 end
 

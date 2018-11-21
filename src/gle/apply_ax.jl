@@ -1,7 +1,7 @@
 function apply_title!(g::GLE, t::Title)
     # [x]title ...
-    tt = "title $(t.text)"
-    isdef(t.prefix)    && "$(t.prefix)$tt" |> g
+    p = ifelse(isdef(t.prefix), "$(t.prefix)", "")
+    "\n\t$(p)title \"$(t.text)\""              |> g
     isdef(t.dist)      && "dist $(t.dist)" |> g
     isdef(t.textstyle) && apply_textstyle!(g, t.textstyle)
     return g

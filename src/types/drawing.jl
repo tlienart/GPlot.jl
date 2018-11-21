@@ -3,6 +3,7 @@ abstract type Drawing2D <: Drawing end
 
 @with_kw struct Line2D <: Drawing2D
     xy::MF
-    linestyle  ::LineStyle   = LineStyle()   # GLE ✓
-    markerstyle::MarkerStyle = MarkerStyle() # GLE ✓
+    linestyle  ::LineStyle      = LineStyle()   # ✓
+    markerstyle::MarkerStyle    = MarkerStyle() # ✓
+    label      ::Option{String} = ∅             # 🚫
 end

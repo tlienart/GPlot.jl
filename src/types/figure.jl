@@ -16,7 +16,7 @@ end
     dist     ::Option{Float}          = ∅ # ✓ ⟂ distance to spine
     names    ::Option{Vector{String}} = ∅ # ✓ replaces numeric labeling
 end
-TicksLabels(p) = TicksLabels(prefix=p)
+TicksLabels(p::String) = TicksLabels(prefix=p)
 
 
 @with_kw mutable struct Ticks
@@ -27,7 +27,7 @@ TicksLabels(p) = TicksLabels(prefix=p)
     places   ::Option{VF}        = ∅ # where the ticks are A🚫
     symticks ::Option{Bool}      = ∅ # draws ticks on 2 sides of spine A🚫
 end
-Ticks(p) = Ticks(prefix=p)
+Ticks(p::String) = Ticks(prefix=p)
 
 
 @with_kw mutable struct Axis
@@ -44,13 +44,12 @@ Ticks(p) = Ticks(prefix=p)
     min        ::Option{Float}     = ∅ # minimum span of the axis A🚫
     max        ::Option{Float}     = ∅ # maximum span of the axis A🚫
 end
-Axis(p) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
+Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
 
 
-abstract type Axes end
+abstract type Axes{B<:Backend} end
 
-
-@with_kw mutable struct Axes2D <: Axes
+@with_kw mutable struct Axes2D{B} <: Axes{B}
     xaxis   ::Axis                       = Axis("x")  # A🚫
     x2axis  ::Axis                       = Axis("x2") # A🚫
     yaxis   ::Axis                       = Axis("y")  # A🚫
@@ -62,36 +61,48 @@ abstract type Axes end
 end
 
 
-mutable struct Axes3D <: Axes end
+mutable struct Axes3D{B} <: Axes{B} end
 
 
-@with_kw mutable struct Figure{B<:Backend}
-    id::String                # unique identifier of the figure
-    g::B
-    axes::Vector{Axes}               = [Axes()] # all the subplots (≥1)
-    # options
-    size        ::Tuple{Float,Float} = (8., 6.) # A🚫
-    textstyle   ::TextStyle          = TextStyle(font="psh", hei=0.2) # A🚫
-    texlabels   ::Option{Bool}       = ∅ # true if has tex A🚫
-    texscale    ::Option{Float}      = ∅ # scale latex * hei (def=1) A🚫
-    transparency::Option{Bool}       = ∅ # if true, use cairo device 🚫
+mutable struct Figure{B<:Backend}
+    id          ::String            # unique identifier of the figure
+    g           ::B
+    axes        ::Vector{Axes{B}}    # subplots
+    size        ::Tuple{Float,Float} # A🚫
+    textstyle   ::TextStyle          # A🚫
+    texlabels   ::Option{Bool}       # true if has tex A🚫
+    texscale    ::Option{Float}      # scale latex * hei (def=1) A🚫
+    transparency::Option{Bool}       # if true, use cairo device 🚫
 end
-
 
 function Figure(id, g)
-    GP_CURFIG.x = id
-    λ = Figure(id=id, g=g)
+    λ = Figure(id, g, Vector{Axes{typeof(g)}}(),
+               (8., 6.), TextStyle(font="psh", hei=0.2), ∅, ∅, ∅)
     GP_ALLFIGS[id] = λ
+    GP_CURFIG.x    = λ
+    GP_CURAXES.x   = nothing
     return λ
 end
-Figure() = Figure("fig_" * randstring(3))
 
-
-function Figure(id::String)
+function Figure(id::String="_fig_")
+    id == "_fig_" && return Figure(id, GP_BACKEND()) # a fresh one
     get(GP_ALLFIGS, id) do
         Figure(id, GP_BACKEND())
     end
 end
 
+function erase!(f::Figure)
+    take!(f.g)
+    f.axes = Vector{Axes{typeof(f.g)}}()
+    GP_CURFIG.x = f
+    GP_CURAXES.x = nothing
+    return f
+end
 
-erase!(fig::Figure) = (take!(fig.g); fig.axes=Vector{Axes}(); fig)
+function add_axes!(f::Figure, ax::Axes)
+    push!(f.axes, ax)
+    GP_CURAXES.x = ax
+    return ax
+end
+
+add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
