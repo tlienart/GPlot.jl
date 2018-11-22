@@ -29,8 +29,11 @@ begin
     title!("The title")
     GPlot.assemble_figure(f)
 end
-run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(f.id).gle $(GPlot.GP_TMP_PATH)/$(f.id).png"`)
+#run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(f.id).gle $(GPlot.GP_TMP_PATH)/$(f.id).png"`)
 
+f
+
+isdefined(Main, :Atom)
 
 # XXX
 ###########

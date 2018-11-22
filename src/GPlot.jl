@@ -2,7 +2,10 @@ module GPlot
 
 using Parameters
 using Colors
-using DelimitedFiles
+
+using Base64: stringmime
+using Juno: PlotPane, render
+using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 
@@ -16,7 +19,7 @@ const GP_VERBOSE    = true
 const GP_BACKEND    = GLE
 const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin"
 const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
-const GP_DEL_INTERM = false
+const GP_DEL_INTERM = true
 
 const Float = Float64
 const VF  = Vector{Float}
@@ -52,14 +55,28 @@ gca() = GP_CURAXES.x # if nothing, whatever called it will create
 get_backend(f::Figure{B}) where B<:Backend = B
 
 
-# XXX sandbox for now!
-function Base.show(jio::IO, ::MIME"image/png", fig::Figure)
-    if isdefined(Main, :IJulia) && Main.IJulia.inited
+# XXX sandbox for now! extract the run bit.
+function Base.show(ios::IO, fig::Figure)
+    if isdefined(Main, :Atom)
+        # ----------------------------------------------------------------
         assemble_figure(fig)
         # XXX if fig.transparency --> use -cairo option
         run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(fig.id).gle $(GPlot.GP_TMP_PATH)/$(fig.id).png"`)
         GP_DEL_INTERM && rm("$(GPlot.GP_TMP_PATH)/$(fig.id).gle")
-        write(jio, read("$(GPlot.GP_TMP_PATH)/$(fig.id).png"))
+        # ----------------------------------------------------------------
+        mime = "image/png"
+        str = stringmime(mime, read("$(GPlot.GP_TMP_PATH)/$(fig.id).png"))
+        str = string("<img src=\"data:$mime;base64,", str, "\">")
+        render(PlotPane(), HTML(str))
+        # ----------------------------------------------------------------
+    elseif isdefined(Main, :IJulia) && Main.IJulia.inited
+        # ----------------------------------------------------------------
+        assemble_figure(fig)
+        # XXX if fig.transparency --> use -cairo option
+        run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(fig.id).gle $(GPlot.GP_TMP_PATH)/$(fig.id).png"`)
+        GP_DEL_INTERM && rm("$(GPlot.GP_TMP_PATH)/$(fig.id).gle")
+        write(ios, read("$(GPlot.GP_TMP_PATH)/$(fig.id).png"))
+        # ----------------------------------------------------------------
     end
 end
 
