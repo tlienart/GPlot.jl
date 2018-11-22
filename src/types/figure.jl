@@ -1,5 +1,5 @@
 @with_kw mutable struct Title
-    text     ::String                # ✓
+    text     ::AbstractString        # ✓
     prefix   ::Option{String}    = ∅ # ✓ x, x2, y, y2, z
     textstyle::Option{TextStyle} = ∅ # ✓
     dist     ::Option{Float}     = ∅ # ✓ distance labels - title
@@ -8,13 +8,13 @@ end
 
 @with_kw mutable struct TicksLabels
     prefix   ::String                     # ✓
-    off      ::Option{Bool}           = ∅ # ✓ whether to suppress the labels
-    textstyle::Option{TextStyle}      = ∅ # ⁠✓ textstyle
-    angle    ::Option{Float}          = ∅ # ✓ rotation of labels
-    format   ::Option{String}         = ∅ # A🚫 format of the ticks labels
-    shift    ::Option{Float}          = ∅ # ✓ move labels to left/right
-    dist     ::Option{Float}          = ∅ # ✓ ⟂ distance to spine
-    names    ::Option{Vector{String}} = ∅ # ✓ replaces numeric labeling
+    off      ::Option{Bool}             = ∅ # ✓ whether to suppress the labels
+    textstyle::Option{TextStyle}        = ∅ # ⁠✓ textstyle
+    angle    ::Option{Float}            = ∅ # ✓ rotation of labels
+    format   ::Option{String}           = ∅ # A🚫 format of the ticks labels
+    shift    ::Option{Float}            = ∅ # ✓ move labels to left/right
+    dist     ::Option{Float}            = ∅ # ✓ ⟂ distance to spine
+    names    ::Option{Vector{<:String}} = ∅ # ✓ replaces numeric labeling
 end
 TicksLabels(p::String) = TicksLabels(prefix=p)
 
@@ -68,27 +68,29 @@ mutable struct Figure{B<:Backend}
     id          ::String            # unique identifier of the figure
     g           ::B
     axes        ::Vector{Axes{B}}    # subplots
-    size        ::Tuple{Float,Float} # A🚫
-    textstyle   ::TextStyle          # A🚫
-    texlabels   ::Option{Bool}       # true if has tex A🚫
-    texscale    ::Option{Float}      # scale latex * hei (def=1) A🚫
-    transparency::Option{Bool}       # if true, use cairo device 🚫
+    size        ::Tuple{Float,Float} # ✓
+    textstyle   ::Option{TextStyle}  # ✓
+    texlabels   ::Option{Bool}       # ✓ true if has tex
+    texscale    ::Option{Float}      # ✓ scale latex * hei (def=1)
+    transparency::Option{Bool}       # ✓ if true, use cairo device
 end
 
-function Figure(id, g)
-    λ = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (8., 6.), TextStyle(font="psh", hei=0.2), ∅, ∅, ∅)
-    GP_ALLFIGS[id] = λ
-    GP_CURFIG.x    = λ
+function Figure(id, g; opts...)
+    f = Figure(id, g, Vector{Axes{typeof(g)}}(),
+               (8., 6.), ∅, ∅, ∅, ∅)
+    set_properties!(f; opts...)
+    GP_ALLFIGS[id] = f
+    GP_CURFIG.x    = f
     GP_CURAXES.x   = nothing
-    return λ
+    return f
 end
 
-function Figure(id::String="_fig_")
-    id == "_fig_" && return Figure(id, GP_BACKEND()) # a fresh one
-    get(GP_ALLFIGS, id) do
-        Figure(id, GP_BACKEND())
+function Figure(id::String="_fig_"; opts...)
+    id == "_fig_" && return Figure(id, GP_BACKEND(); opts...) # a fresh one
+    f = get(GP_ALLFIGS, id) do
+        Figure(id, GP_BACKEND(); opts...)
     end
+    set_properties!(f; opts...) # f exists but properties have been given
 end
 
 function erase!(f::Figure)

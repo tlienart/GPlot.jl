@@ -1,5 +1,5 @@
-function title!(axes::Axes2D{B}, text::String, axsymb::Option{Symbol};
-                opts...) where B<:Backend
+function title!(axes::Axes2D{B}, text::S, axsymb::Option{Symbol};
+                opts...) where {B<:Backend, S<:AbstractString}
     prefix, obj = "", axes
     if isdef(axsymb)
         axsymb == :x  && (prefix = "x" ; obj = axes.xaxis ;)

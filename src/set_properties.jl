@@ -29,15 +29,37 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :markerfacecolor => set_mcol!,
     )
 
-set_properties!(::Type{B}, line::Line2D; opts...) where B =
-    set_properties!(B, LINE2D_OPTIONS, line; opts...)
-
-const TITLE_OPTIONS = Dict{Symbol, Function}(
+const TEXT_OPTIONS = Dict{Symbol, Function}(
     :font     => set_font!,
     :fontsize => set_hei!,
     :col      => set_color!,
     :color    => set_color!
     )
 
+const TITLE_OPTIONS = Dict{Symbol, Function}(
+    :dist => set_dist!
+    )
+merge!(TITLE_OPTIONS, TEXT_OPTIONS)
+
+const FIG_OPTIONS = Dict{Symbol, Function}(
+    :size         => set_size!,
+    :tex          => set_texlabels!,
+    :hastex       => set_texlabels!,
+    :latex        => set_texlabels!,
+    :haslatex     => set_texlabels!,
+    :texscale     => set_texscale!,
+    :alpha        => set_transparency!,
+    :transparent  => set_transparency!,
+    :transparency => set_transparency!,
+    )
+merge!(FIG_OPTIONS, TEXT_OPTIONS)
+
+
+set_properties!(::Type{B}, line::Line2D; opts...) where B =
+    set_properties!(B, LINE2D_OPTIONS, line; opts...)
+
 set_properties!(::Type{B}, title::Title; opts...) where B =
     set_properties!(B, TITLE_OPTIONS, title; opts...)
+
+set_properties!(fig::Figure{B}; opts...) where B =
+    set_properties!(B, FIG_OPTIONS, fig; opts...)

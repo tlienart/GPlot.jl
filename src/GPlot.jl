@@ -19,7 +19,7 @@ const GP_VERBOSE    = true
 const GP_BACKEND    = GLE
 const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin"
 const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
-const GP_DEL_INTERM = true
+const GP_DEL_INTERM = false
 
 const Float = Float64
 const VF  = Vector{Float}
@@ -35,12 +35,11 @@ include("types/figure.jl")
 
 include("gle/dictionaries.jl")
 include("gle/set_style.jl")
-include("gle/set_ax.jl")
+include("gle/set_figure.jl")
 
 include("gle/apply_style.jl")
 include("gle/apply_drawing.jl")
-include("gle/apply_ax.jl")
-include("gle/assemble_figure.jl")
+include("gle/apply_figure.jl")
 
 include("set_properties.jl")
 include("plot.jl")
@@ -57,25 +56,32 @@ get_backend(f::Figure{B}) where B<:Backend = B
 
 # XXX sandbox for now! extract the run bit.
 function Base.show(ios::IO, fig::Figure)
+    cairo, tex = "", ""
+    if isdef(fig.transparency)
+        fig.transparency && (cairo = "-cairo")
+    end
+    if isdef(fig.texlabels)
+        fig.texlabels && (tex = "-tex")
+    end
+    gle_command = `bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $cairo $tex $(GPlot.GP_TMP_PATH)/$(fig.id).gle $(GPlot.GP_TMP_PATH)/$(fig.id).png"`
     if isdefined(Main, :Atom)
         # ----------------------------------------------------------------
         assemble_figure(fig)
         # XXX if fig.transparency --> use -cairo option
-        run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(fig.id).gle $(GPlot.GP_TMP_PATH)/$(fig.id).png"`)
-        GP_DEL_INTERM && rm("$(GPlot.GP_TMP_PATH)/$(fig.id).gle")
+        run(gle_command)
         # ----------------------------------------------------------------
         mime = "image/png"
         str = stringmime(mime, read("$(GPlot.GP_TMP_PATH)/$(fig.id).png"))
-        str = string("<img src=\"data:$mime;base64,", str, "\">")
+        str = string("<img src=\"data:$mime;base64,", str,"\">")
         render(PlotPane(), HTML(str))
+        GP_DEL_INTERM && rm("$(GPlot.GP_TMP_PATH)/$(fig.id).gle")
         # ----------------------------------------------------------------
     elseif isdefined(Main, :IJulia) && Main.IJulia.inited
         # ----------------------------------------------------------------
         assemble_figure(fig)
         # XXX if fig.transparency --> use -cairo option
-        run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(fig.id).gle $(GPlot.GP_TMP_PATH)/$(fig.id).png"`)
+        run(gle_command)
         GP_DEL_INTERM && rm("$(GPlot.GP_TMP_PATH)/$(fig.id).gle")
-        write(ios, read("$(GPlot.GP_TMP_PATH)/$(fig.id).png"))
         # ----------------------------------------------------------------
     end
 end

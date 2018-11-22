@@ -10,10 +10,25 @@
 
 ## Gen
 
-* [ ] testing transparency (should be able to import fig in beamer with gray background without whiteout)
+* [ ] testing transparency (should be able to import fig in beamer with gray background without whiteout) --> with the `-transparent` and d png should be ok
 * [ ] color palette via [colorschemes](https://github.com/JuliaGraphics/ColorSchemes.jl)
 * [ ] to avoid ticks names and ticks labels not having the same size, only allow a function with `(ticksplaces, [ticksnames=...])` and not just ticksnames.
+* [ ] when tex labels, it may overflow a bit, so need to change the size a bit
+* [ ] suppress font setting when texlabels are true (try different settings)
+* [ ] BUG texscale is incorrect it should be a string. Below seems to be the right approach that actually works, should investigate more.
 
+```
+size 8.0 6.0
+!set hei 0.2
+!set texlabels 1
+set hei 0.1
+begin texpreamble
+    \usepackage{palatino}
+end texpreamble
+set texlabels 1 texscale scale
+```
+
+* [] latexstrings seems to be pretty slow, maybe could just use raw?
 
 ## Output
 

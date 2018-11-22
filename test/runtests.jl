@@ -1,8 +1,9 @@
 using GPlot, Test
+#using LaTeXStrings #---> is actually slow, just using `raw` works better.
 
 # XXX
 begin
-    f = Figure()
+    f = Figure(latex=true)
     #erase!(f)
 
     x1 = range(-2, stop=2, length=100)
@@ -22,18 +23,15 @@ begin
     plot!(x3, y5, ls="-", color="orange", lwidth=0.05, marker="o", mcol="red")
     plot!(x3, y6, ls="-", color="orange", lwidth=0.05, marker="•", mcol="red")
 
-    xtitle!("x-axis")
-    x2title!("x2-axis")
-    y2title!("y2-axis")
-    ytitle!("y-axis")
-    title!("The title")
+    xtitle!(raw"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$")
+    x2title!(raw"$x_2$")
+    y2title!(raw"axis $y_2$")
+    ytitle!(raw"$y$")
+    title!(raw"The title $\mathcal N$")
     GPlot.assemble_figure(f)
+    f
 end
 #run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(f.id).gle $(GPlot.GP_TMP_PATH)/$(f.id).png"`)
-
-f
-
-isdefined(Main, :Atom)
 
 # XXX
 ###########

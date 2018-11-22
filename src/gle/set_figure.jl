@@ -1,5 +1,5 @@
 function set_text!(::Type{GLE}, obj, elem, v)
-   v isa String || throw(OptionValueError("text", v))
+   v isa AbstractString || throw(OptionValueError("text", v))
    setfield!(getfield(obj, elem), :text, v)
    return
 end
@@ -57,7 +57,7 @@ function set_shift(::Type{GLE}, obj, v)
 end
 
 function set_names!(::Type{GLE}, obj, v)
-   (v isa Vector{String}) || throw(OptionValueError("names", v))
+   (v isa Vector{<:AbstractString}) || throw(OptionValueError("names", v))
    obj.names = v
    return
 end
@@ -69,5 +69,26 @@ end
 function set_math!(::Type{GLE}, obj, v)
    (v isa Bool) || throw(OptionValueError("math", v))
    obj.math = ifelse(v, true, nothing)
+   return
+end
+
+# --------------------
+# FIGURE specific
+# --------------------
+function set_texlabels!(::Type{GLE}, obj, v)
+   (v isa Bool) || throw(OptionValueError("math", v))
+   obj.texlabels = ifelse(v, true, nothing)
+   return
+end
+
+function set_texscale!(::Type{GLE}, obj, v)
+   ((v isa Real) && (v ≥ 0.)) || throw(OptionValueError("math", v))
+   obj.texscale = v
+   return
+end
+
+function set_transparency!(::Type{GLE}, obj, v)
+   (v isa Bool) || throw(OptionValueError("math", v))
+   obj.transparency = v
    return
 end
