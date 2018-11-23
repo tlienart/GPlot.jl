@@ -1,7 +1,7 @@
-using GPlot, Test
 #using LaTeXStrings #---> is actually slow, just using `raw` works better.
 
-# XXX
+using GPlot, Test
+
 begin
     f = Figure(latex=true)
     #erase!(f)
@@ -27,8 +27,7 @@ begin
     x2title!(raw"$x_2$")
     y2title!(raw"axis $y_2$")
     ytitle!(raw"$y$")
-    title!(raw"The title $\mathcal N$")
-    GPlot.assemble_figure(f)
+    title!(raw"The new title $\mathcal N$")
     f
 end
 #run(`bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $(GPlot.GP_TMP_PATH)/$(f.id).gle $(GPlot.GP_TMP_PATH)/$(f.id).png"`)

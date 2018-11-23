@@ -70,7 +70,7 @@ const GLE_LSTYLES = Dict{String, Int}(
     "-."   => 8
     )
 
-
+const GLE_TEXSCALE = ["scale", "fixed", "none"]
 
 const GLE_FONTS = Dict{String, String}(
     "roman"                 => "rm"     ,

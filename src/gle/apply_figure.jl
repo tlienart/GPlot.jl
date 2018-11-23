@@ -83,9 +83,20 @@ end
 function assemble_figure(f::Figure{GLE})
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
-    "\nset" |> g
-    isdef(f.textstyle) && apply_textstyle!(g, f.textstyle)
-    isdef(f.texlabels) && ifelse(f.texlabels, "\nset texlabels 1", "") |> g
+    haslatex = false
+    isdef(f.texlabels) && f.texlabels && (haslatex = true)
+    haslatex || (isdef(f.texscale) && (haslatex = true))
+    "\nset" |> g # line for texstyle, it may be empty if nothing is given
+    isdef(f.textstyle) && apply_textstyle!(g, f.textstyle, haslatex)
+    "\n" |> g
+    haslatex && raw"""
+    begin texpreamble
+        \usepackage{beton}
+        \usepackage{euler}
+        \usepackage[T1]{fontenc}
+    end texpreamble
+    set texlabels 1
+    """ |> g
     isdef(f.texscale)  && "\nset texscale $(f.texscale)" |> g
 
     # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
@@ -98,6 +109,7 @@ function assemble_figure(f::Figure{GLE})
 
     # deal with proper dir
     write("$GP_TMP_PATH/$(f.id).gle", take!(g))
+    return
 end
 
 function assemble_figure(f::Figure{Gnuplot})

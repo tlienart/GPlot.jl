@@ -15,7 +15,8 @@
 * [ ] to avoid ticks names and ticks labels not having the same size, only allow a function with `(ticksplaces, [ticksnames=...])` and not just ticksnames.
 * [ ] when tex labels, it may overflow a bit, so need to change the size a bit
 * [ ] suppress font setting when texlabels are true (try different settings)
-* [ ] BUG texscale is incorrect it should be a string. Below seems to be the right approach that actually works, should investigate more.
+* [ ] ~~BUG texscale is incorrect it should be a string~~. Below seems to be the right approach that actually works, should investigate more.
+* [ ] windows testing, will need to replace any forward `/` by joinpath also make sure things like `2>&1` work in shell called from julia on windows. not sure how that works.
 
 ```
 size 8.0 6.0

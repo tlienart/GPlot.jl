@@ -77,7 +77,7 @@ end
 
 function Figure(id, g; opts...)
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (8., 6.), ∅, ∅, ∅, ∅)
+               (8., 6.), TextStyle(hei=0.2), ∅, ∅, ∅)
     set_properties!(f; opts...)
     GP_ALLFIGS[id] = f
     GP_CURFIG.x    = f

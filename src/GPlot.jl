@@ -3,8 +3,6 @@ module GPlot
 using Parameters
 using Colors
 
-using Base64: stringmime
-using Juno: PlotPane, render
 using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
@@ -20,6 +18,7 @@ const GP_BACKEND    = GLE
 const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin"
 const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
 const GP_DEL_INTERM = false
+const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
 
 const Float = Float64
 const VF  = Vector{Float}
@@ -54,35 +53,28 @@ gca() = GP_CURAXES.x # if nothing, whatever called it will create
 get_backend(f::Figure{B}) where B<:Backend = B
 
 
+global call_counter = 0
+
 # XXX sandbox for now! extract the run bit.
-function Base.show(ios::IO, fig::Figure)
+function Base.show(shio::IO, ::MIME"image/png", fig::Figure)
+    global call_counter
     cairo, tex = "", ""
-    if isdef(fig.transparency)
-        fig.transparency && (cairo = "-cairo")
-    end
-    if isdef(fig.texlabels)
-        fig.texlabels && (tex = "-tex")
-    end
-    gle_command = `bash -c "$(GPlot.GLE_APP_PATH)/gle -d png -vb 0 -r 200 $cairo $tex $(GPlot.GP_TMP_PATH)/$(fig.id).gle $(GPlot.GP_TMP_PATH)/$(fig.id).png"`
-    if isdefined(Main, :Atom)
-        # ----------------------------------------------------------------
+    isdef(fig.transparency) && fig.transparency && (cairo = "-cairo")
+    isdef(fig.texlabels) && fig.texlabels && (tex = "-tex")
+    gle   = "$(GLE_APP_PATH)/gle"
+    f_in  = "$(GP_TMP_PATH)/$(fig.id).gle"
+    f_out = "$(GP_TMP_PATH)/$(fig.id).png"
+    nout  = ifelse(GP_SHOW_GSERR, "", "> $(GP_TMP_PATH)/log.log 2>&1")
+    gle_command = "$gle -d png -vb 0 -r 200 $cairo $tex $f_in $f_out $nout"
+    should_display = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
+                     (isdefined(Main, :IJulia) && Main.IJulia.inited)
+    if should_display
         assemble_figure(fig)
-        # XXX if fig.transparency --> use -cairo option
-        run(gle_command)
-        # ----------------------------------------------------------------
-        mime = "image/png"
-        str = stringmime(mime, read("$(GPlot.GP_TMP_PATH)/$(fig.id).png"))
-        str = string("<img src=\"data:$mime;base64,", str,"\">")
-        render(PlotPane(), HTML(str))
-        GP_DEL_INTERM && rm("$(GPlot.GP_TMP_PATH)/$(fig.id).gle")
-        # ----------------------------------------------------------------
-    elseif isdefined(Main, :IJulia) && Main.IJulia.inited
-        # ----------------------------------------------------------------
-        assemble_figure(fig)
-        # XXX if fig.transparency --> use -cairo option
-        run(gle_command)
-        GP_DEL_INTERM && rm("$(GPlot.GP_TMP_PATH)/$(fig.id).gle")
-        # ----------------------------------------------------------------
+        run(`bash -c "$gle_command"`)
+        write(shio, read(f_out))
+        GP_DEL_INTERM && rm(f_in)
+        log = read("$(GP_TMP_PATH)/log.log")
+        isempty(log) || println(String(log))
     end
 end
 

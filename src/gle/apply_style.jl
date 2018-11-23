@@ -1,7 +1,7 @@
-function apply_textstyle!(g::GLE, ts::TextStyle)
-    isdef(ts.font)  && "font $(ts.font)"          |> g
-    isdef(ts.hei)   && "hei $(ts.hei)"            |> g
-    isdef(ts.color) && "hei $(col2str(ts.color))" |> g
+function apply_textstyle!(g::GLE, ts::TextStyle, haslatex=false)
+    isdef(ts.font)  && "font $(ts.font)"            |> g
+    isdef(ts.hei)   && "hei $(ts.hei)"              |> g
+    isdef(ts.color) && "color $(col2str(ts.color))" |> g
     return g
 end
 

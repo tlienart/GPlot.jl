@@ -20,7 +20,7 @@ function set_off!(::Type{GLE}, obj, v)
 end
 
 function set_dist!(::Type{GLE}, obj, v)
-   ((v isa Real) && v ≥ 0.) || throw(OptionValueError("prefix", v))
+   ((v isa Real) && v ≥ 0.) || throw(OptionValueError("dist", v))
    obj.dist = v
    return
 end
@@ -28,7 +28,7 @@ end
 function set_size!(::Type{GLE}, obj, v)
    (v isa Tuple{<:Real, <:Real}) || throw(OptionValueError("size", v))
    w, h = v
-   (w ≥ 0.) && (h ≥ 0.) || throw(OptionValueError("prefix", v))
+   (w ≥ 0.) && (h ≥ 0.) || throw(OptionValueError("size", v))
    obj.size = v
 end
 
@@ -41,7 +41,7 @@ end
 # --------------------
 
 function set_angle!(::Type{GLE}, obj, v)
-   (v isa Real) || throw(OptionValueError("prefix", v))
+   (v isa Real) || throw(OptionValueError("angle", v))
    obj.angle = v
    return
 end
@@ -51,7 +51,7 @@ function set_format!(::Type{GLE}, obj, v)
 end
 
 function set_shift(::Type{GLE}, obj, v)
-   (v isa Real) ||  throw(OptionValueError("prefix", v))
+   (v isa Real) ||  throw(OptionValueError("shift", v))
    obj.shift = v
    return
 end
@@ -76,19 +76,19 @@ end
 # FIGURE specific
 # --------------------
 function set_texlabels!(::Type{GLE}, obj, v)
-   (v isa Bool) || throw(OptionValueError("math", v))
+   (v isa Bool) || throw(OptionValueError("texlabels", v))
    obj.texlabels = ifelse(v, true, nothing)
    return
 end
 
 function set_texscale!(::Type{GLE}, obj, v)
-   ((v isa Real) && (v ≥ 0.)) || throw(OptionValueError("math", v))
+   (v ∈ GLE_TEXSCALE) || throw(OptionValueError("texscale", v))
    obj.texscale = v
    return
 end
 
 function set_transparency!(::Type{GLE}, obj, v)
-   (v isa Bool) || throw(OptionValueError("math", v))
+   (v isa Bool) || throw(OptionValueError("transparency", v))
    obj.transparency = v
    return
 end

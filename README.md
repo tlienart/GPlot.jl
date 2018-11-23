@@ -47,6 +47,18 @@ If you want animation and an overall more mature plotting library with imperativ
 
 * (**ongoing**) Wrapper for the [Graphics Layout Engine](http://glx.sourceforge.net/index.html)
 * (**upcoming**) Allow both GLE and Gnuplot as backend. Different than Gaston as no attempt at being interactive.
+* (**maybe?**) Allow Asymptote as backend. (main advantage is that it ships with any up-to-date texlive)
+
+## Installation
+
+* Get GLE working
+    - on Mac, compiling from source does not work (or would require modifying the code in a way that evades me), however getting the DMG file for QGLE and installing the `Ghostscript.framework` as suggested in the tutorial is all that is required.
+    - on Fedora, it's available via `yum` but I haven't had the chance to test it.
+    - On Ubuntu (I tried with 18.04.1), `sudo apt-get install gle-graphics` does what you expect
+* In atom: make sure to tick "enable plot pane" in the julia-client package in order for plots to be displayed in the plot pane...
+* Windows things
+    - redirect to `/dev/null` is likely not to work (base.show)
+    - paths with expanduser etc, likely nok, use joinpath everywhere as well.
 
 ## Notes
 

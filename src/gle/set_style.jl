@@ -85,4 +85,8 @@ set_mcol!(g::Type{GLE}, obj, v) = set_color!(g, obj, :markerstyle, v)
 
 function set_mecol!(::Type{GLE}, obj, v)
     gle_no_support("setting the marker edge color.")
+    # TODO, actually could overlay markers of different sizes. Would be easy
+    # to do but a bit finicky to adjust so that it doesn't look horrible.
+    # potentially the line width should be the lead for how much difference
+    # there should be in the markersize.
 end
