@@ -91,8 +91,7 @@ function assemble_figure(f::Figure{GLE})
     "\n" |> g
     haslatex && raw"""
     begin texpreamble
-        \usepackage{beton}
-        \usepackage{euler}
+        \usepackage{betonIXALkdjf}
         \usepackage[T1]{fontenc}
     end texpreamble
     set texlabels 1

@@ -70,12 +70,13 @@ function Base.show(shio::IO, ::MIME"image/png", fig::Figure)
                      (isdefined(Main, :IJulia) && Main.IJulia.inited)
     if should_display
         assemble_figure(fig)
+#        try
         run(`bash -c "$gle_command"`)
+        isfile(joinpath(GP_TMP_PATH, "$(fig.id).log")) && error("Something failed when trying to compile, most likely the LaTeX is not right.")
         write(shio, read(f_out))
         GP_DEL_INTERM && rm(f_in)
-        log = read("$(GP_TMP_PATH)/log.log")
-        isempty(log) || println(String(log))
     end
+    return
 end
 
 end # module
