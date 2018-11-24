@@ -15,7 +15,7 @@ include("utils.jl")
 
 const GP_VERBOSE    = true
 const GP_BACKEND    = GLE
-const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin"
+const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin/gle"
 const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
 const GP_DEL_INTERM = false
 const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
@@ -56,24 +56,22 @@ get_backend(f::Figure{B}) where B<:Backend = B
 global call_counter = 0
 
 # XXX sandbox for now! extract the run bit.
-function Base.show(shio::IO, ::MIME"image/png", fig::Figure)
-    global call_counter
+function Base.show(io::IO, ::MIME"image/png", fig::Figure)
     cairo, tex = "", ""
     isdef(fig.transparency) && fig.transparency && (cairo = "-cairo")
-    isdef(fig.texlabels) && fig.texlabels && (tex = "-tex")
-    gle   = "$(GLE_APP_PATH)/gle"
-    f_in  = "$(GP_TMP_PATH)/$(fig.id).gle"
-    f_out = "$(GP_TMP_PATH)/$(fig.id).png"
-    nout  = ifelse(GP_SHOW_GSERR, "", "> $(GP_TMP_PATH)/log.log 2>&1")
-    gle_command = "$gle -d png -vb 0 -r 200 $cairo $tex $f_in $f_out $nout"
+    isdef(fig.texlabels)    && fig.texlabels    && (tex = "-tex")
+    gle   = GLE_APP_PATH
+    fp    = joinpath(GP_TMP_PATH, fig.id)
+    f_in  = "$fp.gle"
+    f_out = "$fp.png"
+    nout  = "> $fp.glog 2>&1"
+    gle_command    = "$gle -d png -vb 0 -r 200 $cairo $tex $f_in $f_out $nout"
     should_display = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
                      (isdefined(Main, :IJulia) && Main.IJulia.inited)
     if should_display
         assemble_figure(fig)
-#        try
-        run(`bash -c "$gle_command"`)
-        isfile(joinpath(GP_TMP_PATH, "$(fig.id).log")) && error("Something failed when trying to compile, most likely the LaTeX is not right.")
-        write(shio, read(f_out))
+        success(`bash -c "$gle_command"`) || error("GLE error, check $fp.glog.")
+        write(io, read(f_out))
         GP_DEL_INTERM && rm(f_in)
     end
     return

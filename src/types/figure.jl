@@ -7,7 +7,7 @@ end
 
 
 @with_kw mutable struct TicksLabels
-    prefix   ::String                     # ✓
+    prefix   ::String                       # ✓
     off      ::Option{Bool}             = ∅ # ✓ whether to suppress the labels
     textstyle::Option{TextStyle}        = ∅ # ⁠✓ textstyle
     angle    ::Option{Float}            = ∅ # ✓ rotation of labels
