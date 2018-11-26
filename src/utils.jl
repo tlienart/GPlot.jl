@@ -10,8 +10,10 @@ struct Gnuplot <: Backend
 end
 Gnuplot() = Gnuplot(IOBuffer())
 
-|>(s, b::Backend) = write(b.io, s, " ")
-take!(b::Backend) = take!(b.io)
+|>(s, io::IOBuffer) = write(io, s, " ")
+|>(s, b::Backend)   = write(b.io, s, " ")
+|>(s, tio::Tuple)   = @. |>(s, tio)
+take!(b::Backend)   = take!(b.io)
 
 #######################################
 

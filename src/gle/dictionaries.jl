@@ -144,3 +144,21 @@ for v ∈ values(GLE_FONTS)
         GLE_FONTS[v] = v
     end
 end
+
+const GLE_LEGEND_POS = Dict{String, String}(
+    "top-left"      => "tl",
+    "bottom-left"   => "bl",
+    "top-right"     => "tr",
+    "bottom-right"  => "br",
+    "top-center"    => "tc",
+    "bottom-center" => "bc",
+    "left-center"   => "lc",
+    "right-center"  => "rc",
+    "center"        => "cc",
+    )
+
+for v ∈ values(GLE_LEGEND_POS)
+    get(GLE_LEGEND_POS, v) do
+        GLE_LEGEND_POS[v] = v
+    end
+end

@@ -3,6 +3,7 @@
 ## ongoing
 
 * start systematic testing or it will become a mess very quickly
+* why does `show` make `gca` return nothing?
 
 --------
 

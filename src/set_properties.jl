@@ -27,6 +27,9 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :mfacecol        => set_mcol!,
     :mfacecolor      => set_mcol!,
     :markerfacecolor => set_mcol!,
+    :name            => set_label!, # label
+    :key             => set_label!,
+    :label           => set_label!,
     )
 
 const TEXT_OPTIONS = Dict{Symbol, Function}(
@@ -54,6 +57,10 @@ const FIG_OPTIONS = Dict{Symbol, Function}(
     )
 merge!(FIG_OPTIONS, TEXT_OPTIONS)
 
+const LEGEND_OPTIONS = Dict{Symbol, Function}(
+    :pos      => set_position!,
+    :position => set_position!
+    )
 
 set_properties!(::Type{B}, line::Line2D; opts...) where B =
     set_properties!(B, LINE2D_OPTIONS, line; opts...)
@@ -63,3 +70,6 @@ set_properties!(::Type{B}, title::Title; opts...) where B =
 
 set_properties!(fig::Figure{B}; opts...) where B =
     set_properties!(B, FIG_OPTIONS, fig; opts...)
+
+set_properties!(fig::Type{B}, legend::Legend; opts...) where B =
+    set_properties!(B, LEGEND_OPTIONS, legend; opts...)

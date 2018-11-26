@@ -13,7 +13,6 @@ function title!(axes::Axes2D{B}, text::S, axsymb::Option{Symbol};
 end
 title!(::Nothing, text, axs; opts) = title!(add_axes2d!(), text, axs; opts...)
 
-
 title!(axes,   text; opts...) = title!(axes, text, ∅  ; opts...)
 xtitle!(axes,  text; opts...) = title!(axes, text, :x ; opts...)
 x2title!(axes, text; opts...) = title!(axes, text, :x2; opts...)

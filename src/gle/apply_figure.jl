@@ -4,7 +4,7 @@ function apply_title!(g::GLE, t::Title)
     "\n\t$(p)title \"$(t.text)\""              |> g
     isdef(t.dist)      && "dist $(t.dist)" |> g
     isdef(t.textstyle) && apply_textstyle!(g, t.textstyle)
-    return g
+    return
 end
 
 
@@ -25,7 +25,7 @@ function apply_tickslabels!(g::GLE, t::TicksLabels)
         isdef(t.format) && "format $(t.format)" |> g
         isdef(t.shift)  && "shift $(t.shift)"   |> g
     end
-    return g
+    return
 end
 
 
@@ -41,7 +41,7 @@ function apply_ticks!(g::GLE, t::Ticks)
     isdef(t.places) && "\n\t$(t.prefix)places $(vec2str(t.places))" |> g
     # [x]xaxis symticks
     isdef(t.symticks) && "\n\t$(t.prefix)axis symticks" |> g
-    return g
+    return
 end
 
 
@@ -60,23 +60,26 @@ function apply_axis!(g::GLE, a::Axis)
         isdef(a.max)    && "max $(a.max)"             |> g
         isdef(a.textstyle) && apply_textstyle!(g, a.textstyle)
     end
-    return g
+    return
 end
 
 
 function apply_axes!(g::GLE, a::Axes2D)
+    "\nbegin graph"                             |> g
     isdef(a.math) && "\n\tmath"                 |> g
     isdef(a.size) && "\n\tsize $(a[1]) $(a[2])" |> g
     foreach(a -> apply_axis!(g, a), (a.xaxis, a.x2axis, a.yaxis, a.y2axis))
     isdef(a.title) && apply_title!(g, a.title)
-    apply_drawings!(g, a.drawings)
-    return g
+    leg_entries = apply_drawings!(g, a.drawings)
+    "\nend graph"                               |> g
+    isdef(a.legend) && apply_legend!(g, a.legend, leg_entries)
+    return
 end
 
 
 function apply_axes!(g::GLE, a::Axes3D)
     throw(NotImplementedError("apply_axes:GLE/3D"))
-    return g
+    return
 end
 
 
@@ -101,13 +104,11 @@ function assemble_figure(f::Figure{GLE})
     # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
     # XXX DEAL WITH LAYOUT, sandbox below
     # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-    "\nbegin graph" |> g
     apply_axes!(g, f.axes[1])
-    "\nend graph" |> g
     # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
 
     # deal with proper dir
-    write("$GP_TMP_PATH/$(f.id).gle", take!(g))
+    write(joinpath(GP_TMP_PATH, f.id * ".gle"), take!(g))
     return
 end
 

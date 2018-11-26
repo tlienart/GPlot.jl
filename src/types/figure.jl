@@ -46,6 +46,14 @@ Ticks(p::String) = Ticks(prefix=p)
 end
 Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
 
+@with_kw mutable struct Legend
+    # entries *not* contained in the struct, they're generated elsewhere
+    position   ::Option{String}              = ∅ # ✓
+    # offset     ::Option{Tuple{Float, Float}} = ∅ # 🚫
+    # hei        ::Option{Float}               = ∅ # 🚫
+    # nobox      ::Option{Bool}                = ∅ # 🚫
+end
+
 
 abstract type Axes{B<:Backend} end
 
@@ -58,6 +66,7 @@ abstract type Axes{B<:Backend} end
     title   ::Option{Title}              = ∅ # A🚫
     size    ::Option{Tuple{Float,Float}} = ∅ # ✓ (width cm, height cm)
     math    ::Option{Bool}               = ∅ # ✓ axis crossing (0, 0)
+    legend  ::Option{Legend}             = ∅
 end
 
 
@@ -98,13 +107,15 @@ function erase!(f::Figure)
     f.axes = Vector{Axes{typeof(f.g)}}()
     GP_CURFIG.x = f
     GP_CURAXES.x = nothing
-    return f
+    return
 end
 
 function add_axes!(f::Figure, ax::Axes)
     push!(f.axes, ax)
     GP_CURAXES.x = ax
-    return ax
+    return
 end
 
 add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
+
+isempty(fig::Figure) = isempty(fig.axes)
