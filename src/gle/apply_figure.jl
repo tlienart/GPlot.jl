@@ -94,7 +94,10 @@ function assemble_figure(f::Figure{GLE})
     "\n" |> g
     haslatex && raw"""
     begin texpreamble
-        \usepackage{beton}
+        %\usepackage[T1]{fontenc}
+        %\usepackage[default]{sourcesanspro}
+        %\usepackage{mathpazo}
+        \usepackage{arev}
         \usepackage[T1]{fontenc}
     end texpreamble
     set texlabels 1

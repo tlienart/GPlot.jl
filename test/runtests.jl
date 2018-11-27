@@ -29,11 +29,8 @@ y2title!(raw"axis $y_2$")
 ytitle!(raw"$y$")
 title!(raw"The new title $\mathcal N$")
 
-GPlot.legend()
+legend()
 
-f
-#end
+preview(f)
 
-GPlot.gca() === nothing
-
-GPlot.GP_CURAXES.x
+savefig(f, "atest.pdf")

@@ -4,7 +4,7 @@
 
 * start systematic testing or it will become a mess very quickly
 * why does `show` make `gca` return nothing?
-
+* using lualatex or xetex: https://sourceforge.net/p/glx/mailman/glx-general/thread/79324F49-203C-4DD6-81A6-23128096B9F7@tudelft.nl/
 --------
 
 (GLE support first)

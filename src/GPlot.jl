@@ -7,8 +7,9 @@ using DelimitedFiles: writedlm
 import Base: |>, take!, isempty
 
 export Figure, gcf, gca, erase!,
-    plot, plot!,
-    title!, xtitle!, x2title!, ytitle!, y2title!
+    plot, plot!, legend,
+    title!, xtitle!, x2title!, ytitle!, y2title!,
+    preview, render, savefig
 
 include("utils.jl")
 
@@ -45,6 +46,8 @@ include("set_properties.jl")
 include("plot.jl")
 include("ax.jl")
 
+include("render.jl")
+
 const GP_ALLFIGS = Dict{String, Figure}()
 const GP_CURFIG  = Ref{Option{Figure}}(nothing)
 const GP_CURAXES = Ref{Option{Axes}}(nothing)
@@ -54,7 +57,7 @@ const GP_CURAXES = Ref{Option{Axes}}(nothing)
 
 Return the current active Figure or a new figure if there isn't one.
 """
-gcf() = ifelse(isdef(GP_CURFIG.x), GP_CURFIG.x, Figure())
+gcf() = isdef(GP_CURFIG.x) ? GP_CURFIG.x : Figure() # do not use ifelse here
 
 
 """
@@ -75,28 +78,28 @@ get_backend(f::Figure{B}) where B<:Backend = B
 
 #
 # TODO: follow issue https://github.com/JunoLab/Juno.jl/issues/194 for error
-function Base.show(io::IO, ::MIME"image/png", fig::Figure)
-    isempty(fig) && return
-
-    cairo, tex = "", ""
-    isdef(fig.transparency) && fig.transparency && (cairo = "-cairo")
-    isdef(fig.texlabels)    && fig.texlabels    && (tex = "-tex")
-
-    gle   = GLE_APP_PATH
-    fp    = joinpath(GP_TMP_PATH, fig.id)
-    f_in  = "$fp.gle"
-    f_out = "$fp.png"
-    nout  = "> $fp.glog 2>&1"
-    com   = "$gle -d png -vb 0 -r 200 $cairo $tex $f_in $f_out $nout"
-    disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
-            (isdefined(Main, :IJulia) && Main.IJulia.inited)
-    if disp
-        assemble_figure(fig)
-        success(`bash -c "$com"`) || error("GLE error, check $fp.glog.")
-        write(io, read(f_out))
-        GP_DEL_INTERM && rm(f_in)
-    end
-    return
-end
+# function Base.show(io::IO, ::MIME"image/png", fig::Figure)
+#     isempty(fig) && return
+#
+#     cairo, tex = "", ""
+#     isdef(fig.transparency) && fig.transparency && (cairo = "-cairo")
+#     isdef(fig.texlabels)    && fig.texlabels    && (tex = "-tex")
+#
+#     gle   = GLE_APP_PATH
+#     fp    = joinpath(GP_TMP_PATH, fig.id)
+#     f_in  = "$fp.gle"
+#     f_out = "$fp.png"
+#     nout  = "> $fp.glog 2>&1"
+#     com   = "$gle -d png -vb 0 -r 200 $cairo $tex $f_in $f_out $nout"
+#     disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
+#             (isdefined(Main, :IJulia) && Main.IJulia.inited)
+#     if disp
+#         assemble_figure(fig)
+#         success(`bash -c "$com"`) || error("GLE error, check $fp.glog.")
+#         write(io, read(f_out))
+#         GP_DEL_INTERM && rm(f_in)
+#     end
+#     return
+# end
 
 end # module
