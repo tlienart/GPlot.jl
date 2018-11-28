@@ -12,7 +12,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, line::Line2D, el_counter:
         lsc = line.linestyle.color
         isdef(lsc) && "color $(col2str(lsc))" |> (g, lt)
     else
-        "line" |> g
+        "line" |> (g, lt)
         apply_linestyle!(glet, line.linestyle)
         String(take!(glet)) |> (g, lt)
         # if marker color is specified, overlay a line with the markers
@@ -47,6 +47,7 @@ function apply_legend!(g::GLE, leg::Legend, leg_entries::IOBuffer)
     "\nbegin key"              |> g
     "\n\tcompact"              |> g
     isdef(leg.position) && "\n\tposition $(leg.position)" |> g
+    isdef(leg.hei)      && "\n\thei $(leg.hei)"           |> g
 #    "offset 0.2 0.2"   |> g
     String(take!(leg_entries)) |> g
     "\nend key"                |> g

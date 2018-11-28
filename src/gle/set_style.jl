@@ -28,7 +28,11 @@ end
 
 function set_hei!(::Type{GLE}, obj, v::T) where T<:Real
     (v ≥ 0.) || throw(OptionValueError("hei", v))
-    obj.textstyle.hei = v * PT_TO_CM
+    if obj isa Legend
+        obj.hei = v * PT_TO_CM
+    else
+        obj.textstyle.hei = v * PT_TO_CM
+    end
     return
 end
 

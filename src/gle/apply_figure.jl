@@ -50,7 +50,7 @@ function apply_axis!(g::GLE, a::Axis)
     apply_tickslabels!(g, a.tickslabels)
     isdef(a.title) && apply_title!(g, a.title)
     any(isdef, (a.off, a.base, a.textstyle, a.lwidth, a.grid, a.log, a.min, a.max)) && begin
-        "\n\t$(a.prefix)axis" |> g
+        "\n\t$(a.prefix)axis"         |> g
         isdef(a.off)    && ifelse(a.off, "off", "")   |> g
         isdef(a.base)   && "base $(a.base)"           |> g
         isdef(a.lwidth) && "lwidth $(a.lwidth)"       |> g
@@ -60,12 +60,13 @@ function apply_axis!(g::GLE, a::Axis)
         isdef(a.max)    && "max $(a.max)"             |> g
         isdef(a.textstyle) && apply_textstyle!(g, a.textstyle)
     end
+    "\n\t$(a.prefix)subticks off" |> g
     return
 end
 
 
 function apply_axes!(g::GLE, a::Axes2D)
-    "\nbegin graph"                             |> g
+    "\nbegin graph\n\tscale auto"               |> g
     isdef(a.math) && "\n\tmath"                 |> g
     isdef(a.size) && "\n\tsize $(a[1]) $(a[2])" |> g
     foreach(a -> apply_axis!(g, a), (a.xaxis, a.x2axis, a.yaxis, a.y2axis))
@@ -87,23 +88,22 @@ function assemble_figure(f::Figure{GLE})
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
     haslatex = false
-    isdef(f.texlabels) && f.texlabels && (haslatex = true)
-    haslatex || (isdef(f.texscale) && (haslatex = true))
-    "\nset" |> g # line for texstyle, it may be empty if nothing is given
+    any(isdef, (f.texscale, f.texpreamble)) && (haslatex = true)
+    isdef(f.texlabels) && (haslatex = f.texlabels)
+    # line for texstyle, it may be empty if nothing is given
+    "\nset" |> g
     isdef(f.textstyle) && apply_textstyle!(g, f.textstyle, haslatex)
-    "\n" |> g
-    haslatex && raw"""
-    begin texpreamble
-        %\usepackage[T1]{fontenc}
-        %\usepackage[default]{sourcesanspro}
-        %\usepackage{mathpazo}
-        \usepackage{arev}
-        \usepackage[T1]{fontenc}
-    end texpreamble
-    set texlabels 1
-    """ |> g
-    isdef(f.texscale)  && "\nset texscale $(f.texscale)" |> g
-
+    # latex if required
+    if haslatex
+        if isdef(f.texpreamble)
+            "\nbegin texpreamble\n" |> g
+            f.texpreamble           |> g
+            "\nend texpreamble"     |> g
+        end
+        "\nset texlabels 1" |> g
+        "\nset texscale"    |> g
+        ifelse(isdef(f.texscale), f.texscale, "scale") |> g
+    end
     # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
     # XXX DEAL WITH LAYOUT, sandbox below
     # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX

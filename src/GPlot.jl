@@ -17,7 +17,7 @@ const GP_VERBOSE    = true
 const GP_BACKEND    = GLE
 const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin/gle"
 const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
-const GP_DEL_INTERM = false
+const GP_DEL_INTERM = true
 const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
 
 const Float = Float64
@@ -74,32 +74,5 @@ gca() = GP_CURAXES.x # if nothing, whatever called it will create
 Return the backend type associated with figure `f`.
 """
 get_backend(f::Figure{B}) where B<:Backend = B
-
-
-#
-# TODO: follow issue https://github.com/JunoLab/Juno.jl/issues/194 for error
-# function Base.show(io::IO, ::MIME"image/png", fig::Figure)
-#     isempty(fig) && return
-#
-#     cairo, tex = "", ""
-#     isdef(fig.transparency) && fig.transparency && (cairo = "-cairo")
-#     isdef(fig.texlabels)    && fig.texlabels    && (tex = "-tex")
-#
-#     gle   = GLE_APP_PATH
-#     fp    = joinpath(GP_TMP_PATH, fig.id)
-#     f_in  = "$fp.gle"
-#     f_out = "$fp.png"
-#     nout  = "> $fp.glog 2>&1"
-#     com   = "$gle -d png -vb 0 -r 200 $cairo $tex $f_in $f_out $nout"
-#     disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
-#             (isdefined(Main, :IJulia) && Main.IJulia.inited)
-#     if disp
-#         assemble_figure(fig)
-#         success(`bash -c "$com"`) || error("GLE error, check $fp.glog.")
-#         write(io, read(f_out))
-#         GP_DEL_INTERM && rm(f_in)
-#     end
-#     return
-# end
 
 end # module

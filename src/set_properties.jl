@@ -54,12 +54,15 @@ const FIG_OPTIONS = Dict{Symbol, Function}(
     :alpha        => set_transparency!,
     :transparent  => set_transparency!,
     :transparency => set_transparency!,
+    :preamble     => set_texpreamble!,
+    :texpreamble  => set_texpreamble!,
     )
 merge!(FIG_OPTIONS, TEXT_OPTIONS)
 
 const LEGEND_OPTIONS = Dict{Symbol, Function}(
     :pos      => set_position!,
-    :position => set_position!
+    :position => set_position!,
+    :fontsize => set_hei!,
     )
 
 set_properties!(::Type{B}, line::Line2D; opts...) where B =

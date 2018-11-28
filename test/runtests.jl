@@ -2,8 +2,11 @@
 
 using GPlot, Test
 
-#begin
-f = Figure(latex=true)
+texpreamble = raw"""
+    \usepackage[T1]{fontenc}
+    \usepackage[default]{sourcesanspro}
+    """
+f = Figure(texpreamble=texpreamble)
 
 x1 = range(-2, stop=2, length=100)
 y1 = @. exp(-x1 * sin(x1))
@@ -33,4 +36,26 @@ legend()
 
 preview(f)
 
-savefig(f, "atest.pdf")
+savefig(f, "../GPlotExamples.jl/tmp/atest.pdf")
+
+
+# ============
+
+using GPlot
+
+x = range(-2pi, stop=2pi, length=100)
+y = sin.(x)
+
+f = Figure(latex=true, fontsize=8)
+plot!(x, y)
+
+title!(raw"$f(x)=\sin(x)$")
+
+# XXX
+gca().math = true
+gca().xaxis.min = -2pi
+gca().xaxis.max = 2pi
+gca().xaxis.ticks = [-4, -3, -2, -1, 1, 2, 3, 4]
+gca().xaxis.tickslabels = [raw"$-2\pi$", raw"$-3\pi/2$", raw"$-\pi$", raw"$-\pi/2$", raw"$\pi/2$", raw"$\pi$", raw"$3\pi/2$", raw"$2\pi$"]
+
+preview(f)

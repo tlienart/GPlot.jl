@@ -87,6 +87,12 @@ function set_texscale!(::Type{GLE}, obj, v)
    return
 end
 
+function set_texpreamble!(::Type{GLE}, obj, v)
+   (v isa AbstractString) || throw(OptionValueError("texpreamble", v))
+   obj.texpreamble = v
+   return
+end
+
 function set_transparency!(::Type{GLE}, obj, v)
    (v isa Bool) || throw(OptionValueError("transparency", v))
    obj.transparency = v

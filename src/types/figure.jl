@@ -50,7 +50,7 @@ Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
     # entries *not* contained in the struct, they're generated elsewhere
     position   ::Option{String}              = ∅ # ✓
     # offset     ::Option{Tuple{Float, Float}} = ∅ # 🚫
-    # hei        ::Option{Float}               = ∅ # 🚫
+    hei        ::Option{Float}               = ∅ # ✓
     # nobox      ::Option{Bool}                = ∅ # 🚫
 end
 
@@ -74,19 +74,21 @@ mutable struct Axes3D{B} <: Axes{B} end
 
 
 mutable struct Figure{B<:Backend}
-    id          ::String            # unique identifier of the figure
-    g           ::B
+    id          ::String             # ✓ unique id of the figure
+    g           ::B                  # description stream
     axes        ::Vector{Axes{B}}    # subplots
     size        ::Tuple{Float,Float} # ✓
-    textstyle   ::Option{TextStyle}  # ✓
+    textstyle   ::TextStyle          # ✓
     texlabels   ::Option{Bool}       # ✓ true if has tex
-    texscale    ::Option{Float}      # ✓ scale latex * hei (def=1)
+    texscale    ::Option{String}     # ✓ scale latex * hei (def=1)
+    texpreamble ::Option{String}     # ✓
     transparency::Option{Bool}       # ✓ if true, use cairo device
 end
 
-function Figure(id, g; opts...)
+function Figure(id::String, g::Backend; opts...)
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (8., 6.), TextStyle(hei=0.2), ∅, ∅, ∅)
+                (8., 6.), TextStyle(), ∅, ∅, ∅, ∅)
+
     set_properties!(f; opts...)
     GP_ALLFIGS[id] = f
     GP_CURFIG.x    = f
