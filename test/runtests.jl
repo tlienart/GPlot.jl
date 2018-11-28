@@ -47,15 +47,17 @@ x = range(-2pi, stop=2pi, length=100)
 y = sin.(x)
 
 f = Figure(latex=true, fontsize=8)
-plot!(x, y)
+plot!(x, y, col="red", smooth=true)
 
-title!(raw"$f(x)=\sin(x)$")
+title!(raw"$f(x)=\sin(x)$", dist=0.3)
 
 # XXX
 gca().math = true
 gca().xaxis.min = -2pi
 gca().xaxis.max = 2pi
-gca().xaxis.ticks = [-4, -3, -2, -1, 1, 2, 3, 4]
-gca().xaxis.tickslabels = [raw"$-2\pi$", raw"$-3\pi/2$", raw"$-\pi$", raw"$-\pi/2$", raw"$\pi/2$", raw"$\pi$", raw"$3\pi/2$", raw"$2\pi$"]
+gca().xaxis.ticks.places = [-4, -3, -2, -1, 1, 2, 3, 4]/2*pi
+gca().xaxis.tickslabels.names = [raw"$-2\pi$", raw"$-3\pi/2$", raw"$-\pi$", raw"$-\pi/2$", raw"$\pi/2$", raw"$\pi$", raw"$3\pi/2$", raw"$2\pi$"]
+gca().yaxis.ticks.places = [-4, -3, -2, -1, 1, 2, 3, 4]/4
+gca().yaxis.tickslabels.names  = ["-1", "-3/4", "-1/2", "-1/4", "1/4", "1/2", "3/4", "1"]
 
 preview(f)
