@@ -44,4 +44,6 @@ end
     @test f.texscale == "fixed"
     @test f.transparency == true
     @test f.texpreamble == t"\usepackage{amssymb}"
+
+    # when things go wrong
 end
