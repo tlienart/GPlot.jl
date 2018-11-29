@@ -45,5 +45,8 @@ end
     @test f.transparency == true
     @test f.texpreamble == t"\usepackage{amssymb}"
 
-    # when things go wrong
+    # when things go wrong, specifics for figure
+    @test_throws G.OptionValueError Figure(tex=0)
+    @test_throws G.UnknownOptionError Figure(something=5)
+    @test_throws G.OptionValueError Figure(texscale="not-fixed")
 end
