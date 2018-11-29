@@ -11,6 +11,7 @@
 
 ## Gen
 
+* [ ] get a better understanding for font sizes and font sizes issues, try to include stuff in latex and see what compares to what.
 * [ ] test in `Base.show` that error in latex is displayed if fuckup --> not satisfactory, this may be more tricky. Could stick with the ugly error message for now and maybe work something out later or maybe with `cat` and then a return (problem is that MIME fucks up where things appear.)
 * [ ] testing transparency (should be able to import fig in beamer with gray background without whiteout) --> with the `-transparent` and d png should be ok
 * [ ] color palette via [colorschemes](https://github.com/JuliaGraphics/ColorSchemes.jl)

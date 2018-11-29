@@ -50,3 +50,16 @@ struct OptionValueError <: Exception
 end
 
 gle_no_support(s) = GP_VERBOSE && println("🚫  GLE does not support $s [ignoring]")
+
+#######################################
+
+const GP_VAR_REGEX = r"##([_\p{L}](?:[\p{L}\d_]*))"
+
+macro tex_str(s)
+    m = match(GP_VAR_REGEX, s)
+    m === nothing && return s
+    v = Symbol(m.captures[1])
+    esc(:(replace($s, GP_VAR_REGEX=>string(eval($v)))))
+end
+
+@eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))
