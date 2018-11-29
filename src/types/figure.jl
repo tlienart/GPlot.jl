@@ -77,7 +77,7 @@ mutable struct Figure{B<:Backend}
     id          ::String             # ✓ unique id of the figure
     g           ::B                  # description stream
     axes        ::Vector{Axes{B}}    # subplots
-    size        ::Tuple{Float,Float} # ✓
+    size        ::Tuple{Real,Real}   # ✓
     textstyle   ::TextStyle          # ✓
     texlabels   ::Option{Bool}       # ✓ true if has tex
     texscale    ::Option{String}     # ✓ scale latex * hei (def=1)
@@ -85,9 +85,22 @@ mutable struct Figure{B<:Backend}
     transparency::Option{Bool}       # ✓ if true, use cairo device
 end
 
+
+"""
+    Figure(id; opts...)
+
+Return a new `Figure` object with name `id`, if a figure with that name
+exists already, return that object.
+Named options:
+    * `size`: a tuple (width, height)
+    * `tex`, `hastex`, `latex`, `haslatex`: a boolean indicating whether there is LaTeX
+    * `texscale`: either `fixed`, `none` or `scale` to match the size of LaTeX expressions to the ambient fontsize (`fixed` and `scale` match, `none` doesn't)
+    * `alpha`, `transparent`, `transparency`: a bool indicating whether there may be transparent fillings in which case cairo is used
+    * `preamble`, `texpreamble`: the LaTeX preamble, where you can change the font that is used and also make sure that the symbols you want to use are available.
+"""
 function Figure(id::String, g::Backend; opts...)
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-                (8., 6.), TextStyle(), ∅, ∅, ∅, ∅)
+               (12, 9), TextStyle(hei=0.35), ∅, ∅, ∅, ∅)
 
     set_properties!(f; opts...)
     GP_ALLFIGS[id] = f
@@ -95,7 +108,6 @@ function Figure(id::String, g::Backend; opts...)
     GP_CURAXES.x   = nothing
     return f
 end
-
 function Figure(id::String="_fig_"; opts...)
     id == "_fig_" && return Figure(id, GP_BACKEND(); opts...) # a fresh one
     f = get(GP_ALLFIGS, id) do
@@ -106,6 +118,31 @@ function Figure(id::String="_fig_"; opts...)
     set_properties!(f; opts...) # f exists but properties have been given
 end
 
+
+"""
+    add_axes!(fig, ax)
+
+Add axes `ax` to figure `fig`.
+"""
+function add_axes!(f::Figure, ax::Axes)
+    push!(f.axes, ax)
+    GP_CURAXES.x = ax
+    return
+end
+
+"""
+    add_axes2d!()
+
+Add empty `Axes2D` to the current figure.
+"""
+add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
+
+
+"""
+    erase!(fig)
+
+Replaces `fig`'s current axes by a fresh, empty axes container.
+"""
 function erase!(f::Figure)
     take!(f.g)
     f.axes = Vector{Axes{typeof(f.g)}}()
@@ -114,12 +151,10 @@ function erase!(f::Figure)
     return
 end
 
-function add_axes!(f::Figure, ax::Axes)
-    push!(f.axes, ax)
-    GP_CURAXES.x = ax
-    return
-end
 
-add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
+"""
+    isempty(fig)
 
+Return a bool indicating whether `fig` has axes or not.
+"""
 isempty(fig::Figure) = isempty(fig.axes)

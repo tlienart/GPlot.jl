@@ -5,11 +5,10 @@ using Colors
 using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
-
 export Figure, gcf, gca, erase!,
     plot, plot!, legend,
     title!, xtitle!, x2title!, ytitle!, y2title!,
-    preview, render, savefig,
+    preview, render, savefig, isempty,
     @t_str, @tex_str
 
 include("utils.jl")
