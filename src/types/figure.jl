@@ -101,6 +101,8 @@ function Figure(id::String="_fig_"; opts...)
     f = get(GP_ALLFIGS, id) do
         Figure(id, GP_BACKEND(); opts...)
     end
+    GP_CURFIG.x = f
+    GP_CURAXES.x = isempty(f.axes) ? nothing : f.axes[1]
     set_properties!(f; opts...) # f exists but properties have been given
 end
 
