@@ -1,3 +1,13 @@
+function set_properties!(::Type{B}, dict, obj; opts...) where B<:Backend
+    for optname ∈ opts.itr
+        setprop! = get(dict, optname) do
+            throw(UnknownOptionError(optname, obj))
+        end
+        setprop!(B, obj, opts[optname])
+    end
+    return obj
+end
+
 const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :ls              => set_lstyle!, # linestyle ...
     :lstyle          => set_lstyle!,
@@ -11,22 +21,58 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :marker          => set_marker!, # markerstyle ...
     :msize           => set_msize!,
     :markersize      => set_msize!,
-    :mfcol           => set_mfcol!,
-    :mfacecol        => set_mfcol!,
-    :mfacecolor      => set_mfcol!,
-    :markerfacecolor => set_mfcol!,
-    :mecol           => set_mecol!,
-    :medgecol        => set_mecol!,
-    :medgecolor      => set_mecol!,
-    :markeredgecolor => set_mecol!,
+    :mcol            => set_mcol!,
+    :markercol       => set_mcol!,
+    :markercolor     => set_mcol!,
+    :mfacecol        => set_mcol!,
+    :mfacecolor      => set_mcol!,
+    :markerfacecolor => set_mcol!,
+    :name            => set_label!, # label
+    :key             => set_label!,
+    :label           => set_label!,
     )
 
-function set_properties!(b::Backend, line::Line2D; opts...)
-    for optname ∈ opts.itr
-        setprop! = get(LINE2D_OPTIONS, optname) do
-            throw(UnknownOptionError(optname, line))
-        end
-        setprop!(b, line, opts[optname])
-    end
-    return line
-end
+const TEXT_OPTIONS = Dict{Symbol, Function}(
+    :font     => set_font!,
+    :fontsize => set_hei!,
+    :col      => set_color!,
+    :color    => set_color!
+    )
+
+const TITLE_OPTIONS = Dict{Symbol, Function}(
+    :dist => set_dist!
+    )
+merge!(TITLE_OPTIONS, TEXT_OPTIONS)
+
+const FIG_OPTIONS = Dict{Symbol, Function}(
+    :size         => set_size!,
+    :tex          => set_texlabels!,
+    :hastex       => set_texlabels!,
+    :latex        => set_texlabels!,
+    :haslatex     => set_texlabels!,
+    :texscale     => set_texscale!,
+    :alpha        => set_transparency!,
+    :transparent  => set_transparency!,
+    :transparency => set_transparency!,
+    :preamble     => set_texpreamble!,
+    :texpreamble  => set_texpreamble!,
+    )
+merge!(FIG_OPTIONS, TEXT_OPTIONS)
+
+const LEGEND_OPTIONS = Dict{Symbol, Function}(
+    :pos      => set_position!,
+    :position => set_position!,
+    :fontsize => set_hei!,
+    )
+
+set_properties!(::Type{B}, line::Line2D; opts...) where B =
+    set_properties!(B, LINE2D_OPTIONS, line; opts...)
+
+set_properties!(::Type{B}, title::Title; opts...) where B =
+    set_properties!(B, TITLE_OPTIONS, title; opts...)
+
+set_properties!(fig::Figure{B}; opts...) where B =
+    set_properties!(B, FIG_OPTIONS, fig; opts...)
+
+set_properties!(fig::Type{B}, legend::Legend; opts...) where B =
+    set_properties!(B, LEGEND_OPTIONS, legend; opts...)

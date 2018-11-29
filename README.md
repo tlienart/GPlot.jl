@@ -40,16 +40,27 @@ This package therefore offers one way to bypass the "time-to-first-plot" which c
 
 If you prefer a grammar of graphics style syntax, check out [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl) or [VegaLite.jl](https://github.com/fredo-dedup/VegaLite.jl).
 If you want animation and an overall more mature plotting library with imperative syntax, check out [Plots.jl](https://github.com/JuliaPlots/Plots.jl), [Makie.jl](https://github.com/JuliaPlots/Makie.jl), [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl),  [PGFPlots.jl](https://github.com/JuliaTeX/PGFPlots.jl) or [PGFPlotsX.jl](https://github.com/KristofferC/PGFPlotsX.jl).
-(There's probably other libraries that I've missed out.)
+
+(And more: [Winston.jl](https://github.com/JuliaGraphics/Winston.jl), [Gaston.jl](https://github.com/mbaz/Gaston.jl), ...)
 
 ## What's going on
 
 * (**ongoing**) Wrapper for the [Graphics Layout Engine](http://glx.sourceforge.net/index.html)
 * (**upcoming**) Allow both GLE and Gnuplot as backend. Different than Gaston as no attempt at being interactive.
+* (**maybe?**) Allow Asymptote as backend. (main advantage is that it ships with any up-to-date texlive)
+
+## Installation
+
+* Get GLE working
+    - on Mac, compiling from source does not work (or would require modifying the code in a way that evades me), however getting the DMG file for QGLE and installing the `Ghostscript.framework` as suggested in the tutorial is all that is required.
+    - on Fedora, it's available via `yum` but I haven't had the chance to test it.
+    - On Ubuntu (I tried with 18.04.1), `sudo apt-get install gle-graphics` does what you expect
+* In atom: make sure to tick "enable plot pane" in the julia-client package in order for plots to be displayed in the plot pane...
+* Windows things
+    - redirect to `/dev/null` is likely not to work (base.show)
+    - paths with expanduser etc, likely nok, use joinpath everywhere as well.
 
 ## Notes
-
-* everything in cm, for font, conversion is `10pt = 0.352778cm` could do `const pt = 0.352778` but it's potentially clashing name, maybe better to have a function that takes point and does the conversion itself.
 
 ## Todo
 

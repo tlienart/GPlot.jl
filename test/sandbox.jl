@@ -1,6 +1,8 @@
-using GPlot, Test
+#using LaTeXStrings #---> is actually slow, just using `raw` works better.
 
-texpreamble = raw"""
+using GPlot
+
+texpreamble = tex"""
     \usepackage[T1]{fontenc}
     \usepackage[default]{sourcesanspro}
     """
@@ -23,12 +25,12 @@ plot!(x1, y4, color="#76116d", lwidth=0.1)
 plot!(x3, y5, ls="-", color="orange", lwidth=0.05, marker="o", mcol="red", label="plot2")
 plot!(x3, y6, ls="-", color="orange", lwidth=0.05, marker="•", mcol="red")
 
-xtitle!(t"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$")
+xtitle!(tex"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$")
 
-x2title!(t"$x_2$")
-y2title!(t"axis $y_2$")
-ytitle!(t"$y$")
-title!(t"The new title $\mathcal N$")
+x2title!(tex"$x_2$")
+y2title!(tex"axis $y_2$")
+ytitle!(tex"$y$")
+title!(tex"The new title $\mathcal N$")
 
 legend()
 
@@ -37,7 +39,29 @@ preview(f)
 savefig(f, "../GPlotExamples.jl/tmp/atest.pdf")
 
 
-# ============
+# ============ SQROOT
+
+using GPlot
+using Colors
+
+f = Figure(size=(11, 8), latex=true)
+
+x = range(0, stop=10, length=100);
+alphas = 1:10
+
+for alpha ∈ alphas
+    plot!(x, sqrt.(alpha * x), col=RGB(alpha/10,0,0),
+          label=tex"$\alpha=##alpha$")
+end
+xtitle!(t"$x$")
+ytitle!(t"$\sqrt{\alpha x}$")
+title!("Square Root Function")
+
+legend(pos="tl", fontsize=7)
+
+preview(gcf())
+
+# ============ SINE FUNCTION
 
 using GPlot
 
@@ -47,14 +71,14 @@ y = sin.(x)
 f = Figure(latex=true, fontsize=8)
 plot!(x, y, col="red", smooth=true)
 
-title!(raw"$f(x)=\sin(x)$", dist=0.3)
+title!(tex"$f(x)=\sin(x)$", dist=0.3)
 
 # XXX
 gca().math = true
 gca().xaxis.min = -2pi
 gca().xaxis.max = 2pi
 gca().xaxis.ticks.places = [-4, -3, -2, -1, 1, 2, 3, 4]/2*pi
-gca().xaxis.tickslabels.names = [raw"$-2\pi$", raw"$-3\pi/2$", raw"$-\pi$", raw"$-\pi/2$", raw"$\pi/2$", raw"$\pi$", raw"$3\pi/2$", raw"$2\pi$"]
+gca().xaxis.tickslabels.names = [t"$-2\pi$", t"$-3\pi/2$", t"$-\pi$", t"$-\pi/2$", t"$\pi/2$", t"$\pi$", t"$3\pi/2$", t"$2\pi$"]
 gca().yaxis.ticks.places = [-4, -3, -2, -1, 1, 2, 3, 4]/4
 gca().yaxis.tickslabels.names  = ["-1", "-3/4", "-1/2", "-1/4", "1/4", "1/2", "3/4", "1"]
 

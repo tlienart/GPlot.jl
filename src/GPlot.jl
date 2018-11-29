@@ -1,69 +1,79 @@
-#module GPlot
+module GPlot
 
 using Parameters
 using Colors
-using DelimitedFiles
-using Random
+using DelimitedFiles: writedlm
 
-import Base.show,
-       Base.|>,
-       Base.take!
+import Base: |>, take!, isempty
+
+export Figure, gcf, gca, erase!,
+    plot, plot!, legend,
+    title!, xtitle!, x2title!, ytitle!, y2title!,
+    preview, render, savefig,
+    @t_str, @tex_str
 
 include("utils.jl")
 
-const GP_VERBOSE = true
-const GP_BACKEND = GLE
+const GP_VERBOSE    = true
+const GP_BACKEND    = GLE
+const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin/gle"
+const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
+const GP_DEL_INTERM = true
+const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
+
+const Float = Float64
+const VF    = Vector{Float}
+const AVF   = AbstractVector{Float}
+const MF    = Matrix{Float}
+const ∅     = nothing
+
+const PT_TO_CM  = 0.0352778 # 1pt in cm
+const Option{T} = Union{Nothing, T}
 
 include("types/style.jl")
 include("types/drawing.jl")
 include("types/figure.jl")
 
 include("gle/dictionaries.jl")
-include("gle/set_property.jl")
+include("gle/set_style.jl")
+include("gle/set_drawing.jl")
+include("gle/set_figure.jl")
 
 include("gle/apply_style.jl")
 include("gle/apply_drawing.jl")
-include("gle/apply_ax.jl")
-include("gle/assemble_figure.jl")
-
-#include("gnuplot/apply_figure.jl")
+include("gle/apply_figure.jl")
 
 include("set_properties.jl")
 include("plot.jl")
+include("ax.jl")
+
+include("render.jl")
+
+const GP_ALLFIGS = Dict{String, Figure}()
+const GP_CURFIG  = Ref{Option{Figure}}(nothing)
+const GP_CURAXES = Ref{Option{Axes}}(nothing)
+
+"""
+    gcf()
+
+Return the current active Figure or a new figure if there isn't one.
+"""
+gcf() = isdef(GP_CURFIG.x) ? GP_CURFIG.x : Figure() # do not use ifelse here
 
 
-const GP_ALLFIGS  = Dict{String, Figure}()
-const GP_CURFIG   = Ref{String}("")
-const GP_TMP_PATH = expanduser("~/.julia/dev/GPlot.jl/sandbox/") # mktempdir()
+"""
+    gca()
 
-get_curfig() = GP_ALLFIGS[GP_CURFIG.x]
+Return the current active Axes and `nothing` if there isn't one.
+"""
+gca() = GP_CURAXES.x # if nothing, whatever called it will create
 
-###########
-# XXX
-f = Figure("test")
-erase!(f)
 
-x1 = range(-2, stop=2, length=100)
-y1 = @. exp(-x1 * sin(x1))
-y2 = @. exp(-x1 * cos(x1))
-x2 = range(0, stop=2, length=25)
-y3 = @. sqrt(x2)
+"""
+    get_backend(f)
 
-plot!(x1, y1, color="darkblue", lwidth=0.02, lstyle=2)
-plot!(x1, y2, color="indianred")
-plot!(x2, y3, marker="fcircle")
+Return the backend type associated with figure `f`.
+"""
+get_backend(f::Figure{B}) where B<:Backend = B
 
-assemble_figure(f)
-
-const GLE_APP_PATH = "/Applications/QGLE.app/Contents/bin"
-
-run(`bash -c "$GLE_APP_PATH/gle -d pdf $GP_TMP_PATH/test.gle $GP_TMP_PATH/test.pdf"`)
-# XXX
-###########
-
-# XXX temporary fill in
-function Base.show(io::IO, ::MIME"image/png", fig::Figure)
-    isjupyter && write(io, read("sandbox/age.png"))
-end
-
-#end # module
+end # module
