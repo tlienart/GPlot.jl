@@ -45,13 +45,13 @@ const TITLE_OPTIONS = Dict{Symbol, Function}(
 merge!(TITLE_OPTIONS, TEXT_OPTIONS)
 
 const FIG_OPTIONS = Dict{Symbol, Function}(
-    :size         => set_size!,        # doc
-    :tex          => set_texlabels!,   # doc
-    :hastex       => set_texlabels!,   # doc
-    :latex        => set_texlabels!,   # doc
-    :haslatex     => set_texlabels!,   # doc
-    :texscale     => set_texscale!,    # doc
-    :alpha        => set_transparency!,#
+    :size         => set_size!,
+    :tex          => set_texlabels!,
+    :hastex       => set_texlabels!,
+    :latex        => set_texlabels!,
+    :haslatex     => set_texlabels!,
+    :texscale     => set_texscale!,
+    :alpha        => set_transparency!,
     :transparent  => set_transparency!,
     :transparency => set_transparency!,
     :preamble     => set_texpreamble!,

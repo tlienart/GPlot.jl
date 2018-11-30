@@ -1,4 +1,3 @@
-
 @testset "Figure - constructors         " begin
     # no name, base one
     f  = Figure()
@@ -37,13 +36,16 @@ end
 
 
 @testset "Figure - set properties       " begin
-    f = Figure(size=(5, 7), tex=true, texscale="fixed", alpha=true, transparency=true, preamble=tex"\usepackage{amssymb}")
+    f = Figure(size=(5, 7), tex=true, texscale="fixed", alpha=true, transparency=true, preamble=tex"\usepackage{amssymb}",
+    font="helvetica", fontsize=11)
 
     @test f.size == (5, 7)
     @test f.texlabels == true
     @test f.texscale == "fixed"
     @test f.transparency == true
     @test f.texpreamble == t"\usepackage{amssymb}"
+    @test f.textstyle.font == "psh"
+    @test f.textstyle.hei  == 11 * G.PT_TO_CM
 
     # when things go wrong, specifics for figure
     @test_throws G.OptionValueError Figure(tex=0)

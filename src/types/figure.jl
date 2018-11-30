@@ -94,7 +94,10 @@ exists already, return that object.
 
 # Named options:
 
-* `size`: a tuple (width, height)
+* `size`: a tuple (width, height) (for rendering prefer sizes ≥ (8, 8) see also fontsize recommendations)
+* `font`: a valid font name (note that if you use latex, this is irrelevant)
+* `fontsize`: the master font size of the figure in pt (for rendering, prefer fontsizes ≥ 10pt)
+* `col`, `color`: the master font color of the figure (any Colors.Colorant can be used)
 * `tex`, `hastex`, `latex`, `haslatex`: a boolean indicating whether there is LaTeX to be compiled in the figure
 * `texscale`: either `fixed`, `none` or `scale` to match the size of LaTeX expressions to the ambient fontsize (`fixed` and `scale` match, `none` doesn't)
 * `preamble`, `texpreamble`: the LaTeX preamble, where you can change the font that is used and also make sure that the symbols you want to use are available.
