@@ -2,7 +2,7 @@
 
 ## NOW
 
-* texstyle of figure (and in general check that options are actually set and modifiable.)
+* title without `!`  don't seem to work as they should
 
 ## ongoing
 

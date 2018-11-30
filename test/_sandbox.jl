@@ -25,12 +25,12 @@ plot!(x1, y4, color="#76116d", lwidth=0.1)
 plot!(x3, y5, ls="-", color="orange", lwidth=0.05, marker="o", mcol="red", label="plot2")
 plot!(x3, y6, ls="-", color="orange", lwidth=0.05, marker="•", mcol="red")
 
-xtitle!(tex"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$")
+xtitle!(tex"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$", color="blue")
 
-x2title!(tex"$x_2$")
-y2title!(tex"axis $y_2$")
-ytitle!(tex"$y$")
-title!(tex"The new title $\mathcal N$")
+x2title(tex"$x_2$")
+y2title(tex"axis $y_2$")
+ytitle(tex"$y$")
+title(tex"The new title $\mathcal N$")
 
 legend()
 
