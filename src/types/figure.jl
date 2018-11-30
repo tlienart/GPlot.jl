@@ -91,12 +91,14 @@ end
 
 Return a new `Figure` object with name `id`, if a figure with that name
 exists already, return that object.
-Named options:
-    * `size`: a tuple (width, height)
-    * `tex`, `hastex`, `latex`, `haslatex`: a boolean indicating whether there is LaTeX
-    * `texscale`: either `fixed`, `none` or `scale` to match the size of LaTeX expressions to the ambient fontsize (`fixed` and `scale` match, `none` doesn't)
-    * `alpha`, `transparent`, `transparency`: a bool indicating whether there may be transparent fillings in which case cairo is used
-    * `preamble`, `texpreamble`: the LaTeX preamble, where you can change the font that is used and also make sure that the symbols you want to use are available.
+
+# Named options:
+
+* `size`: a tuple (width, height)
+* `tex`, `hastex`, `latex`, `haslatex`: a boolean indicating whether there is LaTeX to be compiled in the figure
+* `texscale`: either `fixed`, `none` or `scale` to match the size of LaTeX expressions to the ambient fontsize (`fixed` and `scale` match, `none` doesn't)
+* `preamble`, `texpreamble`: the LaTeX preamble, where you can change the font that is used and also make sure that the symbols you want to use are available.
+* `alpha`, `transparent`, `transparency`: a bool indicating whether there may be transparent fillings in which case cairo is used
 """
 function Figure(id::String, g::Backend; opts...)
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),

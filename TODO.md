@@ -1,10 +1,14 @@
 # Todo
 
+## NOW
+
+* texstyle of figure (and in general check that options are actually set and modifiable.)
+
 ## ongoing
 
 * start systematic testing or it will become a mess very quickly
 * make smooth=true default above a given number of points probably as would be expected by user.
-* recommendation to have size not too small so that `hei` can be larger than `0.3` otherwise may have issue with the latex looking squeezed
+* recommendation to have size not too small so that `hei` can be larger than `0.35` (~10pt) otherwise may have issue with the latex looking squeezed and funny
 
 --------
 
