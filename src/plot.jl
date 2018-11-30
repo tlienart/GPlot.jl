@@ -1,26 +1,30 @@
-function plot!(fig::Figure, xy::MF; opt...)
-
-    # NOTE axes pick (current axes or new)
-
-    push!(fig.axes, Axes2D())
-
+function plot!(axes::Axes2D{B}, xy::MF; opts...) where B<:Backend
     line = Line2D(xy = xy)
-
-    set_properties!(fig.g, line; opt...)
-
-    push!(fig.axes[1].drawings, line)
-
-    return fig
+    set_properties!(B, line; opts...)
+    push!(axes.drawings, line)
+    return
 end
 
-plot!(xy::MF; opt...) = plot!(get_curfig(), xy; opt...)
+plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
 
-# XXX need check length
-plot!(fig::Figure, x::AVF, y::AVF; opt...) = plot!(fig, hcat(x, y); opt...)
-plot!(x::AVF, y::AVF; opt...) = plot!(get_curfig(), x, y; opt...)
+function plot!(axes::Option{Axes2D}, x::AVF, y::AVF; opts...)
+    @assert length(x) == length(y) "x and y must have the same length"
+    plot!(axes, hcat(x, y); opts...)
+end
+
+plot!(xy::MF; opts...)         = plot!(gca(), xy; opts...)
+plot!(x::AVF, y::AVF; opts...) = plot!(gca(), x, y; opts...)
+
+plot(xy::MF; opts...)          = (Figure(); plot!(xy; opts...))
+plot(x::AVF, y::AVF; opts...)  = (Figure(); plot!(x, y; opts...))
 
 
-plot(xy::MF; opt...) = plot!(Figure(), xy; opt...)
+function legend!(axes::Axes2D{B}; opts...) where B<:Backend
+    legend = axes.legend
+    isdef(legend) || (legend = Legend())
+    set_properties!(B, legend; opts...)
+    axes.legend = legend
+    return
+end
 
-# XXX need check length
-plot(x::AVF, y::AVF; opt...) = plot(hcat(x, y); opt...)
+legend(; opts...) = legend!(gca(); opts...)

@@ -1,5 +1,8 @@
-using GPlot, Test
+using GPlot
+using GPlot: isdef
+using Test
+const G = GPlot
 
-@testset "foo" begin
-    @test foo(1, 1) == 2
-end
+include("figures-gle.jl")
+include("axis-axes-gle.jl")
+include("drawings-gle.jl")

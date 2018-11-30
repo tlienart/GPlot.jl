@@ -60,5 +60,105 @@ const GLE_MARKERS = Dict{String, String}(
     "‡"         => "ddag"       ,
     "ddag"      => "ddag"       ,
     "ddagger"   => "ddag"       ,
+    "§"         => "snake"      ,
     "snake"     => "snake"      ,
     )
+
+const GLE_LSTYLES = Dict{String, Int}(
+    "-"    => 0,
+    "--"   => 9,
+    "-."   => 8
+    )
+
+const GLE_TEXSCALE = ["scale", "fixed", "none"]
+
+const GLE_FONTS = Dict{String, String}(
+    "roman"                 => "rm"     ,
+    "roman-bold"            => "rmb"    ,
+    "roman-italic"          => "rmi"    ,
+    "sans-serif"            => "ss"     ,
+    "sans-serif-bold"       => "ssb"    ,
+    "sans-serif-italic"     => "ssi"    ,
+    "typewriter"            => "tt"     ,
+    "typewriter-bold"       => "ttb"    ,
+    "typewriter-italic"     => "tti"    ,
+    "times"                 => "pstr"   ,
+    "times-roman"           => "pstr"   ,
+    "times-bold"            => "pstb"   ,
+    "times-italic"          => "psti"   ,
+    "times-bold-italic"     => "pstbi"  ,
+    "courier"               => "psc"    ,
+    "courier-bold"          => "pscb"   ,
+    "courier-oblique"       => "psco"   ,
+    "courier-bold-oblique"  => "pscbo"  ,
+    "helvetica"             => "psh"    ,
+    "helvetica-bold"        => "pshb"   ,
+    "helvetica-oblique"     => "psho"   ,
+    "helvetica-bold-oblique"=> "pshbo"  ,
+    "helvetica-narrow"      => "pshn"   ,
+    "helvetica-narrow-bold" => "pshnb"  ,
+    "helvetica-narrow-oblique"      => "pshno"  ,
+    "helvetica-narrow-bold-oblique" => "pshnbo" ,
+    "avantgarde"            => "psagb"  ,
+    "avantgarde-book"       => "psagb"  ,
+    "avantgarde-demi"       => "psagd"  ,
+    "avantgarde-book-oblique"       => "psagbo" ,
+    "avantgarde-demi-oblique"       => "psagdo" ,
+    "bookman"               => "psbl"   ,
+    "bookman-light"         => "psbl"   ,
+    "bookman-demi"          => "psbd"   ,
+    "bookman-light-italic"  => "psbli"  ,
+    "bookman-demi-italic"   => "psbdi"  ,
+    "newcentury"            => "psncsr" ,
+    "newcentury-roman"      => "psncsr" ,
+    "newcentury-bold"       => "psncsb" ,
+    "newcentury-italic"     => "psncsi" ,
+    "newcentury-bold-italic"=> "psncsbi",
+    "palatino"              => "pspr"   ,
+    "palatino-roman"        => "pspr"   ,
+    "palantino-bold"        => "pspb"   ,
+    "palatino-italic"       => "pspi"   ,
+    "palatino-bold-italic"  => "pspbi"  ,
+    "cmr"   => "texcmr"   ,
+    "cmb"   => "texcmb"   ,
+    "cmti"  => "texcmti"  ,
+    "cmmi"  => "texcmmi"  ,
+    "cmss"  => "texcmss"  ,
+    "cmssb" => "texcmssb" ,
+    "cmssi" => "texcmssi" ,
+    "cmtt"  => "texcmtt"  ,
+    "cmitt" => "texcmitt" ,
+    "computer-modern-roman"             => "texcmr"  ,
+    "computer-modern-bold"              => "texcmb"  ,
+    "computer-modern-text-italic"       => "texcmti" ,
+    "computer-modern-maths-italic"      => "texcmmi" ,
+    "computer-modern-sans-serif"        => "texcmss" ,
+    "computer-modern-sans-serif-bold"   => "texcmssb",
+    "computer-modern-sans-serif-italic" => "texcmssi",
+    "computer-modern-typewriter"        => "texcmtt" ,
+    "computer-modern-italic-typewriter" => "texcmitt",
+    )
+
+for v ∈ values(GLE_FONTS)
+    get(GLE_FONTS, v) do
+        GLE_FONTS[v] = v
+    end
+end
+
+const GLE_LEGEND_POS = Dict{String, String}(
+    "top-left"      => "tl",
+    "bottom-left"   => "bl",
+    "top-right"     => "tr",
+    "bottom-right"  => "br",
+    "top-center"    => "tc",
+    "bottom-center" => "bc",
+    "left-center"   => "lc",
+    "right-center"  => "rc",
+    "center"        => "cc",
+    )
+
+for v ∈ values(GLE_LEGEND_POS)
+    get(GLE_LEGEND_POS, v) do
+        GLE_LEGEND_POS[v] = v
+    end
+end
