@@ -5,11 +5,11 @@ using Colors
 using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
-
 export Figure, gcf, gca, erase!,
     plot, plot!, legend,
     title!, xtitle!, x2title!, ytitle!, y2title!,
-    preview, render, savefig,
+    title, xtitle, x2title, ytitle, y2title,
+    preview, render, savefig, isempty,
     @t_str, @tex_str
 
 include("utils.jl")
@@ -17,7 +17,7 @@ include("utils.jl")
 const GP_VERBOSE    = true
 const GP_BACKEND    = GLE
 const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin/gle"
-const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
+const GP_TMP_PATH   = mktempdir()
 const GP_DEL_INTERM = true
 const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
 
