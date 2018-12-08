@@ -2,7 +2,8 @@
 
 ## NOW
 
-* title without `!`  don't seem to work as they should
+* [ongoing] title without `!`  don't seem to work as they should
+* legend called multiple times, will duplicate
 
 ## ongoing
 

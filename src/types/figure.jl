@@ -1,15 +1,17 @@
 @with_kw mutable struct Title
-    text     ::AbstractString        # ✓
-    prefix   ::Option{String}    = ∅ # ✓ x, x2, y, y2, z
-    textstyle::Option{TextStyle} = ∅ # ✓
-    dist     ::Option{Float}     = ∅ # ✓ distance labels - title
+    text     ::AbstractString               # ✓
+    textstyle::TextStyle      = TextStyle() # ✓
+    # ---
+    prefix   ::Option{String} = ∅           # ✓ x, x2, y, y2, z
+    dist     ::Option{Float}  = ∅           # ✓ distance labels - title
 end
 
 
 @with_kw mutable struct TicksLabels
     prefix   ::String                       # ✓
+    textstyle::TextStyle  = TextStyle()     # ⁠✓ textstyle
+    # ---
     off      ::Option{Bool}             = ∅ # ✓ whether to suppress the labels
-    textstyle::Option{TextStyle}        = ∅ # ⁠✓ textstyle
     angle    ::Option{Float}            = ∅ # ✓ rotation of labels
     format   ::Option{String}           = ∅ # A🚫 format of the ticks labels
     shift    ::Option{Float}            = ∅ # ✓ move labels to left/right
@@ -21,6 +23,7 @@ TicksLabels(p::String) = TicksLabels(prefix=p)
 
 @with_kw mutable struct Ticks
     prefix   ::String                # x, y, x2, y2, z A🚫
+    # ---
     off      ::Option{Bool}      = ∅ # whether to suppress them A🚫
     linestyle::Option{LineStyle} = ∅ # how the ticks look A🚫
     length   ::Option{Float}     = ∅ # how long the ticks A🚫
@@ -34,6 +37,7 @@ Ticks(p::String) = Ticks(prefix=p)
     prefix     ::String                  # x, y, x2, y2, z A🚫
     ticks      ::Ticks                   # ticks of the axis A🚫
     tickslabels::TicksLabels             # labels of the ticks A🚫
+    # ---
     title      ::Option{Title}     = ∅ # title of the axis A🚫
     off        ::Option{Bool}      = ∅ # if true, axis is not shown A🚫
     base       ::Option{Float}     = ∅ # scale font and ticks A🚫
@@ -47,10 +51,11 @@ end
 Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
 
 @with_kw mutable struct Legend
+    # TODO: can this take a textstyle?
     # entries *not* contained in the struct, they're generated elsewhere
-    position   ::Option{String}              = ∅ # ✓
+    position   ::Option{String} = ∅ # ✓
     # offset     ::Option{Tuple{Float, Float}} = ∅ # 🚫
-    hei        ::Option{Float}               = ∅ # ✓
+    hei        ::Option{Float}  = ∅ # ✓
     # nobox      ::Option{Bool}                = ∅ # 🚫
 end
 
@@ -58,11 +63,12 @@ end
 abstract type Axes{B<:Backend} end
 
 @with_kw mutable struct Axes2D{B} <: Axes{B}
-    xaxis   ::Axis                       = Axis("x")  # A🚫
-    x2axis  ::Axis                       = Axis("x2") # A🚫
-    yaxis   ::Axis                       = Axis("y")  # A🚫
-    y2axis  ::Axis                       = Axis("y2") # A🚫
-    drawings::Vector{Drawing}            = Vector{Drawing}() #
+    xaxis   ::Axis            = Axis("x")  # A🚫
+    x2axis  ::Axis            = Axis("x2") # A🚫
+    yaxis   ::Axis            = Axis("y")  # A🚫
+    y2axis  ::Axis            = Axis("y2") # A🚫
+    drawings::Vector{Drawing} = Vector{Drawing}() #
+    # ---
     title   ::Option{Title}              = ∅ # A🚫
     size    ::Option{Tuple{Float,Float}} = ∅ # ✓ (width cm, height cm)
     math    ::Option{Bool}               = ∅ # ✓ axis crossing (0, 0)

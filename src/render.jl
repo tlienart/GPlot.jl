@@ -78,7 +78,7 @@ function PreviewFigure(fig::Figure)
             (isdefined(Main, :IJulia) && Main.IJulia.inited)
     disp || error("Preview is only available in Juno and IJulia.")
     # trigger a build
-    fname = savefig(fig)
+    fname = savefig(fig, res=200)
     return PreviewFigure(fig, fname)
 end
 

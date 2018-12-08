@@ -20,6 +20,15 @@ take!(b::Backend)   = take!(b.io)
 isdef(el)   = !(el === nothing)
 isanydef(o) = any(isdef, (getfield(o, f) for f ∈ fieldnames(typeof(o))))
 
+function clear!(obj::T) where T
+    for fn ∈ fieldnames(T)
+        (Nothing <: fieldtype(T, fn)) && setfield!(obj, fn, nothing)
+    end
+    return obj
+end
+
+#######################################
+
 round3d(x) = round(Float(x), digits=3)
 
 function col2str(col::T) where T<:Colorant
