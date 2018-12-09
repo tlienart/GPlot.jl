@@ -1,7 +1,7 @@
-# GPlot.jl Documentation
+# GPlot.jl - Documentation
 
 ## Figure
 
 ```@docs
-Figure(id; opts...)
+Figure
 ```

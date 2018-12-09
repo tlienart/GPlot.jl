@@ -16,7 +16,7 @@ include("utils.jl")
 const GP_VERBOSE    = true
 const GP_BACKEND    = GLE
 const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin/gle"
-const GP_TMP_PATH   = expanduser("~/.julia/dev/GPlotExamples.jl/tmp/")
+const GP_TMP_PATH   = mktempdir()
 const GP_DEL_INTERM = true
 const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
 
