@@ -15,7 +15,6 @@ export Figure, gcf, gca, erase!,
 
 include("utils.jl")
 
-
 const GP_VERBOSE    = true
 const GP_BACKEND    = GLE
 const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin/gle"
@@ -31,7 +30,6 @@ const ∅     = nothing
 
 const PT_TO_CM  = 0.0352778 # 1pt in cm
 const Option{T} = Union{Nothing, T}
-
 
 include("types/style.jl")
 include("types/drawing.jl")
@@ -51,7 +49,6 @@ include("plot.jl")
 include("ax.jl")
 
 include("render.jl")
-
 
 const GP_ALLFIGS = Dict{String, Figure}()
 const GP_CURFIG  = Ref{Option{Figure}}(nothing)
