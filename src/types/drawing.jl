@@ -6,5 +6,5 @@ abstract type Drawing2D <: Drawing end
     linestyle  ::LineStyle   = LineStyle()   # ✓
     markerstyle::MarkerStyle = MarkerStyle() # ✓
     # ---
-    label      ::Option{String} = ∅             # ✓
+    label      ::Option{String} = ∅          # ✓
 end

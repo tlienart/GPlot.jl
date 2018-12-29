@@ -60,7 +60,8 @@ Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
 end
 
 
-abstract type Axes{B<:Backend} end
+abstract type Axes{B <: Backend} end
+
 
 @with_kw mutable struct Axes2D{B} <: Axes{B}
     xaxis   ::Axis            = Axis("x")  # A🚫
@@ -79,7 +80,7 @@ end
 mutable struct Axes3D{B} <: Axes{B} end
 
 
-mutable struct Figure{B<:Backend}
+mutable struct Figure{B <: Backend}
     id          ::String             # ✓ unique id of the figure
     g           ::B                  # description stream
     axes        ::Vector{Axes{B}}    # subplots

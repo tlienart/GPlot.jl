@@ -10,16 +10,23 @@ struct Gnuplot <: Backend
 end
 Gnuplot() = Gnuplot(IOBuffer())
 
+# write to buffer (or buffer encapsulating object) with form (s |> b)
 |>(s, io::IOBuffer) = write(io, s, " ")
 |>(s, b::Backend)   = write(b.io, s, " ")
 |>(s, tio::Tuple)   = @. |>(s, tio)
+
+# read buffer encapsulated by `b`
 take!(b::Backend)   = take!(b.io)
 
 #######################################
 
 isdef(el)   = !(el === nothing)
+
+# check if object o has at least one field that is not "Nothing"
+# this is useful when dealing with objects with lots of "Optional" fields
 isanydef(o) = any(isdef, (getfield(o, f) for f ∈ fieldnames(typeof(o))))
 
+# take an object and for any field that is optional, set the field to nothing
 function clear!(obj::T) where T
     for fn ∈ fieldnames(T)
         (Nothing <: fieldtype(T, fn)) && setfield!(obj, fn, nothing)
@@ -29,17 +36,35 @@ end
 
 #######################################
 
+# return a number with 3 digits accuracy, useful in col2str
 round3d(x) = round(Float(x), digits=3)
 
-function col2str(col::T) where T<:Colorant
+# takes a colorant and transform it to a standard string rgba(...)
+function col2str(col::Colorant)
     crgba = convert(RGBA, col)
-    r, g, b, a = crgba.r, crgba.g, crgba.b, crgba.alpha
-    r, g, b, a = round3d.([r, g, b, a])
-    return "rgba($r,$g,$b,$a)"
+    r, g, b, α = round3d.([crgba.r, crgba.g, crgba.b, crgba.alpha])
+    return "rgba($r,$g,$b,$α)"
 end
 
+# unroll a vector into a string with the elements separated by a space
 vec2str(v::Vector{T}) where T<:Real = prod("$vi " for vi ∈ v)
 vec2str(v::Vector{String}) = prod("\"$vi\" " for vi ∈ v)
+
+#######################################
+
+# pattern to refer to external variables within a tex string (##vname)
+const GP_VAR_REGEX = r"##([_\p{L}](?:[\p{L}\d_]*))"
+
+# process tex strings
+macro tex_str(s)
+    m = match(GP_VAR_REGEX, s)
+    (m === nothing) && return s
+    v = Symbol(m.captures[1])
+    esc(:(replace($s, GP_VAR_REGEX => string(eval($v)))))
+end
+
+# alias macro, can have tex"..." or t"..."
+@eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))
 
 #######################################
 
@@ -59,16 +84,3 @@ struct OptionValueError <: Exception
 end
 
 gle_no_support(s) = GP_VERBOSE && println("🚫  GLE does not support $s [ignoring]")
-
-#######################################
-
-const GP_VAR_REGEX = r"##([_\p{L}](?:[\p{L}\d_]*))"
-
-macro tex_str(s)
-    m = match(GP_VAR_REGEX, s)
-    m === nothing && return s
-    v = Symbol(m.captures[1])
-    esc(:(replace($s, GP_VAR_REGEX=>string(eval($v)))))
-end
-
-@eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))

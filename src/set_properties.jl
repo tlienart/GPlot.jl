@@ -1,4 +1,11 @@
-function set_properties!(::Type{B}, dict, obj; opts...) where B<:Backend
+"""
+    set_properties(::B, dict, obj; opts...)
+
+Set properties of an object `obj` given options (`opts`) of the form
+`optname=value` an applying it through appropriate application function
+stored in the dictionary `dict`.
+"""
+function set_properties!(::Type{B}, dict, obj; opts...) where B <: Backend
     for optname ∈ opts.itr
         setprop! = get(dict, optname) do
             throw(UnknownOptionError(optname, obj))
@@ -47,7 +54,7 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :label           => set_label!,
     )
 
-set_properties!(::Type{B}, line::Line2D; opts...) where B =
+set_properties!(::Type{<:Backend}, line::Line2D; opts...) =
     set_properties!(B, LINE2D_OPTIONS, line; opts...)
 
 # ======
@@ -83,11 +90,11 @@ const FIGURE_OPTIONS = Dict{Symbol, Function}(
     )
 merge!(FIGURE_OPTIONS, TEXTSTYLE_OPTIONS)
 
-set_properties!(::Type{B}, title::Title; opts...) where B =
+set_properties!(::Type{B}, title::Title; opts...) where B <: Backend =
     set_properties!(B, TITLE_OPTIONS, title; opts...)
 
-set_properties!(fig::Type{B}, legend::Legend; opts...) where B =
+set_properties!(fig::Type{B}, legend::Legend; opts...) where B <: Backend =
     set_properties!(B, LEGEND_OPTIONS, legend; opts...)
 
-set_properties!(fig::Figure{B}; opts...) where B =
+set_properties!(fig::Figure{B}; opts...) where B <: Backend =
     set_properties!(B, FIGURE_OPTIONS, fig; opts...)

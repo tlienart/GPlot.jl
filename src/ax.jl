@@ -1,5 +1,6 @@
-function title!(axes::Axes2D{B}, text::S, axsymb::Option{Symbol};
-                overwrite=false, opts...) where {B<:Backend, S<:AbstractString}
+function title!(axes::Axes2D{B}, text::AbstractString, axsymb::Option{Symbol};
+                overwrite=false, opts...) where B <: Backend
+
     prefix, obj = "", axes
     if isdef(axsymb)
         axsymb == :x  && (prefix = "x" ; obj = axes.xaxis ;)
@@ -12,6 +13,7 @@ function title!(axes::Axes2D{B}, text::S, axsymb::Option{Symbol};
     set_properties!(B, getfield(obj, :title); opts...)
     return axes
 end
+
 title!(::Nothing, text, axs; opts) = title!(add_axes2d!(), text, axs; opts...)
 
 title!(axes,   text; opts...) = title!(axes, text, ∅  ; opts...)
@@ -27,7 +29,7 @@ ytitle!(text;  opts...) = title!(gca(), text, :y ; opts...)
 y2title!(text; opts...) = title!(gca(), text, :y2; opts...)
 
 
-title(axes::Axes2D{<:Backend}, text::AbstractString, axs::Option{Symbol}; opts...) = title!(axes, text, axs; overwrite=true, opts...)
+title(axes, text, axs; opts...) = title!(axes, text, axs; overwrite=true, opts...)
 title(::Nothing, text, axs; opts...) = title(add_axes2d!(), text, axs; opts...)
 
 title(axes,   text; opts...) = title(axes, text, ∅  ; opts...)

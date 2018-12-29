@@ -1,5 +1,5 @@
 function set_color!(::Type{GLE}, obj, elem, v)
-    col = colorant"blue"
+    col = ∅
     try
         col = parse(Colorant, v)
     catch e
@@ -9,13 +9,11 @@ function set_color!(::Type{GLE}, obj, elem, v)
     return
 end
 
-set_color!(g, e::Union{Line2D, Ticks}, v) =
-    set_color!(g, e, :linestyle, v)
-set_color!(g, a::Union{Title, TicksLabels, Axis}, v) =
-    set_color!(g, a, :textstyle, v)
+set_color!(g, e::Union{Line2D, Ticks}, v) = set_color!(g, e, :linestyle, v)
+set_color!(g, a::Union{Title, TicksLabels, Axis}, v) = set_color!(g, a, :textstyle, v)
 
 # --------------------
-# TEXTSTYLE
+# TEXT
 # --------------------
 
 function set_font!(::Type{GLE}, obj, v)
@@ -25,6 +23,7 @@ function set_font!(::Type{GLE}, obj, v)
     end
     return
 end
+
 
 function set_hei!(::Type{GLE}, obj, v::T) where T<:Real
     (v ≥ 0.) || throw(OptionValueError("hei", v))
@@ -37,7 +36,7 @@ function set_hei!(::Type{GLE}, obj, v::T) where T<:Real
 end
 
 # --------------------
-# LINESTYLE
+# LINE
 # --------------------
 
 function set_lstyle!(::Type{GLE}, obj, v)
@@ -55,12 +54,15 @@ function set_lstyle!(::Type{GLE}, obj, v)
     return
 end
 
+
 function set_lwidth!(::Type{GLE}, obj, v)
     ((v isa Real) && (v ≥ 0.)) || throw(OptionValueError("lwidth", v))
     obj.linestyle.lwidth = v
     return
 end
 
+
+# for drawings, smooth  uses splines instead of straight lines
 function set_smooth!(::Type{GLE}, obj, v)
     (v isa Bool) || throw(OptionValueError("smooth", v))
     obj.linestyle.smooth = v
@@ -68,9 +70,10 @@ function set_smooth!(::Type{GLE}, obj, v)
 end
 
 # --------------------
-# MARKERSTYLE
+# MARKER
 # --------------------
 
+# type of marker (e.g. square)
 function set_marker!(::Type{GLE}, obj, v)
     v isa String || throw(OptionValueError("marker", v))
     obj.markerstyle.marker = get(GLE_MARKERS, v) do
@@ -79,14 +82,20 @@ function set_marker!(::Type{GLE}, obj, v)
     return
 end
 
+
+# marker size
 function set_msize!(::Type{GLE}, obj, v)
     ((v isa Real) && (v ≥ 0.)) || throw(OptionValueError("msize", v))
     obj.markerstyle.msize = v
     return
 end
 
+
+# marker color (if applicable)
 set_mcol!(g::Type{GLE}, obj, v) = set_color!(g, obj, :markerstyle, v)
 
+
+# marker edge color (if applicable)
 function set_mecol!(::Type{GLE}, obj, v)
     gle_no_support("setting the marker edge color.")
     # TODO, actually could overlay markers of different sizes. Would be easy
