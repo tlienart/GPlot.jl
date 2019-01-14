@@ -20,6 +20,15 @@ take!(b::Backend)   = take!(b.io)
 isdef(el)   = !(el === nothing)
 isanydef(o) = any(isdef, (getfield(o, f) for f ∈ fieldnames(typeof(o))))
 
+function clear!(obj::T) where T
+    for fn ∈ fieldnames(T)
+        (Nothing <: fieldtype(T, fn)) && setfield!(obj, fn, nothing)
+    end
+    return
+end
+
+#######################################
+
 round3d(x) = round(Float(x), digits=3)
 
 function col2str(col::T) where T<:Colorant
@@ -53,13 +62,11 @@ gle_no_support(s) = GP_VERBOSE && println("🚫  GLE does not support $s [ignori
 
 #######################################
 
-const GP_VAR_REGEX = r"##([_\p{L}](?:[\p{L}\d_]*))"
-
 macro tex_str(s)
-    m = match(GP_VAR_REGEX, s)
+    m = match(r"##([_\p{L}](?:[\p{L}\d_]*))", s)
     m === nothing && return s
     v = Symbol(m.captures[1])
-    esc(:(replace($s, GP_VAR_REGEX=>string(eval($v)))))
+    esc(:(replace($s, r"##([_\p{L}](?:[\p{L}\d_]*))"=>string(eval($v)))))
 end
 
 @eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))

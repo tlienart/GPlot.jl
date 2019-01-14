@@ -8,6 +8,21 @@ function set_properties!(::Type{B}, dict, obj; opts...) where B<:Backend
     return obj
 end
 
+####
+#### Options for STYLE
+####
+
+const TEXTSTYLE_OPTIONS = Dict{Symbol, Function}(
+    :font     => set_font!,
+    :fontsize => set_hei!,
+    :col      => set_color!,
+    :color    => set_color!
+    )
+
+####
+#### Options for DRAWINGS
+####
+
 const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :ls              => set_lstyle!, # linestyle ...
     :lstyle          => set_lstyle!,
@@ -32,19 +47,28 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :label           => set_label!,
     )
 
-const TEXT_OPTIONS = Dict{Symbol, Function}(
-    :font     => set_font!,
-    :fontsize => set_hei!,
-    :col      => set_color!,
-    :color    => set_color!
-    )
+set_properties!(::Type{B}, line::Line2D; opts...) where B =
+    set_properties!(B, LINE2D_OPTIONS, line; opts...)
+
+####
+#### Options for FIGURE
+####
 
 const TITLE_OPTIONS = Dict{Symbol, Function}(
-    :dist => set_dist!
+    :text   => set_text!,
+    :prefix => set_prefix!,
+    #XXX :textstyle => set_textstyle!,
+    :dist   => set_dist!
     )
-merge!(TITLE_OPTIONS, TEXT_OPTIONS)
+merge!(TITLE_OPTIONS, TEXTSTYLE_OPTIONS)
 
-const FIG_OPTIONS = Dict{Symbol, Function}(
+const LEGEND_OPTIONS = Dict{Symbol, Function}(
+    :pos      => set_position!,
+    :position => set_position!,
+    :fontsize => set_hei!,
+    )
+
+const FIGURE_OPTIONS = Dict{Symbol, Function}(
     :size         => set_size!,
     :tex          => set_texlabels!,
     :hastex       => set_texlabels!,
@@ -57,22 +81,13 @@ const FIG_OPTIONS = Dict{Symbol, Function}(
     :preamble     => set_texpreamble!,
     :texpreamble  => set_texpreamble!,
     )
-merge!(FIG_OPTIONS, TEXT_OPTIONS)
-
-const LEGEND_OPTIONS = Dict{Symbol, Function}(
-    :pos      => set_position!,
-    :position => set_position!,
-    :fontsize => set_hei!,
-    )
-
-set_properties!(::Type{B}, line::Line2D; opts...) where B =
-    set_properties!(B, LINE2D_OPTIONS, line; opts...)
+merge!(FIGURE_OPTIONS, TEXTSTYLE_OPTIONS)
 
 set_properties!(::Type{B}, title::Title; opts...) where B =
     set_properties!(B, TITLE_OPTIONS, title; opts...)
 
-set_properties!(fig::Figure{B}; opts...) where B =
-    set_properties!(B, FIG_OPTIONS, fig; opts...)
-
 set_properties!(fig::Type{B}, legend::Legend; opts...) where B =
     set_properties!(B, LEGEND_OPTIONS, legend; opts...)
+
+set_properties!(fig::Figure{B}; opts...) where B =
+    set_properties!(B, FIGURE_OPTIONS, fig; opts...)

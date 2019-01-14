@@ -11,5 +11,9 @@ matrix:
     - julia: nightly
 notifications:
   email: false
+script:
+  - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
+                              Pkg.develop(PackageSpec(path=pwd()))'
+  - julia --project=docs/ docs/make.jl
 after_success:
   - julia -e 'using Pkg; pkg"add Coverage"; using Coverage; Codecov.submit(Codecov.process_folder())'

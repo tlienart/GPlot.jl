@@ -84,7 +84,7 @@ function apply_axes!(g::GLE, a::Axes3D)
 end
 
 
-function assemble_figure(f::Figure{GLE})
+function assemble_figure(f::Figure{GLE}; debug=false)
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
     haslatex = false
@@ -111,9 +111,15 @@ function assemble_figure(f::Figure{GLE})
     # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
 
     # deal with proper dir
-    write(joinpath(GP_TMP_PATH, f.id * ".gle"), take!(g))
-    return
+    if debug
+        return take!(g)
+    else
+        write(joinpath(GP_TMP_PATH, f.id * ".gle"), take!(g))
+        return
+    end
 end
+
+debug_gle(f::Figure{GLE}) = println(String(assemble_figure(f; debug=true)))
 
 function assemble_figure(f::Figure{Gnuplot})
     throw(NotImplementedError("assemble_figure:Gnuplot"))

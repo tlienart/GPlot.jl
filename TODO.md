@@ -1,9 +1,15 @@
 # Todo
 
+## NOW
+
+* [ongoing] title without `!`  don't seem to work as they should
+* legend called multiple times, will duplicate
+
 ## ongoing
 
 * start systematic testing or it will become a mess very quickly
 * make smooth=true default above a given number of points probably as would be expected by user.
+* recommendation to have size not too small so that `hei` can be larger than `0.35` (~10pt) otherwise may have issue with the latex looking squeezed and funny
 
 --------
 
