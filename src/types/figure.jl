@@ -50,6 +50,7 @@ Ticks(p::String) = Ticks(prefix=p)
 end
 Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
 
+
 @with_kw mutable struct Legend
     # TODO: can this take a textstyle?
     # entries *not* contained in the struct, they're generated elsewhere
@@ -73,6 +74,23 @@ abstract type Axes{B<:Backend} end
     size    ::Option{Tuple{Float,Float}} = ∅ # ✓ (width cm, height cm)
     math    ::Option{Bool}               = ∅ # ✓ axis crossing (0, 0)
     legend  ::Option{Legend}             = ∅
+end
+
+
+"""
+    erase!(axes)
+
+Cleans up `axes`.
+"""
+function erase!(a::Axes2D)
+    a.xaxis    = Axis("x")
+    a.x2axis   = Axis("x2")
+    a.yaxis    = Axis("y")
+    a.y2axis   = Axis("y2")
+    a.drawings = Vector{Drawing}()
+    clear!(a)
+    GP_CURAXES.x = a
+    return
 end
 
 

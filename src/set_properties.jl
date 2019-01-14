@@ -8,9 +8,9 @@ function set_properties!(::Type{B}, dict, obj; opts...) where B<:Backend
     return obj
 end
 
-# =====
-# STYLE
-# =====
+####
+#### Options for STYLE
+####
 
 const TEXTSTYLE_OPTIONS = Dict{Symbol, Function}(
     :font     => set_font!,
@@ -19,9 +19,9 @@ const TEXTSTYLE_OPTIONS = Dict{Symbol, Function}(
     :color    => set_color!
     )
 
-# =======
-# DRAWING
-# =======
+####
+#### Options for DRAWINGS
+####
 
 const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :ls              => set_lstyle!, # linestyle ...
@@ -50,12 +50,12 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
 set_properties!(::Type{B}, line::Line2D; opts...) where B =
     set_properties!(B, LINE2D_OPTIONS, line; opts...)
 
-# ======
-# FIGURE
-# ======
+####
+#### Options for FIGURE
+####
 
 const TITLE_OPTIONS = Dict{Symbol, Function}(
-    :text => set_text!,
+    :text   => set_text!,
     :prefix => set_prefix!,
     #XXX :textstyle => set_textstyle!,
     :dist   => set_dist!

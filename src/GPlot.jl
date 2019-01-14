@@ -26,6 +26,9 @@ const VF    = Vector{Float}
 const AVF   = AbstractVector{Float}
 const MF    = Matrix{Float}
 const ∅     = nothing
+const ARR   = AbstractRange{<:Real}
+const AVR   = AbstractVector{<:Real}
+const MR    = Matrix{<:Real}
 
 const PT_TO_CM  = 0.0352778 # 1pt in cm
 const Option{T} = Union{Nothing, T}
