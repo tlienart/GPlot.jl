@@ -6,7 +6,7 @@ using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 export Figure, gcf, gca, erase!,
-    plot, plot!, legend,
+    plot, plot!, hist, hist!, legend,
     title!, xtitle!, x2title!, ytitle!, y2title!,
     title, xtitle, x2title, ytitle, y2title,
     preview, render, savefig, isempty,
@@ -36,15 +36,21 @@ const Option{T} = Union{Nothing, T}
 
 include("types/style.jl")
 include("types/drawing.jl")
+include("types/ax_elems.jl")
+include("types/ax.jl")
 include("types/figure.jl")
 
 include("gle/dictionaries.jl")
 include("gle/set_style.jl")
 include("gle/set_drawing.jl")
+include("gle/set_ax_elems.jl")
+include("gle/set_ax.jl")
 include("gle/set_figure.jl")
 
 include("gle/apply_style.jl")
 include("gle/apply_drawing.jl")
+include("gle/apply_ax_elems.jl")
+include("gle/apply_ax.jl")
 include("gle/apply_figure.jl")
 
 include("set_properties.jl")

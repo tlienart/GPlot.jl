@@ -156,9 +156,19 @@ const GLE_LEGEND_POS = Dict{String, String}(
     "right-center"  => "rc",
     "center"        => "cc",
     )
-
 for v ∈ values(GLE_LEGEND_POS)
     get(GLE_LEGEND_POS, v) do
         GLE_LEGEND_POS[v] = v
+    end
+end
+
+const GLE_HIST2D_SCALING = Dict{String, String}(
+    "none"  => "count",
+    "pdf"   => "pdf",
+    "prob"  => "probability",
+)
+for v ∈ values(GLE_HIST2D_SCALING)
+    get(GLE_HIST2D_SCALING, v) do
+        GLE_HIST2D_SCALING[v] = v
     end
 end
