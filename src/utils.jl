@@ -20,7 +20,7 @@ take!(b::Backend)   = take!(b.io)
 
 #######################################
 
-isdef(el)   = !(el === nothing)
+isdef(el) = !isnothing(el)
 
 # check if object o has at least one field that is not "Nothing"
 # this is useful when dealing with objects with lots of "Optional" fields

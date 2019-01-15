@@ -8,17 +8,18 @@
 
 Add one or several line plots on the current axes.
 """
-function plot!(axes::Axes2D{B} where B<:Backend
+function plot!(axes::Axes2D{B}
              , xy::MR
              ; overwrite=false
-             , opts... )
+             , opts... ) where B<:Backend
 
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(axes)
 
     # create line object, set properties and push to drawing stack
     line = Line2D(xy = xy)
-    set_properties!(B, line; opts...)
+
+    set_properties!(GLE, line; opts...)
     push!(axes.drawings, line)
     return
 end
@@ -49,9 +50,9 @@ plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts.
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(xy::MR; opts...)         = (gcf(); plot!(xy;   overwrite=true, opts...))
-plot(x::AVR, y::AVR; opts...) = (gcf(); plot!(x, y; overwrite=true, opts...))
-plot(x::AVR, y::MR; opts...)  = (gcf(); plot!(x, y; overwrite=true, opts...))
+plot(xy::MR; opts...)         = (plot!(gca(), xy;   overwrite=true, opts...))
+plot(x::AVR, y::AVR; opts...) = (plot!(gca(), x, y; overwrite=true, opts...))
+plot(x::AVR, y::MR; opts...)  = (plot!(gca(), x, y; overwrite=true, opts...))
 
 ####
 #### legend!, legend

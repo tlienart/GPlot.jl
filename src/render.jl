@@ -10,10 +10,14 @@ function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
 end
 
 
-function savefig(fig::Figure{GLE}, fn::String=""; opts...)
+function savefig(fig::Figure{GLE}
+               , fn::String=""
+               ; format::String="png"
+               , path::String=""
+               , opts...)
 
     isempty(fig) && (@warn "The figure is empty, nothing to save."; return)
-    isempty(fn)  && (fn = fig.id * ".png")
+    isempty(fn)  && (fn = joinpath(path, fig.id * ".$format"))
 
     # buffer for the GLE command that will be called
     glecom = IOBuffer()
@@ -23,7 +27,8 @@ function savefig(fig::Figure{GLE}, fn::String=""; opts...)
     fn, ext = splitext(fn)
     ext == "" && (ext = ".png")
     ext = ext[2:end]
-    ext ∈ ["eps", "ps", "pdf", "svg", "jpg", "png"] || throw(OptionValueError("output file type", ext))
+    ext ∈ ["eps", "ps", "pdf", "svg", "jpg", "png"] ||
+            throw(OptionValueError("output file type", ext))
 
     # set device
     "-d $ext" |> glecom
@@ -54,6 +59,12 @@ function savefig(fig::Figure{GLE}, fn::String=""; opts...)
     fin  = fto * ".gle"
     flog = fto * ".log"
     fpo  = normpath(joinpath(pwd(), fn))
+    dir = splitdir(fpo)[1]
+    if !isdir(dir)
+        @warn("The directory $dir does not exist. " *
+              "I will try to create it and save there.")
+        mkpath(dir)
+    end
     fout = fpo * ".$ext"
     "-o $fout $fin > $flog 2>&1" |> glecom
 
@@ -73,7 +84,7 @@ function savefig(fig::Figure{GLE}, fn::String=""; opts...)
     return fout
 end
 
-savefig(fn=""; opts...) = savefig(gcf(), fn; opts...)
+savefig(fn::String=""; opts...) = savefig(gcf(), fn; opts...)
 
 
 struct PreviewFigure

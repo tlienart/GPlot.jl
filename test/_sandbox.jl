@@ -2,10 +2,10 @@
 
 using GPlot
 
-erase!(gcf())
+f = Figure()
 
-x = 0:0.1:10
-y = @. x^2
+x = 0.1:0.1:5
+y = @. x^2 / exp(x)
 
 plot(x, y)
 

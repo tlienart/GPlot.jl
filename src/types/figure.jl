@@ -138,14 +138,17 @@ function Figure(id::String, g::Backend; opts...)
     GP_CURAXES.x   = nothing
     return f
 end
-function Figure(id::String="_fig_"; opts...)
+
+function Figure(id::String="_fig_"; reset=false, opts...)
     id == "_fig_" && return Figure(id, GP_BACKEND(); opts...) # a fresh one
     f = get(GP_ALLFIGS, id) do
         Figure(id, GP_BACKEND(); opts...)
     end
+    reset && erase!(f)
     GP_CURFIG.x = f
     GP_CURAXES.x = isempty(f.axes) ? nothing : f.axes[1]
     set_properties!(f; opts...) # f exists but properties have been given
+    return f
 end
 
 
@@ -171,13 +174,15 @@ add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
 """
     erase!(fig)
 
-Replaces `fig`'s current axes by a fresh, empty axes container.
+Replaces `fig`'s current axes by a fresh, empty axes container. Note that
+other properties of the figure are preserved (such as its size, latex
+properties etc).
 """
 function erase!(f::Figure)
+    # empty associated buffer
     take!(f.g)
+    # give `f` a fresh set of axes
     f.axes = Vector{Axes{typeof(f.g)}}()
-    GP_CURFIG.x = f
-    GP_CURAXES.x = nothing
     return
 end
 

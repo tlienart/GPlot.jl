@@ -54,7 +54,7 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :label           => set_label!,
     )
 
-set_properties!(::Type{<:Backend}, line::Line2D; opts...) =
+set_properties!(::Type{B}, line::Line2D; opts...) where B<:Backend =
     set_properties!(B, LINE2D_OPTIONS, line; opts...)
 
 ####
