@@ -84,7 +84,6 @@ struct OptionValueError <: Exception
 end
 
 gle_no_support(s) = GP_VERBOSE && println("🚫  GLE does not support $s [ignoring]")
-<<<<<<< HEAD
 
 #######################################
 
@@ -96,5 +95,3 @@ macro tex_str(s)
 end
 
 @eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))
-=======
->>>>>>> wip-china

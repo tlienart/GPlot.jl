@@ -6,11 +6,6 @@ abstract type Drawing2D <: Drawing end
     # --- style
     linestyle  ::LineStyle   = LineStyle()   # ✓
     markerstyle::MarkerStyle = MarkerStyle() # ✓
-<<<<<<< HEAD
     # --- legend and misc
     label::Option{Union{String, Vector{String}}} = ∅  # ✓
-=======
-    # ---
-    label      ::Option{String} = ∅          # ✓
->>>>>>> wip-china
 end
