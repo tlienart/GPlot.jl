@@ -12,6 +12,7 @@ export Figure, gcf, gca, erase!,
     preview, render, savefig, isempty,
     @t_str, @tex_str
 
+
 include("utils.jl")
 
 const GP_VERBOSE    = true
@@ -56,13 +57,13 @@ const GP_ALLFIGS = Dict{String, Figure}()
 const GP_CURFIG  = Ref{Option{Figure}}(nothing)
 const GP_CURAXES = Ref{Option{Axes}}(nothing)
 
+
 """
     gcf()
 
 Return the current active Figure or a new figure if there isn't one.
 """
 gcf() = isdef(GP_CURFIG.x) ? GP_CURFIG.x : Figure() # do not use ifelse here
-
 
 """
     gca()
@@ -71,12 +72,11 @@ Return the current active Axes and `nothing` if there isn't one.
 """
 gca() = GP_CURAXES.x # if nothing, whatever called it will create
 
-
 """
     get_backend(f)
 
 Return the backend type associated with figure `f`.
 """
-get_backend(f::Figure{B}) where B<:Backend = B
+get_backend(f::Figure{B}) where B <: Backend = B
 
 end # module

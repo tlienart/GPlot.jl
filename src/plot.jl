@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ####
 #### plot, plot!
 ####
@@ -17,12 +18,16 @@ function plot!(axes::Axes2D{B}
     overwrite && erase!(axes)
 
     # create line object, set properties and push to drawing stack
+=======
+function plot!(axes::Axes2D{B}, xy::MF; opts...) where B <: Backend
+>>>>>>> wip-china
     line = Line2D(xy = xy)
     set_properties!(B, line; opts...)
     push!(axes.drawings, line)
     return
 end
 
+# if no axes are given (e.g. gca() returned nothing) then add axes and plot
 plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
 
 function plot!(axes::Option{Axes2D}
@@ -39,6 +44,7 @@ plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
 plot!(xy::MR; opts...) = plot!(gca(), xy; opts...)
 plot!(x, y; opts...)   = plot!(gca(), x, y; opts...)
 
+<<<<<<< HEAD
 ###
 
 """
@@ -69,6 +75,19 @@ function legend!(axes::Axes2D{B}
     # if there exists a legend object but overwrite, then reset it
     (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
     set_properties!(B, axes.legend; opts...)
+=======
+
+plot(xy::MF; opts...)          = (Figure(); plot!(xy; opts...))
+plot(x::AVF, y::AVF; opts...)  = (Figure(); plot!(x, y; opts...))
+
+#######################################
+
+function legend!(axes::Axes2D{B}; opts...) where B <: Backend
+    legend = axes.legend
+    isdef(legend) || (legend = Legend())
+    set_properties!(B, legend; opts...)
+    axes.legend = legend
+>>>>>>> wip-china
     return
 end
 

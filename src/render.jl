@@ -13,7 +13,9 @@ end
 function savefig(fig::Figure{GLE}, fn::String=""; opts...)
 
     isempty(fig) && (@warn "The figure is empty, nothing to save."; return)
-    isempty(fn) && (fn = fig.id * ".png")
+    isempty(fn)  && (fn = fig.id * ".png")
+
+    # buffer for the GLE command that will be called
     glecom = IOBuffer()
     GLE_APP_PATH |> glecom
 
@@ -21,12 +23,13 @@ function savefig(fig::Figure{GLE}, fn::String=""; opts...)
     fn, ext = splitext(fn)
     ext == "" && (ext = ".png")
     ext = ext[2:end]
-    ext ∈ ["eps", "ps", "pdf", "svg", "jpg", "png"] || throw(OptionValueError("output type", ext))
+    ext ∈ ["eps", "ps", "pdf", "svg", "jpg", "png"] || throw(OptionValueError("output file type", ext))
+
     # set device
     "-d $ext" |> glecom
+
     # set default parameters, change if required
     resolution = 200
-
     for optname ∈ opts.itr
         if optname ∈ [:res, :resolution]
             res = opts[optname]
@@ -38,11 +41,14 @@ function savefig(fig::Figure{GLE}, fn::String=""; opts...)
     end
     # set resolution
     "-r $resolution" |> glecom
+
     # set transparency & tex
     isdef(fig.transparency) && fig.transparency && "-cairo" |> glecom
     isdef(fig.texlabels)    && fig.texlabels    && "-tex"   |> glecom
+
     # remove verbosity
     "-vb 0" |> glecom
+
     # fin - fout
     fto  = joinpath(GP_TMP_PATH, fig.id)
     fin  = fto * ".gle"
@@ -51,8 +57,9 @@ function savefig(fig::Figure{GLE}, fn::String=""; opts...)
     fout = fpo * ".$ext"
     "-o $fout $fin > $flog 2>&1" |> glecom
 
-    # GP assembling
+    # GPlot assembling
     assemble_figure(fig)
+
     # GLE compilation
     glecom = String(take!(glecom))
     if !success(`bash -c "$glecom"`)
@@ -60,6 +67,8 @@ function savefig(fig::Figure{GLE}, fn::String=""; opts...)
         GP_DEL_INTERM && cleanup(fig)
         error("GLE error: ... \n$log")
     end
+
+    # cleanup if required and return output file name
     GP_DEL_INTERM && cleanup(fig, [fn * ".$ext"])
     return fout
 end
@@ -72,9 +81,8 @@ struct PreviewFigure
     fname::String
 end
 
-
 function PreviewFigure(fig::Figure)
-    disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
+    disp  = (isdefined(Main, :Atom)   && Main.Atom.PlotPaneEnabled.x) ||
             (isdefined(Main, :IJulia) && Main.IJulia.inited)
     disp || error("Preview is only available in Juno and IJulia.")
     # trigger a build
@@ -83,8 +91,8 @@ function PreviewFigure(fig::Figure)
 end
 
 preview(fig::Figure) = PreviewFigure(fig)
-render(fig::Figure)  = PreviewFigure(fig)
 preview() = preview(gcf())
+render(fig::Figure) = PreviewFigure(fig)
 render() = render(gcf())
 
 
