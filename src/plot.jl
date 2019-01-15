@@ -8,10 +8,10 @@
 
 Add one or several line plots on the current axes.
 """
-function plot!(axes::Axes2D{B}
+function plot!(axes::Axes2D{B} where B<:Backend
              , xy::MR
              ; overwrite=false
-             , opts... ) where B<:Backend
+             , opts... )
 
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(axes)
@@ -38,7 +38,7 @@ end
 
 plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
 plot!(xy::MR; opts...) = plot!(gca(), xy; opts...)
-plot!(x, y; opts...)   = plot!(gca(), x, y; opts...)
+plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
 
 ###
 

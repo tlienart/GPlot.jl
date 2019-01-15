@@ -52,22 +52,6 @@ vec2str(v::Vector{String}) = prod("\"$vi\" " for vi ∈ v)
 
 #######################################
 
-# pattern to refer to external variables within a tex string (##vname)
-const GP_VAR_REGEX = r"##([_\p{L}](?:[\p{L}\d_]*))"
-
-# process tex strings
-macro tex_str(s)
-    m = match(GP_VAR_REGEX, s)
-    (m === nothing) && return s
-    v = Symbol(m.captures[1])
-    esc(:(replace($s, GP_VAR_REGEX => string(eval($v)))))
-end
-
-# alias macro, can have tex"..." or t"..."
-@eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))
-
-#######################################
-
 struct NotImplementedError <: Exception
     msg::String
     NotImplementedError(s) = new("[$s] hasn't been implemented.")
