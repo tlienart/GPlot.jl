@@ -37,3 +37,19 @@ function set_horiz!(::Type{GLE}, obj, v)
    obj.histstyle.horiz = v
    return
 end
+
+####
+#### Fill2D
+####
+
+function set_xmin!(::Type{GLE}, obj, v)
+   v isa Real || throw(OptionValueError("xmin", v))
+   obj.xmin = x
+   return
+end
+
+function set_xmax!(::Type{GLE}, obj, v)
+   v isa Real || throw(OptionValueError("xmax", v))
+   obj.xmax = x
+   return
+end

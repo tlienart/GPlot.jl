@@ -46,9 +46,9 @@ function plot!(axes::Axes2D{B}
 
     # create line object, set properties and push to drawing stack
     line = Line2D(xy = xy)
-
-    set_properties!(GLE, line; opts...)
+    set_properties!(B, line; opts...)
     push!(axes.drawings, line)
+
     return
 end
 
@@ -103,7 +103,7 @@ function hist!(axes::Axes2D{B}
     # create line object, set properties and push to drawing stack
     hist = Hist2D(x = x)
 
-    set_properties!(GLE, hist; opts...)
+    set_properties!(B, hist; opts...)
     push!(axes.drawings, hist)
     return
 end
@@ -111,3 +111,24 @@ end
 hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
 hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
 hist(x::AVR; opts...)  = (hist!(gca(), x; overwrite=true, opts...))
+
+
+####
+#### fill_between!, fill_between
+####
+
+function fill_between!(axes::Axes2D{B}
+                     , xy1y2::MR
+                     ; overwrite=false
+                     , opts... ) where B<:Backend
+
+    # if overwrite, destroy axes and start afresh
+    overwrite && erase!(axes)
+
+    # create fill object, set properties and push to drawing stack
+    fill = Fill2D(xy1y2 = xy1y2)
+    set_properties!(B, fill; opts...)
+    push!(axes.drawings, fill)
+
+    return
+end

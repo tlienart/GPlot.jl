@@ -76,6 +76,22 @@ const HIST2D_OPTIONS = Dict{Symbol, Function}(
 set_properties!(::Type{B}, hist::Hist2D; opts...) where B<:Backend =
     set_properties!(B, HIST2D_OPTIONS, hist; opts...)
 
+const FILL2D_OPTIONS = Dict{Symbol, Function}(
+    :col       => set_color!,
+    :color     => set_color!,
+    :fcolor    => set_color!,
+    :facecol   => set_color!,
+    :facecolor => set_color!,
+    :from      => set_xmin!,
+    :min       => set_xmin!,
+    :xmin      => set_xmin!,
+    :to        => set_xmax!,
+    :max       => set_xmax!,
+    :xmax      => set_xmax!,
+    )
+set_properties!(::Type{B}, fill::Fill2D; opts...) where B<:Backend =
+    set_properties!(B, FILL2D_OPTIONS, fill; opts...)
+
 ####
 #### Options for FIGURE
 ####

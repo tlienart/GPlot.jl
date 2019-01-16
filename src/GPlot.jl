@@ -6,7 +6,7 @@ using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 export Figure, gcf, gca, erase!,
-    plot, plot!, hist, hist!, legend,
+    plot, plot!, hist, hist!, fill_between!, legend,
     title!, xtitle!, x2title!, ytitle!, y2title!,
     title, xtitle, x2title, ytitle, y2title,
     preview, render, savefig, isempty,
