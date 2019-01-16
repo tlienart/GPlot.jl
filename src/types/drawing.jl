@@ -2,7 +2,7 @@ abstract type Drawing end
 abstract type Drawing2D <: Drawing end
 
 @with_kw mutable struct Line2D{T<:MR} <: Drawing2D
-    xy::T # first col=x, subs cols = ys
+    xy::T # [x, y1, y2, ...]
     # --- style
     linestyle  ::LineStyle   = LineStyle()   # ✓
     markerstyle::MarkerStyle = MarkerStyle() # ✓
@@ -14,14 +14,16 @@ end
     x::T
     bins::Option{Int} = ∅ # 🚫
     scaling::Option{String} = ∅ # 🚫
-    # xmin::Option{Real} = ∅
-    # xmax::Option{Real} = ∅
     # --- style
     histstyle::HistStyle = HistStyle() # 🚫
     # --- legend and misc
 #    label::Option{String} = ∅ # 🚫
 end
 
-# receive a vector x of objects
-# number of elements N
-#
+@with_kw mutable struct Fill2D{T<:MR} <: Drawing2D
+    xy1y2::T # [x, y1, y2], fill between y1 and y2
+    xmin::Option{Real} = ∅
+    xmax::Option{Real} = ∅
+    # --- style
+    fillstyle::FillStyle = FillStyle()
+end

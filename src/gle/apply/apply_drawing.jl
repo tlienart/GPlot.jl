@@ -90,7 +90,7 @@ end
 #### Apply a Hist2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Hist2D, el_counter::Int=1)
+function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
 
     # temporary buffers to help for the legend
     lt   = IOBuffer()
@@ -136,6 +136,36 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Hist2D, el_counter::
     "\n\tbar d$(el_counter) width $width" |> g
 
     apply_histstyle!(g, obj.histstyle)
+
+    return el_counter
+end
+
+####
+#### Apply a Fill2D object
+####
+
+function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
+
+    # write data to a temporary CSV file
+    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    writedlm(faux, obj.xy1y2)
+
+    # >>>>>>>>>>>>>>>>
+    # general GLE syntax is:
+    # (1) data datafile.dat d1=c1,c2 d2=c1,c3
+    # (2) fill d1,d2 color color_ xmin val xmax val
+    # <<<<<<<<<<<<<<<<
+
+    "\n\tdata \"$faux\" d$(el_counter)=c1,c2 d$(el_counter+1)=c1,c3" |> g
+    "\n\tfill d$(el_counter),d$(el_counter+1)" |> g
+
+    # color is not optional
+    "color $(col2str(obj.fillstyle.color))" |> g
+
+    isdef(obj.xmin) && "xmin $(obj.xmin)" |> g
+    isdef(obj.xmax) && "xmax $(obj.xmax)" |> g
+
+    el_counter += 2
 
     return el_counter
 end

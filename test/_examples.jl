@@ -138,3 +138,26 @@ end
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
 end
+
+
+####
+#### Fill between lines with transparency
+#### NOTE: alpha=true must be there otherwise GLE errors!
+####
+
+@elapsed begin
+    f = Figure("simple_fill_transp_notex", alpha=true, reset=true)
+
+    x = 0.1:0.1:5
+    y1 = @. x^2 / exp(x)
+    y2 = @. x^3 / exp(x)
+
+    GPlot.add_axes2d!()
+    fill_between!(gca(), [x y1 y2], alpha=0.5)
+
+    y3 = @. exp(-x^2)
+    fill_between!(x, 0, y3, color="red", alpha=0.5)
+
+    PREVIEW && preview(f)
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end

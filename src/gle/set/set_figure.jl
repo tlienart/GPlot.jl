@@ -3,8 +3,7 @@
 
 Sets a tuple indicating width,height size of the figure.
 """
-function set_size!(::Type{GLE}, obj, v)
-   (v isa Tuple{<:Real, <:Real}) || throw(OptionValueError("size", v))
+function set_size!(::Type{GLE}, obj, v::Tuple{<:Real, <:Real})
    w, h = v
    (w ≥ 0.) && (h ≥ 0.) || throw(OptionValueError("size", v))
    obj.size = v
@@ -16,12 +15,7 @@ end
 
 Sets a bool variable indicating whether the figure has LaTex labels or not.
 """
-function set_texlabels!(::Type{GLE}, obj, v)
-   (v isa Bool) || throw(OptionValueError("texlabels", v))
-   obj.texlabels = ifelse(v, true, nothing)
-   return
-end
-
+set_texlabels!(::Type{GLE}, obj, v::Bool) = (obj.texlabels = ifelse(v, v, ∅))
 
 """
    set_texscale!
@@ -31,10 +25,9 @@ Sets a string variable indicating the type of scaling (`fixed`, `scale` or `none
 * `scale`: force LaTeX to use a size corresponding to the ambient fontsize
 * `none`: do not scale LaTeX.
 """
-function set_texscale!(::Type{GLE}, obj, v)
+function set_texscale!(::Type{GLE}, obj, v::String)
    (v ∈ GLE_TEXSCALE) || throw(OptionValueError("texscale", v))
    obj.texscale = v
-   return
 end
 
 
@@ -46,11 +39,7 @@ packages). Bear in mind that only `pdflatex` can be used and so not all font
 packages can be used nor some commands like `fontspec` which are meant for
 XeLaTeX or LuaLaTex.
 """
-function set_texpreamble!(::Type{GLE}, obj, v)
-   (v isa AbstractString) || throw(OptionValueError("texpreamble", v))
-   obj.texpreamble = v
-   return
-end
+set_texpreamble!(::Type{GLE}, obj, v::AbstractString) = (obj.texpreamble = v)
 
 
 """
@@ -60,8 +49,4 @@ Sets a bool variable corresponding to whether to use cairo (allow transparency)
 or not. This is for instance useful if some of the fill colors used are
 transparent.
 """
-function set_transparency!(::Type{GLE}, obj, v)
-   (v isa Bool) || throw(OptionValueError("transparency", v))
-   obj.transparency = v
-   return
-end
+set_transparency!(::Type{GLE}, obj, v::Bool) = (obj.transparency = v)

@@ -23,3 +23,7 @@ end
 #    pattern::Option{String}   =  .... see page 39 of manual, test first
     horiz::Option{Bool}      = ∅ # 🚫
 end
+
+@with_kw mutable struct FillStyle
+    color::Union{Color, TransparentColor} = colorant"cornflowerblue"
+end

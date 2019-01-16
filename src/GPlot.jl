@@ -6,7 +6,7 @@ using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 export Figure, gcf, gca, erase!,
-    plot, plot!, hist, hist!, legend,
+    plot, plot!, hist, hist!, fill_between!, legend,
     title!, xtitle!, x2title!, ytitle!, y2title!,
     title, xtitle, x2title, ytitle, y2title,
     preview, render, savefig, isempty,
@@ -23,6 +23,7 @@ const GP_DEL_INTERM = true
 const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
 
 const Float = Float64
+const AS    = AbstractString
 const VF    = Vector{Float}
 const AVF   = AbstractVector{Float}
 const MF    = Matrix{Float}
