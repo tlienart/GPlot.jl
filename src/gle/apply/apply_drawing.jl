@@ -86,7 +86,6 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Line2D, el_counter::
     return el_counter
 end
 
-
 ####
 #### Apply a Hist2D object
 ####
@@ -113,16 +112,21 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Hist2D, el_counter::
     "\n\tdata \"$faux\" d$(el_counter)" |> g
 
     # (2) hist description
+    minx, maxx = minimum(obj.x), maximum(obj.x)
     "\n\tlet d$(el_counter+1) = hist d$(el_counter)" |> g
+    "from $minx to $maxx" |> g
     el_counter += 1
 
     # number of bins (TODO: better criterion, see StatsPlots.jl)
-    nobs = length(obj.x)
-    bins = isdef(obj.bins) ? obj.bins : max(15, round(Int, sqrt(nobs)))
+    nobs   = length(obj.x)
+    nbauto = (nobs<10) * nobs +
+             (10<=nobs<30) * 10 +
+             (nobs>30) * min(round(Int, sqrt(nobs)), 150)
+    bins   = isdef(obj.bins) ? obj.bins : nbauto
     "bins $bins" |> g
 
     # (3) compute appropriate scaling
-    width   = (maximum(obj.x) - minimum(obj.x)) / bins
+    width   = (maxx - minx) / bins
     scaling = 1.0
     obj.scaling == "probability" && (scaling /= nobs)
     obj.scaling == "pdf"         && (scaling /= (nobs * width))
