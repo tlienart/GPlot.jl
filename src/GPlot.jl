@@ -23,6 +23,7 @@ const GP_DEL_INTERM = true
 const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
 
 const Float = Float64
+const AS    = AbstractString
 const VF    = Vector{Float}
 const AVF   = AbstractVector{Float}
 const MF    = Matrix{Float}

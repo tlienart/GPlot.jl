@@ -88,6 +88,7 @@ const FILL2D_OPTIONS = Dict{Symbol, Function}(
     :to        => set_xmax!,
     :max       => set_xmax!,
     :xmax      => set_xmax!,
+    :alpha     => set_alpha!,
     )
 set_properties!(::Type{B}, fill::Fill2D; opts...) where B<:Backend =
     set_properties!(B, FILL2D_OPTIONS, fill; opts...)

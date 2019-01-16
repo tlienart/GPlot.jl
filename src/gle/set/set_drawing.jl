@@ -1,55 +1,33 @@
 # label of a drawing (cf legend)
-function set_label!(::Type{GLE}, obj, v)
-   v isa Union{AbstractString, Vector{String}} || throw(OptionValueError("label", v))
-   obj.label = v
-   return
-end
+set_label!(::Type{GLE}, obj, v::Union{AS, Vector{<:AS}}) = (obj.label = v)
 
 # position of the legend
-function set_position!(::Type{GLE}, leg::Legend, v)
+function set_position!(::Type{GLE}, leg::Legend, v::String)
    leg.position = get(GLE_LEGEND_POS, v) do
       throw(OptionValueError("position", v))
    end
-   return
 end
 
 ####
 #### Hist2D
 ####
 
-function set_bins!(::Type{GLE}, obj::Hist2D, v)
-   v isa Int || throw(OptionValueError("nbins", v))
-   obj.bins = v
-   return
-end
+set_bins!(::Type{GLE}, obj::Hist2D, v::Int) = (obj.bins = v)
 
-function set_scaling!(::Type{GLE}, obj::Hist2D, v)
+function set_scaling!(::Type{GLE}, obj::Hist2D, v::String)
    obj.scaling = get(GLE_HIST2D_SCALING, v) do
          throw(OptionValueError("lstyle", v))
    end
-   return
 end
 
 set_fill!(g, obj, v) = set_color!(g, obj, :histstyle, v; name=:fill)
 
-function set_horiz!(::Type{GLE}, obj, v)
-   v isa Bool || throw(OptionValueError("horiz", v))
-   obj.histstyle.horiz = v
-   return
-end
+set_horiz!(::Type{GLE}, obj, v::Bool) = (obj.histstyle.horiz = v)
 
 ####
 #### Fill2D
 ####
 
-function set_xmin!(::Type{GLE}, obj, v)
-   v isa Real || throw(OptionValueError("xmin", v))
-   obj.xmin = x
-   return
-end
+set_xmin!(::Type{GLE}, obj, v::Real) = (obj.xmin = x)
 
-function set_xmax!(::Type{GLE}, obj, v)
-   v isa Real || throw(OptionValueError("xmax", v))
-   obj.xmax = x
-   return
-end
+set_xmax!(::Type{GLE}, obj, v::Real) = (obj.xmax = x)

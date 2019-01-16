@@ -67,7 +67,8 @@ end
 
 plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
 plot!(xy::MR; opts...) = plot!(gca(), xy; opts...)
-plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
+plot!(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; opts...)
+plot!(x, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
 
 ###
 
@@ -78,9 +79,11 @@ plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts.
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(xy::MR; opts...)         = (plot!(gca(), xy;   overwrite=true, opts...))
-plot(x::AVR, y::AVR; opts...) = (plot!(gca(), x, y; overwrite=true, opts...))
-plot(x::AVR, y::MR; opts...)  = (plot!(gca(), x, y; overwrite=true, opts...))
+plot(xy::MR; opts...) = plot!(gca(), xy; overwrite=true, opts...)
+plot(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; overwrite=true,
+    opts...)
+plot(x, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; overwrite=true,
+    opts...)
 
 
 ####
@@ -132,3 +135,31 @@ function fill_between!(axes::Axes2D{B}
 
     return
 end
+
+fill_between!(::Nothing, xy1y2::MR; opts...) = (add_axes2d!();
+    fill_between!(gca(), xy1y2; opts...))
+
+function fill_between!(axes::Option{Axes2D}
+                    , x::Union{ARR, AVR}
+                    , y1::AVR
+                    , y2::AVR
+                    ; opts...)
+    @assert length(x) == length(y1) == length(y2) "x, y1, y2 must have the " *
+                                                  "same length"
+    fill_between!(axes, hcat(x, y1, y2); opts...)
+    return
+end
+
+fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
+    zero(x) .+ y1, y2; opts...)
+fill_between!(x, y1, y2::Real; opts...) = fill_between!(gca(), x, y1,
+    zero(x) .+ y2; opts...)
+fill_between!(x, y1::AVR, y2::AVR; opts...) = fill_between!(gca(), x, y1, y2;
+    opts...)
+
+fill_between(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
+    zero(x) .+ y1, y2; overwrite=true, opts...)
+fill_between(x, y1, y2::Real; opts...) = fill_between!(gca(), x, y1,
+    zero(x) .+ y2; overwrite=true, opts...)
+fill_between(x, y1::AVR, y2::AVR; opts...) = fill_between!(gca(), x, y1, y2;
+    overwrite=true, opts...)

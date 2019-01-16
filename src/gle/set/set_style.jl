@@ -1,7 +1,12 @@
-function set_color!(::Type{GLE}, obj, elem, v; name=:color)
+function set_color!(::Type{GLE}, obj, elem::Symbol, v; name=:color)
     col = ∅
     try
         col = parse(Colorant, v)
+        if col isa TransparentColor && !(gcf().transparency == true)
+            @warn "Transparent colors are only supported when the figure " *
+                  "has its transparency property set to 'true'. Ignoring α."
+            col = convert(Color, col)
+        end
     catch e
         throw(OptionValueError("color", v))
     end
@@ -14,34 +19,45 @@ set_color!(g, e::Hist2D, v) = set_color!(g, e, :histstyle, v)
 set_color!(g, e::Fill2D, v) = set_color!(g, e, :fillstyle, v)
 set_color!(g, e::Union{Title, TicksLabels, Axis}, v) = set_color!(g, e, :textstyle, v)
 
+function set_alpha!(::Type{GLE}, obj, el::Symbol, v::Real; name=:color)
+    if !(gcf().transparency == true)
+        @warn "Transparent colors are only supported when the figure " *
+              "has its transparency property set to 'true'. Ignoring α."
+        return
+    end
+    (0. <= v <= 1.) || throw(OptionValueError("alpha"), v)
+    # retrieve the color, convert it to RGB, create a RGBA object
+    c = convert(RGB, getfield(getfield(obj, el), name))
+    setfield!(getfield(obj, el), name, RGBA(c.r, c.g, c.b, v))
+end
+
+set_alpha!(g, e::Fill2D, v::Real) = set_alpha!(g, e, :fillstyle, v)
+
 # --------------------
 # TEXT
 # --------------------
 
-function set_font!(::Type{GLE}, obj, v)
-    v isa String || throw(OptionValueError("font", v))
+function set_font!(::Type{GLE}, obj, v::String)
     obj.textstyle.font = get(GLE_FONTS, v) do
         throw(OptionValueError("font", v))
     end
-    return
 end
 
 
-function set_hei!(::Type{GLE}, obj, v::T) where T<:Real
+function set_hei!(::Type{GLE}, obj, v::Real)
     (v ≥ 0.) || throw(OptionValueError("hei", v))
     if obj isa Legend
         obj.hei = v * PT_TO_CM
     else
         obj.textstyle.hei = v * PT_TO_CM
     end
-    return
 end
 
 # --------------------
 # LINE
 # --------------------
 
-function set_lstyle!(::Type{GLE}, obj, v)
+function set_lstyle!(::Type{GLE}, obj, v::Union{Int, String})
     if v isa Int
         v ≥ 0 || throw(OptionValueError("lstyle", v))
         obj.linestyle.lstyle = v
@@ -50,46 +66,35 @@ function set_lstyle!(::Type{GLE}, obj, v)
             (v == "none") || throw(OptionValueError("lstyle", v))
             -1
         end
-    else
-        throw(OptionValueError("lstyle", v))
     end
-    return
 end
 
 
-function set_lwidth!(::Type{GLE}, obj, v)
-    ((v isa Real) && (v ≥ 0.)) || throw(OptionValueError("lwidth", v))
+function set_lwidth!(::Type{GLE}, obj, v::Real)
+    (v ≥ 0.) || throw(OptionValueError("lwidth", v))
     obj.linestyle.lwidth = v
-    return
 end
 
 
 # for drawings, smooth  uses splines instead of straight lines
-function set_smooth!(::Type{GLE}, obj, v)
-    (v isa Bool) || throw(OptionValueError("smooth", v))
-    obj.linestyle.smooth = v
-    return
-end
+set_smooth!(::Type{GLE}, obj, v::Bool) = (obj.linestyle.smooth = v)
 
 # --------------------
 # MARKER
 # --------------------
 
 # type of marker (e.g. square)
-function set_marker!(::Type{GLE}, obj, v)
-    v isa String || throw(OptionValueError("marker", v))
+function set_marker!(::Type{GLE}, obj, v::String)
     obj.markerstyle.marker = get(GLE_MARKERS, v) do
         throw(OptionValueError("marker", v))
     end
-    return
 end
 
 
 # marker size
-function set_msize!(::Type{GLE}, obj, v)
-    ((v isa Real) && (v ≥ 0.)) || throw(OptionValueError("msize", v))
+function set_msize!(::Type{GLE}, obj, v::Real)
+    (v ≥ 0.) || throw(OptionValueError("msize", v))
     obj.markerstyle.msize = v
-    return
 end
 
 

@@ -25,5 +25,5 @@ end
 end
 
 @with_kw mutable struct FillStyle
-    color::Color = colorant"cornflowerblue"
+    color::Union{Color, TransparentColor} = colorant"cornflowerblue"
 end

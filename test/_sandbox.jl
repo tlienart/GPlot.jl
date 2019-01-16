@@ -16,17 +16,3 @@ legend()
 preview(gcf())
 
 #GPlot.debug_gle(gcf())
-
-
-########### fill?
-
-f = Figure()
-
-x = 0.1:0.1:5
-y1 = @. x^2 / exp(x)
-y2 = @. x^3 / exp(x)
-
-GPlot.add_axes2d!()
-fill_between!(gca(), [x y1 y2])
-
-preview(gcf())
