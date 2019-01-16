@@ -53,9 +53,28 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :key             => set_label!,
     :label           => set_label!,
     )
-
 set_properties!(::Type{B}, line::Line2D; opts...) where B<:Backend =
     set_properties!(B, LINE2D_OPTIONS, line; opts...)
+
+const HIST2D_OPTIONS = Dict{Symbol, Function}(
+    :bins           => set_bins!,    # number of bins
+    :nbins          => set_bins!,
+    :scaling        => set_scaling!, # normalisation
+    :norm           => set_scaling!,
+    :col            => set_color!,   # edge color
+    :color          => set_color!,
+    :ecol           => set_color!,
+    :edgecol        => set_color!,
+    :edgecolor      => set_color!,
+    :fcol           => set_fill!,    # face color
+    :fcolor         => set_fill!,
+    :facecolor      => set_fill!,
+    :fill           => set_fill!,
+    :horiz          => set_horiz!,   # show bar horizontal
+    :horizontal     => set_horiz!,
+    )
+set_properties!(::Type{B}, hist::Hist2D; opts...) where B<:Backend =
+    set_properties!(B, HIST2D_OPTIONS, hist; opts...)
 
 ####
 #### Options for FIGURE

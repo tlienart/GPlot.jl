@@ -73,7 +73,10 @@ end
     SAVEFIG && savefig(f; format="pdf", path=SAVEPATH)
 end
 
-# ============ SQROOT
+####
+#### Simple multiple line plots (in for loop) for square root with latex
+#### [GLE EXAMPLE]
+####
 
 using Colors
 
@@ -94,7 +97,10 @@ using Colors
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
 end
 
-# ============ SINE FUNCTION
+####
+#### Simple line plots with centered axis for sine with latex
+#### [GLE EXAMPLE]
+####
 
 @elapsed begin
     f = Figure("sine_tex", latex=true, fontsize=8, reset=true)
@@ -112,5 +118,23 @@ end
     ax.yaxis.tickslabels.names  = ["-1", "-3/4", "-1/2", "-1/4", "1/4", "1/2", "3/4", "1"]
 
     PREVIEW && preview(gcf())
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end
+
+
+####
+#### Simple histogram with pdf normalisation and pdf fit added
+####
+
+@elapsed begin
+    f = Figure("simple_hist_notex", reset=true)
+    x = randn(10_000)
+    hist(x, fill="CornflowerBlue", color="white", scaling="pdf", nbins=50)
+
+    xx = range(-4, 4, length=100)
+    y  = @. exp(-xx^2/2)/sqrt(2pi)
+    plot!(xx, y)
+
+    PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
 end

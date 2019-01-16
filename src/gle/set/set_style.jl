@@ -1,16 +1,17 @@
-function set_color!(::Type{GLE}, obj, elem, v)
+function set_color!(::Type{GLE}, obj, elem, v; name=:color)
     col = ∅
     try
         col = parse(Colorant, v)
     catch e
         throw(OptionValueError("color", v))
     end
-    setfield!(getfield(obj, elem), :color, col)
+    setfield!(getfield(obj, elem), name, col)
     return
 end
 
 set_color!(g, e::Union{Line2D, Ticks}, v) = set_color!(g, e, :linestyle, v)
-set_color!(g, a::Union{Title, TicksLabels, Axis}, v) = set_color!(g, a, :textstyle, v)
+set_color!(g, e::Hist2D, v) = set_color!(g, e, :histstyle, v)
+set_color!(g, e::Union{Title, TicksLabels, Axis}, v) = set_color!(g, e, :textstyle, v)
 
 # --------------------
 # TEXT

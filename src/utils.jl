@@ -12,8 +12,8 @@ Gnuplot() = Gnuplot(IOBuffer())
 
 # write to buffer (or buffer encapsulating object) with form (s |> b)
 |>(s, io::IOBuffer) = write(io, s, " ")
-|>(s, b::Backend)   = write(b.io, s, " ")
-|>(s, tio::Tuple)   = @. |>(s, tio)
+|>(s, b::Backend) = write(b.io, s, " ")
+|>(s, tio::Tuple) = @. |>(s, tio)
 
 # read buffer encapsulated by `b`
 take!(b::Backend)   = take!(b.io)
@@ -22,9 +22,9 @@ take!(b::Backend)   = take!(b.io)
 
 isdef(el) = !isnothing(el)
 
-# check if object o has at least one field that is not "Nothing"
+# check if object `obj` has at least one field that is not "Nothing"
 # this is useful when dealing with objects with lots of "Optional" fields
-isanydef(o) = any(isdef, (getfield(o, f) for f ∈ fieldnames(typeof(o))))
+isanydef(obj) = any(isdef, (getfield(obj, f) for f ∈ fieldnames(typeof(obj))))
 
 # take an object and for any field that is optional, set the field to nothing
 function clear!(obj::T) where T
@@ -52,6 +52,17 @@ vec2str(v::Vector{String}) = prod("\"$vi\" " for vi ∈ v)
 
 #######################################
 
+macro tex_str(s)
+    m = match(r"##([_\p{L}](?:[\p{L}\d_]*))", s)
+    m === nothing && return s
+    v = Symbol(m.captures[1])
+    esc(:(replace($s, r"##([_\p{L}](?:[\p{L}\d_]*))"=>string(eval($v)))))
+end
+
+@eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))
+
+#######################################
+
 struct NotImplementedError <: Exception
     msg::String
     NotImplementedError(s) = new("[$s] hasn't been implemented.")
@@ -68,14 +79,3 @@ struct OptionValueError <: Exception
 end
 
 gle_no_support(s) = GP_VERBOSE && println("🚫  GLE does not support $s [ignoring]")
-
-#######################################
-
-macro tex_str(s)
-    m = match(r"##([_\p{L}](?:[\p{L}\d_]*))", s)
-    m === nothing && return s
-    v = Symbol(m.captures[1])
-    esc(:(replace($s, r"##([_\p{L}](?:[\p{L}\d_]*))"=>string(eval($v)))))
-end
-
-@eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))

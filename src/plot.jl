@@ -1,4 +1,32 @@
 ####
+#### legend!, legend
+####
+
+"""
+    legend!(axes; options...)
+
+Update the properties of an existing legend object present on `axes`. If none
+exist then a new one is created with the given properties.
+"""
+function legend!(axes::Axes2D{B}
+               ; overwrite=false
+               , opts...) where B<:Backend
+
+    # if there exists a legend object but overwrite, then reset it
+    (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
+    set_properties!(B, axes.legend; opts...)
+    return
+end
+
+"""
+    legend(; options...)
+
+Creates a new legend object on the current axes with the given options.
+If one already exist, it will be destroyed and replaced by this one.
+"""
+legend(; opts...) = legend!(gca(); overwrite=true, opts...)
+
+####
 #### plot, plot!
 ####
 
@@ -54,30 +82,32 @@ plot(xy::MR; opts...)         = (plot!(gca(), xy;   overwrite=true, opts...))
 plot(x::AVR, y::AVR; opts...) = (plot!(gca(), x, y; overwrite=true, opts...))
 plot(x::AVR, y::MR; opts...)  = (plot!(gca(), x, y; overwrite=true, opts...))
 
+
 ####
-#### legend!, legend
+#### hist, hist!
 ####
 
 """
-    legend!(axes; options...)
+    hist!([axes], x; options...)
 
-Update the properties of an existing legend object present on `axes`. If none
-exist then a new one is created with the given properties.
+Add a histogram of `x` on the current axes.
 """
-function legend!(axes::Axes2D{B}
-               ; overwrite=false
-               , opts...) where B<:Backend
+function hist!(axes::Axes2D{B}
+             , x::AVR
+             ; overwrite=false
+             , opts... ) where B<:Backend
 
-    # if there exists a legend object but overwrite, then reset it
-    (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
-    set_properties!(B, axes.legend; opts...)
+    # if overwrite, destroy axes and start afresh
+    overwrite && erase!(axes)
+
+    # create line object, set properties and push to drawing stack
+    hist = Hist2D(x = x)
+
+    set_properties!(GLE, hist; opts...)
+    push!(axes.drawings, hist)
     return
 end
 
-"""
-    legend(; options...)
-
-Creates a new legend object on the current axes with the given options.
-If one already exist, it will be destroyed and replaced by this one.
-"""
-legend(; opts...) = legend!(gca(); overwrite=true, opts...)
+hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
+hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
+hist(x::AVR; opts...)  = (hist!(gca(), x; overwrite=true, opts...))
