@@ -1,28 +1,25 @@
 # GPlot
 
-[WIP]
+[WIP] If you think this project could be fun to work on and would like to help, I'll be happy to hear from you (even if just to help me test the code).
 
 ## What's this about
 
-This package translates your plotting commands into a script digestible by the [Graphics Layout Engine](http://glx.sourceforge.net/index.html) or [Gnuplot](http://www.gnuplot.info/) to generate PNG, PDF, SVG etc.
-Both are awesome, mature and powerful softwares that are multi-platform, and very fast.
+This package translates plotting commands into a script digestible by the [Graphics Layout Engine](http://glx.sourceforge.net/index.html) (and possibly GnuPlot in the future) to generate PNG, PDF, SVG etc.
+Both GLE and GnuPlot are great and mature libraries that are multi-platform and quite fast.
 
-Translating plotting commands into a script that these programs can handle (which is what GPlot does) takes negligible time, compiling a complex script with GLE or Gnuplot should take `<0.5s` on a modern laptop which means that time-to-first-plot in GPlot is around that much or less.
-Significantly faster than common alternatives.
+Translating plotting commands into a script that these programs can handle (which is what GPlot does) takes negligible time, compiling a complex script with GLE or Gnuplot should take `<0.5s` on a modern laptop which means that the "time-to-first-plot" problem in GPlot is around that much or less.
 
 ```
                +----------------------------+
         +----> | Generated GLE/Gnuplot code +--+
-Julia   |      +----------------------------+  +---> GLE/Gnuplot
-code    |                                      |         +
-        |         +----------------------+     |         |
-        +-------> | Auxiliary data files +-----+         |
-                  +----------------------+               v
+Julia   |      +----------------------------+  +---> GLE/Gnuplot engine
+code    |                                      |            +
+        |         +----------------------+     |            |
+        +-------> | Auxiliary data files +-----+            |
+                  +----------------------+                  v
 
-                                                Output (PDF/PNG/...)
+                                                    Output (PDF/PNG/...)
 ```
-
-This package therefore offers one way to bypass the "time-to-first-plot" which currently exists in Julia (though that issue will hopefully disappear in the future) by wrapping around external binaries.
 
 **Features to be expected**
 * Fast plotting experience
