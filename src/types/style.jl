@@ -17,7 +17,7 @@ end
     color::Option{Color}   = ∅ # ✓
 end
 
-@with_kw mutable struct HistStyle
+@with_kw mutable struct BarStyle
     color::Option{Color}     = ∅ # 🚫
     fill::Option{Color}      = ∅ # 🚫
 #    pattern::Option{String}   =  .... see page 39 of manual, test first

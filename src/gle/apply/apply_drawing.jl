@@ -169,3 +169,58 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
 
     return el_counter
 end
+
+
+####
+#### Apply Bar2D/GroupedBar2D object
+####
+#
+# function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
+#
+#     # temporary buffers to help for the legend
+#     lt   = IOBuffer()
+#     glet = GLE()
+#
+#     # write data to a temporary CSV file
+#     faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+#     writedlm(faux, obj.x)
+#
+#     # >>>>>>>>>>>>>>>>
+#     # general GLE syntax is:
+#     # (1) data datafile.dat d1
+#     # (2) let d2 = hist d1 from xmin to xmax bins nbins
+#     # (3) let d2 = d2 * scaling
+#     # (4) bar d2 width width_ fill color_ color color_ pattern pattern_ horiz
+#     # <<<<<<<<<<<<<<<<
+#
+#     # (1) indicate what data to read
+#     "\n\tdata \"$faux\" d$(el_counter)" |> g
+#
+#     # (2) hist description
+#     minx, maxx = minimum(obj.x), maximum(obj.x)
+#     "\n\tlet d$(el_counter+1) = hist d$(el_counter)" |> g
+#     "from $minx to $maxx" |> g
+#     el_counter += 1
+#
+#     # number of bins (TODO: better criterion, see StatsPlots.jl)
+#     nobs   = length(obj.x)
+#     nbauto = (nobs<10) * nobs +
+#              (10<=nobs<30) * 10 +
+#              (nobs>30) * min(round(Int, sqrt(nobs)), 150)
+#     bins   = isdef(obj.bins) ? obj.bins : nbauto
+#     "bins $bins" |> g
+#
+#     # (3) compute appropriate scaling
+#     width   = (maxx - minx) / bins
+#     scaling = 1.0
+#     obj.scaling == "probability" && (scaling /= nobs)
+#     obj.scaling == "pdf"         && (scaling /= (nobs * width))
+#     "\n\tlet d$(el_counter) = d$(el_counter)*$scaling" |> g
+#
+#     # (4) apply histogram
+#     "\n\tbar d$(el_counter) width $width" |> g
+#
+#     apply_histstyle!(g, obj.histstyle)
+#
+#     return el_counter
+# end

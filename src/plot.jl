@@ -79,11 +79,8 @@ plot!(x, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(xy::MR; opts...) = plot!(gca(), xy; overwrite=true, opts...)
-plot(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; overwrite=true,
-    opts...)
-plot(x, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; overwrite=true,
-    opts...)
+plot(xy::MR; opts...) = plot!(xy; overwrite=true, opts...)
+plot(x, y; opts...) = plot!(x, y; overwrite=true, opts...)
 
 
 ####
@@ -112,8 +109,10 @@ function hist!(axes::Axes2D{B}
 end
 
 hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
+
 hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
-hist(x::AVR; opts...)  = (hist!(gca(), x; overwrite=true, opts...))
+
+hist(x; opts...)  = hist!(x; overwrite=true, opts...)
 
 
 ####
@@ -144,6 +143,7 @@ function fill_between!(axes::Option{Axes2D}
                     , y1::AVR
                     , y2::AVR
                     ; opts...)
+
     @assert length(x) == length(y1) == length(y2) "x, y1, y2 must have the " *
                                                   "same length"
     fill_between!(axes, hcat(x, y1, y2); opts...)
@@ -157,9 +157,51 @@ fill_between!(x, y1, y2::Real; opts...) = fill_between!(gca(), x, y1,
 fill_between!(x, y1::AVR, y2::AVR; opts...) = fill_between!(gca(), x, y1, y2;
     opts...)
 
-fill_between(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
-    zero(x) .+ y1, y2; overwrite=true, opts...)
-fill_between(x, y1, y2::Real; opts...) = fill_between!(gca(), x, y1,
-    zero(x) .+ y2; overwrite=true, opts...)
-fill_between(x, y1::AVR, y2::AVR; opts...) = fill_between!(gca(), x, y1, y2;
+fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
     overwrite=true, opts...)
+
+
+####
+#### bar!, bar
+####
+
+function bar!(axes::Axes2D{B}
+            , xy::MR
+            ; overwrite=false
+            , opts... ) where B<:Backend
+
+    # if overwrite, destroy axes and start afresh
+    overwrite && erase!(axes)
+
+    # if there's more than two columns, it's a groupedbar
+    obj = Bar2D(xy = xy[:, 1:2])
+    if size(xy, 2) > 2
+        additional_bars = [Bar2D(xy = xy[:, 1:c]) for c ∈ 3:size(xy, 2)]
+        obj = GroupedBars(bars=[obj, additional_bars...])
+    end
+
+    # assign properties and push to drawing stack
+    set_properties!(B, obj; opts...)
+    push!(axes.drawings, obj)
+
+    return
+end
+
+bar!(::Nothing, xy::MR; opts...) = (add_axes2d!(); bar!(gca(), xy; opts...))
+
+function bar!(axes::Option{Axes2D}
+            , x::Union{ARR, AVR}
+            , y::MR
+            ; opts...)
+
+    @assert length(x) == size(y, 1) "The number of rows in `y` must match " *
+                                    "the length of `x`"
+    bar!(axes, hcat(x, y); opts...)
+    return
+end
+
+bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
+bar!(x, y::MR; opts...) = bar!(gca(), x, y; opts...)
+
+bar(y; opts...) = bar!(y; overwrite=true, opts...)
+bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)

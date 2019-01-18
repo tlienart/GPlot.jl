@@ -20,9 +20,9 @@ function set_scaling!(::Type{GLE}, obj::Hist2D, v::String)
    end
 end
 
-set_fill!(g, obj, v) = set_color!(g, obj, :histstyle, v; name=:fill)
+set_fill!(g, obj, v) = set_color!(g, obj, :barstyle, v; name=:fill)
 
-set_horiz!(::Type{GLE}, obj, v::Bool) = (obj.histstyle.horiz = v)
+set_horiz!(::Type{GLE}, obj, v::Bool) = (obj.barstyle.horiz = v)
 
 ####
 #### Fill2D

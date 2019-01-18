@@ -15,7 +15,7 @@ function set_color!(::Type{GLE}, obj, elem::Symbol, v; name=:color)
 end
 
 set_color!(g, e::Union{Line2D, Ticks}, v) = set_color!(g, e, :linestyle, v)
-set_color!(g, e::Hist2D, v) = set_color!(g, e, :histstyle, v)
+set_color!(g, e::Hist2D, v) = set_color!(g, e, :barstyle, v)
 set_color!(g, e::Fill2D, v) = set_color!(g, e, :fillstyle, v)
 set_color!(g, e::Union{Title, TicksLabels, Axis}, v) = set_color!(g, e, :textstyle, v)
 
