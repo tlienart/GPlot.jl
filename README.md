@@ -7,7 +7,7 @@
 This package translates plotting commands into a script digestible by the [Graphics Layout Engine](http://glx.sourceforge.net/index.html) (and possibly GnuPlot in the future) to generate PNG, PDF, SVG etc.
 Both GLE and GnuPlot are great and mature libraries that are multi-platform and quite fast.
 
-Translating plotting commands into a script that these programs can handle (which is what GPlot does) takes negligible time, compiling a complex script with GLE or Gnuplot should take `<0.5s` on a modern laptop which means that the "time-to-first-plot" problem in GPlot is around that much or less.
+Translating plotting commands into a script that these programs can handle (which is what GPlot does) takes negligible time, compiling a complex script with GLE or Gnuplot should take `<0.5s` on a modern laptop which means that the "time-to-first-plot" in GPlot is around that much or less.
 
 ```
                +----------------------------+
