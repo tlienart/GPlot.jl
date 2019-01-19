@@ -161,3 +161,37 @@ end
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
 end
+
+####
+#### Simple bar, no latex
+####
+
+@elapsed begin
+    f = Figure("simple_bar_notex", reset=true)
+
+    y = [50, 10, 20, 30, 5, 100]
+
+    bar(y, fill="indianred", color="orange", horiz=true)
+
+    ylim!(0.5, 6.5)
+
+    PREVIEW && preview(f)
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end
+
+####
+#### Simple log plot, no latex
+####
+
+@elapsed begin
+    f = Figure("simple_logscale_notex", reset=true)
+
+    x = range(1, stop=1000, length=100)
+    y = @. log(x)
+
+    plot(x, y, lstyle="--", lw=0.1)
+    xscale!("log")
+
+    PREVIEW && preview(f)
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end

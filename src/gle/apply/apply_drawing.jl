@@ -58,7 +58,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Line2D, el_counter::
             if isdef(obj.markerstyle.color)
                 "\n\tlet d$(el_counter+1) = d$(el_counter)" |> g
                 el_counter += 1
-                "\n\td$el_counter"                          |> g
+                "\n\td$el_counter" |> g
             end
         end
         # (2b) marker style
@@ -92,9 +92,9 @@ end
 
 function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
 
-    # temporary buffers to help for the legend
-    lt   = IOBuffer()
-    glet = GLE()
+    # # temporary buffers to help for the legend
+    # lt   = IOBuffer()
+    # glet = GLE()
 
     # write data to a temporary CSV file
     faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
@@ -135,7 +135,7 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
     # (4) apply histogram
     "\n\tbar d$(el_counter) width $width" |> g
 
-    apply_histstyle!(g, obj.histstyle)
+    apply_barstyle!(g, obj.barstyle)
 
     return el_counter
 end
@@ -170,57 +170,80 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
     return el_counter
 end
 
+####
+#### Apply Bar2D
+####
+
+function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Bar2D,
+                        el_counter::Int=1)
+
+    # write data to a temporary CSV file
+    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    writedlm(faux, obj.xy)
+
+    # >>>>>>>>>>>>>>>>
+    # general GLE syntax is:
+    # (1) data datafile.dat d1
+    # (2) bar d1 fill color_ color color_
+    # <<<<<<<<<<<<<<<<
+
+    # (1) indicate what data to read
+    "\n\tdata \"$faux\" d$(el_counter)" |> g
+
+    # (2) main bar command + styling
+    "\n\tbar d$(el_counter)" |> g
+    el_counter += 1
+
+    apply_barstyle!(g, obj.barstyle)
+
+    return el_counter
+end
 
 ####
-#### Apply Bar2D/GroupedBar2D object
+#### Apply GroupedBar2D
 ####
-#
-# function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
-#
-#     # temporary buffers to help for the legend
-#     lt   = IOBuffer()
-#     glet = GLE()
-#
-#     # write data to a temporary CSV file
-#     faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
-#     writedlm(faux, obj.x)
-#
-#     # >>>>>>>>>>>>>>>>
-#     # general GLE syntax is:
-#     # (1) data datafile.dat d1
-#     # (2) let d2 = hist d1 from xmin to xmax bins nbins
-#     # (3) let d2 = d2 * scaling
-#     # (4) bar d2 width width_ fill color_ color color_ pattern pattern_ horiz
-#     # <<<<<<<<<<<<<<<<
-#
-#     # (1) indicate what data to read
-#     "\n\tdata \"$faux\" d$(el_counter)" |> g
-#
-#     # (2) hist description
-#     minx, maxx = minimum(obj.x), maximum(obj.x)
-#     "\n\tlet d$(el_counter+1) = hist d$(el_counter)" |> g
-#     "from $minx to $maxx" |> g
-#     el_counter += 1
-#
-#     # number of bins (TODO: better criterion, see StatsPlots.jl)
-#     nobs   = length(obj.x)
-#     nbauto = (nobs<10) * nobs +
-#              (10<=nobs<30) * 10 +
-#              (nobs>30) * min(round(Int, sqrt(nobs)), 150)
-#     bins   = isdef(obj.bins) ? obj.bins : nbauto
-#     "bins $bins" |> g
-#
-#     # (3) compute appropriate scaling
-#     width   = (maxx - minx) / bins
-#     scaling = 1.0
-#     obj.scaling == "probability" && (scaling /= nobs)
-#     obj.scaling == "pdf"         && (scaling /= (nobs * width))
-#     "\n\tlet d$(el_counter) = d$(el_counter)*$scaling" |> g
-#
-#     # (4) apply histogram
-#     "\n\tbar d$(el_counter) width $width" |> g
-#
-#     apply_histstyle!(g, obj.histstyle)
-#
-#     return el_counter
-# end
+
+function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::GroupedBar2D,
+                        el_counter::Int=1)
+
+    # write data to a temporary CSV file
+    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    writedlm(faux, obj.xy)
+
+    # >>>>>>>>>>>>>>>>
+    # general GLE syntax is:
+    # (1) data datafile.dat d1 d2 ...
+    # (2) bar d1,d2,d3 fill color_ color color_
+    # (STACKED, NO GROUP)
+    # bar d1 ...
+    # bar d2 from d1 ...
+    # XXX (STACKED, GROUP) ---> see first whether this has a use case...
+    # could solve it by specifying what gets stacked stack=[(1, 2), ...] but
+    # clunky (and tbf not great visualisation anyway...)
+    # bar d1,d2 ...
+    # bar d3,d4 from d1,d2 ...
+    # <<<<<<<<<<<<<<<<
+
+    nbars = size(obj.xy, 2) - 1
+
+    # (1) indicate what data to read (no need to specify columns)
+    "\n\tdata \"$faux\"" |> g
+    prod("d$(el_counter+i-1) " for i ∈ (1:nbars)) |> g
+
+    # (2) non stacked
+    if !obj.stacked
+        ds  = prod("d$(el_counter+i)," for i ∈ (1:nbars-1))
+        ds *= "d$(el_counter+nbars)"
+        "\n\tbar d$(el_counter)" |> g
+    # (2) stacked
+    else
+        "\n\tbar d$(el_counter)" |> g
+        # apply_barstyle!(g, obj.barstyle[1])
+        for i ∈ 1:nbars-1
+            "\n\tbar d$(el_counter+i) from d$(el_counter+i-1)" |> g
+            # apply_barstyle!(g, obj.barstyle[i])
+        end
+    end
+
+    return el_counter + nbars
+end

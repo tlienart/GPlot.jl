@@ -1,3 +1,11 @@
+function add_dict_vals!(d::Dict{String,String})
+    for v ∈ values(d)
+        get(d, v) do
+            d[v] = v
+        end
+    end
+end
+
 const GLE_MARKERS = Dict{String, String}(
     "^"         => "triangle"   ,
     "△"         => "triangle"   ,
@@ -138,12 +146,7 @@ const GLE_FONTS = Dict{String, String}(
     "computer-modern-typewriter"        => "texcmtt" ,
     "computer-modern-italic-typewriter" => "texcmitt",
     )
-
-for v ∈ values(GLE_FONTS)
-    get(GLE_FONTS, v) do
-        GLE_FONTS[v] = v
-    end
-end
+add_dict_vals!(GLE_FONTS)
 
 const GLE_LEGEND_POS = Dict{String, String}(
     "top-left"      => "tl",
@@ -156,19 +159,17 @@ const GLE_LEGEND_POS = Dict{String, String}(
     "right-center"  => "rc",
     "center"        => "cc",
     )
-for v ∈ values(GLE_LEGEND_POS)
-    get(GLE_LEGEND_POS, v) do
-        GLE_LEGEND_POS[v] = v
-    end
-end
+add_dict_vals!(GLE_LEGEND_POS)
 
 const GLE_HIST2D_SCALING = Dict{String, String}(
     "none"  => "count",
     "pdf"   => "pdf",
     "prob"  => "probability",
 )
-for v ∈ values(GLE_HIST2D_SCALING)
-    get(GLE_HIST2D_SCALING, v) do
-        GLE_HIST2D_SCALING[v] = v
-    end
-end
+add_dict_vals!(GLE_HIST2D_SCALING)
+
+const GLE_AXSCALE = Dict{String, String}(
+    "log"  => "log",
+    "lin"  => "linear",
+)
+add_dict_vals!(GLE_AXSCALE)

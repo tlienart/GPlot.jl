@@ -1,28 +1,32 @@
-function apply_textstyle!(g::GLE, ts::TextStyle, haslatex=false)
-    isdef(ts.font)  && "font $(ts.font)"            |> g
-    isdef(ts.hei)   && "hei $(ts.hei)"              |> g
-    isdef(ts.color) && "color $(col2str(ts.color))" |> g
+function apply_textstyle!(g::GLE, s::TextStyle)
+    isanydef(s) || return
+    isdef(s.font)  && "font $(s.font)"            |> g
+    isdef(s.hei)   && "hei $(s.hei)"              |> g
+    isdef(s.color) && "color $(col2str(s.color))" |> g
     return
 end
 
-function apply_linestyle!(g::GLE, ls::LineStyle)
-    isdef(ls.lstyle) && "lstyle $(ls.lstyle)"        |> g
-    isdef(ls.lwidth) && "lwidth $(ls.lwidth)"        |> g
-    isdef(ls.color)  && "color $(col2str(ls.color))" |> g
-    isdef(ls.smooth) && "smooth"                     |> g # only for dn lines
+function apply_linestyle!(g::GLE, s::LineStyle)
+    isanydef(s) || return
+    isdef(s.lstyle) && "lstyle $(s.lstyle)"        |> g
+    isdef(s.lwidth) && "lwidth $(s.lwidth)"        |> g
+    isdef(s.color)  && "color $(col2str(s.color))" |> g
+    isdef(s.smooth) && "smooth"                    |> g # only for dn lines
     return
 end
 
-function apply_markerstyle!(g::GLE, m::MarkerStyle)
-    isdef(m.marker) && "marker $(m.marker)"        |> g
-    isdef(m.msize)  && "msize $(m.msize)"          |> g
-    isdef(m.color)  && "color $(col2str(m.color))" |> g
+function apply_markerstyle!(g::GLE, s::MarkerStyle)
+    isanydef(s) || return
+    isdef(s.marker) && "marker $(s.marker)"        |> g
+    isdef(s.msize)  && "msize $(s.msize)"          |> g
+    isdef(s.color)  && "color $(col2str(s.color))" |> g
     return
 end
 
-function apply_histstyle!(g::GLE, hs::HistStyle)
-    isdef(hs.color)  && "color $(col2str(hs.color))" |> g
-    isdef(hs.fill)   && "fill $(col2str(hs.fill))"   |> g
-    isdef(hs.horiz)  && hs.horiz && "horiz"          |> g
+function apply_barstyle!(g::GLE, s::BarStyle)
+    isanydef(s) || return
+    isdef(s.color) && "color $(col2str(s.color))" |> g
+    isdef(s.fill)  && "fill $(col2str(s.fill))"   |> g
+    isdef(s.horiz) && s.horiz && "horiz"          |> g
     return
 end

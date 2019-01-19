@@ -76,6 +76,29 @@ const HIST2D_OPTIONS = Dict{Symbol, Function}(
 set_properties!(::Type{B}, hist::Hist2D; opts...) where B<:Backend =
     set_properties!(B, HIST2D_OPTIONS, hist; opts...)
 
+const BAR2D_OPTIONS = Dict{Symbol, Function}(
+    :col            => set_color!,   # edge color
+    :color          => set_color!,
+    :ecol           => set_color!,
+    :edgecol        => set_color!,
+    :edgecolor      => set_color!,
+    :fcol           => set_fill!,    # face color
+    :fcolor         => set_fill!,
+    :facecolor      => set_fill!,
+    :fill           => set_fill!,
+    :horiz          => set_horiz!,   # show bar horizontal
+    :horizontal     => set_horiz!,
+    )
+set_properties!(::Type{B}, bar::Bar2D; opts...) where B<:Backend =
+    set_properties!(B, BAR2D_OPTIONS, bar; opts...)
+
+const GROUPEDBAR2D_OPTIONS = Dict{Symbol, Function}(
+    :stacked        => set_stacked!,
+# TODO styling things in vectors
+    )
+set_properties!(::Type{B}, gb::GroupedBar2D; opts...) where B<:Backend =
+    set_properties!(B, GROUPEDBAR2D_OPTIONS, gb; opts...)
+
 const FILL2D_OPTIONS = Dict{Symbol, Function}(
     :col       => set_color!,
     :color     => set_color!,

@@ -29,14 +29,15 @@ end
 end
 
 @with_kw mutable struct Bar2D{T<:MR} <: Drawing2D
-    xy::T
+    xy::T # first column: x, second y
     # --- style
     barstyle::BarStyle = BarStyle() # 🚫
 end
 
 @with_kw mutable struct GroupedBar2D{T<:MR} <: Drawing2D
-    bars::Vector{Bar2D{T}}
+    xy::T # first column x, subsequent columns y1, y2, ...
     # --- style
+    barstyle::Vector{BarStyle} = Vector{BarStyle}()
     stacked::Bool = false # 🚫
 # label
 end

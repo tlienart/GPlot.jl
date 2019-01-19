@@ -1,27 +1,28 @@
 @with_kw mutable struct TextStyle
     font ::Option{String}   = ∅ # ✓
-    hei  ::Option{Float}    = ∅ # ✓
+    hei  ::Option{Real}     = ∅ # ✓
     color::Option{Colorant} = ∅ # ✓
 end
 
 @with_kw mutable struct LineStyle
     lstyle::Option{Int}      = ∅ # ✓
-    lwidth::Option{Float}    = ∅ # ✓
+    lwidth::Option{Real}     = ∅ # ✓
     smooth::Option{Bool}     = ∅ # ✓
     color ::Option{Colorant} = ∅ # ✓
 end
 
 @with_kw mutable struct MarkerStyle
     marker::Option{String} = ∅ # ✓
-    msize::Option{Float}   = ∅ # ✓
+    msize::Option{Real}    = ∅ # ✓
     color::Option{Color}   = ∅ # ✓
 end
 
 @with_kw mutable struct BarStyle
-    color::Option{Color}     = ∅ # 🚫
-    fill::Option{Color}      = ∅ # 🚫
-#    pattern::Option{String}   =  .... see page 39 of manual, test first
-    horiz::Option{Bool}      = ∅ # 🚫
+    color::Option{Color}     = ∅ # ✓
+    fill::Option{Color}      = ∅ # ✓
+    horiz::Option{Bool}      = ∅ # ✓
+#   pattern::Option{String}   =  .... see page 39 of manual, test first
+#   width ...
 end
 
 @with_kw mutable struct FillStyle
