@@ -6,9 +6,14 @@ end
 GLE() = GLE(IOBuffer())
 
 function test_gle()
-    success(`gle -v`) ||  error("GLE could not be loaded. Make sure you " *
-                            "have installed it and that it is accessible " *
-                            "via the shell.")
+    flag = false
+    try
+        flag = success(`gle -v`)
+    catch
+    end
+    flag || error("GLE could not be loaded. Make sure you have installed " *
+                  "it and that it is accessible via the shell.")
+    return
 end
 
 struct Gnuplot <: Backend
