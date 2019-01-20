@@ -5,13 +5,13 @@
     # ---
     title      ::Option{Title}     = ∅ # title of the axis A🚫
     off        ::Option{Bool}      = ∅ # if true, axis is not shown A🚫
-    base       ::Option{Float}     = ∅ # scale font and ticks A🚫
+    base       ::Option{Real}      = ∅ # scale font and ticks A🚫
     textstyle  ::Option{TextStyle} = ∅ # parent textstyle of axis A🚫
-    lwidth     ::Option{Float}     = ∅ # width of the axis spine A🚫
+    lwidth     ::Option{Real}      = ∅ # width of the axis spine A🚫
     grid       ::Option{Bool}      = ∅ # ? draw ⟂ lines to that axis A🚫
-    log        ::Option{Bool}      = ∅ # log scale A🚫
-    min        ::Option{Float}     = ∅ # minimum span of the axis A🚫
-    max        ::Option{Float}     = ∅ # maximum span of the axis A🚫
+    log        ::Option{Bool}      = ∅ # ✓ log scale
+    min        ::Option{Real}      = ∅ # ✓ minimum span of the axis
+    max        ::Option{Real}      = ∅ # ✓ maximum span of the axis
 end
 Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
 
@@ -26,10 +26,10 @@ abstract type Axes{B <: Backend} end
     y2axis  ::Axis            = Axis("y2") # A🚫
     drawings::Vector{Drawing} = Vector{Drawing}() #
     # ---
-    title   ::Option{Title}              = ∅ # A🚫
-    size    ::Option{Tuple{Float,Float}} = ∅ # ✓ (width cm, height cm)
-    math    ::Option{Bool}               = ∅ # ✓ axis crossing (0, 0)
-    legend  ::Option{Legend}             = ∅
+    title   ::Option{Title}            = ∅ # A🚫
+    size    ::Option{Tuple{Real,Real}} = ∅ # ✓ (width cm, height cm)
+    math    ::Option{Bool}             = ∅ # ✓ axis crossing (0, 0)
+    legend  ::Option{Legend}           = ∅
 end
 
 mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined

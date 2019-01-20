@@ -7,7 +7,7 @@ function assemble_figure(f::Figure{GLE}; debug=false)
     isdef(f.texlabels) && (haslatex = f.texlabels)
     # line for texstyle, it may be empty if nothing is given
     "\nset" |> g
-    isdef(f.textstyle) && apply_textstyle!(g, f.textstyle, haslatex)
+    isdef(f.textstyle) && apply_textstyle!(g, f.textstyle)
     # latex if required
     if haslatex
         if isdef(f.texpreamble)

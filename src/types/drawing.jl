@@ -15,7 +15,8 @@ end
     bins::Option{Int} = ∅ # 🚫
     scaling::Option{String} = ∅ # 🚫
     # --- style
-    histstyle::HistStyle = HistStyle() # 🚫
+    barstyle::BarStyle = BarStyle() # 🚫
+    horiz::Bool = false
     # --- legend and misc
 #    label::Option{String} = ∅ # 🚫
 end
@@ -27,3 +28,19 @@ end
     # --- style
     fillstyle::FillStyle = FillStyle()
 end
+
+@with_kw mutable struct GroupedBar2D{T<:MR} <: Drawing2D
+    xy::T # first column x, subsequent columns y1, y2, ...
+    # --- style
+    barstyle::Vector{BarStyle} # this must be given explicitly see bar!
+    stacked::Bool = false
+    horiz::Bool = false
+# label
+end
+
+#=
+NOTE
+ - if one of the bar is horiz, all are horiz (but shouldn't happen bc shouldnt
+ have to assemble stuff
+ -
+=#

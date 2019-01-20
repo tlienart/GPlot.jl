@@ -5,10 +5,16 @@ using Colors
 using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
+
 export Figure, gcf, gca, erase!,
-    plot, plot!, hist, hist!, fill_between!, legend,
-    title!, xtitle!, x2title!, ytitle!, y2title!,
-    title, xtitle, x2title, ytitle, y2title,
+    # Drawings
+    plot, plot!, hist, hist!, bar, bar!, fill_between!,
+    # Axis / Axes
+    title!, xtitle!, x2title!, ytitle!, y2title!, legend!,
+    title, xtitle, x2title, ytitle, y2title, legend,
+    xlim!, xlim, ylim!, ylim,
+    xscale!, xscale, yscale!, yscale,
+    # Preview / rendering / saving
     preview, render, savefig, isempty,
     @t_str, @tex_str
 

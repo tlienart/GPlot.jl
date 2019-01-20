@@ -46,9 +46,28 @@ function col2str(col::Colorant)
     return "rgba($r,$g,$b,$α)"
 end
 
+# given something like "indianred" try to parse it as a color and return col
+function try_parse_col(v)
+    col = ∅
+    try
+        col = parse(Colorant, v)
+        if col isa TransparentColor && !(gcf().transparency == true)
+            @warn "Transparent colors are only supported when the figure " *
+                  "has its transparency property set to 'true'. Ignoring α."
+            col = convert(Color, col)
+        end
+    catch e
+        throw(OptionValueError("color", v))
+    end
+    return col
+end
+
 # unroll a vector into a string with the elements separated by a space
 vec2str(v::Vector{T}) where T<:Real = prod("$vi " for vi ∈ v)
 vec2str(v::Vector{String}) = prod("\"$vi\" " for vi ∈ v)
+# separated vec to str for things like d1,d2,d3 etc
+svec2str(v::Vector{String}, sep=",") = prod(vi*sep for vi∈v[1:end-1])*v[end]
+svec2str(v::Base.Generator, sep=",") = svec2str(collect(v), sep)
 
 #######################################
 
