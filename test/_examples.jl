@@ -1,15 +1,16 @@
 using GPlot
+using Colors
 
 PREVIEW = false
 SAVEFIG = true
 
-const SAVEPATH = "../GPlotExamples.jl/examples/"
+SAVEPATH = "../GPlotExamples.jl/examples/"
 
 ####
 #### Simple line plot, no latex
 #### NOTE: this is super quick because there's no latex compilation pass
 ####
-@elapsed begin
+t = @elapsed begin
     f = Figure("simple_notex", reset=true)
 
     # some silly data to display
@@ -25,13 +26,13 @@ const SAVEPATH = "../GPlotExamples.jl/examples/"
     # the preview is a PNG
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-end
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 ####
 #### Simple line plot, with titles and latex
 ####
 
-@elapsed begin
+t = @elapsed begin
     texpreamble = tex"""
         \usepackage[T1]{fontenc}
         \usepackage[default]{sourcesanspro}
@@ -71,16 +72,14 @@ end
     # the preview is a PNG
     PREVIEW && preview(f)
     SAVEFIG && savefig(f; format="pdf", path=SAVEPATH)
-end
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 ####
 #### Simple multiple line plots (in for loop) for square root with latex
 #### [GLE EXAMPLE]
 ####
 
-using Colors
-
-@elapsed begin
+t = @elapsed begin
     f = Figure("sqroot_tex", size=(11, 8), latex=true, reset=true)
     x = range(0, stop=10, length=100);
     alphas = 1:10
@@ -95,14 +94,14 @@ using Colors
 
     PREVIEW && preview(gcf())
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-end
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 ####
 #### Simple line plots with centered axis for sine with latex
 #### [GLE EXAMPLE]
 ####
 
-@elapsed begin
+t = @elapsed begin
     f = Figure("sine_tex", latex=true, fontsize=8, reset=true)
     x = range(-2pi, 2pi, length=100)
     y = sin.(x)
@@ -119,14 +118,13 @@ end
 
     PREVIEW && preview(gcf())
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-end
-
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 ####
 #### Simple histogram with pdf normalisation and pdf fit added
 ####
 
-@elapsed begin
+t = @elapsed begin
     f = Figure("simple_hist_notex", reset=true)
     x = randn(10_000)
     hist(x, fill="CornflowerBlue", color="white", scaling="pdf", nbins=50)
@@ -137,7 +135,7 @@ end
 
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-end
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 
 ####
@@ -145,7 +143,7 @@ end
 #### NOTE: alpha=true must be there otherwise GLE errors!
 ####
 
-@elapsed begin
+t = @elapsed begin
     f = Figure("simple_fill_transp_notex", alpha=true, reset=true)
 
     x = 0.1:0.1:5
@@ -160,13 +158,13 @@ end
 
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-end
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 ####
 #### Simple log plot, no latex
 ####
 
-@elapsed begin
+t = @elapsed begin
     f = Figure("simple_logscale_notex", reset=true)
 
     x = range(1, stop=1000, length=100)
@@ -177,13 +175,13 @@ end
 
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-end
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 ####
 #### Simple bar, no latex
 ####
 
-@elapsed begin
+t = @elapsed begin
     f = Figure("simple_bar_notex", reset=true)
 
     y = [50, 10, 20, 30, 5, 100]
@@ -194,14 +192,14 @@ end
 
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-end
+end; println("$(f.id)...done in $(round(t, digits=2))s")
 
 ####
 #### Simple grouped bar plot, no tex
 ####
 
 for stacked ∈ [true, false]
-    @elapsed begin
+    t = @elapsed begin
         f = Figure("simple_gbar_stacked=$(stacked)_notex", reset=true)
 
         y = [10, 20, 15, 50]
@@ -215,5 +213,5 @@ for stacked ∈ [true, false]
 
         PREVIEW && preview(f)
         SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-    end
+    end; println("$(f.id)...done in $(round(t, digits=2))s")
 end

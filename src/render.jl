@@ -21,7 +21,6 @@ function savefig(fig::Figure{GLE}
 
     # buffer for the GLE command that will be called
     glecom = IOBuffer()
-    GP_ENV["GLE_PATH"] |> glecom
 
     # extract device from file name
     fn, ext = splitext(fn)
@@ -30,29 +29,21 @@ function savefig(fig::Figure{GLE}
     ext ∈ ["eps", "ps", "pdf", "svg", "jpg", "png"] ||
             throw(OptionValueError("output file type", ext))
 
-    # set device
-    "-d $ext" |> glecom
-
-    # set default parameters, change if required
-    resolution = 200
+    # get default parameters, change if required
+    res = 200
     for optname ∈ opts.itr
         if optname ∈ [:res, :resolution]
-            res = opts[optname]
-            ((res isa Int) && (0 < res)) || throw(OptionValueError("resolution", res))
-            resolution = res
+            r = opts[optname]
+            ((r isa Int) && (0 < r)) || throw(OptionValueError("resolution", r))
+            res = r
         else
             throw(UnknownOptionError(optname, "gle command"))
         end
     end
-    # set resolution
-    "-r $resolution" |> glecom
 
-    # set transparency & tex
-    isdef(fig.transparency) && fig.transparency && "-cairo" |> glecom
-    isdef(fig.texlabels)    && fig.texlabels    && "-tex"   |> glecom
-
-    # remove verbosity
-    "-vb 0" |> glecom
+    # get transparency & tex
+    cairo = ifelse(isdef(fig.transparency), "-cairo", "")
+    texlabels = ifelse(isdef(fig.texlabels), "-tex", "")
 
     # fin - fout
     fto  = joinpath(GP_ENV["TMP_PATH"], fig.id)
@@ -66,14 +57,24 @@ function savefig(fig::Figure{GLE}
         mkpath(dir)
     end
     fout = fpo * ".$ext"
-    "-o $fout $fin > $flog 2>&1" |> glecom
 
     # GPlot assembling
     assemble_figure(fig)
 
     # GLE compilation
-    glecom = String(take!(glecom))
-    if !success(`bash -c "$glecom"`)
+    # XXX this if-else is really stupid but otherwise it puts empty '' which
+    # makes the command fail...
+    if (isempty(cairo) & isempty(texlabels))
+        glecom = pipeline(`gle -d $ext -r $res -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
+    elseif isempty(cairo)
+        glecom = pipeline(`gle -d $ext -r $res $texlabels -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
+    elseif isempty(texlabels)
+        glecom = pipeline(`gle -d $ext -r $res $cairo -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
+    else
+        glecom = pipeline(`gle -d $ext -r $res $cairo $texlabels -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
+    end
+
+    if !success(glecom)#`bash -c $glecom`)
         log = read(flog, String)
         GP_ENV["DEL_INTERM"] && cleanup(fig)
         error("GLE error: ... \n$log")

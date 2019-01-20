@@ -5,6 +5,12 @@ struct GLE <: Backend
 end
 GLE() = GLE(IOBuffer())
 
+function test_gle()
+    success(`gle -v`) ||  error("GLE could not be loaded. Make sure you " *
+                            "have installed it and that it is accessible " *
+                            "via the shell.")
+end
+
 struct Gnuplot <: Backend
     io::IOBuffer
 end

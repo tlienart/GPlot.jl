@@ -20,8 +20,6 @@ export Figure, gcf, gca, erase!,
 
 const GP_ENV = Dict{String, Any}(
     "VERBOSE"    => true,
-    "BACKEND"    => nothing,
-    "GLE_PATH"   => "/Applications/QGLE.app/Contents/bin/gle",
     "TMP_PATH"   => mktempdir(),
     "DEL_INTERM" => true,
     "SHOW_GSERR" => false
@@ -29,6 +27,8 @@ const GP_ENV = Dict{String, Any}(
 
 include("utils.jl")
 
+# default backend for now
+test_gle()
 GP_ENV["BACKEND"] = GLE
 
 const AS  = AbstractString
