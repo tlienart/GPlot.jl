@@ -87,6 +87,36 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Line2D, el_counter::
 end
 
 ####
+#### Apply a Fill2D object
+####
+
+function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
+
+    # write data to a temporary CSV file
+    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    writedlm(faux, obj.xy1y2)
+
+    # >>>>>>>>>>>>>>>>
+    # general GLE syntax is:
+    # (1) data datafile.dat d1=c1,c2 d2=c1,c3
+    # (2) fill d1,d2 color color_ xmin val xmax val
+    # <<<<<<<<<<<<<<<<
+
+    "\n\tdata \"$faux\" d$(el_counter)=c1,c2 d$(el_counter+1)=c1,c3" |> g
+    "\n\tfill d$(el_counter),d$(el_counter+1)" |> g
+
+    # color is not optional
+    "color $(col2str(obj.fillstyle.color))" |> g
+
+    isdef(obj.xmin) && "xmin $(obj.xmin)" |> g
+    isdef(obj.xmax) && "xmax $(obj.xmax)" |> g
+
+    el_counter += 2
+
+    return el_counter
+end
+
+####
 #### Apply a Hist2D object
 ####
 
@@ -135,66 +165,9 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
     # (4) apply histogram
     "\n\tbar d$(el_counter) width $width" |> g
 
+    # apply styling
     apply_barstyle!(g, obj.barstyle)
-
-    return el_counter
-end
-
-####
-#### Apply a Fill2D object
-####
-
-function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
-
-    # write data to a temporary CSV file
-    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
-    writedlm(faux, obj.xy1y2)
-
-    # >>>>>>>>>>>>>>>>
-    # general GLE syntax is:
-    # (1) data datafile.dat d1=c1,c2 d2=c1,c3
-    # (2) fill d1,d2 color color_ xmin val xmax val
-    # <<<<<<<<<<<<<<<<
-
-    "\n\tdata \"$faux\" d$(el_counter)=c1,c2 d$(el_counter+1)=c1,c3" |> g
-    "\n\tfill d$(el_counter),d$(el_counter+1)" |> g
-
-    # color is not optional
-    "color $(col2str(obj.fillstyle.color))" |> g
-
-    isdef(obj.xmin) && "xmin $(obj.xmin)" |> g
-    isdef(obj.xmax) && "xmax $(obj.xmax)" |> g
-
-    el_counter += 2
-
-    return el_counter
-end
-
-####
-#### Apply Bar2D
-####
-
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Bar2D,
-                        el_counter::Int=1)
-
-    # write data to a temporary CSV file
-    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
-    writedlm(faux, obj.xy)
-
-    # >>>>>>>>>>>>>>>>
-    # general GLE syntax is:
-    # (1) data datafile.dat d1
-    # (2) bar d1 fill color_ color color_
-    # <<<<<<<<<<<<<<<<
-
-    # (1) indicate what data to read
-    "\n\tdata \"$faux\" d$(el_counter)" |> g
-
-    # (2) main bar command + styling
-    "\n\tbar d$(el_counter)" |> g
-    el_counter += 1
-
-    apply_barstyle!(g, obj.barstyle)
+    obj.horiz && "horiz" |> g
 
     return el_counter
 end
@@ -226,22 +199,28 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::GroupedBar2D,
 
     nbars = size(obj.xy, 2) - 1
 
-    # (1) indicate what data to read (no need to specify columns)
+    # (1) indicate what data to read "data file d1 d2 d3..."
     "\n\tdata \"$faux\"" |> g
     prod("d$(el_counter+i-1) " for i ∈ (1:nbars)) |> g
 
-    # (2) non stacked
-    if !obj.stacked
-        ds  = prod("d$(el_counter+i)," for i ∈ (1:nbars-1))
-        ds *= "d$(el_counter+nbars)"
-        "\n\tbar d$(el_counter)" |> g
+    # (2) non stacked (or single barset)
+    if nbars==1 || !obj.stacked
+        # bar d1,d2,d3
+        "\n\tbar $(svec2str(("d$(el_counter+i-1)," for i ∈ 1:nbars)))" |> g
+        # apply bar styles
+        apply_barstyles_nostack!(g, obj.barstyle)
+        obj.horiz && "horiz" |> g
+
     # (2) stacked
     else
+        # first base bar
         "\n\tbar d$(el_counter)" |> g
-        # apply_barstyle!(g, obj.barstyle[1])
-        for i ∈ 1:nbars-1
-            "\n\tbar d$(el_counter+i) from d$(el_counter+i-1)" |> g
-            # apply_barstyle!(g, obj.barstyle[i])
+        apply_barstyle!(g, obj.barstyle[1])
+        obj.horiz && "horiz" |> g
+        # bars stacked on top
+        for i ∈ 2:nbars
+            "\n\tbar d$(el_counter+i-1) from d$(el_counter+i-2)" |> g
+            apply_barstyle!(g, obj.barstyle[i])
         end
     end
 

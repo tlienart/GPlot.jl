@@ -27,6 +27,13 @@ function apply_barstyle!(g::GLE, s::BarStyle)
     isanydef(s) || return
     isdef(s.color) && "color $(col2str(s.color))" |> g
     isdef(s.fill)  && "fill $(col2str(s.fill))"   |> g
-    isdef(s.horiz) && s.horiz && "horiz"          |> g
     return
+end
+
+# assumption that if one is defined, all are defined (this is checked
+# with the set_properties!)
+function apply_barstyles_nostack!(g::GLE, v::Vector{BarStyle})
+    isanydef(v[1]) || return # silly case...
+    isdef(v[1].color) && "color $(svec2str((col2str(s.color) for s ∈ v)))" |> g
+    isdef(v[1].fill)  && "fill $(svec2str((col2str(s.fill) for s ∈ v)))"   |> g
 end

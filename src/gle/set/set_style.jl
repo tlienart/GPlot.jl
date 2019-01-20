@@ -3,25 +3,33 @@
 ####
 
 function set_color!(::Type{GLE}, o, elem::Symbol, v; name=:color)
-    col = ∅
-    try
-        col = parse(Colorant, v)
-        if col isa TransparentColor && !(gcf().transparency == true)
-            @warn "Transparent colors are only supported when the figure " *
-                  "has its transparency property set to 'true'. Ignoring α."
-            col = convert(Color, col)
-        end
-    catch e
-        throw(OptionValueError("color", v))
-    end
-    setfield!(getfield(o, elem), name, col)
+    setfield!(getfield(o, elem), name, try_parse_col(v))
     return o
 end
 
 set_color!(g, o::Union{Line2D, Ticks}, v) = set_color!(g, o, :linestyle, v)
-set_color!(g, o::Union{Hist2D, Bar2D}, v) = set_color!(g, o, :barstyle, v)
+set_color!(g, o::Union{Hist2D}, v) = set_color!(g, o, :barstyle, v)
 set_color!(g, o::Fill2D, v) = set_color!(g, o, :fillstyle, v)
 set_color!(g, o::Union{Title, TicksLabels, Axis}, v) = set_color!(g, o, :textstyle, v)
+
+function set_colors!(g::Type{GLE}, o::GroupedBar2D, vc; name=:color)
+    if vc isa AbstractVector
+        @assert length(vc) == size(o.xy, 2)-1 "Number of $(name)s must " *
+                          "match the number of bar groups. Given: " *
+                          "$(length(vc)), expected: $(size(o.xy, 2)-1)."
+    else
+        @assert size(o.xy, 1) == 2 "Only one $name given but expected the " *
+                          "number of bar groups ($(size(o.xy, 2)-1))."
+    end
+    # dev-note: iterator over scalar works.
+    for (i, cᵢ) ∈ enumerate(vc)
+        setfield!(o.barstyle[i], name, try_parse_col(cᵢ))
+    end
+    return o
+end
+
+set_fill!(g, o, v) = set_color!(g, o, :barstyle, v; name=:fill)
+set_fills!(g, o, v) = set_colors!(g, o, v; name=:fill)
 
 function set_alpha!(::Type{GLE}, o, el::Symbol, v::Real; name=:color)
     if !(gcf().transparency == true)

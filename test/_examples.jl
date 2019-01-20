@@ -163,6 +163,23 @@ end
 end
 
 ####
+#### Simple log plot, no latex
+####
+
+@elapsed begin
+    f = Figure("simple_logscale_notex", reset=true)
+
+    x = range(1, stop=1000, length=100)
+    y = @. log(x)
+
+    plot(x, y, lstyle="--", lw=0.1)
+    xscale!("log")
+
+    PREVIEW && preview(f)
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end
+
+####
 #### Simple bar, no latex
 ####
 
@@ -180,18 +197,23 @@ end
 end
 
 ####
-#### Simple log plot, no latex
+#### Simple grouped bar plot, no tex
 ####
 
-@elapsed begin
-    f = Figure("simple_logscale_notex", reset=true)
+for stacked ∈ [true, false]
+    @elapsed begin
+        f = Figure("simple_gbar_stacked=$(stacked)_notex", reset=true)
 
-    x = range(1, stop=1000, length=100)
-    y = @. log(x)
+        y = [10, 20, 15, 50]
+        δ = [5, 3, 7, 10]
+        y2 = y .+ δ
+        x = 1:length(y)
 
-    plot(x, y, lstyle="--", lw=0.1)
-    xscale!("log")
+        bar(x, y, y2; stacked=stacked,
+            fills=["darkgreen", "cyan"],
+            colors=["white", "white"])
 
-    PREVIEW && preview(f)
-    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+        PREVIEW && preview(f)
+        SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+    end
 end

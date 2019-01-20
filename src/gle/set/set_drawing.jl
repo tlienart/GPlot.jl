@@ -22,9 +22,7 @@ function set_scaling!(::Type{GLE}, o::Hist2D, v::String)
    return o
 end
 
-set_fill!(g, o, v) = set_color!(g, o, :barstyle, v; name=:fill)
-
-set_horiz!(::Type{GLE}, o, v::Bool) = (o.barstyle.horiz = v; o)
+set_horiz!(::Type{GLE}, o, v::Bool) = (o.horiz = v; o)
 
 ####
 #### Fill2D
@@ -32,7 +30,6 @@ set_horiz!(::Type{GLE}, o, v::Bool) = (o.barstyle.horiz = v; o)
 
 set_xmin!(::Type{GLE}, o::Fill2D, v::Real) = (o.xmin = x; o)
 set_xmax!(::Type{GLE}, o::Fill2D, v::Real) = (o.xmax = x; o)
-
 
 ####
 #### GroupedBar2D

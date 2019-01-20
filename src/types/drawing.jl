@@ -16,6 +16,7 @@ end
     scaling::Option{String} = ∅ # 🚫
     # --- style
     barstyle::BarStyle = BarStyle() # 🚫
+    horiz::Bool = false
     # --- legend and misc
 #    label::Option{String} = ∅ # 🚫
 end
@@ -28,17 +29,12 @@ end
     fillstyle::FillStyle = FillStyle()
 end
 
-@with_kw mutable struct Bar2D{T<:MR} <: Drawing2D
-    xy::T # first column: x, second y
-    # --- style
-    barstyle::BarStyle = BarStyle() # 🚫
-end
-
 @with_kw mutable struct GroupedBar2D{T<:MR} <: Drawing2D
     xy::T # first column x, subsequent columns y1, y2, ...
     # --- style
-    barstyle::Vector{BarStyle} = Vector{BarStyle}()
-    stacked::Bool = false # 🚫
+    barstyle::Vector{BarStyle} # this must be given explicitly see bar!
+    stacked::Bool = false
+    horiz::Bool = false
 # label
 end
 

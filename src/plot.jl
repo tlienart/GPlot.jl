@@ -78,37 +78,7 @@ Add one or several line plots on cleaned up axes on the current figure
 """
 plot(xy::MR; opts...) = plot!(xy; overwrite=true, opts...)
 plot(x, y; opts...) = plot!(x, y; overwrite=true, opts...)
-plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts)
-
-####
-#### hist, hist!
-####
-
-"""
-    hist!([axes], x; options...)
-
-Add a histogram of `x` on the current axes.
-"""
-function hist!(axes::Axes2D{B}, x::AVR; overwrite=false, opts...
-               ) where B<:Backend
-
-    # if overwrite, destroy axes and start afresh
-    overwrite && erase!(axes)
-
-    # create line object, set properties and push to drawing stack
-    hist = Hist2D(x = x)
-
-    set_properties!(B, hist; opts...)
-    push!(axes.drawings, hist)
-    return
-end
-
-hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
-
-hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
-
-hist(x; opts...)  = hist!(x; overwrite=true, opts...)
-
+plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
 
 ####
 #### fill_between!, fill_between
@@ -119,12 +89,10 @@ function fill_between!(axes::Axes2D{B}, xy1y2::MR; overwrite=false, opts...
 
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(axes)
-
     # create fill object, set properties and push to drawing stack
     fill = Fill2D(xy1y2 = xy1y2)
     set_properties!(B, fill; opts...)
     push!(axes.drawings, fill)
-
     return
 end
 
@@ -150,10 +118,35 @@ fill_between!(x, y1::AVR, y2::AVR; opts...) = fill_between!(gca(), x, y1, y2;
 fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
     overwrite=true, opts...)
 
+####
+#### hist, hist!
+####
+
+"""
+    hist!([axes], x; options...)
+
+Add a histogram of `x` on the current axes.
+"""
+function hist!(axes::Axes2D{B}, x::AVR; overwrite=false, opts...
+               ) where B<:Backend
+
+    # if overwrite, destroy axes and start afresh
+    overwrite && erase!(axes)
+    # create hist2d object assign properties and push to drawing stack
+    hist = Hist2D(x = x)
+    set_properties!(B, hist; opts...)
+    push!(axes.drawings, hist)
+    return
+end
+
+hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
+hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
+
+hist(x; opts...)  = hist!(x; overwrite=true, opts...)
+
 
 ####
 #### bar!, bar
-#### NOTE: for groupedbar, need to check number of barstyles matches
 ####
 
 function bar!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
@@ -161,18 +154,10 @@ function bar!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
 
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(axes)
-
-    # if there's more than two columns, it's a groupedbar
-    if size(xy, 2) == 2
-        obj = Bar2D(xy = xy)
-    else
-        obj = GroupedBar2D(xy = xy)
-    end
-
-    # assign properties and push to drawing stack
-    set_properties!(B, obj; opts...)
-    push!(axes.drawings, obj)
-
+    # create groupedbar2d object, assign properties and push to drawing stack
+    gb = GroupedBar2D(xy = xy, barstyle=[BarStyle() for i ∈ 1:(size(xy,2)-1)])
+    set_properties!(B, gb; opts...)
+    push!(axes.drawings, gb)
     return
 end
 
