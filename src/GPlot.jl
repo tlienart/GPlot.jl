@@ -18,25 +18,24 @@ export Figure, gcf, gca, erase!,
     preview, render, savefig, isempty,
     @t_str, @tex_str
 
+const GP_ENV = Dict{String, Any}(
+    "VERBOSE"    => true,
+    "BACKEND"    => nothing,
+    "GLE_PATH"   => "/Applications/QGLE.app/Contents/bin/gle",
+    "TMP_PATH"   => mktempdir(),
+    "DEL_INTERM" => true,
+    "SHOW_GSERR" => false
+    )
 
 include("utils.jl")
 
-const GP_VERBOSE    = true
-const GP_BACKEND    = GLE
-const GLE_APP_PATH  = "/Applications/QGLE.app/Contents/bin/gle"
-const GP_TMP_PATH   = mktempdir()
-const GP_DEL_INTERM = true
-const GP_SHOW_GSERR = false # show ghostscript errors (bounding box...)
+GP_ENV["BACKEND"] = GLE
 
-const Float = Float64
-const AS    = AbstractString
-const VF    = Vector{Float}
-const AVF   = AbstractVector{Float}
-const MF    = Matrix{Float}
-const ∅     = nothing
-const ARR   = AbstractRange{<:Real}
-const AVR   = AbstractVector{<:Real}
-const MR    = Matrix{<:Real}
+const AS  = AbstractString
+const ∅   = nothing
+const ARR = AbstractRange{<:Real}
+const AVR = AbstractVector{<:Real}
+const MR  = Matrix{<:Real}
 
 const PT_TO_CM  = 0.0352778 # 1pt in cm
 const Option{T} = Union{Nothing, T}
@@ -67,24 +66,23 @@ include("ax.jl")
 
 include("render.jl")
 
-const GP_ALLFIGS = Dict{String, Figure}()
-const GP_CURFIG  = Ref{Option{Figure}}(nothing)
-const GP_CURAXES = Ref{Option{Axes}}(nothing)
-
+GP_ENV["ALLFIGS"] = Dict{String, Figure}()
+GP_ENV["CURFIG"]  = nothing
+GP_ENV["CURAXES"] = nothing
 
 """
     gcf()
 
 Return the current active Figure or a new figure if there isn't one.
 """
-gcf() = isdef(GP_CURFIG.x) ? GP_CURFIG.x : Figure() # do not use ifelse here
+gcf() = isdef(GP_ENV["CURFIG"]) ? GP_ENV["CURFIG"] : Figure() # no ifelse here
 
 """
     gca()
 
 Return the current active Axes and `nothing` if there isn't one.
 """
-gca() = GP_CURAXES.x # if nothing, whatever called it will create
+gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 
 """
     get_backend(f)

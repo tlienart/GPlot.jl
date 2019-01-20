@@ -33,20 +33,20 @@ function Figure(id::String, g::Backend; opts...)
                (12, 9), TextStyle(hei=0.35), ∅, ∅, ∅, ∅)
 
     set_properties!(f; opts...)
-    GP_ALLFIGS[id] = f
-    GP_CURFIG.x    = f
-    GP_CURAXES.x   = nothing
+    GP_ENV["ALLFIGS"][id] = f
+    GP_ENV["CURFIG"]     = f
+    GP_ENV["CURAXES"]    = nothing
     return f
 end
 
 function Figure(id::String="_fig_"; reset=false, opts...)
-    id == "_fig_" && return Figure(id, GP_BACKEND(); opts...) # a fresh one
-    f = get(GP_ALLFIGS, id) do
-        Figure(id, GP_BACKEND(); opts...)
+    id == "_fig_" && return Figure(id, GP_ENV["BACKEND"](); opts...) # fresh
+    f = get(GP_ENV["ALLFIGS"], id) do
+        Figure(id, GP_ENV["BACKEND"](); opts...)
     end
     reset && erase!(f)
-    GP_CURFIG.x = f
-    GP_CURAXES.x = isempty(f.axes) ? nothing : f.axes[1]
+    GP_ENV["CURFIG"] = f
+    GP_ENV["CURAXES"] = isempty(f.axes) ? nothing : f.axes[1]
     set_properties!(f; opts...) # f exists but properties have been given
     return f
 end
@@ -59,7 +59,7 @@ Add axes `ax` to figure `fig`.
 """
 function add_axes!(f::Figure, ax::Axes)
     push!(f.axes, ax)
-    GP_CURAXES.x = ax
+    GP_ENV["CURAXES"] = ax
     return
 end
 

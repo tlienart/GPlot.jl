@@ -47,6 +47,6 @@ function erase!(a::Axes2D)
     a.y2axis   = Axis("y2")
     a.drawings = Vector{Drawing}()
     clear!(a)
-    GP_CURAXES.x = a
+    GP_ENV["CURAXES"] = a
     return
 end

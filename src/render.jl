@@ -1,10 +1,10 @@
 function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
     # aux `.gle` folder
-    rm(joinpath(GP_TMP_PATH, ".gle"), recursive=true, force=true)
+    rm(joinpath(GP_ENV["TMP_PATH"], ".gle"), recursive=true, force=true)
     # aux `fig.id...` files
-    auxfiles = filter!(f -> startswith(f, fig.id), readdir(GP_TMP_PATH))
+    auxfiles = filter!(f -> startswith(f, fig.id), readdir(GP_ENV["TMP_PATH"]))
     for af ∈ auxfiles
-        (af ∈ exclude) || rm(joinpath(GP_TMP_PATH, af), force=true)
+        (af ∈ exclude) || rm(joinpath(GP_ENV["TMP_PATH"], af), force=true)
     end
     return
 end
@@ -21,7 +21,7 @@ function savefig(fig::Figure{GLE}
 
     # buffer for the GLE command that will be called
     glecom = IOBuffer()
-    GLE_APP_PATH |> glecom
+    GP_ENV["GLE_PATH"] |> glecom
 
     # extract device from file name
     fn, ext = splitext(fn)
@@ -55,7 +55,7 @@ function savefig(fig::Figure{GLE}
     "-vb 0" |> glecom
 
     # fin - fout
-    fto  = joinpath(GP_TMP_PATH, fig.id)
+    fto  = joinpath(GP_ENV["TMP_PATH"], fig.id)
     fin  = fto * ".gle"
     flog = fto * ".log"
     fpo  = normpath(joinpath(pwd(), fn))
@@ -75,12 +75,12 @@ function savefig(fig::Figure{GLE}
     glecom = String(take!(glecom))
     if !success(`bash -c "$glecom"`)
         log = read(flog, String)
-        GP_DEL_INTERM && cleanup(fig)
+        GP_ENV["DEL_INTERM"] && cleanup(fig)
         error("GLE error: ... \n$log")
     end
 
     # cleanup if required and return output file name
-    GP_DEL_INTERM && cleanup(fig, [fn * ".$ext"])
+    GP_ENV["DEL_INTERM"] && cleanup(fig, [fn * ".$ext"])
     return fout
 end
 
@@ -109,5 +109,5 @@ render() = render(gcf())
 
 function Base.show(io::IO, ::MIME"image/png", pfig::PreviewFigure)
     write(io, read(pfig.fname))
-    GP_DEL_INTERM && rm(pfig.fname)
+    GP_ENV["DEL_INTERM"] && rm(pfig.fname)
 end

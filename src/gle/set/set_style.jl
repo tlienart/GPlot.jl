@@ -17,13 +17,13 @@ function set_colors!(g::Type{GLE}, o::GroupedBar2D, vc; name=:color)
         @assert length(vc) == size(o.xy, 2)-1 "Number of $(name)s must " *
                           "match the number of bar groups. Given: " *
                           "$(length(vc)), expected: $(size(o.xy, 2)-1)."
+        for (i, cᵢ) ∈ enumerate(vc)
+            setfield!(o.barstyle[i], name, try_parse_col(cᵢ))
+        end
     else
-        @assert size(o.xy, 1) == 2 "Only one $name given but expected the " *
+        @assert size(o.xy, 2) == 2 "Only one $name given but expected the " *
                           "number of bar groups ($(size(o.xy, 2)-1))."
-    end
-    # dev-note: iterator over scalar works.
-    for (i, cᵢ) ∈ enumerate(vc)
-        setfield!(o.barstyle[i], name, try_parse_col(cᵢ))
+        setfield!(o.barstyle[1], name, try_parse_col(vc))
     end
     return o
 end

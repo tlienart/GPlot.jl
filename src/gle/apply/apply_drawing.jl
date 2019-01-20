@@ -31,7 +31,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Line2D, el_counter::
     glet = GLE()
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
     writedlm(faux, obj.xy)
 
     # >>>>>>>>>>>>>>>>
@@ -93,7 +93,7 @@ end
 function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
     writedlm(faux, obj.xy1y2)
 
     # >>>>>>>>>>>>>>>>
@@ -127,7 +127,7 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
     # glet = GLE()
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
     writedlm(faux, obj.x)
 
     # >>>>>>>>>>>>>>>>
@@ -180,7 +180,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::GroupedBar2D,
                         el_counter::Int=1)
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_TMP_PATH, gcf().id * "_auxdat_$el_counter.csv")
+    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
     writedlm(faux, obj.xy)
 
     # >>>>>>>>>>>>>>>>

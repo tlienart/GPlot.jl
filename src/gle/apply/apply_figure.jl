@@ -29,7 +29,7 @@ function assemble_figure(f::Figure{GLE}; debug=false)
     if debug
         return take!(g)
     else
-        write(joinpath(GP_TMP_PATH, f.id * ".gle"), take!(g))
+        write(joinpath(GP_ENV["TMP_PATH"], f.id * ".gle"), take!(g))
         return
     end
 end

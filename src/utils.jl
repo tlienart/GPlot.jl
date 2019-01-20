@@ -37,7 +37,7 @@ end
 #######################################
 
 # return a number with 3 digits accuracy, useful in col2str
-round3d(x) = round(Float(x), digits=3)
+round3d(x::Real) = round(x, digits=3)
 
 # takes a colorant and transform it to a standard string rgba(...)
 function col2str(col::Colorant)
@@ -66,7 +66,10 @@ end
 vec2str(v::Vector{T}) where T<:Real = prod("$vi " for vi ∈ v)
 vec2str(v::Vector{String}) = prod("\"$vi\" " for vi ∈ v)
 # separated vec to str for things like d1,d2,d3 etc
-svec2str(v::Vector{String}, sep=",") = prod(vi*sep for vi∈v[1:end-1])*v[end]
+function svec2str(v::Vector{String}, sep=",")
+    length(v) > 1 || return v[1]
+    return prod(vi*sep for vi∈v[1:end-1])*v[end]
+end
 svec2str(v::Base.Generator, sep=",") = svec2str(collect(v), sep)
 
 #######################################
@@ -97,4 +100,4 @@ struct OptionValueError <: Exception
     OptionValueError(s, v) = new("[$s] value given ($v) did not meet the expected format.")
 end
 
-gle_no_support(s) = GP_VERBOSE && println("🚫  GLE does not support $s [ignoring]")
+gle_no_support(s) = GP_ENV["VERBOSE"] && println("🚫  GLE does not support $s [ignoring]")
