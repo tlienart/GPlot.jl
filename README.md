@@ -13,10 +13,13 @@ Translating plotting commands into a script that these programs can handle (whic
 * subsequent plotting time will be very quick
 * for plots with LaTeX, there is a small overhead since there is an extra pass required to go through the LaTeX engine
 
+
+The diagram below illustrates how `GPlot` works with the `GLE` backend.
+
 ```
-                 +---------------------+
+                +----------------------+
           +---> | Generated GLE code   +---+
-Julia     |      +---------------------+   +---> GLE engine
+Julia     |     +----------------------+   +---> GLE engine
 code   ---+                                |         +
           |     +----------------------+   |         |
           +---> | Auxiliary data files +---+         |
