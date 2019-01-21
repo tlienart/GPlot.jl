@@ -13,18 +13,16 @@ Translating plotting commands into a script that these programs can handle (whic
 * subsequent plotting time will be very quick
 * for plots with LaTeX, there is a small overhead since there is an extra pass required to go through the LaTeX engine
 
+The following diagram illustrates how `GPlot` works:
+
 ```
-               +----------------------------+
-        +----> | Generated GLE/Gnuplot code +--+
-Julia   |      +----------------------------+  +---> GLE/Gnuplot engine
-code    |                                      |            +
-        |         +----------------------+     |            |
-        +-------> | Auxiliary data files +-----+            |
-                  +----------------------+                  |
-                                                       (LaTeX engine)
-                                                            |
-                                                            v
-                                                    Output (PDF/PNG/...)
+                 +---> [ Generated GLE code ] +---+
+[ Julia code ] --+                                +---> [ GLE engine ]
+                 +---> [   Aux data files   ] +---+           |
+                                                          (pdflatex)
+                                                              |
+                                                              v
+                                                       Output (PDF/PNG/...)
 ```
 
 **Features**
