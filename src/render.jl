@@ -42,8 +42,8 @@ function savefig(fig::Figure{GLE}
     end
 
     # get transparency & tex
-    cairo = ifelse(isdef(fig.transparency), "-cairo", "")
-    texlabels = ifelse(isdef(fig.texlabels), "-tex", "")
+    cairo = ifelse(isdef(fig.transparency), `-cairo`, ``)
+    texlabels = ifelse(isdef(fig.texlabels), `-tex`, ``)
 
     # fin - fout
     fto  = joinpath(GP_ENV["TMP_PATH"], fig.id)
@@ -62,17 +62,7 @@ function savefig(fig::Figure{GLE}
     assemble_figure(fig)
 
     # GLE compilation
-    # XXX this if-else is really stupid but otherwise it puts empty '' which
-    # makes the command fail...
-    if (isempty(cairo) & isempty(texlabels))
-        glecom = pipeline(`gle -d $ext -r $res -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
-    elseif isempty(cairo)
-        glecom = pipeline(`gle -d $ext -r $res $texlabels -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
-    elseif isempty(texlabels)
-        glecom = pipeline(`gle -d $ext -r $res $cairo -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
-    else
-        glecom = pipeline(`gle -d $ext -r $res $cairo $texlabels -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
-    end
+    glecom = pipeline(`gle -d $ext -r $res $cairo $texlabels -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
 
     if !success(glecom)#`bash -c $glecom`)
         log = read(flog, String)
