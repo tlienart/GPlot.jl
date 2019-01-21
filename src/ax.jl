@@ -7,10 +7,8 @@ function title!(axes::Axes2D{B}, text::AbstractString, axsymb::Option{Symbol};
 
     prefix, obj = "", axes
     if isdef(axsymb)
-        axsymb == :x  && (prefix = "x" ; obj = axes.xaxis ;)
-        axsymb == :x2 && (prefix = "x2"; obj = axes.x2axis;)
-        axsymb == :y  && (prefix = "y" ; obj = axes.yaxis ;)
-        axsymb == :y2 && (prefix = "y2"; obj = axes.y2axis;)
+        prefix = "$axsymb"
+        obj = getfield(axes, Symbol("$(axsymb)axis"))
         overwrite && clear!(obj)
     end
     setfield!(obj, :title, Title(text=text, prefix=prefix))

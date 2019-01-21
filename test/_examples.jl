@@ -8,7 +8,8 @@ SAVEPATH = "../GPlotExamples.jl/examples/"
 
 ####
 #### Simple line plot, no latex
-#### NOTE: this is super quick because there's no latex compilation pass
+#### NOTE: this is super quick (after precomp)
+#### because there's no latex compilation pass
 ####
 t = @elapsed begin
     f = Figure("simple_notex", reset=true)
