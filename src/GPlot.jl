@@ -61,8 +61,9 @@ include("gle/apply/apply_ax.jl")
 include("gle/apply/apply_figure.jl")
 
 include("set_properties.jl")
-include("plot.jl")
+include("drawing.jl")
 include("ax.jl")
+include("ax_elem.jl")
 
 include("render.jl")
 

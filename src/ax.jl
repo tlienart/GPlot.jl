@@ -1,88 +1,80 @@
 ####
-#### [x|y|x2|y2]title[!]
+#### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-function title!(axes::Axes2D{B}, text::AbstractString, axsymb::Option{Symbol};
-                overwrite=false, opts...) where B <: Backend
+function _lim!(axes::Axes2D, el::Symbol, min::Option{Real},
+               max::Option{Real})
 
-    prefix, obj = "", axes
-    if isdef(axsymb)
-        prefix = "$axsymb"
-        obj = getfield(axes, Symbol("$(axsymb)axis"))
-        overwrite && clear!(obj)
+    if min isa Real && max isa Real
+        @assert min < max "min must be strictly smaller than max"
     end
-    setfield!(obj, :title, Title(text=text, prefix=prefix))
-    set_properties!(B, getfield(obj, :title); opts...)
+    axis = getfield(axes, el)
+    setfield!(axis, :min, min)
+    setfield!(axis, :max, max)
     return
 end
 
-title!(::Nothing, text, axs; opts) = title!(add_axes2d!(), text, axs; opts...)
+xlim!(a::Axes2D, min, max) = _lim!(a, :xaxis, min, max)
+xlim!(min, max)            = xlim!(gca(), min, max)
+xlim!(; min=∅, max=∅)      = xlim!(gca(), min, max)
 
-title!(axes,   text; opts...) = title!(axes, text, ∅  ; opts...)
-xtitle!(axes,  text; opts...) = title!(axes, text, :x ; opts...)
-x2title!(axes, text; opts...) = title!(axes, text, :x2; opts...)
-ytitle!(axes,  text; opts...) = title!(axes, text, :y ; opts...)
-y2title!(axes, text; opts...) = title!(axes, text, :y2; opts...)
+# SYNONYMS
+xlim(a::Axes2D, min, max) = xlim!(a, min, max)
+xlim(min, max)            = xlim!(gca(), min, max)
+xlim(; min=∅, max=∅)      = xlim!(gca(), min, max)
 
-title!(text;   opts...) = title!(gca(), text, ∅  ; opts...)
-xtitle!(text;  opts...) = title!(gca(), text, :x ; opts...)
-x2title!(text; opts...) = title!(gca(), text, :x2; opts...)
-ytitle!(text;  opts...) = title!(gca(), text, :y ; opts...)
-y2title!(text; opts...) = title!(gca(), text, :y2; opts...)
+x2lim!(a::Axes2D, min, max) = _lim!(a, :x2axis, min, max)
+x2lim!(min, max)            = x2lim!(gca(), min, max)
+x2lim!(; min=∅, max=∅)      = x2lim!(gca(), min, max)
 
-###
+# SYNONYMS
+x2lim(a::Axes2D, min, max) = x2lim!(a, min, max)
+x2lim(min, max)            = x2lim!(gca(), min, max)
+x2lim(; min=∅, max=∅)      = x2lim!(gca(), min, max)
 
-title(axes, text, axs; opts...) = title!(axes, text, axs; overwrite=true, opts...)
-title(::Nothing, text, axs; opts...) = title(add_axes2d!(), text, axs; opts...)
+ylim!(a::Axes2D, min, max) = _lim!(a, :yaxis, min, max)
+ylim!(min, max)            = ylim!(gca(), min, max)
+ylim!(; min=∅, max=∅)      = ylim!(gca(), min, max)
 
-title(axes,   text; opts...) = title(axes, text, ∅  ; opts...)
-xtitle(axes,  text; opts...) = title(axes, text, :x ; opts...)
-x2title(axes, text; opts...) = title(axes, text, :x2; opts...)
-ytitle(axes,  text; opts...) = title(axes, text, :y ; opts...)
-y2title(axes, text; opts...) = title(axes, text, :y2; opts...)
+# SYNONYMS
+ylim(a::Axes2D, min, max) = ylim!(a, min, max)
+ylim(min, max)            = ylim!(gca(), min, max)
+ylim(; min=∅, max=∅)      = ylim!(gca(), min, max)
 
-title(text;   opts...) = title(gca(), text, ∅  ; opts...)
-xtitle(text;  opts...) = title(gca(), text, :x ; opts...)
-x2title(text; opts...) = title(gca(), text, :x2; opts...)
-ytitle(text;  opts...) = title(gca(), text, :y ; opts...)
-y2title(text; opts...) = title(gca(), text, :y2; opts...)
+y2lim!(a::Axes2D, min, max) = _lim!(a, :y2axis, min, max)
+y2lim!(min, max)            = y2lim!(gca(), min, max)
+y2lim!(; min=∅, max=∅)      = y2lim!(gca(), min, max)
+
+# SYNONYMS
+y2lim(a::Axes2D, min, max) = y2lim!(a, min, max)
+y2lim(min, max)            = y2lim!(gca(), min, max)
+y2lim(; min=∅, max=∅)      = y2lim!(gca(), min, max)
+
 
 ####
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-xlim!(a::Axes2D{B}, min, max) where B<:Backend = set_lims!(B, a.xaxis, min,max)
-xlim!(min, max) = xlim!(gca(), min, max)
-xlim!(;min=nothing, max=nothing) = xlim!(gca(), min, max)
+xscale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.xaxis, v)
+xscale(a::Axes2D{B}, v::String) where {B}  = set_scale!(B, a.xaxis, v)
 
-# SYNONYMS
-xlim(a::Axes2D{B}, min, max) where B<:Backend = set_lims!(B, a.xaxis, min, max)
-xlim(min, max) = xlim!(gca(), min, max)
-xlim(;min=nothing, max=nothing) = xlim!(gca(), min, max)
-
-ylim!(a::Axes2D{B}, min, max) where B<:Backend = set_lims!(B, a.yaxis, min,max)
-ylim!(min, max) = ylim!(gca(), min, max)
-ylim!(;min=nothing, max=nothing) = ylim!(gca(), min, max)
-
-# SYNONYMS
-ylim(a::Axes2D{B}, min, max) where B<:Backend = set_lims!(B, a.yaxis, min, max)
-ylim(min, max) = ylim!(gca(), min, max)
-ylim(;min=nothing, max=nothing) = ylim!(gca(), min, max)
-
-####
-#### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
-####
-
-xscale!(a::Axes2D{B}, v::String) where B<:Backend = set_scale!(B, a.xaxis, v)
 xscale!(v) = xscale!(gca(), v)
+xscale(v)  = xscale!(gca(), v)
 
-# SYNONYMS
-xscale(a::Axes2D{B}, v::String) where B<:Backend = set_scale!(B, a.xaxis, v)
-xscale(v) = xscale!(gca(), v)
+x2scale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.x2axis, v)
+x2scale(a::Axes2D{B}, v::String) where {B}  = set_scale!(B, a.x2axis, v)
 
-yscale!(a::Axes2D{B}, v::String) where B<:Backend = set_scale!(B, a.yaxis, v)
+x2scale!(v) = x2scale!(gca(), v)
+x2scale(v)  = x2scale!(gca(), v)
+
+yscale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.yaxis, v)
+yscale(a::Axes2D{B}, v::String) where {B}  = set_scale!(B, a.yaxis, v)
+
 yscale!(v) = yscale!(gca(), v)
+yscale(v)  = y2scale!(gca(), v)
 
-# SYNONYMS
-yscale(a::Axes2D{B}, v::String) where B<:Backend = set_scale!(B, a.yaxis, v)
-yscale(v) = yscale!(gca(), v)
+y2scale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.yaxis, v)
+y2scale(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.yaxis, v)
+
+y2scale!(v) = y2scale!(gca(), v)
+y2scale(v)  = y2scale!(gca(), v)

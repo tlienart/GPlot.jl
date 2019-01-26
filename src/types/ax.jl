@@ -1,7 +1,6 @@
 @with_kw mutable struct Axis
-    prefix     ::String                  # x, y, x2, y2, z A🚫
-    ticks      ::Ticks                   # ticks of the axis A🚫
-    tickslabels::TicksLabels             # labels of the ticks A🚫
+    prefix     ::String   # x, y, x2, y2, z A🚫
+    ticks      ::Ticks    # ticks of the axis A🚫
     # ---
     title      ::Option{Title}     = ∅ # title of the axis A🚫
     off        ::Option{Bool}      = ∅ # if true, axis is not shown A🚫

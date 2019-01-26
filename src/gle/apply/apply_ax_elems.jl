@@ -7,6 +7,22 @@ function apply_title!(g::GLE, t::Title)
     return
 end
 
+function apply_ticks!(g::GLE, t::Ticks)
+    # [x]ticks ...
+    any(isdef, (t.off, t.linestyle)) && begin
+        "\n\t$(t.prefix)ticks" |> g
+        isdef(t.off)       && ifelse(t.off, "off", "") |> g
+        isdef(t.length)    && "length $(t.length)"     |> g
+        isdef(t.linestyle) && apply_linestyle!(g, t.linestyle)
+    end
+    # [x]places pos1 pos2 ...
+    isdef(t.places) && "\n\t$(t.prefix)places $(vec2str(t.places))" |> g
+    # [x]xaxis symticks
+    isdef(t.symticks) && "\n\t$(t.prefix)axis symticks" |> g
+
+    isdef(t.labels) && apply_tickslabels!(g, t.labels)
+    return
+end
 
 function apply_tickslabels!(g::GLE, t::TicksLabels)
     # [x]names "names1" ...
@@ -25,21 +41,5 @@ function apply_tickslabels!(g::GLE, t::TicksLabels)
         isdef(t.format) && "format $(t.format)" |> g
         isdef(t.shift)  && "shift $(t.shift)"   |> g
     end
-    return
-end
-
-
-function apply_ticks!(g::GLE, t::Ticks)
-    # [x]ticks ...
-    any(isdef, (t.off, t.linestyle)) && begin
-        "\n\t$(t.prefix)ticks" |> g
-        isdef(t.off)       && ifelse(t.off, "off", "") |> g
-        isdef(t.length)    && "length $(t.length)"     |> g
-        isdef(t.linestyle) && apply_linestyle!(g, t.linestyle)
-    end
-    # [x]places pos1 pos2 ...
-    isdef(t.places) && "\n\t$(t.prefix)places $(vec2str(t.places))" |> g
-    # [x]xaxis symticks
-    isdef(t.symticks) && "\n\t$(t.prefix)axis symticks" |> g
     return
 end

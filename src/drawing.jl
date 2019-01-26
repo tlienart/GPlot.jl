@@ -1,30 +1,4 @@
 ####
-#### legend!, legend
-####
-
-"""
-    legend!(axes; options...)
-
-Update the properties of an existing legend object present on `axes`. If none
-exist then a new one is created with the given properties.
-"""
-function legend!(axes::Axes2D{B}; overwrite=false, opts...) where B<:Backend
-
-    # if there exists a legend object but overwrite, then reset it
-    (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
-    set_properties!(B, axes.legend; opts...)
-    return
-end
-
-"""
-    legend(; options...)
-
-Creates a new legend object on the current axes with the given options.
-If one already exist, it will be destroyed and replaced by this one.
-"""
-legend(; opts...) = legend!(gca(); overwrite=true, opts...)
-
-####
 #### plot, plot!
 ####
 
@@ -50,7 +24,7 @@ function plot!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
 end
 
 # if no axes are given (e.g. gca() returned nothing) then add axes and plot
-plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
+@inline plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
 
 function plot!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
                opts...)
@@ -60,11 +34,12 @@ function plot!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
     return
 end
 
-plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
-plot!(xy::MR; opts...) = plot!(gca(), xy; opts...)
-plot!(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; opts...)
-plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
-plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
+@inline plot!(y::AVR; opts...)     = plot!(gca(), 1:length(y), y; opts...)
+@inline plot!(xy::MR; opts...)     = plot!(gca(), xy; opts...)
+@inline plot!(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; opts...)
+
+@inline plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
+@inline plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 
 ###
 
@@ -76,9 +51,9 @@ plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(xy::MR; opts...) = plot!(xy; overwrite=true, opts...)
-plot(x, y; opts...) = plot!(x, y; overwrite=true, opts...)
-plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
+@inline plot(xy::MR; opts...)      = plot!(xy; overwrite=true, opts...)
+@inline plot(x, y; opts...)        = plot!(x, y; overwrite=true, opts...)
+@inline plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
 
 ####
 #### fill_between!, fill_between
@@ -96,7 +71,7 @@ function fill_between!(axes::Axes2D{B}, xy1y2::MR; overwrite=false, opts...
     return
 end
 
-fill_between!(::Nothing, xy1y2::MR; opts...) = (add_axes2d!();
+@inline fill_between!(::Nothing, xy1y2::MR; opts...) = (add_axes2d!();
     fill_between!(gca(), xy1y2; opts...))
 
 function fill_between!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y1::AVR,
@@ -108,14 +83,14 @@ function fill_between!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y1::AVR,
     return
 end
 
-fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
+@inline fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
     zero(x) .+ y1, y2; opts...)
-fill_between!(x, y1, y2::Real; opts...) = fill_between!(gca(), x, y1,
+@inline fill_between!(x, y1, y2::Real; opts...)      = fill_between!(gca(), x, y1,
     zero(x) .+ y2; opts...)
-fill_between!(x, y1::AVR, y2::AVR; opts...) = fill_between!(gca(), x, y1, y2;
+@inline fill_between!(x, y1::AVR, y2::AVR; opts...)  = fill_between!(gca(), x, y1, y2;
     opts...)
 
-fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
+@inline fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
     overwrite=true, opts...)
 
 ####
@@ -139,10 +114,10 @@ function hist!(axes::Axes2D{B}, x::AVR; overwrite=false, opts...
     return
 end
 
-hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
-hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
+@inline hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
+@inline hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
 
-hist(x; opts...)  = hist!(x; overwrite=true, opts...)
+@inline hist(x; opts...)  = hist!(x; overwrite=true, opts...)
 
 
 ####
@@ -161,7 +136,7 @@ function bar!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
     return
 end
 
-bar!(::Nothing, xy::MR; opts...) = (add_axes2d!(); bar!(gca(), xy; opts...))
+@inline bar!(::Nothing, xy::MR; opts...) = (add_axes2d!(); bar!(gca(), xy; opts...))
 
 function bar!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::MR; opts...)
 
@@ -171,10 +146,10 @@ function bar!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::MR; opts...)
     return
 end
 
-bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
-bar!(x, y::MR; opts...) = bar!(gca(), x, y; opts...)
-bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...))
+@inline bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
+@inline bar!(x, y::MR; opts...) = bar!(gca(), x, y; opts...)
+@inline bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...))
 
-bar(y; opts...) = bar!(y; overwrite=true, opts...)
-bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)
-bar(x, y, ys...; opts...) = bar!(x, hcat(y, ys...); overwrite=true, opts...)
+@inline bar(y; opts...) = bar!(y; overwrite=true, opts...)
+@inline bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)
+@inline bar(x, y, ys...; opts...) = bar!(x, hcat(y, ys...); overwrite=true, opts...)
