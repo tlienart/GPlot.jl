@@ -168,8 +168,9 @@ const GLE_HIST2D_SCALING = Dict{String, String}(
 )
 add_dict_vals!(GLE_HIST2D_SCALING)
 
-const GLE_AXSCALE = Dict{String, String}(
-    "log"  => "log",
-    "lin"  => "linear",
+const GLE_AXSCALE = Dict{String, Bool}(
+    "log"         => true,
+    "logarithmic" => true,
+    "lin"         => false,
+    "linear"      => false,
 )
-add_dict_vals!(GLE_AXSCALE)

@@ -17,32 +17,4 @@ preview(gcf())
 
 #GPlot.debug_gle(gcf())
 
-############### bar
-
-f = Figure()
-
-y = [10, 20, 15, 50]
-δ = [5, 3, 7, 10]
-y2 = y .+ δ
-x = 1:length(y)
-
-bar(x, y, y2; stacked=true,
-    fills=["darkgreen", "cyan"],
-    colors=["white", "white"])
-
-preview(f)
-
-GPlot.debug_gle(f)
-
-f = Figure()
-
-y = [10, 20, 15, 50]
-δ = [5, 3, 7, 10]
-y2 = y .+ δ
-x = 1:length(y)
-
-bar(x, y, y2;
-    fills=["darkgreen", "cyan"],
-    colors=["white", "white"])
-
-preview(f)
+############### xlims, etc

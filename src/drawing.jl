@@ -1,30 +1,4 @@
 ####
-#### legend!, legend
-####
-
-"""
-    legend!(axes; options...)
-
-Update the properties of an existing legend object present on `axes`. If none
-exist then a new one is created with the given properties.
-"""
-function legend!(axes::Axes2D{B}; overwrite=false, opts...) where B<:Backend
-
-    # if there exists a legend object but overwrite, then reset it
-    (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
-    set_properties!(B, axes.legend; opts...)
-    return
-end
-
-"""
-    legend(; options...)
-
-Creates a new legend object on the current axes with the given options.
-If one already exist, it will be destroyed and replaced by this one.
-"""
-legend(; opts...) = legend!(gca(); overwrite=true, opts...)
-
-####
 #### plot, plot!
 ####
 
@@ -60,9 +34,10 @@ function plot!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
     return
 end
 
-plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
-plot!(xy::MR; opts...) = plot!(gca(), xy; opts...)
+plot!(y::AVR; opts...)     = plot!(gca(), 1:length(y), y; opts...)
+plot!(xy::MR; opts...)     = plot!(gca(), xy; opts...)
 plot!(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; opts...)
+
 plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
 plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 
@@ -76,8 +51,8 @@ plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(xy::MR; opts...) = plot!(xy; overwrite=true, opts...)
-plot(x, y; opts...) = plot!(x, y; overwrite=true, opts...)
+plot(xy::MR; opts...)      = plot!(xy; overwrite=true, opts...)
+plot(x, y; opts...)        = plot!(x, y; overwrite=true, opts...)
 plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
 
 ####
@@ -110,9 +85,9 @@ end
 
 fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
     zero(x) .+ y1, y2; opts...)
-fill_between!(x, y1, y2::Real; opts...) = fill_between!(gca(), x, y1,
+fill_between!(x, y1, y2::Real; opts...)      = fill_between!(gca(), x, y1,
     zero(x) .+ y2; opts...)
-fill_between!(x, y1::AVR, y2::AVR; opts...) = fill_between!(gca(), x, y1, y2;
+fill_between!(x, y1::AVR, y2::AVR; opts...)  = fill_between!(gca(), x, y1, y2;
     opts...)
 
 fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;

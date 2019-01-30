@@ -1,6 +1,9 @@
 set_text!(::Type{GLE}, o, el, v::AS) = (setfield!(getfield(o, el), :text, v); o)
 set_text!(g, e::Title, v) = set_text!(g, e, :title, v)
 
+####
+#### Ticks
+####
 
 function set_prefix!(::Type{GLE}, o, v::AS)
    v = lowercase(v)
@@ -19,6 +22,10 @@ function set_dist!(::Type{GLE}, o, v::Real)
    return o
 end
 
+set_length!(::Type{GLE}, o, v) = throw(NotImplementedError("GLE/set_length!"))
+
+set_symticks!(::Type{GLE}, o, v) = throw(NotImplementedError("GLE/set_symticks!"))
+
 ####
 #### TicksLabels
 ####
@@ -34,3 +41,9 @@ set_shift(::Type{GLE}, o, v::Real) = (o.shift = v; o)
 
 # set tick labels
 set_names!(::Type{GLE}, o, v::Vector{<:AS}) = (o.names = v; o)
+
+# hide ticks labels
+set_labels_off!(g::Type{GLE}, o::Ticks, v::Bool) = set_off!(g, o.labels, v)
+
+#
+set_shift!(::Type{GLE}, o, v) = throw(NotImplementedError("GLE/set_shift!"))

@@ -1,6 +1,5 @@
 function apply_axis!(g::GLE, a::Axis)
     apply_ticks!(g, a.ticks)
-    apply_tickslabels!(g, a.tickslabels)
     isdef(a.title) && apply_title!(g, a.title)
     any(isdef, (a.off, a.base, a.textstyle, a.lwidth, a.grid, a.log, a.min, a.max)) && begin
         "\n\t$(a.prefix)axis"         |> g
@@ -11,7 +10,7 @@ function apply_axis!(g::GLE, a::Axis)
         isdef(a.log)    && ifelse(a.log,  "log", "")  |> g
         isdef(a.min)    && "min $(a.min)"             |> g
         isdef(a.max)    && "max $(a.max)"             |> g
-        isdef(a.textstyle) && apply_textstyle!(g, a.textstyle)
+        apply_textstyle!(g, a.textstyle)
     end
     "\n\t$(a.prefix)subticks off" |> g
     return

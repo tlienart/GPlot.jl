@@ -26,11 +26,7 @@ const TEXTSTYLE_OPTIONS = Dict{Symbol, Function}(
     :color    => set_color!
     )
 
-####
-#### Options for DRAWINGS
-####
-
-const LINE2D_OPTIONS = Dict{Symbol, Function}(
+const LINESTYLE_OPTIONS = Dict{Symbol, Function}(
     :ls              => set_lstyle!, # linestyle ...
     :lstyle          => set_lstyle!,
     :linestyle       => set_lstyle!,
@@ -40,6 +36,9 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :smooth          => set_smooth!,
     :col             => set_color!,
     :color           => set_color!,
+    )
+
+const MARKERSTYLE_OPTIONS = Dict{Symbol, Function}(
     :marker          => set_marker!, # markerstyle ...
     :msize           => set_msize!,
     :markersize      => set_msize!,
@@ -49,18 +48,9 @@ const LINE2D_OPTIONS = Dict{Symbol, Function}(
     :mfacecol        => set_mcol!,
     :mfacecolor      => set_mcol!,
     :markerfacecolor => set_mcol!,
-    :name            => set_label!, # label
-    :key             => set_label!,
-    :label           => set_label!,
     )
-set_properties!(::Type{B}, line::Line2D; opts...) where B<:Backend =
-    set_properties!(B, LINE2D_OPTIONS, line; opts...)
 
-const HIST2D_OPTIONS = Dict{Symbol, Function}(
-    :bins           => set_bins!,    # number of bins
-    :nbins          => set_bins!,
-    :scaling        => set_scaling!, # normalisation
-    :norm           => set_scaling!,
+const BARSTYLE_OPTIONS = Dict{Symbol, Function}(
     :col            => set_color!,   # edge color
     :color          => set_color!,
     :ecol           => set_color!,
@@ -70,14 +60,9 @@ const HIST2D_OPTIONS = Dict{Symbol, Function}(
     :fcolor         => set_fill!,
     :facecolor      => set_fill!,
     :fill           => set_fill!,
-    :horiz          => set_horiz!,   # show bar horizontal
-    :horizontal     => set_horiz!,
     )
-set_properties!(::Type{B}, hist::Hist2D; opts...) where B<:Backend =
-    set_properties!(B, HIST2D_OPTIONS, hist; opts...)
 
-const GROUPEDBAR2D_OPTIONS = Dict{Symbol, Function}(
-    :stacked        => set_stacked!,
+const GBARSTYLE_OPTIONS = Dict{Symbol, Function}(
     :col            => set_colors!, # edge colors (VECTOR)
     :color          => set_colors!,
     :ecol           => set_colors!,
@@ -96,46 +81,112 @@ const GROUPEDBAR2D_OPTIONS = Dict{Symbol, Function}(
     :fcolors        => set_fills!,
     :facecolors     => set_fills!,
     :fills          => set_fills!,
-    :horiz          => set_horiz!,   # show bar horizontal
-    :horizontal     => set_horiz!,
     )
-set_properties!(::Type{B}, gb::GroupedBar2D; opts...) where B<:Backend =
-    set_properties!(B, GROUPEDBAR2D_OPTIONS, gb; opts...)
 
-const FILL2D_OPTIONS = Dict{Symbol, Function}(
+const FILLSTYLE_OPTIONS = Dict{Symbol, Function}(
     :col       => set_color!,
     :color     => set_color!,
     :fcolor    => set_color!,
     :facecol   => set_color!,
     :facecolor => set_color!,
-    :from      => set_xmin!,
-    :min       => set_xmin!,
-    :xmin      => set_xmin!,
-    :to        => set_xmax!,
-    :max       => set_xmax!,
-    :xmax      => set_xmax!,
     :alpha     => set_alpha!,
     )
-set_properties!(::Type{B}, fill::Fill2D; opts...) where B<:Backend =
-    set_properties!(B, FILL2D_OPTIONS, fill; opts...)
 
 ####
-#### Options for FIGURE
+#### Options for AX_ELEMS
 ####
 
 const TITLE_OPTIONS = Dict{Symbol, Function}(
     :text   => set_text!,
     :prefix => set_prefix!,
-    #XXX :textstyle => set_textstyle!,
     :dist   => set_dist!
     )
 merge!(TITLE_OPTIONS, TEXTSTYLE_OPTIONS)
+set_properties!(::Type{B}, title::Title; opts...) where B <: Backend =
+    set_properties!(B, TITLE_OPTIONS, title; opts...)
 
 const LEGEND_OPTIONS = Dict{Symbol, Function}(
     :pos      => set_position!,
     :position => set_position!,
     :fontsize => set_hei!,
     )
+#XXX merge!(LEGEND_OPTIONS, TEXTSTYLE_OPTIONS)
+set_properties!(fig::Type{B}, legend::Legend; opts...) where B <: Backend =
+    set_properties!(B, LEGEND_OPTIONS, legend; opts...)
+
+const TICKS_OPTIONS = Dict{Symbol, Function}(
+    # ticks related
+    :off        => set_off!,        # ticks.off
+    :hideticks  => set_off!,
+    :len        => set_length!,
+    :length     => set_length!,     # ticks.length
+    :sym        => set_symticks!,
+    :symticks   => set_symticks!,   # ticks.symticks
+    :tickscol   => set_tickscolor!,
+    :tickscolor => set_tickscolor!,
+    # labels related
+    :hidelabels => set_labels_off!, # ticks.labels.off
+    :angle      => set_angle!,      # ticks.labels.angle
+    :format     => set_format!,     # ticks.labels.format
+    :shift      => set_shift!,      # ticks.labels.shift
+    :dist       => set_dist!,       # ticks.labels.dist
+    )
+merge!(TICKS_OPTIONS, LINESTYLE_OPTIONS) # ticks line
+merge!(TICKS_OPTIONS, TEXTSTYLE_OPTIONS) # labels
+set_properties!(::Type{B}, ticks::Ticks; opts...) where {B} =
+    set_properties!(B, TICKS_OPTIONS, ticks; opts...)
+
+####
+#### Options for DRAWINGS
+####
+
+const LINE2D_OPTIONS = Dict{Symbol, Function}(
+    :name            => set_label!, # label
+    :key             => set_label!,
+    :label           => set_label!,
+    )
+merge!(LINE2D_OPTIONS, LINESTYLE_OPTIONS)
+merge!(LINE2D_OPTIONS, MARKERSTYLE_OPTIONS)
+set_properties!(::Type{B}, line::Line2D; opts...) where {B} =
+    set_properties!(B, LINE2D_OPTIONS, line; opts...)
+
+const FILL2D_OPTIONS = Dict{Symbol, Function}(
+    :from      => set_xmin!,
+    :min       => set_xmin!,
+    :xmin      => set_xmin!,
+    :to        => set_xmax!,
+    :max       => set_xmax!,
+    :xmax      => set_xmax!,
+    )
+merge!(FILL2D_OPTIONS, FILLSTYLE_OPTIONS)
+set_properties!(::Type{B}, fill::Fill2D; opts...) where {B} =
+    set_properties!(B, FILL2D_OPTIONS, fill; opts...)
+
+
+const HIST2D_OPTIONS = Dict{Symbol, Function}(
+    :bins           => set_bins!,    # number of bins
+    :nbins          => set_bins!,
+    :scaling        => set_scaling!, # normalisation
+    :norm           => set_scaling!,
+    :horiz          => set_horiz!,   # show bar horizontal
+    :horizontal     => set_horiz!,
+    )
+merge!(HIST2D_OPTIONS, BARSTYLE_OPTIONS)
+set_properties!(::Type{B}, hist::Hist2D; opts...) where {B} =
+    set_properties!(B, HIST2D_OPTIONS, hist; opts...)
+
+const GROUPEDBAR2D_OPTIONS = Dict{Symbol, Function}(
+    :stacked        => set_stacked!,
+    :horiz          => set_horiz!,   # show bar horizontal
+    :horizontal     => set_horiz!,
+    )
+merge!(GROUPEDBAR2D_OPTIONS, GBARSTYLE_OPTIONS)
+set_properties!(::Type{B}, gb::GroupedBar2D; opts...) where {B} =
+    set_properties!(B, GROUPEDBAR2D_OPTIONS, gb; opts...)
+
+####
+#### Options for FIGURE
+####
 
 const FIGURE_OPTIONS = Dict{Symbol, Function}(
     :size         => set_size!,
@@ -151,12 +202,6 @@ const FIGURE_OPTIONS = Dict{Symbol, Function}(
     :texpreamble  => set_texpreamble!,
     )
 merge!(FIGURE_OPTIONS, TEXTSTYLE_OPTIONS)
-
-set_properties!(::Type{B}, title::Title; opts...) where B <: Backend =
-    set_properties!(B, TITLE_OPTIONS, title; opts...)
-
-set_properties!(fig::Type{B}, legend::Legend; opts...) where B <: Backend =
-    set_properties!(B, LEGEND_OPTIONS, legend; opts...)
 
 set_properties!(fig::Figure{B}; opts...) where B <: Backend =
     set_properties!(B, FIGURE_OPTIONS, fig; opts...)

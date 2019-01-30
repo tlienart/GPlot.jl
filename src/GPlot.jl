@@ -10,9 +10,16 @@ export Figure, gcf, gca, erase!,
     # Drawings
     plot, plot!, hist, hist!, bar, bar!, fill_between!,
     # Axis / Axes
+    # -- title
     title!, xtitle!, x2title!, ytitle!, y2title!, legend!,
     title, xtitle, x2title, ytitle, y2title, legend,
-    xlim!, xlim, ylim!, ylim,
+    # -- lims
+    xlim!, x2lim!, ylim!, y2lim!,
+    xlim, x2lim, ylim, y2lim,
+    # -- ticks
+    xticks!, x2ticks!, yticks!, y2ticks!,
+    xticks, x2ticks, yticks, y2ticks,
+    # -- scale
     xscale!, xscale, yscale!, yscale,
     # Preview / rendering / saving
     preview, render, savefig, isempty,
@@ -61,8 +68,9 @@ include("gle/apply/apply_ax.jl")
 include("gle/apply/apply_figure.jl")
 
 include("set_properties.jl")
-include("plot.jl")
+include("drawing.jl")
 include("ax.jl")
+include("ax_elem.jl")
 
 include("render.jl")
 
