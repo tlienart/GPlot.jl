@@ -12,7 +12,7 @@
     min        ::Option{Real}      = ∅ # ✓ minimum span of the axis
     max        ::Option{Real}      = ∅ # ✓ maximum span of the axis
 end
-Axis(p::String) = Axis(prefix=p, ticks=Ticks(p), tickslabels=TicksLabels(p))
+Axis(p::String) = Axis(prefix=p, ticks=Ticks(p))
 
 
 abstract type Axes{B <: Backend} end

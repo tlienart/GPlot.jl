@@ -24,7 +24,7 @@ function plot!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
 end
 
 # if no axes are given (e.g. gca() returned nothing) then add axes and plot
-@inline plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
+plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
 
 function plot!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
                opts...)
@@ -34,12 +34,12 @@ function plot!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
     return
 end
 
-@inline plot!(y::AVR; opts...)     = plot!(gca(), 1:length(y), y; opts...)
-@inline plot!(xy::MR; opts...)     = plot!(gca(), xy; opts...)
-@inline plot!(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; opts...)
+plot!(y::AVR; opts...)     = plot!(gca(), 1:length(y), y; opts...)
+plot!(xy::MR; opts...)     = plot!(gca(), xy; opts...)
+plot!(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; opts...)
 
-@inline plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
-@inline plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
+plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
+plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 
 ###
 
@@ -51,9 +51,9 @@ end
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-@inline plot(xy::MR; opts...)      = plot!(xy; overwrite=true, opts...)
-@inline plot(x, y; opts...)        = plot!(x, y; overwrite=true, opts...)
-@inline plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
+plot(xy::MR; opts...)      = plot!(xy; overwrite=true, opts...)
+plot(x, y; opts...)        = plot!(x, y; overwrite=true, opts...)
+plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
 
 ####
 #### fill_between!, fill_between
@@ -71,7 +71,7 @@ function fill_between!(axes::Axes2D{B}, xy1y2::MR; overwrite=false, opts...
     return
 end
 
-@inline fill_between!(::Nothing, xy1y2::MR; opts...) = (add_axes2d!();
+fill_between!(::Nothing, xy1y2::MR; opts...) = (add_axes2d!();
     fill_between!(gca(), xy1y2; opts...))
 
 function fill_between!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y1::AVR,
@@ -83,14 +83,14 @@ function fill_between!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y1::AVR,
     return
 end
 
-@inline fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
+fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x,
     zero(x) .+ y1, y2; opts...)
-@inline fill_between!(x, y1, y2::Real; opts...)      = fill_between!(gca(), x, y1,
+fill_between!(x, y1, y2::Real; opts...)      = fill_between!(gca(), x, y1,
     zero(x) .+ y2; opts...)
-@inline fill_between!(x, y1::AVR, y2::AVR; opts...)  = fill_between!(gca(), x, y1, y2;
+fill_between!(x, y1::AVR, y2::AVR; opts...)  = fill_between!(gca(), x, y1, y2;
     opts...)
 
-@inline fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
+fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
     overwrite=true, opts...)
 
 ####
@@ -114,10 +114,10 @@ function hist!(axes::Axes2D{B}, x::AVR; overwrite=false, opts...
     return
 end
 
-@inline hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
-@inline hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
+hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
+hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
 
-@inline hist(x; opts...)  = hist!(x; overwrite=true, opts...)
+hist(x; opts...)  = hist!(x; overwrite=true, opts...)
 
 
 ####
@@ -136,7 +136,7 @@ function bar!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
     return
 end
 
-@inline bar!(::Nothing, xy::MR; opts...) = (add_axes2d!(); bar!(gca(), xy; opts...))
+bar!(::Nothing, xy::MR; opts...) = (add_axes2d!(); bar!(gca(), xy; opts...))
 
 function bar!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::MR; opts...)
 
@@ -146,10 +146,10 @@ function bar!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::MR; opts...)
     return
 end
 
-@inline bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
-@inline bar!(x, y::MR; opts...) = bar!(gca(), x, y; opts...)
-@inline bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...))
+bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
+bar!(x, y::MR; opts...) = bar!(gca(), x, y; opts...)
+bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...))
 
-@inline bar(y; opts...) = bar!(y; overwrite=true, opts...)
-@inline bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)
-@inline bar(x, y, ys...; opts...) = bar!(x, hcat(y, ys...); overwrite=true, opts...)
+bar(y; opts...) = bar!(y; overwrite=true, opts...)
+bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)
+bar(x, y, ys...; opts...) = bar!(x, hcat(y, ys...); overwrite=true, opts...)

@@ -55,26 +55,26 @@ y2lim(; min=∅, max=∅)      = y2lim!(gca(), min, max)
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-xscale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.xaxis, v)
-xscale(a::Axes2D{B}, v::String) where {B}  = set_scale!(B, a.xaxis, v)
+xscale!(a::Axes2D, v::String) = set_scale!(a.xaxis, v)
+xscale(a::Axes2D, v::String)  = set_scale!(a.xaxis, v)
 
 xscale!(v) = xscale!(gca(), v)
 xscale(v)  = xscale!(gca(), v)
 
-x2scale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.x2axis, v)
-x2scale(a::Axes2D{B}, v::String) where {B}  = set_scale!(B, a.x2axis, v)
+x2scale!(a::Axes2D, v::String) = set_scale!(a.x2axis, v)
+x2scale(a::Axes2D, v::String)  = set_scale!(a.x2axis, v)
 
 x2scale!(v) = x2scale!(gca(), v)
 x2scale(v)  = x2scale!(gca(), v)
 
-yscale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.yaxis, v)
-yscale(a::Axes2D{B}, v::String) where {B}  = set_scale!(B, a.yaxis, v)
+yscale!(a::Axes2D, v::String) = set_scale!(a.yaxis, v)
+yscale(a::Axes2D, v::String)  = set_scale!(a.yaxis, v)
 
 yscale!(v) = yscale!(gca(), v)
 yscale(v)  = y2scale!(gca(), v)
 
-y2scale!(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.yaxis, v)
-y2scale(a::Axes2D{B}, v::String) where {B} = set_scale!(B, a.yaxis, v)
+y2scale!(a::Axes2D, v::String) = set_scale!(a.yaxis, v)
+y2scale(a::Axes2D, v::String) = set_scale!(a.yaxis, v)
 
 y2scale!(v) = y2scale!(gca(), v)
 y2scale(v)  = y2scale!(gca(), v)

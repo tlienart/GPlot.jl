@@ -1,6 +1,5 @@
 function apply_axis!(g::GLE, a::Axis)
     apply_ticks!(g, a.ticks)
-    apply_tickslabels!(g, a.tickslabels)
     isdef(a.title) && apply_title!(g, a.title)
     any(isdef, (a.off, a.base, a.textstyle, a.lwidth, a.grid, a.log, a.min, a.max)) && begin
         "\n\t$(a.prefix)axis"         |> g

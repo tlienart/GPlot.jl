@@ -92,4 +92,11 @@ Return the backend type associated with figure `f`.
 """
 get_backend(f::Figure{B}) where B <: Backend = B
 
+
+####
+#### Brief warmup
+####
+
+include("warmup.jl")
+
 end # module

@@ -1,4 +1,14 @@
 ####
+#### Axis
+####
+function set_scale!(a::Axis, v::String)
+    a.log = get(GLE_AXSCALE, v) do
+        throw(OptionValueError("axis scale", v))
+    end
+    return a
+end
+
+####
 #### Axes2D
 ####
 

@@ -20,23 +20,23 @@ function apply_ticks!(g::GLE, t::Ticks)
     # [x]xaxis symticks
     isdef(t.symticks) && "\n\t$(t.prefix)axis symticks" |> g
 
-    isdef(t.labels) && apply_tickslabels!(g, t.labels)
+    isdef(t.labels) && apply_tickslabels!(g, t.labels, t.prefix)
     return
 end
 
-function apply_tickslabels!(g::GLE, t::TicksLabels)
+function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
     # [x]names "names1" ...
-    isdef(t.names) && "\n\t$(t.prefix)names $(vec2str(t.names))" |> g
+    isdef(t.names) && "\n\t$(prefix)names $(vec2str(t.names))" |> g
     # [x]labels ...
     any(isdef, (t.off, t.dist, t.textstyle)) && begin
-        "\n\t$(t.prefix)labels" |> g
+        "\n\t$(prefix)labels" |> g
         isdef(t.off)       && ifelse(t.off, "off", "on") |> g
         isdef(t.dist)      && "dist $(t.dist)"           |> g
         isdef(t.textstyle) && apply_textstyle!(g, t.textstyle)
     end
     # [x]axis ...
     any(isdef, (t.angle, t.format)) && begin
-        "\n\t$(t.prefix)axis" |> g
+        "\n\t$(prefix)axis" |> g
         isdef(t.angle)  && "angle $(t.angle)"   |> g
         isdef(t.format) && "format $(t.format)" |> g
         isdef(t.shift)  && "shift $(t.shift)"   |> g
