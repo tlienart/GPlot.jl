@@ -10,7 +10,7 @@ function apply_axis!(g::GLE, a::Axis)
         isdef(a.log)    && ifelse(a.log,  "log", "")  |> g
         isdef(a.min)    && "min $(a.min)"             |> g
         isdef(a.max)    && "max $(a.max)"             |> g
-        isdef(a.textstyle) && apply_textstyle!(g, a.textstyle)
+        apply_textstyle!(g, a.textstyle)
     end
     "\n\t$(a.prefix)subticks off" |> g
     return

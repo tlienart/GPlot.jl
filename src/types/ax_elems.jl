@@ -28,14 +28,14 @@ end
 end
 
 @with_kw mutable struct Ticks
-    prefix   ::String                # x, y, x2, y2, z A🚫
+    prefix   ::String                      # x, y, x2, y2, z A🚫
     # ---
-    places   ::Option{AVR}         = ∅ # where the ticks are A🚫
-    labels   ::Option{TicksLabels} = ∅ # their label
+    places   ::Option{AVR}  = ∅             # where the ticks are A🚫
+    labels   ::TicksLabels  = TicksLabels() # their label
     # ---
-    off      ::Option{Bool}        = ∅ # whether to suppress them A🚫
-    linestyle::Option{LineStyle}   = ∅ # how the ticks look A🚫
-    length   ::Option{Real}        = ∅ # how long the ticks A🚫
-    symticks ::Option{Bool}        = ∅ # draws ticks on 2 sides of spine A🚫
+    off      ::Option{Bool} = ∅             # whether to suppress them A🚫
+    linestyle::LineStyle    = LineStyle()   # how the ticks look A🚫
+    length   ::Option{Real} = ∅             # how long the ticks A🚫
+    symticks ::Option{Bool} = ∅             # draws ticks on 2 sides of spine
 end
 Ticks(p::String) = Ticks(prefix=p)

@@ -54,21 +54,21 @@ y2title(text; opts...) = title(gca(), text, :y2; opts...)
 ####
 
 function _ticks!(a::Axes2D{B}, axsymb::Symbol, loc::Vector{<:Real},
-                 lab::Option{Vector{String}}, overwrite=false,
+                 lab::Option{Vector{String}}; overwrite=false,
                  opts...) where {B}
-
-    if isdef(lab)
-        @assert length(lab) == length(loc) "Ticks location and " *
-                                           "ticks labels must have " *
-                                           "the same length."
-    end
-
     prefix = "$axsymb"
     axis = getfield(a, Symbol(prefix * "axis"))
     # if overwrite, clear the current ticks object
     overwrite && clear!(axis.ticks)
 
     axis.ticks = Ticks(prefix=prefix, places=loc)
+
+    if isdef(lab)
+        @assert length(lab) == length(loc) "Ticks location and " *
+                                           "ticks labels must have " *
+                                           "the same length."
+        axis.ticks.labels = TicksLabels(names=lab)
+    end
 
     set_properties!(B, axis.ticks; opts...)
     return

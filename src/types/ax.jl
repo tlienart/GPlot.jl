@@ -1,16 +1,16 @@
 @with_kw mutable struct Axis
-    prefix     ::String   # x, y, x2, y2, z A🚫
-    ticks      ::Ticks    # ticks of the axis A🚫
+    prefix   ::String   # x, y, x2, y2, z A🚫
+    ticks    ::Ticks    # ticks of the axis A🚫
     # ---
-    title      ::Option{Title}     = ∅ # title of the axis A🚫
-    off        ::Option{Bool}      = ∅ # if true, axis is not shown A🚫
-    base       ::Option{Real}      = ∅ # scale font and ticks A🚫
-    textstyle  ::Option{TextStyle} = ∅ # parent textstyle of axis A🚫
-    lwidth     ::Option{Real}      = ∅ # width of the axis spine A🚫
-    grid       ::Option{Bool}      = ∅ # ? draw ⟂ lines to that axis A🚫
-    log        ::Option{Bool}      = ∅ # ✓ log scale
-    min        ::Option{Real}      = ∅ # ✓ minimum span of the axis
-    max        ::Option{Real}      = ∅ # ✓ maximum span of the axis
+    title    ::Option{Title}     = ∅ # title of the axis A🚫
+    off      ::Option{Bool}      = ∅ # if true, axis is not shown A🚫
+    base     ::Option{Real}      = ∅ # scale font and ticks A🚫
+    textstyle::TextStyle = TextStyle() # parent textstyle of axis A🚫
+    lwidth   ::Option{Real}      = ∅ # width of the axis spine A🚫
+    grid     ::Option{Bool}      = ∅ # ? draw ⟂ lines to that axis A🚫
+    log      ::Option{Bool}      = ∅ # ✓ log scale
+    min      ::Option{Real}      = ∅ # ✓ minimum span of the axis
+    max      ::Option{Real}      = ∅ # ✓ maximum span of the axis
 end
 Axis(p::String) = Axis(prefix=p, ticks=Ticks(p))
 

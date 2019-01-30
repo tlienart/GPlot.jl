@@ -10,9 +10,16 @@ export Figure, gcf, gca, erase!,
     # Drawings
     plot, plot!, hist, hist!, bar, bar!, fill_between!,
     # Axis / Axes
+    # -- title
     title!, xtitle!, x2title!, ytitle!, y2title!, legend!,
     title, xtitle, x2title, ytitle, y2title, legend,
-    xlim!, xlim, ylim!, ylim,
+    # -- lims
+    xlim!, x2lim!, ylim!, y2lim!,
+    xlim, x2lim, ylim, y2lim,
+    # -- ticks
+    xticks!, x2ticks!, yticks!, y2ticks!,
+    xticks, x2ticks, yticks, y2ticks,
+    # -- scale
     xscale!, xscale, yscale!, yscale,
     # Preview / rendering / saving
     preview, render, savefig, isempty,
@@ -91,12 +98,5 @@ gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 Return the backend type associated with figure `f`.
 """
 get_backend(f::Figure{B}) where B <: Backend = B
-
-
-####
-#### Brief warmup
-####
-
-include("warmup.jl")
 
 end # module

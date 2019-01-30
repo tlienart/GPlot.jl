@@ -122,6 +122,8 @@ const TICKS_OPTIONS = Dict{Symbol, Function}(
     :length     => set_length!,     # ticks.length
     :sym        => set_symticks!,
     :symticks   => set_symticks!,   # ticks.symticks
+    :tickscol   => set_tickscolor!,
+    :tickscolor => set_tickscolor!,
     # labels related
     :hidelabels => set_labels_off!, # ticks.labels.off
     :angle      => set_angle!,      # ticks.labels.angle

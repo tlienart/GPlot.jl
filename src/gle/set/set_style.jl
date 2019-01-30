@@ -7,10 +7,13 @@ function set_color!(::Type{GLE}, o, elem::Symbol, v; name=:color)
     return o
 end
 
-set_color!(g, o::Union{Line2D, Ticks}, v) = set_color!(g, o, :linestyle, v)
+set_color!(g, o::Line2D, v) = set_color!(g, o, :linestyle, v)
 set_color!(g, o::Union{Hist2D}, v) = set_color!(g, o, :barstyle, v)
 set_color!(g, o::Fill2D, v) = set_color!(g, o, :fillstyle, v)
-set_color!(g, o::Union{Title, TicksLabels, Axis}, v) = set_color!(g, o, :textstyle, v)
+set_color!(g, o::Union{Title, Axis}, v) = set_color!(g, o, :textstyle, v)
+set_color!(g, o::Ticks, v) = set_color!(g, o.labels, :textstyle, v)
+
+set_tickscolor!(g, o::Ticks, v) = set_color!(g, o, :linestyle, v)
 
 function set_colors!(g::Type{GLE}, o::GroupedBar2D, vc; name=:color)
     if vc isa AbstractVector
