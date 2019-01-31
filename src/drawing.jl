@@ -9,28 +9,24 @@
 
 Add one or several line plots on the current axes.
 """
-function plot!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
-               ) where B<:Backend
-
+function plot!(a::Axes2D, xy::MR; overwrite=false, opts...)
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(axes)
-
+    overwrite && erase!(a)
     # create line object, set properties and push to drawing stack
     line = Line2D(xy = xy)
-    set_properties!(B, line; opts...)
-    push!(axes.drawings, line)
-
-    return
+    set_properties!(line; opts...)
+    push!(a.drawings, line)
+    return a
 end
 
 # if no axes are given (e.g. gca() returned nothing) then add axes and plot
 plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
 
-function plot!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
+function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
                opts...)
 
     @assert length(x) == size(y, 1) "x and y must have matching dimensions"
-    plot!(axes, hcat(x, y); opts...)
+    plot!(a, hcat(x, y); opts...)
     return
 end
 
@@ -59,16 +55,14 @@ plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
 #### fill_between!, fill_between
 ####
 
-function fill_between!(axes::Axes2D{B}, xy1y2::MR; overwrite=false, opts...
-                       ) where B<:Backend
-
+function fill_between!(a::Axes2D, xy1y2::MR; overwrite=false, opts...)
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(axes)
+    overwrite && erase!(a)
     # create fill object, set properties and push to drawing stack
     fill = Fill2D(xy1y2 = xy1y2)
-    set_properties!(B, fill; opts...)
-    push!(axes.drawings, fill)
-    return
+    set_properties!(fill; opts...)
+    push!(a.drawings, fill)
+    return a
 end
 
 fill_between!(::Nothing, xy1y2::MR; opts...) = (add_axes2d!();
@@ -102,16 +96,14 @@ fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
 
 Add a histogram of `x` on the current axes.
 """
-function hist!(axes::Axes2D{B}, x::AVR; overwrite=false, opts...
-               ) where B<:Backend
-
+function hist!(a::Axes2D, x::AVR; overwrite=false, opts...)
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(axes)
+    overwrite && erase!(a)
     # create hist2d object assign properties and push to drawing stack
     hist = Hist2D(x = x)
-    set_properties!(B, hist; opts...)
-    push!(axes.drawings, hist)
-    return
+    set_properties!(hist; opts...)
+    push!(a.drawings, hist)
+    return a
 end
 
 hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
@@ -124,16 +116,14 @@ hist(x; opts...)  = hist!(x; overwrite=true, opts...)
 #### bar!, bar
 ####
 
-function bar!(axes::Axes2D{B}, xy::MR; overwrite=false, opts...
-              ) where B<:Backend
-
+function bar!(a::Axes2D, xy::MR; overwrite=false, opts...)
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(axes)
+    overwrite && erase!(a)
     # create groupedbar2d object, assign properties and push to drawing stack
     gb = GroupedBar2D(xy = xy, barstyle=[BarStyle() for i ∈ 1:(size(xy,2)-1)])
-    set_properties!(B, gb; opts...)
-    push!(axes.drawings, gb)
-    return
+    set_properties!(gb; opts...)
+    push!(a.drawings, gb)
+    return a
 end
 
 bar!(::Nothing, xy::MR; opts...) = (add_axes2d!(); bar!(gca(), xy; opts...))

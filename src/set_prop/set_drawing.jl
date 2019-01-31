@@ -1,8 +1,17 @@
+####
+#### Line2D
+####
+
 # label of a drawing (cf legend)
-set_label!(::TBK, o, v::Union{AS, Vector{<:AS}}) = (o.label = v; o)
+set_label!(o::Line2D, v::Union{String, Vector{String}}) = (o.label = v; o)
+
+####
+#### Legend
+####
 
 # position of the legend (for GLE backend)
-function set_position!(::TGLE, o::Legend, v::String)
+function set_position!(o::Legend, v::String)
+   @assert get_backend() == GLE "position/only GLE backend supported"
    o.position = get(GLE_LEGEND_POS, v) do
       throw(OptionValueError("position", v))
    end
@@ -10,29 +19,29 @@ function set_position!(::TGLE, o::Legend, v::String)
 end
 
 ####
-#### Hist2D
+#### Hist2D / Bar
 ####
 
-set_bins!(::TBK, o::Hist2D, v::Int) = (o.bins = v; o)
+set_bins!(o::Hist2D, v::Int) = (o.bins = v; o)
 
-function set_scaling!(::TBK, o::Hist2D, v::String)
+function set_scaling!(o::Hist2D, v::String)
    o.scaling = get(HIST2D_SCALING, v) do
          throw(OptionValueError("lstyle", v))
    end
    return o
 end
 
-set_horiz!(::TBK, o, v::Bool) = (o.horiz = v; o)
+set_horiz!(o::Union{Hist2D, GroupedBar2D}, v::Bool) = (o.horiz = v; o)
 
 ####
 #### Fill2D
 ####
 
-set_xmin!(::TBK, o::Fill2D, v::Real) = (o.xmin = x; o)
-set_xmax!(::TBK, o::Fill2D, v::Real) = (o.xmax = x; o)
+set_xmin!(o::Fill2D, v::Real) = (o.xmin = x; o)
+set_xmax!(o::Fill2D, v::Real) = (o.xmax = x; o)
 
 ####
 #### GroupedBar2D
 ####
 
-set_stacked!(::TBK, o::GroupedBar2D, v::Bool) = (o.stacked = v; o)
+set_stacked!(o::GroupedBar2D, v::Bool) = (o.stacked = v; o)

@@ -2,16 +2,16 @@
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-function _lim!(axes::Axes2D, el::Symbol, min::Option{Real},
+function _lim!(a::Axes2D, el::Symbol, min::Option{Real},
                max::Option{Real})
 
     if min isa Real && max isa Real
         @assert min < max "min must be strictly smaller than max"
     end
-    axis = getfield(axes, el)
+    axis = getfield(a, el)
     setfield!(axis, :min, min)
     setfield!(axis, :max, max)
-    return
+    return a
 end
 
 xlim!(a::Axes2D, min, max) = _lim!(a, :xaxis, min, max)

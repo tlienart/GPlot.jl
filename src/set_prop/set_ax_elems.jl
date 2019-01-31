@@ -1,49 +1,44 @@
-set_text!(::TBK, o, el, v::AS) = (setfield!(getfield(o, el), :text, v); o)
-set_text!(g, e::Title, v) = set_text!(g, e, :title, v)
+set_text!(o, el::Symbol, v::String) = (setfield!(getfield(o, el), :text, v); o)
 
 ####
-#### Ticks
+#### Title
 ####
 
-function set_prefix!(::TBK, o, v::AS)
-   v = lowercase(v)
-   v ∈ ["x", "x2", "y", "y2", "z"] || throw(OptionValueError("prefix", v))
-   o.prefix = v
-   return o
-end
+set_text!(e::Title, v::String)      = set_text!(e, :title, v)
 
-# switch something on or off
-set_off!(::TBK, o, v::Bool) = (obj.off = v; o)
+####
+#### Ticks + TicksLabels
+####
 
-# vertical distance of text to axis
-function set_dist!(::TBK, o, v::Real)
-   (v ≥ 0.) || throw(OptionValueError("dist", v))
-   o.dist = v
-   return o
-end
+set_off!(o::Ticks, v::Bool) = (obj.off = v; o)
 
-set_length!(::TBK, o, v) = throw(NotImplementedError("set_length!"))
+set_length!(o, v::Real) = throw(NotImplementedError("set_length!"))
 
-set_symticks!(::TBK, o, v) = throw(NotImplementedError("set_symticks!"))
+set_symticks!(o, v::Bool) = throw(NotImplementedError("set_symticks!"))
+
+set_tickscolor!(g, o::Ticks, v) = set_color!(g, o, :linestyle, v)
 
 ####
 #### TicksLabels
 ####
 
 # rotation angle of tick labels
-set_angle!(::TBK, o, v::Real) = (o.angle = v; o)
+set_angle!(o, v::Real) = (o.angle = v; o)
 
 # a number format for tick labels
-set_format!(::TBK, o, v) = throw(NotImplementedError("set_format!"))
+set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))
 
 # shift the tick labels (positive or negative)
-set_shift(::TBK, o, v::Real) = (o.shift = v; o)
-
-# set tick labels
-set_names!(::TBK, o, v::Vector{<:AS}) = (o.names = v; o)
+set_shift(o::Ticks, v::Real) = (o.shift = v; o)
 
 # hide ticks labels
-set_labels_off!(::TBK, o::Ticks, v::Bool) = set_off!(g, o.labels, v)
+set_labels_off!(o::Ticks, v::Bool) = set_off!(g, o.labels, v)
 
-#
-set_shift!(::TBK, o, v) = throw(NotImplementedError("set_shift!"))
+set_shift!(o::Ticks, v::Real) = throw(NotImplementedError("set_shift!"))
+
+# vertical distance of text to axis
+function set_dist!(o::Union{Title,Ticks}, v::Real)
+   (v ≥ 0) || throw(OptionValueError("dist", v))
+   o.dist = v
+   return o
+end

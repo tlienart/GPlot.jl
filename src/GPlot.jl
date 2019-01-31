@@ -38,7 +38,6 @@ include("utils.jl")
 test_gle()
 GP_ENV["BACKEND"] = GLE
 
-const AS  = AbstractString
 const ∅   = nothing
 const ARR = AbstractRange{<:Real}
 const AVR = AbstractVector{<:Real}

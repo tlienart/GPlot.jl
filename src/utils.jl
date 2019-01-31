@@ -5,9 +5,6 @@ struct GLE <: Backend
 end
 GLE() = GLE(IOBuffer())
 
-const TBK = Type{<:Backend}
-const TGLE = Type{GLE}
-
 function test_gle()
     flag = false
     try
