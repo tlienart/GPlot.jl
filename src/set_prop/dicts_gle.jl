@@ -6,7 +6,7 @@ function add_dict_vals!(d::Dict{String,String})
     end
 end
 
-const GLE_MARKERS = Dict{String, String}(
+const GLE_MARKERS = Dict{String,String}(
     "^"         => "triangle"   ,
     "△"         => "triangle"   ,
     "triangle"  => "triangle"   ,
@@ -72,7 +72,7 @@ const GLE_MARKERS = Dict{String, String}(
     "snake"     => "snake"      ,
     )
 
-const GLE_LSTYLES = Dict{String, Int}(
+const GLE_LSTYLES = Dict{String,Int}(
     "-"    => 0,
     "--"   => 9,
     "-."   => 8
@@ -80,7 +80,7 @@ const GLE_LSTYLES = Dict{String, Int}(
 
 const GLE_TEXSCALE = ["scale", "fixed", "none"]
 
-const GLE_FONTS = Dict{String, String}(
+const GLE_FONTS = Dict{String,String}(
     "roman"                 => "rm"     ,
     "roman-bold"            => "rmb"    ,
     "roman-italic"          => "rmi"    ,
@@ -148,7 +148,7 @@ const GLE_FONTS = Dict{String, String}(
     )
 add_dict_vals!(GLE_FONTS)
 
-const GLE_LEGEND_POS = Dict{String, String}(
+const GLE_LEGEND_POS = Dict{String,String}(
     "top-left"      => "tl",
     "bottom-left"   => "bl",
     "top-right"     => "tr",
@@ -160,17 +160,3 @@ const GLE_LEGEND_POS = Dict{String, String}(
     "center"        => "cc",
     )
 add_dict_vals!(GLE_LEGEND_POS)
-
-const GLE_HIST2D_SCALING = Dict{String, String}(
-    "none"  => "count",
-    "pdf"   => "pdf",
-    "prob"  => "probability",
-)
-add_dict_vals!(GLE_HIST2D_SCALING)
-
-const GLE_AXSCALE = Dict{String, Bool}(
-    "log"         => true,
-    "logarithmic" => true,
-    "lin"         => false,
-    "linear"      => false,
-)

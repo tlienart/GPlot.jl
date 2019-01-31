@@ -1,41 +1,43 @@
 @with_kw mutable struct Title
-    text     ::AbstractString               # ✓
-    textstyle::TextStyle      = TextStyle() # ✓
+    text::String
     # ---
-    prefix   ::Option{String} = ∅           # ✓ x, x2, y, y2, z
-    dist     ::Option{Real}   = ∅           # ✓ distance labels - title
+    textstyle::TextStyle = TextStyle()
+    # ---
+    prefix::Option{String}  = ∅  # x, x2, y, y2, z
+    dist  ::Option{Float64} = ∅  # distance labels - title
 end
 
 @with_kw mutable struct Legend
+    # ---
+    position::Option{String}  = ∅
+    hei     ::Option{Float64} = ∅
     # TODO: can this take a textstyle?
+    # offset     ::Option{Tuple{Float, Float}} = ∅
     # entries *not* contained in the struct, they're generated elsewhere
-    position::Option{String} = ∅ # ✓
-    # offset     ::Option{Tuple{Float, Float}} = ∅ # 🚫
-    hei     ::Option{Real}  = ∅ # ✓
-    # nobox      ::Option{Bool}                = ∅ # 🚫
+    # nobox      ::Option{Bool}                = ∅
 end
 
 @with_kw mutable struct TicksLabels
-    names    ::Option{Vector{String}} = ∅ # ✓ replaces numeric labeling
+    names::Option{Vector{String}} = ∅
     # ---
-    textstyle::TextStyle = TextStyle()     # ⁠✓ textstyle
+    textstyle::TextStyle = TextStyle()
     # ---
-    off      ::Option{Bool}           = ∅ # ✓ whether to suppress the labels
-    angle    ::Option{Real}           = ∅ # ✓ rotation of labels
-    format   ::Option{String}         = ∅ # A🚫 format of the ticks labels
-    shift    ::Option{Real}           = ∅ # ✓ move labels to left/right
-    dist     ::Option{Real}           = ∅ # ✓ ⟂ distance to spine
+    off   ::Option{Bool}    = ∅ # whether to suppress the labels
+    angle ::Option{Float64} = ∅ # rotation of labels
+    format::Option{String}  = ∅ # format of the ticks labels
+    shift ::Option{Float64} = ∅ # move labels to left/right
+    dist  ::Option{Float64} = ∅ # ⟂ distance to spine
 end
 
 @with_kw mutable struct Ticks
-    prefix   ::String                      # x, y, x2, y2, z A🚫
+    prefix::String                       # x, y, x2, y2, z
     # ---
-    places   ::Option{AVR}  = ∅             # where the ticks are A🚫
-    labels   ::TicksLabels  = TicksLabels() # their label
+    labels   ::TicksLabels = TicksLabels() # their label
+    linestyle::LineStyle   = LineStyle()   # how the ticks marks look
     # ---
-    off      ::Option{Bool} = ∅             # whether to suppress them A🚫
-    linestyle::LineStyle    = LineStyle()   # how the ticks look A🚫
-    length   ::Option{Real} = ∅             # how long the ticks A🚫
-    symticks ::Option{Bool} = ∅             # draws ticks on 2 sides of spine
+    places   ::Option{AVR}     = ∅ # where the ticks are
+    off      ::Option{Bool}    = ∅ # whether to suppress them
+    length   ::Option{Float64} = ∅ # how long the ticks
+    symticks ::Option{Bool}    = ∅ # draws ticks on 2 sides of spine
 end
 Ticks(p::String) = Ticks(prefix=p)

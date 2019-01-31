@@ -2,16 +2,16 @@
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-function _lim!(axes::Axes2D, el::Symbol, min::Option{Real},
+function _lim!(a::Axes2D, el::Symbol, min::Option{Real},
                max::Option{Real})
 
     if min isa Real && max isa Real
         @assert min < max "min must be strictly smaller than max"
     end
-    axis = getfield(axes, el)
+    axis = getfield(a, el)
     setfield!(axis, :min, min)
     setfield!(axis, :max, max)
-    return
+    return a
 end
 
 xlim!(a::Axes2D, min, max) = _lim!(a, :xaxis, min, max)
@@ -54,27 +54,33 @@ y2lim(; min=∅, max=∅)      = y2lim!(gca(), min, max)
 ####
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
+function _scale!(a::Axis, v::String)
+    a.log = get(AXSCALE, v) do
+        throw(OptionValueError("axis scale", v))
+    end
+    return a
+end
 
-xscale!(a::Axes2D, v::String) = set_scale!(a.xaxis, v)
-xscale(a::Axes2D, v::String)  = set_scale!(a.xaxis, v)
+xscale!(a::Axes2D, v::String) = _scale!(a.xaxis, v)
+xscale(a::Axes2D, v::String)  = _scale!(a.xaxis, v)
 
 xscale!(v) = xscale!(gca(), v)
 xscale(v)  = xscale!(gca(), v)
 
-x2scale!(a::Axes2D, v::String) = set_scale!(a.x2axis, v)
-x2scale(a::Axes2D, v::String)  = set_scale!(a.x2axis, v)
+x2scale!(a::Axes2D, v::String) = _scale!(a.x2axis, v)
+x2scale(a::Axes2D, v::String)  = _scale!(a.x2axis, v)
 
 x2scale!(v) = x2scale!(gca(), v)
 x2scale(v)  = x2scale!(gca(), v)
 
-yscale!(a::Axes2D, v::String) = set_scale!(a.yaxis, v)
-yscale(a::Axes2D, v::String)  = set_scale!(a.yaxis, v)
+yscale!(a::Axes2D, v::String) = _scale!(a.yaxis, v)
+yscale(a::Axes2D, v::String)  = _scale!(a.yaxis, v)
 
 yscale!(v) = yscale!(gca(), v)
 yscale(v)  = y2scale!(gca(), v)
 
-y2scale!(a::Axes2D, v::String) = set_scale!(a.yaxis, v)
-y2scale(a::Axes2D, v::String) = set_scale!(a.yaxis, v)
+y2scale!(a::Axes2D, v::String) = _scale!(a.yaxis, v)
+y2scale(a::Axes2D, v::String)  = _scale!(a.yaxis, v)
 
 y2scale!(v) = y2scale!(gca(), v)
 y2scale(v)  = y2scale!(gca(), v)

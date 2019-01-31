@@ -10,11 +10,8 @@ function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
 end
 
 
-function savefig(fig::Figure{GLE}
-               , fn::String=""
-               ; format::String="png"
-               , path::String=""
-               , opts...)
+function savefig(fig::Figure{GLE}, fn::String="";
+                 format::String="png", path::String="", opts...)
 
     isempty(fig) && (@warn "The figure is empty, nothing to save."; return)
     isempty(fn)  && (fn = joinpath(path, fig.id * ".$format"))
