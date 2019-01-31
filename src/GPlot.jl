@@ -44,34 +44,40 @@ const ARR = AbstractRange{<:Real}
 const AVR = AbstractVector{<:Real}
 const MR  = Matrix{<:Real}
 
-const PT_TO_CM  = 0.0352778 # 1pt in cm
-const Option{T} = Union{Nothing, T}
+const PT_TO_CM  = 0.0352778         # 1pt in cm
+const Option{T} = Union{Nothing, T} # a useful type for optional values
 
+# Type of objects
 include("types/style.jl")
 include("types/drawing.jl")
 include("types/ax_elems.jl")
 include("types/ax.jl")
 include("types/figure.jl")
 
-include("gle/dictionaries.jl")
+# Specific GLE naming of properties
+include("set_prop/gle_dicts.jl")
 
-include("gle/set/set_style.jl")
-include("gle/set/set_drawing.jl")
-include("gle/set/set_ax_elems.jl")
-include("gle/set/set_ax.jl")
-include("gle/set/set_figure.jl")
+# Set properties of objects
+include("set_prop/set_style.jl")
+include("set_prop/set_drawing.jl")
+include("set_prop/set_ax_elems.jl")
+include("set_prop/set_ax.jl")
+include("set_prop/set_figure.jl")
+include("set_prop/set_properties.jl")
 
-include("gle/apply/apply_style.jl")
-include("gle/apply/apply_drawing.jl")
-include("gle/apply/apply_ax_elems.jl")
-include("gle/apply/apply_ax.jl")
-include("gle/apply/apply_figure.jl")
+# Write objects to GLE buffer
+include("apply_gle/apply_style.jl")
+include("apply_gle/apply_drawing.jl")
+include("apply_gle/apply_ax_elems.jl")
+include("apply_gle/apply_ax.jl")
+include("apply_gle/apply_figure.jl")
 
-include("set_properties.jl")
+# Main call for elements
 include("drawing.jl")
 include("ax.jl")
 include("ax_elem.jl")
 
+# Rendering of things (preview/savefig)
 include("render.jl")
 
 GP_ENV["ALLFIGS"] = Dict{String, Figure}()
