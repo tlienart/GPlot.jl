@@ -54,8 +54,9 @@ include("types/ax_elems.jl")
 include("types/ax.jl")
 include("types/figure.jl")
 
-# Specific GLE naming of properties
-include("set_prop/gle_dicts.jl")
+# Naming of properties: specific and shared
+include("set_prop/dicts_gle.jl")
+include("set_prop/dicts_shared.jl")
 
 # Set properties of objects
 include("set_prop/set_style.jl")
@@ -103,6 +104,6 @@ gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 
 Return the backend type associated with figure `f`.
 """
-get_backend(f::Figure{B}) where B <: Backend = B
+get_backend(f::Figure{B}=gcf()) where {B} = B
 
 end # module

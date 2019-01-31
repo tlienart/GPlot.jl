@@ -1,3 +1,9 @@
+# NOTE: the type of the backend needs to be sent forward only in cases where
+# the value the property can take are limited by the backend. For instance
+# the name of the font will be limited by the backend.
+# In most cases though, it is not the case and therefore a generic
+# ::Type{Backend} (TBK) is all that is needed. See `set_prop/set_*.jl`.
+
 """
     set_properties(::B, dict, obj; opts...)
 

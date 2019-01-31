@@ -1,13 +1,14 @@
 mutable struct Figure{B <: Backend}
-    id          ::String             # ✓ unique id of the figure
+    id          ::String             # unique id of the figure
     g           ::B                  # description stream
     axes        ::Vector{Axes{B}}    # subplots
-    size        ::Tuple{Real,Real}   # ✓
-    textstyle   ::TextStyle          # ✓
-    texlabels   ::Option{Bool}       # ✓ true if has tex
-    texscale    ::Option{String}     # ✓ scale latex * hei (def=1)
-    texpreamble ::Option{String}     # ✓
-    transparency::Option{Bool}       # ✓ if true, use cairo device
+    size        ::NTuple{2,Float64}  # (width, heigth)
+    textstyle   ::TextStyle          # parent font etc
+    # ---
+    texlabels   ::Option{Bool}       # true if has tex
+    texscale    ::Option{String}     # scale latex * hei (def=1)
+    texpreamble ::Option{String}     # latex preamble
+    transparency::Option{Bool}       # if true, use cairo device
 end
 
 
@@ -29,8 +30,9 @@ exists already, return that object.
 * `alpha`, `transparent`, `transparency`: a bool indicating whether there may be transparent fillings in which case cairo is used
 """
 function Figure(id::String, g::Backend; opts...)
+
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (12, 9), TextStyle(hei=0.35), ∅, ∅, ∅, ∅)
+               (12., 9.), TextStyle(hei=0.35), ∅, ∅, ∅, ∅)
 
     set_properties!(f; opts...)
     GP_ENV["ALLFIGS"][id] = f
@@ -40,6 +42,7 @@ function Figure(id::String, g::Backend; opts...)
 end
 
 function Figure(id::String="_fig_"; reset=false, opts...)
+
     id == "_fig_" && return Figure(id, GP_ENV["BACKEND"](); opts...) # fresh
     f = get(GP_ENV["ALLFIGS"], id) do
         Figure(id, GP_ENV["BACKEND"](); opts...)
