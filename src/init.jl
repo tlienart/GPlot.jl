@@ -9,8 +9,8 @@ function __init__()
     y = [3, 4]
 
     # -- plot
-    plot(x, y, ls="--", lw=0.1, color="blue", label="blah")
-    plot!(2x, 2y, labe="blih")
+    plot(x, y, ls="--", lw=0.1, color="blue")
+    plot!(2x, 2y)
 
     assemble_figure(f)
 end
