@@ -62,7 +62,6 @@ include("set_prop/dicts_shared.jl")
 include("set_prop/style.jl")
 include("set_prop/drawing.jl")
 include("set_prop/ax_elems.jl")
-include("set_prop/ax.jl")
 include("set_prop/figure.jl")
 include("set_prop/properties.jl")
 

@@ -49,7 +49,7 @@ Add axes `ax` to figure `fig`.
 function add_axes!(f::Figure, ax::Axes)
     push!(f.axes, ax)
     GP_ENV["CURAXES"] = ax
-    return
+    return ax
 end
 
 """

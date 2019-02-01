@@ -1,29 +1,28 @@
-set_text!(o, el::Symbol, v::String) = (setfield!(getfield(o, el), :text, v); o)
-
-####
-#### Title
-####
-
-set_text!(e::Title, v::String)      = set_text!(e, :title, v)
-
 ####
 #### Ticks + TicksLabels
 ####
 
-set_off!(o::Ticks, v::Bool) = (obj.off = v; o)
+# vertical distance of text to axis
+function set_dist!(o::Union{Title,Ticks}, v::Real)
+   (v ≥ 0) || throw(OptionValueError("dist", v))
+   o.dist = v
+   return o
+end
+
+set_off!(o::Ticks, v::Bool) = (o.off = v; o)
 
 set_length!(o, v::Real) = throw(NotImplementedError("set_length!"))
 
 set_symticks!(o, v::Bool) = throw(NotImplementedError("set_symticks!"))
 
-set_tickscolor!(g, o::Ticks, v) = set_color!(g, o, :linestyle, v)
+set_tickscolor!(o::Ticks, v) = set_color!(o, :linestyle, v)
 
 ####
 #### TicksLabels
 ####
 
-# rotation angle of tick labels
-set_angle!(o, v::Real) = (o.angle = v; o)
+# rotation angle of tick labels XXX in what unit??
+set_angle!(o::Ticks, v::Real) = (o.labels.angle = v; o)
 
 # a number format for tick labels
 set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))
@@ -35,10 +34,3 @@ set_shift(o::Ticks, v::Real) = (o.shift = v; o)
 set_labels_off!(o::Ticks, v::Bool) = set_off!(g, o.labels, v)
 
 set_shift!(o::Ticks, v::Real) = throw(NotImplementedError("set_shift!"))
-
-# vertical distance of text to axis
-function set_dist!(o::Union{Title,Ticks}, v::Real)
-   (v ≥ 0) || throw(OptionValueError("dist", v))
-   o.dist = v
-   return o
-end

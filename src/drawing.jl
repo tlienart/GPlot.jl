@@ -9,7 +9,8 @@
 
 Add one or several line plots on the current axes.
 """
-function plot!(a::Axes2D, xy::MR; overwrite=false, opts...)
+function plot!(a::Option{Axes2D}, xy::MR; overwrite=false, opts...)
+    isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create line object, set properties and push to drawing stack
@@ -24,7 +25,6 @@ plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
 
 function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
                opts...)
-
     @assert length(x) == size(y, 1) "x and y must have matching dimensions"
     plot!(a, hcat(x, y); opts...)
     return
@@ -55,7 +55,8 @@ plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
 #### fill_between!, fill_between
 ####
 
-function fill_between!(a::Axes2D, xy1y2::MR; overwrite=false, opts...)
+function fill_between!(a::Option{Axes2D}, xy1y2::MR; overwrite=false, opts...)
+    isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create fill object, set properties and push to drawing stack
@@ -65,12 +66,8 @@ function fill_between!(a::Axes2D, xy1y2::MR; overwrite=false, opts...)
     return a
 end
 
-fill_between!(::Nothing, xy1y2::MR; opts...) = (add_axes2d!();
-    fill_between!(gca(), xy1y2; opts...))
-
 function fill_between!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y1::AVR,
                         y2::AVR; opts...)
-
     @assert length(x) == length(y1) == length(y2) "x, y1, y2 must have the " *
                                                   "same length"
     fill_between!(axes, hcat(x, y1, y2); opts...)
@@ -96,7 +93,8 @@ fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2;
 
 Add a histogram of `x` on the current axes.
 """
-function hist!(a::Axes2D, x::AVR; overwrite=false, opts...)
+function hist!(a::Option{Axes2D}, x::AVR; overwrite=false, opts...)
+    isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create hist2d object assign properties and push to drawing stack
@@ -106,7 +104,6 @@ function hist!(a::Axes2D, x::AVR; overwrite=false, opts...)
     return a
 end
 
-hist!(::Nothing, x::AVR; opts...) = (add_axes2d!(); hist!(gca(), x; opts...))
 hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
 
 hist(x; opts...)  = hist!(x; overwrite=true, opts...)
@@ -116,7 +113,8 @@ hist(x; opts...)  = hist!(x; overwrite=true, opts...)
 #### bar!, bar
 ####
 
-function bar!(a::Axes2D, xy::MR; overwrite=false, opts...)
+function bar!(a::Option{Axes2D}, xy::MR; overwrite=false, opts...)
+    isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create groupedbar2d object, assign properties and push to drawing stack
@@ -126,10 +124,7 @@ function bar!(a::Axes2D, xy::MR; overwrite=false, opts...)
     return a
 end
 
-bar!(::Nothing, xy::MR; opts...) = (add_axes2d!(); bar!(gca(), xy; opts...))
-
 function bar!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::MR; opts...)
-
     @assert length(x) == size(y, 1) "The number of rows in `y` must match " *
                                     "the length of `x`"
     bar!(axes, hcat(x, y); opts...)

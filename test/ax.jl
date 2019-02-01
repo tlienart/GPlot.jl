@@ -48,6 +48,12 @@ end
     @test isnothing(f.axes[1].x2axis.log)
     x2scale("log"); yscale("log"); y2scale("log")
     @test f.axes[1].x2axis.log == true
+    erase!(f)
+    yscale("log")
+    @test isnothing(f.axes[1].xaxis.log)
+    @test f.axes[1].yaxis.log == true
+    erase!(f); x2scale("log"); erase!(f); y2scale("log")
+    @test f.axes[1].y2axis.log == true
 end
 
 # @testset "Axes -- types/ax              " begin

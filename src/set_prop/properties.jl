@@ -107,7 +107,6 @@ const FILLSTYLE_OPTS = Dict{Symbol, Function}(
 ####
 
 const TITLE_OPTS = Dict{Symbol, Function}(
-    :text   => set_text!,   # set_ax_elems
     :dist   => set_dist!
     )
 merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
