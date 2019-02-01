@@ -5,7 +5,7 @@ Sets a tuple indicating width,height size of the figure.
 """
 function set_size!(o::Figure, (w, h)::Tuple{Real,Real})
    (w ≥ 0) && (h ≥ 0) || throw(OptionValueError("size", v))
-   o.size = (w, h)
+   o.size = float.((w, h))
    return o
 end
 

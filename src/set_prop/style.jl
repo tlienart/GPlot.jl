@@ -7,7 +7,7 @@ function set_color!(o, elem::Symbol, v; name=:color)
     return o
 end
 
-set_color!(o::Line2D, v) = set_color!(o, :linestyle, v)
+set_color!(o::Scatter2D, v) = set_color!(o, :linestyle, v)
 set_color!(o::Hist2D, v) = set_color!(o, :barstyle, v)
 set_color!(o::Fill2D, v) = set_color!(o, :fillstyle, v)
 set_color!(o::Ticks,  v) = set_color!(o.labels, :textstyle, v)
@@ -53,7 +53,7 @@ set_alpha!(o::Fill2D, v::Real) = set_alpha!(o, :fillstyle, v)
 ####
 
 function set_font!(o, v::String)
-    @assert get_backend() isa Figure{GLE} "font/only GLE backend supported"
+    @assert get_backend() == GLE "font/only GLE backend supported"
     o.textstyle.font = get(GLE_FONTS, v) do
         throw(OptionValueError("font", v))
     end
@@ -96,14 +96,14 @@ function set_lwidth!(o, v::Real)
 end
 
 # for drawings, smooth  uses splines instead of straight lines
-set_smooth!(o::Line2D, v::Bool) = (o.linestyle.smooth = v; o)
+set_smooth!(o::Scatter2D, v::Bool) = (o.linestyle.smooth = v; o)
 
 ####
 #### Marker related
 ####
 
 # type of marker (e.g. square)
-function set_marker!(o::Line2D, v::String)
+function set_marker!(o::Scatter2D, v::String)
     @assert get_backend() == GLE "marker/only GLE backend " *
                                           "supported"
     o.markerstyle.marker = get(GLE_MARKERS, v) do
@@ -113,17 +113,17 @@ function set_marker!(o::Line2D, v::String)
 end
 
 # marker size
-function set_msize!(o::Line2D, v::Real)
+function set_msize!(o::Scatter2D, v::Real)
     (v ≥ 0.) || throw(OptionValueError("msize", v))
     o.markerstyle.msize = v
     return o
 end
 
 # marker color (if applicable)
-set_mcol!(o::Line2D, v) = set_color!(o, :markerstyle, v)
+set_mcol!(o::Scatter2D, v) = set_color!(o, :markerstyle, v)
 
 # marker edge color (if applicable)
-function set_mecol!(o::Line2D, v)
+function set_mecol!(o::Scatter2D, v)
     @assert get_backend() == GLE "marker/only GLE backend " *
                                           "supported"
     gle_no_support("setting the marker edge color.")

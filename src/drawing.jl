@@ -13,7 +13,7 @@ function plot!(a::Axes2D, xy::MR; overwrite=false, opts...)
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create line object, set properties and push to drawing stack
-    line = Line2D(xy = xy)
+    line = Scatter2D(xy = xy)
     set_properties!(line; opts...)
     push!(a.drawings, line)
     return a

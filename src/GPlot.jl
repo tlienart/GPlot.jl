@@ -20,7 +20,8 @@ export Figure, gcf, gca, erase!,
     xticks!, x2ticks!, yticks!, y2ticks!,
     xticks, x2ticks, yticks, y2ticks,
     # -- scale
-    xscale!, xscale, yscale!, yscale,
+    xscale!, x2scale!, yscale!, y2scale!,
+    xscale, x2scale, yscale, y2scale,
     # Preview / rendering / saving
     preview, render, savefig, isempty,
     @t_str, @tex_str
@@ -58,24 +59,25 @@ include("set_prop/dicts_gle.jl")
 include("set_prop/dicts_shared.jl")
 
 # Set properties of objects
-include("set_prop/set_style.jl")
-include("set_prop/set_drawing.jl")
-include("set_prop/set_ax_elems.jl")
-include("set_prop/set_ax.jl")
-include("set_prop/set_figure.jl")
-include("set_prop/set_properties.jl")
+include("set_prop/style.jl")
+include("set_prop/drawing.jl")
+include("set_prop/ax_elems.jl")
+include("set_prop/ax.jl")
+include("set_prop/figure.jl")
+include("set_prop/properties.jl")
 
 # Write objects to GLE buffer
-include("apply_gle/apply_style.jl")
-include("apply_gle/apply_drawing.jl")
-include("apply_gle/apply_ax_elems.jl")
-include("apply_gle/apply_ax.jl")
-include("apply_gle/apply_figure.jl")
+include("apply_gle/style.jl")
+include("apply_gle/drawing.jl")
+include("apply_gle/ax_elems.jl")
+include("apply_gle/ax.jl")
+include("apply_gle/figure.jl")
 
 # Main call for elements
 include("drawing.jl")
 include("ax.jl")
 include("ax_elem.jl")
+include("figure.jl")
 
 # Rendering of things (preview/savefig)
 include("render.jl")

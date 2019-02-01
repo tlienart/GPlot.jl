@@ -146,14 +146,14 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 #### Options for DRAWINGS
 ####
 
-const LINE2D_OPTS = Dict{Symbol, Function}(
+const SCATTER2D_OPTS = Dict{Symbol, Function}(
     :name  => set_label!, # set_drawing
     :key   => set_label!, # .
     :label => set_label!, # .
     )
-merge!(LINE2D_OPTS, LINESTYLE_OPTS)
-merge!(LINE2D_OPTS, MARKERSTYLE_OPTS)
-set_properties!(l::Line2D; opts...) = set_properties!(LINE2D_OPTS, l; opts...)
+merge!(SCATTER2D_OPTS, LINESTYLE_OPTS)
+merge!(SCATTER2D_OPTS, MARKERSTYLE_OPTS)
+set_properties!(s::Scatter2D; opts...) = set_properties!(SCATTER2D_OPTS, s; opts...)
 
 const FILL2D_OPTS = Dict{Symbol, Function}(
     :from => set_xmin!,
