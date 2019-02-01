@@ -20,22 +20,18 @@ function plot!(a::Option{Axes2D}, xy::MR; overwrite=false, opts...)
     return a
 end
 
-# if no axes are given (e.g. gca() returned nothing) then add axes and plot
-plot!(::Nothing, xy; opts...) = (add_axes2d!(); plot!(gca(), xy; opts...))
-
-function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR};
-               opts...)
+function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...)
     @assert length(x) == size(y, 1) "x and y must have matching dimensions"
     plot!(a, hcat(x, y); opts...)
     return
 end
 
-plot!(y::AVR; opts...)     = plot!(gca(), 1:length(y), y; opts...)
-plot!(xy::MR; opts...)     = plot!(gca(), xy; opts...)
-plot!(x, y::Real; opts...) = plot!(gca(), x, zero(x) .+ y; opts...)
+plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
+plot!(xy::MR; opts...) = plot!(gca(), xy; opts...)
 
-plot!(x::Union{ARR, AVR}, y::Union{AVR, MR}; opts...) = plot!(gca(), x, y; opts...)
-plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
+plot!(x::Union{ARR, AVR}, y::Real; opts...)  = plot!(gca(), x, zero(x) .+ y; opts...)
+plot!(x::Union{ARR, AVR}, y; opts...)        = plot!(gca(), x, y; opts...)
+plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 
 ###
 
@@ -47,9 +43,9 @@ plot!(x, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(xy::MR; opts...)      = plot!(xy; overwrite=true, opts...)
-plot(x, y; opts...)        = plot!(x, y; overwrite=true, opts...)
-plot(x, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
+plot(xy::MR; opts...)                       = plot!(xy; overwrite=true, opts...)
+plot(x::Union{ARR, AVR}, y; opts...)        = plot!(x, y; overwrite=true, opts...)
+plot(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
 
 ####
 #### fill_between!, fill_between

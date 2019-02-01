@@ -35,10 +35,6 @@ const GP_ENV = Dict{String, Any}(
 
 include("utils.jl")
 
-# default backend for now
-test_gle()
-GP_ENV["BACKEND"] = GLE
-
 const ∅   = nothing
 const ARR = AbstractRange{<:Real}
 const AVR = AbstractVector{<:Real}
@@ -105,5 +101,9 @@ gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 Return the backend type associated with figure `f`.
 """
 get_backend(f::Figure{B}=gcf()) where {B} = B
+
+# -------
+
+include("init.jl")
 
 end # module

@@ -83,3 +83,10 @@ end
 Return a bool indicating whether `fig` has axes or not.
 """
 isempty(fig::Figure) = isempty(fig.axes)
+
+"""
+    destroy!(fig)
+
+Remove reference to `fig` and set the current figure to nothing.
+"""
+destroy!(fig) = (delete!(GP_ENV["ALLFIGS"], fig.id); GP_ENV["CURFIG"] = nothing)

@@ -9,10 +9,12 @@ function test_gle()
     flag = false
     try
         flag = success(`gle -v`)
+        GP_ENV["VERBOSE"] && println("Found a GLE backend... ✅")
     catch
     end
-    flag || error("GLE could not be loaded. Make sure you have installed " *
-                  "it and that it is accessible via the shell.")
+    flag || warn("GLE could not be loaded. Make sure you have installed " *
+                 "it and that it is accessible via the shell." *
+                 "You will not be able to preview or save figures.")
     return
 end
 

@@ -1,5 +1,10 @@
 using GPlot, Colors, Test
 
+# legacy
+isdefined(Base, :isnothing) || (isnothing(o) = o === nothing)
+
+# ----
+
 # ✓ 01 feb 19 [/, types/, set_prop/]
 # 🚫 [apply_gle]
 include("figure.jl")
