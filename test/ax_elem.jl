@@ -97,4 +97,7 @@ end
     @test f.axes[1].x2axis.ticks.linestyle.color == colorant"blue"
     y2ticks([1, 2], ["a", "b"], angle=45)
     @test  f.axes[1].y2axis.ticks.labels.angle == 45
+    @test_throws GPlot.NotImplementedError yticks([1, 2], format="something")
+    x2ticks([1, 2], shift=0.1)
+    @test f.axes[1].x2axis.ticks.labels.shift == 0.1
 end

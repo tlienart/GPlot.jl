@@ -28,9 +28,7 @@ set_angle!(o::Ticks, v::Real) = (o.labels.angle = v; o)
 set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))
 
 # shift the tick labels (positive or negative)
-set_shift(o::Ticks, v::Real) = (o.shift = v; o)
+set_shift!(o::Ticks, v::Real) = (o.labels.shift = v; o)
 
 # hide ticks labels
-set_labels_off!(o::Ticks, v::Bool) = set_off!(g, o.labels, v)
-
-set_shift!(o::Ticks, v::Real) = throw(NotImplementedError("set_shift!"))
+set_labels_off!(o::Ticks, v::Bool) = set_off!(o.labels.off, v)

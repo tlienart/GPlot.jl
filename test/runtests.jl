@@ -9,6 +9,7 @@ include("figure.jl")
 include("ax.jl")
 
 # ✓ 01 feb 19 [/, types/] (no set_prop)
+# XXX ONGOING: set_prop (up to set_format!)
 # 🚫 [set_prop, apply_gle]
 include("ax_elem.jl")
 
