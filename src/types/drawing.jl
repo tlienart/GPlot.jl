@@ -1,7 +1,7 @@
 abstract type Drawing end
 abstract type Drawing2D <: Drawing end
 
-@with_kw mutable struct Line2D{T<:MR} <: Drawing2D
+@with_kw mutable struct Scatter2D{T<:MR} <: Drawing2D
     xy::T # [x, y1, y2, ...]
     # --- style
     linestyle  ::LineStyle   = LineStyle()

@@ -1,8 +1,17 @@
-using GPlot
-using GPlot: isdef
-using Test
-const G = GPlot
+using GPlot, Colors, Test
 
-include("figures-gle.jl")
-include("axis-axes-gle.jl")
-include("drawings-gle.jl")
+# ✓ 01 feb 19 [/, types/, set_prop/]
+# 🚫 [apply_gle]
+include("figure.jl")
+
+# ✓ 01 feb 19 [/, types/] (no set_prop)
+# 🚫 [apply_gle]
+include("ax.jl")
+
+# ✓ 01 feb 19 [/, types/] (no set_prop)
+# XXX ONGOING: set_prop (up to set_format!)
+# 🚫 [set_prop, apply_gle]
+include("ax_elem.jl")
+
+# include("axis-axes-gle.jl")
+# include("drawings-gle.jl")

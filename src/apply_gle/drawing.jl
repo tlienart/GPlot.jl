@@ -21,10 +21,10 @@ function apply_legend!(g::GLE, leg::Legend, leg_entries::IOBuffer)
 end
 
 ####
-#### Apply a Line2D object
+#### Apply a Scatter2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Line2D, el_counter::Int=1)
+function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D, el_counter::Int=1)
 
     # temporary buffers to help for the legend
     lt   = [IOBuffer() for c ∈ 2:size(obj.xy, 2)]

@@ -1,9 +1,9 @@
 ####
-#### Line2D
+#### Scatter2D
 ####
 
 # label of a drawing (cf legend)
-set_label!(o::Line2D, v::Union{String, Vector{String}}) = (o.label = v; o)
+set_label!(o::Scatter2D, v::Union{String, Vector{String}}) = (o.label = v; o)
 
 ####
 #### Legend
