@@ -1,3 +1,14 @@
+struct Foo
+    x
+    y
+end
+
+mutable struct Bar
+    x::GPlot.Option{Int}
+    y::GPlot.Option{Int}
+    z::Bool
+end
+
 @testset "Utils -- /utils               " begin
     g = GPlot.GLE()
     gp = GPlot.Gnuplot()
@@ -15,19 +26,10 @@
     @test GPlot.isdef(1)
     @test !GPlot.isdef(nothing)
 
-    struct Foo
-        x
-        y
-    end
     @test GPlot.isanydef(Foo(1, 2))
     @test GPlot.isanydef(Foo(1, nothing))
     @test !GPlot.isanydef(Foo(nothing, nothing))
 
-    mutable struct Bar
-        x::GPlot.Option{Int}
-        y::GPlot.Option{Int}
-        z::Bool
-    end
     b = Bar(1, 2, true)
     GPlot.clear!(b)
     @test isnothing(b.x) && isnothing(b.y) && b.z
