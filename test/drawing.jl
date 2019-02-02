@@ -73,8 +73,17 @@ end
     y2 = sin.(x)
     fill_between(x, y1, y2, alpha=0.5)
     fill_between!(x, 0, y2, color="red", alpha=0.5)
+    fill_between!(x, y1, 0)
     el1 = gca().drawings[1]
     el2 = gca().drawings[2]
+    el3 = gca().drawings[3]
     @test el1.xy1y2 == hcat(x, y1, y2)
     @test el2.fillstyle.color == RGBA{Float64}(1.0,0.0,0.0,0.5)
+    @test el2.xy1y2 == hcat(x, 0*y2, y2)
+    @test el3.xy1y2 == hcat(x, y1, 0*y1)
+
+    # HIST2D
+end
+
+@testset "Drawing -- set_prop/drawing   " begin
 end

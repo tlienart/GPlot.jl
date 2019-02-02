@@ -14,5 +14,6 @@ include("ax.jl")
 # 🚫 [apply_gle]
 include("ax_elem.jl")
 
-# XXX  ongoing
+# ✓ 02 feb 19 [types/]
+# 🚫 [/, apply_gle, set_prop]
 include("drawing.jl")
