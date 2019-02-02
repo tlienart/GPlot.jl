@@ -27,11 +27,6 @@ export Figure, gcf, gca, erase!,
     preview, render, savefig, isempty,
     @t_str, @tex_str
 
-if !isdefined(Base, :isnothing)
-    isnothing(o) = o === nothing
-    export isnothing
-end
-
 const GP_ENV = Dict{String, Any}(
     "VERBOSE"    => true,
     "TMP_PATH"   => mktempdir(),

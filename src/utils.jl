@@ -20,6 +20,11 @@ take!(b::Backend)   = take!(b.io)
 
 #######################################
 
+if !isdefined(Base, :isnothing)
+    isnothing(o) = o === nothing
+    export isnothing
+end
+
 isdef(el) = !isnothing(el)
 
 # check if object `obj` has at least one field that is not "Nothing"
