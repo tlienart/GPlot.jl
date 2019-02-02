@@ -31,4 +31,4 @@ set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))
 set_shift!(o::Ticks, v::Real) = (o.labels.shift = v; o)
 
 # hide ticks labels
-set_labels_off!(o::Ticks, v::Bool) = set_off!(o.labels.off, v)
+set_labels_off!(o::Ticks, v::Bool) = (o.labels.off = v; o)

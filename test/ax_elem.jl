@@ -100,4 +100,8 @@ end
     @test_throws GPlot.NotImplementedError yticks([1, 2], format="something")
     x2ticks([1, 2], shift=0.1)
     @test f.axes[1].x2axis.ticks.labels.shift == 0.1
+    yticks([1, 2], off=true)
+    @test f.axes[1].yaxis.ticks.off == true
+    yticks([1, 2], ["a", "b"], hidelabels=true)
+    @test f.axes[1].yaxis.ticks.labels.off == true
 end
