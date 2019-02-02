@@ -1,6 +1,6 @@
 using GPlot, Colors, Test
 
-# ----
+include("utils.jl")
 
 # ✓ 01 feb 19 [/, types/, set_prop/]
 # 🚫 [apply_gle]
