@@ -8,7 +8,8 @@ import Base: |>, take!, isempty
 
 export Figure, gcf, gca, erase!,
     # Drawings
-    plot, plot!, hist, hist!, bar, bar!, fill_between!,
+    plot, plot!, fill_between, fill_between!, hist, hist!,
+    bar, bar!,
     # Axis / Axes
     # -- title
     title!, xtitle!, x2title!, ytitle!, y2title!, legend!,

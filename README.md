@@ -127,3 +127,8 @@ ln -s /Applications/QGLE.app/Contents/share/gle-graphics/ /usr/local/share/.
 I haven't tested this on Windows but there are executables available on the [GLE downdloads page](http://glx.sourceforge.net/downloads/downloads.html) which should work (one has been updated very recently).
 
 If you've managed to make things work for you on Windows, please let me know so that I can improve these instructions!
+
+## License
+
+This wrapper is made available under  MIT license.
+The GLE program is released under the BSD license.
