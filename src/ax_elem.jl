@@ -5,7 +5,8 @@
 function _title!(a::Option{Axes2D}, text::String, axsymb::Option{Symbol};
                 overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
-    prefix, obj = "", a
+    prefix = ""
+    obj = a
     if isdef(axsymb)
         prefix = "$axsymb"
         obj = getfield(a, Symbol(prefix * "axis"))

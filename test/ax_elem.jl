@@ -57,6 +57,16 @@ end
     @test f.axes[1].y2axis.title.text == "hello"
     erase!(f)
     xtitle!("hello")
+    erase!(f)
+    title("blah", font="psh"); title!("blih")
+    @test f.axes[1].title.text == "blih"
+    @test f.axes[1].title.textstyle.font == "psh"
+    ytitle("blah", font="psh"); ytitle!("blih")
+    @test f.axes[1].yaxis.title.text == "blih"
+    @test f.axes[1].yaxis.title.textstyle.font == "psh"
+    y2title("blah", font="psh"); y2title!("blih")
+    @test f.axes[1].y2axis.title.text == "blih"
+    @test f.axes[1].y2axis.title.textstyle.font == "psh"
 
     # ticks and ticklabels
     erase!(f)
@@ -73,6 +83,13 @@ end
     xticks!([1.0, 2.3])
     @test f.axes[1].xaxis.ticks.places == [1.0, 2.3]
     @test isnothing(f.axes[1].xaxis.ticks.labels.names)
+
+    x2ticks!([3, 5])
+    @test f.axes[1].x2axis.ticks.places == [3., 5.]
+    yticks!([3, 5])
+    @test f.axes[1].yaxis.ticks.places == [3., 5.]
+    y2ticks!([3, 5])
+    @test f.axes[1].y2axis.ticks.places == [3., 5.]
 
     # legend
     erase!(f)
