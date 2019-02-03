@@ -104,5 +104,3 @@ struct OptionValueError <: Exception
     msg::String
     OptionValueError(s, v) = new("[$s] value given ($v) did not meet the expected format.")
 end
-
-gle_no_support(s) = GP_ENV["VERBOSE"] && println("🚫  GLE does not support $s [ignoring]")

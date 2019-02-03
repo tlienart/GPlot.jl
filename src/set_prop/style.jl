@@ -126,7 +126,7 @@ set_mcol!(o::Scatter2D, v) = set_color!(o, :markerstyle, v)
 function set_mecol!(o::Scatter2D, v)
     @assert get_backend() == GLE "marker/only GLE backend " *
                                           "supported"
-    gle_no_support("setting the marker edge color.")
+    GP_ENV["VERBOSE"] && println("🚫  GLE does not support mecol [ignoring]")
     # TODO, actually could overlay markers of different sizes. Would be easy
     # to do but a bit finicky to adjust so that it doesn't look horrible.
     # potentially the line width should be the lead for how much difference

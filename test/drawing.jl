@@ -60,6 +60,17 @@ end
     @test el4.markerstyle.marker == "circle"
 
     erase!(gcf())
+    plot!(1:5, 2)
+    el = gca().drawings[1]
+    @test el.xy == hcat(1:5, collect(1:5)*0 .+ 2)
+    plot!(1:5, exp.(1:5), sin.(1:5))
+    el2 = gca().drawings[2]
+    @test el2.xy == hcat(1:5, exp.(1:5), sin.(1:5))
+    xy = rand(Float32, 5, 3)
+    plot(xy)
+    @test gca().drawings[1].xy == xy
+
+    erase!(gcf())
     # -- multiplot
     plot(x, y, 2y, 3y)
     el = gca().drawings[1]
