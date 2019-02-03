@@ -9,7 +9,6 @@ end
 
 set_color!(o::Scatter2D, v) = set_color!(o, :linestyle, v)
 set_color!(o::Hist2D, v) = set_color!(o, :barstyle, v)
-set_color!(o::Fill2D, v) = set_color!(o, :fillstyle, v)
 set_color!(o::Ticks,  v) = set_color!(o.labels, :textstyle, v)
 
 set_color!(o::Union{Title, Axis}, v) = set_color!(o, :textstyle, v)
@@ -30,6 +29,7 @@ function set_colors!(o::GroupedBar2D, vc; name=:color)
     return o
 end
 
+set_fill!(o::Fill2D, v)        = set_color!(o, :fillstyle, v)
 set_fill!(o::Hist2D, v)        = set_color!(o, :barstyle, v; name=:fill)
 set_fills!(o::GroupedBar2D, v) = set_colors!(o, v; name=:fill)
 
@@ -47,6 +47,7 @@ function set_alpha!(o, el::Symbol, v::Real; name=:color)
 end
 
 set_alpha!(o::Fill2D, v::Real) = set_alpha!(o, :fillstyle, v)
+set_alpha!(o::Hist2D, v::Real) = set_alpha!(o, :barstyle, v; name=:fill)
 
 ####
 #### Text related

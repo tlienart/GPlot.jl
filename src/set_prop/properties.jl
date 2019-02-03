@@ -61,15 +61,9 @@ const MARKERSTYLE_OPTS = Dict{Symbol, Function}(
     )
 
 const BARSTYLE_OPTS = Dict{Symbol, Function}(
-    :col       => set_color!, # set_style
-    :color     => set_color!, # .
     :ecol      => set_color!, # .
     :edgecol   => set_color!, # .
     :edgecolor => set_color!, # .
-    :fcol      => set_fill!,  # .
-    :fcolor    => set_fill!,  # .
-    :facecolor => set_fill!,  # .
-    :fill      => set_fill!,  # .
     )
 
 const GBARSTYLE_OPTS = Dict{Symbol, Function}(
@@ -94,11 +88,13 @@ const GBARSTYLE_OPTS = Dict{Symbol, Function}(
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Function}(
-    :col       => set_color!, # set_style
-    :color     => set_color!, # .
-    :fcolor    => set_color!, # .
-    :facecol   => set_color!, # .
-    :facecolor => set_color!, # .
+    :col       => set_fill!, # set_style
+    :color     => set_fill!, # .
+    :fcol      => set_fill!, # .
+    :ffill     => set_fill!, # .
+    :facecol   => set_fill!, # .
+    :facefill  => set_fill!, # .
+    :fill      => set_fill!, # .
     :alpha     => set_alpha!, # .
     )
 
@@ -174,6 +170,7 @@ const HIST2D_OPTS = Dict{Symbol, Function}(
     :horizontal => set_horiz!,   # .
     )
 merge!(HIST2D_OPTS, BARSTYLE_OPTS)
+merge!(HIST2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(h::Hist2D; opts...) = set_properties!(HIST2D_OPTS, h; opts...)
 
 const GROUPEDBAR2D_OPTS = Dict{Symbol, Function}(

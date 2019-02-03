@@ -18,6 +18,6 @@ include("ax_elem.jl")
 # 🚫 [apply_gle]
 include("drawing.jl")
 
-# ✓ 03 feb 19 [types/] (no /)
-# 🚫 [apply_gle, set_prop]
+# ✓ 03 feb 19 [types/, set_prop/] (no /)
+# 🚫 [apply_gle]
 include("style.jl")
