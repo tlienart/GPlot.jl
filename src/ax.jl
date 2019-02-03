@@ -80,8 +80,8 @@ yscale(a::Axes2D, v::String)  = _scale!(a.yaxis, v)
 yscale!(v) = yscale!(gca(), v)
 yscale(v)  = yscale!(gca(), v)
 
-y2scale!(a::Axes2D, v::String) = _scale!(a.yaxis, v)
-y2scale(a::Axes2D, v::String)  = _scale!(a.yaxis, v)
+y2scale!(a::Axes2D, v::String) = _scale!(a.y2axis, v)
+y2scale(a::Axes2D, v::String)  = _scale!(a.y2axis, v)
 
 y2scale!(v) = y2scale!(gca(), v)
 y2scale(v)  = y2scale!(gca(), v)
