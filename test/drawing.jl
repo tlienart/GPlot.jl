@@ -94,7 +94,47 @@ end
     @test el3.xy1y2 == hcat(x, y1, 0*y1)
 
     # HIST2D
+    erase!(gcf())
+    x = rand(Float32, 10)
+    hist(x)
+    @test gca().drawings[1].x == x
+
+    # BAR
+    bar(x)
+    y = rand(Float32, 10, 3)
+    @test gca().drawings[1].xy == hcat(1:length(x), x)
+    bar(x, x, x)
+    @test gca().drawings[1].xy == hcat(x, x, x)
+    bar(x, y)
+    @test gca().drawings[1].xy == hcat(x, y)
+    bar!(x, x, x)
+    @test gca().drawings[2].xy == hcat(x, x, x)
+
 end
 
 @testset "Drawing -- set_prop/drawing   " begin
+    f = Figure()
+    x, y = 1:2, exp.(1:2)
+    plot(x, y, label="blah")
+    @test gca().drawings[1].label == "blah"
+    legend(pos="top-left")
+    @test gca().legend.position == "tl"
+    @test_throws GPlot.OptionValueError legend(pos="blah")
+
+    hist(y, bins=2, norm="pdf")
+    @test gca().drawings[1].bins == 2
+    @test gca().drawings[1].scaling == "pdf"
+    @test_throws GPlot.OptionValueError hist(y, norm="blah")
+    hist(y, horiz=true)
+    @test gca().drawings[1].horiz
+
+    x1 = 1:5
+    y1 = exp.(x1)
+    y2 = sin.(x1)
+    fill_between(x1, y1, y2, min=0, max=6)
+    @test gca().drawings[1].xmin == 0.0
+    @test gca().drawings[1].xmax == 6.0
+
+    bar(x1, y1, y1+y2, stacked=true)
+    @test gca().drawings[1].stacked
 end

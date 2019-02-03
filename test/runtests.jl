@@ -14,6 +14,6 @@ include("ax.jl")
 # 🚫 [apply_gle]
 include("ax_elem.jl")
 
-# ✓ 02 feb 19 [types/]
-# 🚫 [/, apply_gle, set_prop] --> XXX in / at hist2d  (not inc.)
+# ✓ 02 feb 19 [/, types/, set_prop]
+# 🚫 [apply_gle]
 include("drawing.jl")
