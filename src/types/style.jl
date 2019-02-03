@@ -19,7 +19,7 @@ end
 
 @with_kw mutable struct BarStyle
     color::Option{Color} = ∅ # ✓
-    fill::Option{Color}  = ∅ # ✓
+    fill::Union{Nothing,Color,TransparentColor}  = ∅ # ✓
 #    horiz::Option{Bool}      = ∅ # ✓
 #   pattern::Option{String}   =  .... see page 39 of manual, test first
 #   width ...
