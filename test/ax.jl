@@ -54,16 +54,79 @@ end
     @test f.axes[1].yaxis.log == true
     erase!(f); x2scale("log"); erase!(f); y2scale("log")
     @test f.axes[1].y2axis.log == true
-end
 
-# @testset "Axes -- types/ax              " begin
-#     # CONSTRUCTORS
-#     a = G.Axes2D{G.GLE}()
-#     @test a isa G.Axes{G.GLE}
-#     @test a.drawings isa Vector{G.Drawing}
-#     @test isempty(a.drawings)
-#     @test !G.isdef(a.title)
-#     @test !G.isdef(a.size)
-#     @test !G.isdef(a.math)
-#     @test !G.isdef(a.legend)
-# end
+    # diverse extra ones prompted by codecov
+    f = Figure()
+    xlim!(min=0, max=2)
+    @test f.axes[1].xaxis.min == 0.0
+    @test f.axes[1].xaxis.max == 2.0
+    xlim(f.axes[1], 0, 2)
+    @test f.axes[1].xaxis.min == 0.0
+    @test f.axes[1].xaxis.max == 2.0
+    xlim(0, 2)
+    @test f.axes[1].xaxis.min == 0.0
+    @test f.axes[1].xaxis.max == 2.0
+
+    x2lim!(min=0, max=2)
+    @test f.axes[1].x2axis.min == 0.0
+    @test f.axes[1].x2axis.max == 2.0
+    x2lim(f.axes[1], 0, 2)
+    @test f.axes[1].x2axis.min == 0.0
+    @test f.axes[1].x2axis.max == 2.0
+    x2lim(0, 2)
+    @test f.axes[1].x2axis.min == 0.0
+    @test f.axes[1].x2axis.max == 2.0
+
+    ylim!(min=0, max=2)
+    @test f.axes[1].yaxis.min == 0.0
+    @test f.axes[1].yaxis.max == 2.0
+    ylim(f.axes[1], 0, 2)
+    @test f.axes[1].yaxis.min == 0.0
+    @test f.axes[1].yaxis.max == 2.0
+    ylim(0, 2)
+    @test f.axes[1].yaxis.min == 0.0
+    @test f.axes[1].yaxis.max == 2.0
+
+    y2lim!(min=0, max=2)
+    @test f.axes[1].y2axis.min == 0.0
+    @test f.axes[1].y2axis.max == 2.0
+    y2lim(f.axes[1], 0, 2)
+    @test f.axes[1].y2axis.min == 0.0
+    @test f.axes[1].y2axis.max == 2.0
+    y2lim(0, 2)
+    @test f.axes[1].y2axis.min == 0.0
+    @test f.axes[1].y2axis.max == 2.0
+
+    erase!(gcf())
+    xscale!("log")
+    @test f.axes[1].xaxis.log
+    @test_throws G.OptionValueError yscale!("las")
+    xscale!(f.axes[1], "lin")
+    @test f.axes[1].xaxis.log == false
+    xscale(f.axes[1], "log")
+    @test f.axes[1].xaxis.log
+
+    erase!(gcf())
+    x2scale!("log")
+    @test f.axes[1].x2axis.log
+    x2scale!(f.axes[1], "lin")
+    @test f.axes[1].x2axis.log == false
+    x2scale(f.axes[1], "log")
+    @test f.axes[1].x2axis.log
+
+    erase!(gcf())
+    yscale!("log")
+    @test f.axes[1].yaxis.log
+    yscale!(f.axes[1], "lin")
+    @test f.axes[1].yaxis.log == false
+    yscale(f.axes[1], "log")
+    @test f.axes[1].yaxis.log
+
+    erase!(gcf())
+    y2scale!("log")
+    @test f.axes[1].y2axis.log
+    y2scale!(f.axes[1], "lin")
+    @test f.axes[1].y2axis.log == false
+    y2scale(f.axes[1], "log")
+    @test f.axes[1].y2axis.log
+end
