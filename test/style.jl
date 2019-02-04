@@ -98,9 +98,40 @@ end
     # textstyle
     ts = G.TextStyle(font="roman",hei=3.5,color=colorant"red")
     G.apply_textstyle!(g, ts); s = String(take!(g))
-
     isin(s, "font roman hei 3.5 color rgba(1.0,0.0,0.0,1.0)")
+    ts = G.TextStyle()
+    G.apply_textstyle!(g, ts); s = String(take!(g))
+    @test s == ""
 
-    # XXX
+    # linestyle
+    ls = G.LineStyle(lstyle=1, lwidth=0.1, smooth=true, color=colorant"red")
+    G.apply_linestyle!(g, ls); s = String(take!(g))
+    isin(s, "lstyle 1 lwidth 0.1 color rgba(1.0,0.0,0.0,1.0) smooth")
+    ls = G.LineStyle()
+    G.apply_linestyle!(g, ls); s = String(take!(g))
+    @test s == ""
 
+    # markerstyle
+    ms = G.MarkerStyle(marker="circle", msize=0.5, color=colorant"red")
+    G.apply_markerstyle!(g, ms); s = String(take!(g))
+    isin(s, "marker circle msize 0.5 color rgba(1.0,0.0,0.0,1.0)")
+    ms = G.MarkerStyle()
+    G.apply_markerstyle!(g, ms); s = String(take!(g))
+    @test s == ""
+
+    # barstyle
+    bs = G.BarStyle(color=colorant"red", fill=colorant"blue")
+    G.apply_barstyle!(g, bs); s = String(take!(g))
+    isin(s, "color rgba(1.0,0.0,0.0,1.0) fill rgba(0.0,0.0,1.0,1.0)")
+    bs = G.BarStyle()
+    G.apply_barstyle!(g, bs); s = String(take!(g))
+    @test s == ""
+
+    bs1 = G.BarStyle(color=colorant"red", fill=colorant"blue")
+    bs2 = G.BarStyle(color=colorant"blue", fill=colorant"red")
+    G.apply_barstyles_nostack!(g, [bs1, bs2]); s = String(take!(g))
+    isin(s, "color rgba(1.0,0.0,0.0,1.0),rgba(0.0,0.0,1.0,1.0) fill rgba(0.0,0.0,1.0,1.0),rgba(1.0,0.0,0.0,1.0)")
+    bs0 = G.BarStyle()
+    G.apply_barstyles_nostack!(g, [bs0]); s = String(take!(g))
+    @test s == ""
 end
