@@ -1,4 +1,4 @@
-@testset "Drawing -- types/drawing      " begin
+@testset "▶ types/drawing               " begin
     # SCATTER2D
     s = GPlot.Scatter2D(xy=rand(Float32, 3, 2))
     @test s isa GPlot.Drawing2D
@@ -36,7 +36,7 @@
     @test g.horiz == false
 end
 
-@testset "Drawing -- /drawing           " begin
+@testset "▶ /drawing                    " begin
     # SCATTER2D
     # -- basic plot
     x = randn(5)
@@ -112,7 +112,7 @@ end
 
 end
 
-@testset "Drawing -- set_prop/drawing   " begin
+@testset "▶ set_prop/drawing            " begin
     f = Figure()
     x, y = 1:2, exp.(1:2)
     plot(x, y, label="blah")

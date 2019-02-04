@@ -1,4 +1,4 @@
-@testset "Figure -- /figure             " begin
+@testset "▶ /figure                     " begin
     # CONSTRUCTORS
     # --> nothing
     f  = Figure()
@@ -42,7 +42,7 @@
 end
 
 
-@testset "Figure -- set_prop/figure     " begin
+@testset "▶ set_prop/figure             " begin
     f = Figure(size=(5, 7), tex=true, texscale="fixed",
                alpha=true, transparency=true,
                preamble=tex"\usepackage{amssymb}",

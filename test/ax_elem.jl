@@ -1,4 +1,4 @@
-@testset "Axis Elems -- types/ax_elem   " begin
+@testset "▶ types/ax_elem               " begin
     # TITLE
     t = GPlot.Title(text="title")
     @test t.text == "title"
@@ -39,7 +39,7 @@
     @test isnothing(t.symticks)
 end
 
-@testset "Axis Elems -- /ax_elem        " begin
+@testset "▶ /ax_elem                    " begin
     f = Figure()
     # titles and co
     title("blah"); erase!(f)
@@ -99,7 +99,7 @@ end
     @test f.axes[1].legend.position == "br"
 end
 
-@testset "Axis Elems -- set_prop/ax_elem" begin
+@testset "▶ set_prop/ax_elem            " begin
     f = Figure()
     # Title
     title("blah", dist=1); @test f.axes[1].title.dist == 1.0
@@ -121,4 +121,13 @@ end
     @test f.axes[1].yaxis.ticks.off == true
     yticks([1, 2], ["a", "b"], hidelabels=true)
     @test f.axes[1].yaxis.ticks.labels.off == true
+end
+
+@testset "▶ apply_gle/ax_elem           " begin
+    g = G.GLE()
+    f = G.Figure();
+    G.add_axes2d!()
+    G.apply_axes!(g, f.axes[1])
+
+    s = String(take!(g))
 end

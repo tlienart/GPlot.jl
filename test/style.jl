@@ -1,4 +1,4 @@
-@testset "Style -- types/style          " begin
+@testset "▶ types/style                 " begin
     t = G.TextStyle()
     @test isnothing(t.font)
     @test isnothing(t.hei)
@@ -41,7 +41,7 @@
     @test f.color == RGBA{Float64}(0.1,0.2,0.3,0.4)
 end
 
-@testset "Style -- set_prop/style       " begin
+@testset "▶ set_prop/style              " begin
     # color
     x, y = 1:2, exp.(1:2)
     plot(x, y, col="indianred")
