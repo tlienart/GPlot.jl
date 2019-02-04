@@ -5,9 +5,11 @@
 # vertical distance of text to axis
 function set_dist!(o::Union{Title,Ticks}, v::Real)
    (v ≥ 0) || throw(OptionValueError("dist", v))
-   o.dist = v
+   set_dist_!(o, v)
    return o
 end
+set_dist_!(o::Title, v::Real) = (o.dist = v)
+set_dist_!(o::Ticks, v::Real) = (o.labels.dist = v)
 
 set_off!(o::Ticks, v::Bool) = (o.off = v; o)
 

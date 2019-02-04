@@ -9,8 +9,7 @@ include("figure.jl")
 # ✓ 04 feb 19 [/, types/, apply_gle/] (no set_prop)
 include("ax.jl")
 
-# ✓ 04 feb 19 [/, types/, set_prop]
-# XXX [apply_gle]
+# ✓ 04 feb 19 [/, types/, set_prop, apply_gle/]
 include("ax_elem.jl")
 
 # ✓ 03 feb 19 [/, types/, set_prop]
