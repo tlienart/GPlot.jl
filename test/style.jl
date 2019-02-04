@@ -91,3 +91,16 @@ end
     @test gca().drawings[1].markerstyle.msize == 1.5
     @test_throws G.OptionValueError plot(x, y, marker="square", msize=-2)
 end
+
+@testset "▶ apply_gle/style             " begin
+    g = G.GLE()
+
+    # textstyle
+    ts = G.TextStyle(font="roman",hei=3.5,color=colorant"red")
+    G.apply_textstyle!(g, ts); s = String(take!(g))
+
+    isin(s, "font roman hei 3.5 color rgba(1.0,0.0,0.0,1.0)")
+
+    # XXX
+
+end
