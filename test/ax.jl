@@ -1,4 +1,4 @@
-@testset "Axis -- types/ax              " begin
+@testset "▶ types/ax                    " begin
     # CONSTRUCTORS
     a = GPlot.Axis("x")
     @test a.prefix == "x"
@@ -16,7 +16,7 @@
     @test isnothing(a.max)
 end
 
-@testset "Axis -- /ax                   " begin
+@testset "▶ /ax                         " begin
     f = Figure()
     # axis limits
     # -- without kwargs
@@ -129,4 +129,26 @@ end
     @test f.axes[1].y2axis.log == false
     y2scale(f.axes[1], "log")
     @test f.axes[1].y2axis.log
+end
+
+@testset "▶ apply_gle/ax                " begin
+    # AXES2D
+    g = G.GLE()
+    f = G.Figure();
+    G.add_axes2d!()
+    G.apply_axes!(g, f.axes[1])
+
+    s = String(take!(g))
+    isin(s, "begin graph")
+    isin(s, "scale auto")
+    isin(s, "end graph")
+
+    f.axes[1].math = true
+    f.axes[1].size = (10.,8.)
+    G.apply_axes!(g, f.axes[1])
+    s = String(take!(g))
+    isin(s, "math")
+    isin(s, "size 10.0 8.0")
+
+    # AXIS XXX
 end

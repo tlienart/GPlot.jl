@@ -9,7 +9,7 @@ end
 
 function apply_ticks!(g::GLE, t::Ticks)
     # [x]ticks ...
-    any(isdef, (t.off, t.linestyle)) && begin
+    (isdef(t.off) || isanydef(t.linestyle)) && begin
         "\n\t$(t.prefix)ticks" |> g
         isdef(t.off)       && ifelse(t.off, "off", "") |> g
         isdef(t.length)    && "length $(t.length)"     |> g
@@ -27,7 +27,7 @@ function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
     # [x]names "names1" ...
     isdef(t.names) && "\n\t$(prefix)names $(vec2str(t.names))" |> g
     # [x]labels ...
-    any(isdef, (t.off, t.dist, t.textstyle)) && begin
+    (any(isdef, (t.off, t.dist)) || isanydef(t.textstyle)) && begin
         "\n\t$(prefix)labels" |> g
         isdef(t.off)       && ifelse(t.off, "off", "on") |> g
         isdef(t.dist)      && "dist $(t.dist)"           |> g

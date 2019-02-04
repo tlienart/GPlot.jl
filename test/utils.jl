@@ -9,7 +9,7 @@ mutable struct Bar
     z::Bool
 end
 
-@testset "Utils -- /utils               " begin
+@testset "▶ /utils                      " begin
     g = GPlot.GLE()
     gp = GPlot.Gnuplot()
     @test typeof(g) <: GPlot.Backend

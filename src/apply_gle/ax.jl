@@ -1,8 +1,9 @@
 function apply_axis!(g::GLE, a::Axis)
     apply_ticks!(g, a.ticks)
     isdef(a.title) && apply_title!(g, a.title)
-    any(isdef, (a.off, a.base, a.textstyle, a.lwidth, a.grid, a.log, a.min, a.max)) && begin
-        "\n\t$(a.prefix)axis"         |> g
+    P1 = any(isdef, (a.off, a.base, a.lwidth, a.grid, a.log, a.min, a.max))
+    (P1 || isanydef(a.textstyle)) && begin
+        "\n\t$(a.prefix)axis" |> g
         isdef(a.off)    && ifelse(a.off, "off", "")   |> g
         isdef(a.base)   && "base $(a.base)"           |> g
         isdef(a.lwidth) && "lwidth $(a.lwidth)"       |> g
@@ -18,9 +19,9 @@ end
 
 
 function apply_axes!(g::GLE, a::Axes2D)
-    "\nbegin graph\n\tscale auto"               |> g
-    isdef(a.math) && "\n\tmath"                 |> g
-    isdef(a.size) && "\n\tsize $(a[1]) $(a[2])" |> g
+    "\nbegin graph\n\tscale auto" |> g
+    isdef(a.math) && "\n\tmath"   |> g
+    isdef(a.size) && "\n\tsize $(a.size[1]) $(a.size[2])" |> g
     foreach(a -> apply_axis!(g, a), (a.xaxis, a.x2axis, a.yaxis, a.y2axis))
     isdef(a.title) && apply_title!(g, a.title)
     leg_entries = apply_drawings!(g, a.drawings)
