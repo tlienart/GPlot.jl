@@ -2,6 +2,7 @@
 
 ## NOW
 
+* should be able to do `xticks("off")` and not have to do `xticks([], off=true)`, also when it's off you probably should remove any `xplaces` or `xlabels` if there's any.
 * [ongoing] title without `!`  don't seem to work as they should
 * legend called multiple times, will duplicate
 

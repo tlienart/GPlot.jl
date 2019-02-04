@@ -46,6 +46,16 @@ x2title(text; opts...) = x2title(gca(), text; opts...)
 ytitle(text;  opts...) = ytitle(gca(),  text; opts...)
 y2title(text; opts...) = y2title(gca(), text; opts...)
 
+# Synonyms
+xlabel = xtitle
+ylabel = ytitle
+x2label = x2title
+y2label = y2title
+xlabel! = xtitle!
+ylabel! = ytitle!
+x2label! = x2title!
+y2label! = y2title!
+
 ####
 #### [x|y|x2|y2]ticks
 ####
@@ -56,13 +66,14 @@ function _ticks!(a::Option{Axes2D}, axsymb::Symbol, loc::Vector{<:Real},
     isdef(a) || (a = add_axes2d!())
     prefix = "$axsymb"
     axis = getfield(a, Symbol(prefix * "axis"))
+    locf = convert(Vector{Float64}, loc)
     # if overwrite, clear the current ticks object
     overwrite && clear!(axis.ticks)
-    if isdef(axis.ticks.places) && !(axis.ticks.places == loc)
+    if isdef(axis.ticks.places) && !(axis.ticks.places == locf)
         # locations have changed, so overwrite the labels
         clear!(axis.ticks.labels)
     end
-    axis.ticks = Ticks(prefix=prefix, places=loc)
+    axis.ticks = Ticks(prefix=prefix, places=locf)
     if isdef(lab)
         @assert length(lab) == length(loc) "Ticks location and " *
                                            "ticks labels must have " *

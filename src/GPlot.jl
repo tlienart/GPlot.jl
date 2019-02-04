@@ -11,9 +11,11 @@ export Figure, gcf, gca, erase!,
     plot, plot!, fill_between, fill_between!, hist, hist!,
     bar, bar!,
     # Axis / Axes
-    # -- title
-    title!, xtitle!, x2title!, ytitle!, y2title!, legend!,
-    title, xtitle, x2title, ytitle, y2title, legend,
+    # -- titles
+    title!, xtitle!, x2title!, ytitle!, y2title!,
+    xlabel!, x2label!, ylabel!, y2label!, legend!,
+    title, xtitle, x2title, ytitle, y2title,
+    xlabel, x2label, ylabel, y2label, legend,
     # -- lims
     xlim!, x2lim!, ylim!, y2lim!,
     xlim, x2lim, ylim, y2lim,
@@ -39,7 +41,7 @@ include("utils.jl")
 const ∅   = nothing
 const ARR = AbstractRange{<:Real}
 const AVR = AbstractVector{<:Real}
-const MR  = Matrix{<:Real}
+const AMR = Matrix{<:Real}
 
 const PT_TO_CM  = 0.0352778         # 1pt in cm
 const Option{T} = Union{Nothing, T} # a useful type for optional values

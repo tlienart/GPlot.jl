@@ -1,8 +1,8 @@
 function apply_title!(g::GLE, t::Title)
     # [x]title ...
-    p = ifelse(isdef(t.prefix), "$(t.prefix)", "")
-    "\n\t$(p)title \"$(t.text)\""          |> g
-    isdef(t.dist)      && "dist $(t.dist)" |> g
+    p = isdef(t.prefix) ? "$(t.prefix)" : ""
+    "\n\t$(p)title \"$(t.text)\""     |> g
+    isdef(t.dist) && "dist $(t.dist)" |> g
     apply_textstyle!(g, t.textstyle)
     return
 end
@@ -11,8 +11,8 @@ function apply_ticks!(g::GLE, t::Ticks)
     # [x]ticks ...
     (isdef(t.off) || isanydef(t.linestyle)) && begin
         "\n\t$(t.prefix)ticks" |> g
-        isdef(t.off)       && ifelse(t.off, "off", "") |> g
-        isdef(t.length)    && "length $(t.length)"     |> g
+        isdef(t.off)    && ifelse(t.off, "off", "") |> g
+        isdef(t.length) && "length $(t.length)"     |> g
         apply_linestyle!(g, t.linestyle)
     end
     # [x]places pos1 pos2 ...
@@ -29,8 +29,8 @@ function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
     # [x]labels ...
     (any(isdef, (t.off, t.dist)) || isanydef(t.textstyle)) && begin
         "\n\t$(prefix)labels" |> g
-        isdef(t.off)       && ifelse(t.off, "off", "on") |> g
-        isdef(t.dist)      && "dist $(t.dist)"           |> g
+        isdef(t.off)  && ifelse(t.off, "off", "") |> g
+        isdef(t.dist) && "dist $(t.dist)"         |> g
         apply_textstyle!(g, t.textstyle)
     end
     # [x]axis ...
