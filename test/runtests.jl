@@ -6,11 +6,10 @@ include("utils.jl")
 # 🚫 [apply_gle]
 include("figure.jl")
 
-# ✓ XXX feb 19 [/, types/] (no set_prop)
-# XXX [apply_gle]
+# ✓ 04 feb 19 [/, types/, apply_gle/] (no set_prop)
 include("ax.jl")
 
-# ✓ XXX feb 19 [/, types/, set_prop]
+# ✓ 04 feb 19 [/, types/, set_prop]
 # XXX [apply_gle]
 include("ax_elem.jl")
 

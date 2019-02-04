@@ -130,8 +130,4 @@ end
     G.apply_axes!(g, f.axes[1])
 
     s = String(take!(g))
-    println(s)
-    # isin(s, "begin graph")
-    # isin(s, "scale auto")
-    # isin(s, "end graph")
 end
