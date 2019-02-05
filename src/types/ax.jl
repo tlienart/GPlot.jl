@@ -36,7 +36,6 @@ end
 
 mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined
 
-
 """
     erase!(axes)
 

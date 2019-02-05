@@ -1,7 +1,7 @@
 abstract type Drawing end
 abstract type Drawing2D <: Drawing end
 
-@with_kw mutable struct Line2D{T<:MR} <: Drawing2D
+@with_kw mutable struct Scatter2D{T<:AMR} <: Drawing2D
     xy::T # [x, y1, y2, ...]
     # --- style
     linestyle  ::LineStyle   = LineStyle()
@@ -10,7 +10,7 @@ abstract type Drawing2D <: Drawing end
     label::Option{Union{String, Vector{String}}} = ∅
 end
 
-@with_kw mutable struct Fill2D{T<:MR} <: Drawing2D
+@with_kw mutable struct Fill2D{T<:AMR} <: Drawing2D
     xy1y2::T # [x, y1, y2], fill between y1 and y2
     xmin::Option{Float64} = ∅
     xmax::Option{Float64} = ∅
@@ -29,7 +29,7 @@ end
 #    label::Option{String} = ∅ # 🚫
 end
 
-@with_kw mutable struct GroupedBar2D{T<:MR} <: Drawing2D
+@with_kw mutable struct GroupedBar2D{T<:AMR} <: Drawing2D
     xy::T # first column x, subsequent columns y1, y2, ...
     barstyle::Vector{BarStyle} # this must be given explicitly see bar!
     # ---

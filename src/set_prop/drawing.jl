@@ -1,9 +1,9 @@
 ####
-#### Line2D
+#### Scatter2D
 ####
 
 # label of a drawing (cf legend)
-set_label!(o::Line2D, v::Union{String, Vector{String}}) = (o.label = v; o)
+set_label!(o::Scatter2D, v::Union{String, Vector{String}}) = (o.label = v; o)
 
 ####
 #### Legend
@@ -37,8 +37,8 @@ set_horiz!(o::Union{Hist2D, GroupedBar2D}, v::Bool) = (o.horiz = v; o)
 #### Fill2D
 ####
 
-set_xmin!(o::Fill2D, v::Real) = (o.xmin = x; o)
-set_xmax!(o::Fill2D, v::Real) = (o.xmax = x; o)
+set_xmin!(o::Fill2D, v::Real) = (o.xmin = v; o)
+set_xmax!(o::Fill2D, v::Real) = (o.xmax = v; o)
 
 ####
 #### GroupedBar2D
