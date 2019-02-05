@@ -141,7 +141,7 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 #### Options for DRAWINGS
 ####
 
-const LINE2D_OPTS = Dict{Symbol, Function}(
+const SCATTER2D_OPTS = Dict{Symbol, Function}(
     :name   => set_label!, # set_drawing
     :key    => set_label!, # .
     :label  => set_label!, # .
