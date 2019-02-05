@@ -61,15 +61,9 @@ const MARKERSTYLE_OPTS = Dict{Symbol, Function}(
     )
 
 const BARSTYLE_OPTS = Dict{Symbol, Function}(
-    :col       => set_color!, # set_style
-    :color     => set_color!, # .
     :ecol      => set_color!, # .
     :edgecol   => set_color!, # .
     :edgecolor => set_color!, # .
-    :fcol      => set_fill!,  # .
-    :fcolor    => set_fill!,  # .
-    :facecolor => set_fill!,  # .
-    :fill      => set_fill!,  # .
     )
 
 const GBARSTYLE_OPTS = Dict{Symbol, Function}(
@@ -94,11 +88,13 @@ const GBARSTYLE_OPTS = Dict{Symbol, Function}(
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Function}(
-    :col       => set_color!, # set_style
-    :color     => set_color!, # .
-    :fcolor    => set_color!, # .
-    :facecol   => set_color!, # .
-    :facecolor => set_color!, # .
+    :col       => set_fill!, # set_style
+    :color     => set_fill!, # .
+    :fcol      => set_fill!, # .
+    :ffill     => set_fill!, # .
+    :facecol   => set_fill!, # .
+    :facefill  => set_fill!, # .
+    :fill      => set_fill!, # .
     :alpha     => set_alpha!, # .
     )
 
@@ -107,7 +103,6 @@ const FILLSTYLE_OPTS = Dict{Symbol, Function}(
 ####
 
 const TITLE_OPTS = Dict{Symbol, Function}(
-    :text   => set_text!,   # set_ax_elems
     :dist   => set_dist!
     )
 merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
@@ -146,14 +141,15 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 #### Options for DRAWINGS
 ####
 
-const LINE2D_OPTS = Dict{Symbol, Function}(
-    :name  => set_label!, # set_drawing
-    :key   => set_label!, # .
-    :label => set_label!, # .
+const SCATTER2D_OPTS = Dict{Symbol, Function}(
+    :name   => set_label!, # set_drawing
+    :key    => set_label!, # .
+    :label  => set_label!, # .
+    :labels => set_label!, # .
     )
-merge!(LINE2D_OPTS, LINESTYLE_OPTS)
-merge!(LINE2D_OPTS, MARKERSTYLE_OPTS)
-set_properties!(l::Line2D; opts...) = set_properties!(LINE2D_OPTS, l; opts...)
+merge!(SCATTER2D_OPTS, LINESTYLE_OPTS)
+merge!(SCATTER2D_OPTS, MARKERSTYLE_OPTS)
+set_properties!(s::Scatter2D; opts...) = set_properties!(SCATTER2D_OPTS, s; opts...)
 
 const FILL2D_OPTS = Dict{Symbol, Function}(
     :from => set_xmin!,
@@ -175,6 +171,7 @@ const HIST2D_OPTS = Dict{Symbol, Function}(
     :horizontal => set_horiz!,   # .
     )
 merge!(HIST2D_OPTS, BARSTYLE_OPTS)
+merge!(HIST2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(h::Hist2D; opts...) = set_properties!(HIST2D_OPTS, h; opts...)
 
 const GROUPEDBAR2D_OPTS = Dict{Symbol, Function}(

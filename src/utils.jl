@@ -5,17 +5,6 @@ struct GLE <: Backend
 end
 GLE() = GLE(IOBuffer())
 
-function test_gle()
-    flag = false
-    try
-        flag = success(`gle -v`)
-    catch
-    end
-    flag || error("GLE could not be loaded. Make sure you have installed " *
-                  "it and that it is accessible via the shell.")
-    return
-end
-
 struct Gnuplot <: Backend
     io::IOBuffer
 end
@@ -30,6 +19,11 @@ Gnuplot() = Gnuplot(IOBuffer())
 take!(b::Backend)   = take!(b.io)
 
 #######################################
+
+if !isdefined(Base, :isnothing)
+    isnothing(o) = o === nothing
+    export isnothing
+end
 
 isdef(el) = !isnothing(el)
 
@@ -110,5 +104,3 @@ struct OptionValueError <: Exception
     msg::String
     OptionValueError(s, v) = new("[$s] value given ($v) did not meet the expected format.")
 end
-
-gle_no_support(s) = GP_ENV["VERBOSE"] && println("🚫  GLE does not support $s [ignoring]")

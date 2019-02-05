@@ -35,9 +35,9 @@ end
     labels   ::TicksLabels = TicksLabels() # their label
     linestyle::LineStyle   = LineStyle()   # how the ticks marks look
     # ---
-    places   ::Option{AVR}     = ∅ # where the ticks are
-    off      ::Option{Bool}    = ∅ # whether to suppress them
-    length   ::Option{Float64} = ∅ # how long the ticks
-    symticks ::Option{Bool}    = ∅ # draws ticks on 2 sides of spine
+    places   ::Option{Vector{Float64}} = ∅ # where the ticks are
+    off      ::Option{Bool}            = ∅ # whether to suppress them
+    length   ::Option{Float64}         = ∅ # how long the ticks
+    symticks ::Option{Bool}            = ∅ # draws ticks on 2 sides of spine
 end
 Ticks(p::String) = Ticks(prefix=p)

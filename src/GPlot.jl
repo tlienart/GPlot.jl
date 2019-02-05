@@ -8,11 +8,14 @@ import Base: |>, take!, isempty
 
 export Figure, gcf, gca, erase!,
     # Drawings
-    plot, plot!, hist, hist!, bar, bar!, fill_between!,
+    plot, plot!, fill_between, fill_between!, hist, hist!,
+    bar, bar!,
     # Axis / Axes
-    # -- title
-    title!, xtitle!, x2title!, ytitle!, y2title!, legend!,
-    title, xtitle, x2title, ytitle, y2title, legend,
+    # -- titles
+    title!, xtitle!, x2title!, ytitle!, y2title!,
+    xlabel!, x2label!, ylabel!, y2label!, legend!,
+    title, xtitle, x2title, ytitle, y2title,
+    xlabel, x2label, ylabel, y2label, legend,
     # -- lims
     xlim!, x2lim!, ylim!, y2lim!,
     xlim, x2lim, ylim, y2lim,
@@ -20,7 +23,8 @@ export Figure, gcf, gca, erase!,
     xticks!, x2ticks!, yticks!, y2ticks!,
     xticks, x2ticks, yticks, y2ticks,
     # -- scale
-    xscale!, xscale, yscale!, yscale,
+    xscale!, x2scale!, yscale!, y2scale!,
+    xscale, x2scale, yscale, y2scale,
     # Preview / rendering / saving
     preview, render, savefig, isempty,
     @t_str, @tex_str
@@ -34,14 +38,10 @@ const GP_ENV = Dict{String, Any}(
 
 include("utils.jl")
 
-# default backend for now
-test_gle()
-GP_ENV["BACKEND"] = GLE
-
 const ∅   = nothing
 const ARR = AbstractRange{<:Real}
 const AVR = AbstractVector{<:Real}
-const MR  = Matrix{<:Real}
+const AMR = Matrix{<:Real}
 
 const PT_TO_CM  = 0.0352778         # 1pt in cm
 const Option{T} = Union{Nothing, T} # a useful type for optional values
@@ -58,24 +58,24 @@ include("set_prop/dicts_gle.jl")
 include("set_prop/dicts_shared.jl")
 
 # Set properties of objects
-include("set_prop/set_style.jl")
-include("set_prop/set_drawing.jl")
-include("set_prop/set_ax_elems.jl")
-include("set_prop/set_ax.jl")
-include("set_prop/set_figure.jl")
-include("set_prop/set_properties.jl")
+include("set_prop/style.jl")
+include("set_prop/drawing.jl")
+include("set_prop/ax_elems.jl")
+include("set_prop/figure.jl")
+include("set_prop/properties.jl")
 
 # Write objects to GLE buffer
-include("apply_gle/apply_style.jl")
-include("apply_gle/apply_drawing.jl")
-include("apply_gle/apply_ax_elems.jl")
-include("apply_gle/apply_ax.jl")
-include("apply_gle/apply_figure.jl")
+include("apply_gle/style.jl")
+include("apply_gle/drawing.jl")
+include("apply_gle/ax_elems.jl")
+include("apply_gle/ax.jl")
+include("apply_gle/figure.jl")
 
 # Main call for elements
 include("drawing.jl")
 include("ax.jl")
 include("ax_elem.jl")
+include("figure.jl")
 
 # Rendering of things (preview/savefig)
 include("render.jl")
@@ -104,5 +104,9 @@ gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 Return the backend type associated with figure `f`.
 """
 get_backend(f::Figure{B}=gcf()) where {B} = B
+
+# -------
+
+include("init.jl")
 
 end # module
