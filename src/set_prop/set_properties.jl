@@ -147,9 +147,10 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 ####
 
 const LINE2D_OPTS = Dict{Symbol, Function}(
-    :name  => set_label!, # set_drawing
-    :key   => set_label!, # .
-    :label => set_label!, # .
+    :name   => set_label!, # set_drawing
+    :key    => set_label!, # .
+    :label  => set_label!, # .
+    :labels => set_label!, # .
     )
 merge!(LINE2D_OPTS, LINESTYLE_OPTS)
 merge!(LINE2D_OPTS, MARKERSTYLE_OPTS)
