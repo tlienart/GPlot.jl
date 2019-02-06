@@ -92,20 +92,20 @@ x2ticks!(a, loc, lab=∅; opts...) = _ticks!(a, :x2, loc, lab; opts...)
 yticks!(a,  loc, lab=∅; opts...) = _ticks!(a, :y,  loc, lab; opts...)
 y2ticks!(a, loc, lab=∅; opts...) = _ticks!(a, :y2, loc, lab; opts...)
 
-xticks!(loc::Vector,  lab=∅; opts...) = xticks!(gca(),  loc, lab; opts...)
-x2ticks!(loc::Vector, lab=∅; opts...) = x2ticks!(gca(), loc, lab; opts...)
-yticks!(loc::Vector,  lab=∅; opts...) = yticks!(gca(),  loc, lab; opts...)
-y2ticks!(loc::Vector, lab=∅; opts...) = y2ticks!(gca(), loc, lab; opts...)
+xticks!(loc::AVR,  lab=∅; opts...) = xticks!(gca(),  loc, lab; opts...)
+x2ticks!(loc::AVR, lab=∅; opts...) = x2ticks!(gca(), loc, lab; opts...)
+yticks!(loc::AVR,  lab=∅; opts...) = yticks!(gca(),  loc, lab; opts...)
+y2ticks!(loc::AVR, lab=∅; opts...) = y2ticks!(gca(), loc, lab; opts...)
 
 xticks(a,  loc, lab=∅; opts...) = xticks!(a,  loc, lab; overwrite=true, opts...)
 x2ticks(a, loc, lab=∅; opts...) = x2ticks!(a, loc, lab; overwrite=true, opts...)
 yticks(a,  loc, lab=∅; opts...) = yticks!(a,  loc, lab; overwrite=true, opts...)
 y2ticks(a, loc, lab=∅; opts...) = y2ticks!(a, loc, lab; overwrite=true, opts...)
 
-xticks(loc::Vector,  lab=∅; opts...) = xticks(gca(),  loc, lab; opts...)
-x2ticks(loc::Vector, lab=∅; opts...) = x2ticks(gca(), loc, lab; opts...)
-yticks(loc::Vector,  lab=∅; opts...) = yticks(gca(),  loc, lab; opts...)
-y2ticks(loc::Vector, lab=∅; opts...) = y2ticks(gca(), loc, lab; opts...)
+xticks(loc::AVR,  lab=∅; opts...) = xticks(gca(),  loc, lab; opts...)
+x2ticks(loc::AVR, lab=∅; opts...) = x2ticks(gca(), loc, lab; opts...)
+yticks(loc::AVR,  lab=∅; opts...) = yticks(gca(),  loc, lab; opts...)
+y2ticks(loc::AVR, lab=∅; opts...) = y2ticks(gca(), loc, lab; opts...)
 
 ####
 #### legend!, legend

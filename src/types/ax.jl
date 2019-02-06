@@ -40,15 +40,11 @@ mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined
 """
     erase!(axes)
 
-Cleans up `axes`.
+Cleans up `axes` for a new drawing, keeps all other properties the same (ticks, ...).
 """
 function erase!(a::Axes2D)
-    a.xaxis  = Axis("x")
-    a.x2axis = Axis("x2")
-    a.yaxis  = Axis("y")
-    a.y2axis = Axis("y2")
     a.drawings = Vector{Drawing}()
-    clear!(a)
+    a.legend   = ∅
     GP_ENV["CURAXES"] = a
     return
 end
