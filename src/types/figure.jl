@@ -1,4 +1,4 @@
-mutable struct Figure{B <: Backend}
+mutable struct Figure{B<:Backend}
     id          ::String             # unique id of the figure
     g           ::B                  # description stream
     axes        ::Vector{Axes{B}}    # subplots

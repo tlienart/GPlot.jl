@@ -19,6 +19,7 @@ end
 
 
 function apply_axes!(g::GLE, a::Axes2D)
+    isdef(a.origin) && "\namove $(a.origin[1]) $(a.origin[2])" |> g
     "\nbegin graph\n\tscale auto" |> g
     isdef(a.math) && "\n\tmath"   |> g
     isdef(a.size) && "\n\tsize $(a.size[1]) $(a.size[2])" |> g

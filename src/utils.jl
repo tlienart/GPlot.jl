@@ -32,8 +32,9 @@ isdef(el) = !isnothing(el)
 isanydef(obj) = any(isdef, (getfield(obj, f) for f ∈ fieldnames(typeof(obj))))
 
 # take an object and for any field that is optional, set the field to nothing
-function clear!(obj::T) where T
+function clear!(obj::T; exclude=Vector{Symbol}()) where T
     for fn ∈ fieldnames(T)
+        fn ∈ exclude && continue
         (Nothing <: fieldtype(T, fn)) && setfield!(obj, fn, nothing)
     end
     return

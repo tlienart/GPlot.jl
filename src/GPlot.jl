@@ -7,6 +7,8 @@ using DelimitedFiles: writedlm
 import Base: |>, take!, isempty
 
 export Figure, gcf, gca, erase!,
+    # Layout
+    layout!, layout, subplot,
     # Drawings
     plot, plot!, fill_between, fill_between!, hist, hist!,
     bar, bar!,
@@ -27,6 +29,7 @@ export Figure, gcf, gca, erase!,
     xscale, x2scale, yscale, y2scale,
     # Preview / rendering / saving
     preview, render, savefig, isempty,
+    # Simple macros for tex strings
     @t_str, @tex_str
 
 const GP_ENV = Dict{String, Any}(
@@ -76,6 +79,7 @@ include("drawing.jl")
 include("ax.jl")
 include("ax_elem.jl")
 include("figure.jl")
+include("layout.jl")
 
 # Rendering of things (preview/savefig)
 include("render.jl")
