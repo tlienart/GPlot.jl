@@ -206,7 +206,8 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::GroupedBar2D,
     # (2) non stacked (or single barset)
     if nbars==1 || !obj.stacked
         # bar d1,d2,d3
-        "\n\tbar $(svec2str(("d$(el_counter+i-1)," for i ∈ 1:nbars)))" |> g
+        "\n\tbar $(svec2str(("d$(el_counter+i-1)" for i ∈ 1:nbars)))" |> g
+        isdef(obj.width) && "width $(obj.width)" |> g
         # apply bar styles
         apply_barstyles_nostack!(g, obj.barstyle)
         obj.horiz && "horiz" |> g
@@ -215,6 +216,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::GroupedBar2D,
     else
         # first base bar
         "\n\tbar d$(el_counter)" |> g
+        isdef(obj.width) && "width $(obj.width)" |> g
         apply_barstyle!(g, obj.barstyle[1])
         obj.horiz && "horiz" |> g
         # bars stacked on top

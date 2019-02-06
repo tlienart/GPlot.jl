@@ -85,6 +85,8 @@ const GBARSTYLE_OPTS = Dict{Symbol, Function}(
     :fcolors    => set_fills!,  # .
     :facecolors => set_fills!,  # .
     :fills      => set_fills!,  # .
+    :width      => set_width!,  # .
+    :binwidth   => set_width!,  # .
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Function}(
@@ -142,9 +144,10 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 ####
 
 const SCATTER2D_OPTS = Dict{Symbol, Function}(
-    :name  => set_label!, # set_drawing
-    :key   => set_label!, # .
-    :label => set_label!, # .
+    :name   => set_label!, # set_drawing
+    :key    => set_label!, # .
+    :label  => set_label!, # .
+    :labels => set_label!, # .
     )
 merge!(SCATTER2D_OPTS, LINESTYLE_OPTS)
 merge!(SCATTER2D_OPTS, MARKERSTYLE_OPTS)

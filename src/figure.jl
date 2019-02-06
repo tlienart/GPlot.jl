@@ -22,8 +22,8 @@ function Figure(id::String, g::Backend; opts...)
 
     set_properties!(f; opts...)
     GP_ENV["ALLFIGS"][id] = f
-    GP_ENV["CURFIG"]     = f
-    GP_ENV["CURAXES"]    = nothing
+    GP_ENV["CURFIG"]      = f
+    GP_ENV["CURAXES"]     = nothing
     return f
 end
 
@@ -34,7 +34,7 @@ function Figure(id::String="_fig_"; reset=false, opts...)
         Figure(id, GP_ENV["BACKEND"](); opts...)
     end
     reset && erase!(f)
-    GP_ENV["CURFIG"] = f
+    GP_ENV["CURFIG"]  = f
     GP_ENV["CURAXES"] = isempty(f.axes) ? nothing : f.axes[1]
     set_properties!(f; opts...) # f exists but properties have been given
     return f

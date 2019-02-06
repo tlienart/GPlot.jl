@@ -12,7 +12,7 @@ Add one or several line plots on the current axes.
 function plot!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(a)
+    overwrite && clear!(a; exclude=[:origin, :size])
     # create line object, set properties and push to drawing stack
     line = Scatter2D(xy = xy)
     set_properties!(line; opts...)
@@ -54,7 +54,7 @@ plot(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite
 function fill_between!(a::Option{Axes2D}, xy1y2::AMR; overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(a)
+    overwrite && clear!(a; exclude=[:origin, :size])
     # create fill object, set properties and push to drawing stack
     fill = Fill2D(xy1y2 = xy1y2)
     set_properties!(fill; opts...)
@@ -87,7 +87,7 @@ Add a histogram of `x` on the current axes.
 function hist!(a::Option{Axes2D}, x::AVR; overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(a)
+    overwrite && clear!(a; exclude=[:origin, :size])
     # create hist2d object assign properties and push to drawing stack
     hist = Hist2D(x = x)
     set_properties!(hist; opts...)
@@ -107,7 +107,7 @@ hist(x; opts...)  = hist!(x; overwrite=true, opts...)
 function bar!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
-    overwrite && erase!(a)
+    overwrite && clear!(a; exclude=[:origin, :size])
     # create groupedbar2d object, assign properties and push to drawing stack
     gb = GroupedBar2D(xy = xy, barstyle=[BarStyle() for i ∈ 1:(size(xy,2)-1)])
     set_properties!(gb; opts...)
@@ -123,7 +123,7 @@ end
 
 bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
 bar!(x, y::AMR; opts...) = bar!(gca(), x, y; opts...)
-bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...))
+bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...); opts...)
 
 bar(y; opts...) = bar!(y; overwrite=true, opts...)
 bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)

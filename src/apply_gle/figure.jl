@@ -1,7 +1,7 @@
-
-function assemble_figure(f::Figure{GLE}; debug=false)
+function assemble_figure(f::Figure{GLE}; debug=false)::Option{String}
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
+    # check if has latex
     haslatex = false
     any(isdef, (f.texscale, f.texpreamble)) && (haslatex = true)
     isdef(f.texlabels) && (haslatex = f.texlabels)
@@ -19,22 +19,17 @@ function assemble_figure(f::Figure{GLE}; debug=false)
         "\nset texscale"    |> g
         ifelse(isdef(f.texscale), f.texscale, "scale") |> g
     end
-    # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-    # XXX DEAL WITH LAYOUT, sandbox below
-    # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-    apply_axes!(g, f.axes[1])
-    # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-
+    foreach(a -> apply_axes!(g, a), f.axes)
     # deal with proper dir
     if debug
-        return take!(g)
+        return String(take!(g))
     else
         write(joinpath(GP_ENV["TMP_PATH"], f.id * ".gle"), take!(g))
         return
     end
 end
 
-debug_gle(f::Figure{GLE}) = println(String(assemble_figure(f; debug=true)))
+debug_gle(f::Figure{GLE}) = println(assemble_figure(f; debug=true))
 
 function assemble_figure(f::Figure{Gnuplot})
     throw(NotImplementedError("assemble_figure:Gnuplot"))

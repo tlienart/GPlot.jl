@@ -18,7 +18,6 @@ Axis(p::String) = Axis(prefix=p, ticks=Ticks(p))
 
 abstract type Axes{B <: Backend} end
 
-
 @with_kw mutable struct Axes2D{B} <: Axes{B}
     xaxis ::Axis = Axis("x")
     x2axis::Axis = Axis("x2")
@@ -31,6 +30,8 @@ abstract type Axes{B <: Backend} end
     size  ::Option{NTuple{2, Float64}} = ∅ # (width cm, height cm)
     math  ::Option{Bool}               = ∅ # axis crossing (0, 0)
     legend::Option{Legend}             = ∅
+    # ---
+    origin::Option{NTuple{2, Float64}} = ∅ # related to layout
 end
 
 

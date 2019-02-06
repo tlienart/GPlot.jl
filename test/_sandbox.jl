@@ -2,19 +2,11 @@
 
 using GPlot
 
-############### multiple line, multiple labels (TODO: color range)
+using DelimitedFiles
 
-f = Figure()
+dat = readdlm("../GPlotExamples.jl/targets/2d-complex1/decay.dat")
 
-x = 0.1:0.1:5
-y1 = @. x^2 / exp(x)
-y2 = @. x^3 / exp(x)
+f = Figure(size=(11, 8), latex=true)
+bar(dat[:, 1], dat[:, 2], fcol="yellow", ecol="black", width=3)
 
-plot(x, [y1 y2], label=["plot1", "plot2"])
-legend()
-
-preview(gcf())
-
-#GPlot.debug_gle(gcf())
-
-############### xlims, etc
+GPlot.debug_gle(f)

@@ -13,6 +13,9 @@ function _title!(a::Option{Axes2D}, text::String, axsymb::Option{Symbol};
     end
     if isdef(obj.title)
         # if overwrite, clear the current title
+        @show obj.title
+        @show typeof(obj.title)
+        @show fieldnames(typeof(obj.title))
         overwrite && clear!(obj.title)
         obj.title.text = text
     else
@@ -60,7 +63,7 @@ y2label! = y2title!
 #### [x|y|x2|y2]ticks
 ####
 
-function _ticks!(a::Option{Axes2D}, axsymb::Symbol, loc::Vector{<:Real},
+function _ticks!(a::Option{Axes2D}, axsymb::Symbol, loc::AVR,
                  lab::Option{Vector{String}}; overwrite=false,
                  opts...)
     isdef(a) || (a = add_axes2d!())

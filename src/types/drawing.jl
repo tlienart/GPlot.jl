@@ -21,11 +21,11 @@ end
 @with_kw mutable struct Hist2D{T<:AVR} <: Drawing2D
     x::T
     # --- style
-    barstyle::BarStyle = BarStyle() # 🚫
+    barstyle::BarStyle = BarStyle()
     # ---
-    horiz  ::Bool           = false
-    bins   ::Option{Int}    = ∅
-    scaling::Option{String} = ∅
+    horiz  ::Bool            = false
+    bins   ::Option{Int}     = ∅
+    scaling::Option{String}  = ∅
 #    label::Option{String} = ∅ # 🚫
 end
 
@@ -35,6 +35,8 @@ end
     # ---
     stacked::Bool = false
     horiz  ::Bool = false
+    # ---
+    width  ::Option{Float64} = ∅
 # label
 end
 
