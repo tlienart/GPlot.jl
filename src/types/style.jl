@@ -21,7 +21,6 @@ end
     color::Option{Color}   = ∅ # ✓
     fill::Option{Colorant} = ∅ # ✓
 #   pattern::Option{String}   =  .... see page 39 of manual, test first
-#   width ...
 end
 
 @with_kw mutable struct FillStyle

@@ -133,3 +133,13 @@ function set_mecol!(o::Scatter2D, v)
     # potentially the line width should be the lead for how much difference
     # there should be in the markersize.
 end
+
+####
+#### Bar related
+####
+
+function set_width!(o::GroupedBar2D, v::Real)
+    @assert v > 0 "width must be positive"
+    o.width = float(v)
+    return o
+end

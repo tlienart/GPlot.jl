@@ -85,6 +85,8 @@ const GBARSTYLE_OPTS = Dict{Symbol, Function}(
     :fcolors    => set_fills!,  # .
     :facecolors => set_fills!,  # .
     :fills      => set_fills!,  # .
+    :width      => set_width!,  # .
+    :binwidth   => set_width!,  # .
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Function}(

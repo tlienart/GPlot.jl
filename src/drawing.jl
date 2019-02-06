@@ -123,7 +123,7 @@ end
 
 bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
 bar!(x, y::AMR; opts...) = bar!(gca(), x, y; opts...)
-bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...))
+bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...); opts...)
 
 bar(y; opts...) = bar!(y; overwrite=true, opts...)
 bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)
