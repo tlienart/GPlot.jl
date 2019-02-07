@@ -1,7 +1,12 @@
 using Documenter, GPlot
 
 makedocs(
-    format   = Documenter.HTML(),
+    format = Documenter.HTML(
+        # Use clean URLs, unless built as a "local" build
+        prettyurls = !("local" in ARGS),
+        canonical = "https://tlienart.github.io/GPlot.jl/stable/",
+    ),
+    clean = false,
     sitename = "GPlot.jl",
     authors  = "Thibaut Lienart",
     pages    = [
@@ -22,4 +27,5 @@ makedocs(
 
 deploydocs(
     repo = "github.com/tlienart/GPlot.jl.git",
+    target = "build",
 )
