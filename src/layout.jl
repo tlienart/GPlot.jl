@@ -10,7 +10,6 @@ function layout!(f::Figure{B}, anchors=Matrix{Float64}) where B<:Backend
                                size=(anchors[i, 3]*W, anchors[i, 4]*H),
                                title=Title()))
     end
-    @show f.axes[1].origin
     return f
 end
 
@@ -51,16 +50,12 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
             end
         end
         layout!(f, grid)
-        @show "B4"
-        @show f.axes[1].origin
     # 2. if there are axes, check that it matches, if it doesn't
     else
         @assert length(f.axes) == nrows*ncols "the layout description does not match the " *
                         "current axes. If you want to change the layout of the current " *
                         "figure use erase!(gcf()) first to remove the existing axes."
     end
-    @show "AFTER"
-    @show f.axes[1].origin
 
     # 3. select the relevant axes and make them the current ones
     curax = f.axes[idx]

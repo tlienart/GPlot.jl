@@ -13,9 +13,6 @@ function _title!(a::Option{Axes2D}, text::String, axsymb::Option{Symbol};
     end
     if isdef(obj.title)
         # if overwrite, clear the current title
-        @show obj.title
-        @show typeof(obj.title)
-        @show fieldnames(typeof(obj.title))
         overwrite && clear!(obj.title)
         obj.title.text = text
     else
