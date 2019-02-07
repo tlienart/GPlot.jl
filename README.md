@@ -1,8 +1,9 @@
 # GPlot
 
-| Status | Coverage |
-| :----: | :----: |
-| [![Build Status](https://travis-ci.org/tlienart/GPlot.jl.svg?branch=master)](https://travis-ci.org/tlienart/GPlot.jl) | [![codecov.io](http://codecov.io/github/tlienart/GPlot.jl/coverage.svg?branch=master)](http://codecov.io/github/tlienart/GPlot.jl?branch=master) |
+| Status | Coverage | Documentation |
+| :----: | :------: | :-----------: |
+| [![Build Status](https://travis-ci.org/tlienart/GPlot.jl.svg?branch=master)](https://travis-ci.org/tlienart/GPlot.jl) | [![codecov.io](http://codecov.io/github/tlienart/GPlot.jl/coverage.svg?branch=master)](http://codecov.io/github/tlienart/GPlot.jl?branch=master) | [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://tlienart.github.io/GPlot.jl/dev)
+
 
 [WIP] If you think this project could be fun to work on and would like to help, I'll be happy to hear from you (even if just to help me test the code).
 
