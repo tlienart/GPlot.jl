@@ -18,6 +18,9 @@ makedocs(
             "Styling"        => "man/styling.md",       # Figure, Axes, Axis, Fonts, LaTex,..
             "Advanced plots" => "man/advancedplots.md", # Layout, 3D, ...
         ],
+        "Appendix" => [
+            "Fonts" => "appendix/fonts.md",
+        ],
         "Library" => [
             "Public"    => "lib/public.md",
             "Internals" => "lib/internals.md",

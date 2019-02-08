@@ -18,7 +18,7 @@ exists already, return that object.
 function Figure(id::String, g::Backend; opts...)
 
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (12., 9.), TextStyle(hei=0.35), ∅, ∅, ∅, ∅)
+               (12., 9.), TextStyle(font="texcmss", hei=0.35), ∅, ∅, ∅, ∅)
 
     set_properties!(f; opts...)
     GP_ENV["ALLFIGS"][id] = f
