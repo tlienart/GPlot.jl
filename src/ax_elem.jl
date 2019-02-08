@@ -22,39 +22,27 @@ function _title!(a::Option{Axes2D}, text::String, axsymb::Option{Symbol};
     return a
 end
 
-title!(a,   text; opts...) = _title!(a, text, ∅  ; opts...)
-xtitle!(a,  text; opts...) = _title!(a, text, :x ; opts...)
-x2title!(a, text; opts...) = _title!(a, text, :x2; opts...)
-ytitle!(a,  text; opts...) = _title!(a, text, :y ; opts...)
-y2title!(a, text; opts...) = _title!(a, text, :y2; opts...)
-
-title!(text;   opts...) = title!(gca(),   text; opts...)
-xtitle!(text;  opts...) = xtitle!(gca(),  text; opts...)
-x2title!(text; opts...) = x2title!(gca(), text; opts...)
-ytitle!(text;  opts...) = ytitle!(gca(),  text; opts...)
-y2title!(text; opts...) = y2title!(gca(), text; opts...)
-
-title(a,   text; opts...) = title!(a,   text; overwrite=true, opts...)
-xtitle(a,  text; opts...) = xtitle!(a,  text; overwrite=true, opts...)
-x2title(a, text; opts...) = x2title!(a, text; overwrite=true, opts...)
-ytitle(a,  text; opts...) = ytitle!(a,  text; overwrite=true, opts...)
-y2title(a, text; opts...) = y2title!(a, text; overwrite=true, opts...)
-
-title(text;   opts...) = title(gca(),   text; opts...)
-xtitle(text;  opts...) = xtitle(gca(),  text; opts...)
-x2title(text; opts...) = x2title(gca(), text; opts...)
-ytitle(text;  opts...) = ytitle(gca(),  text; opts...)
-y2title(text; opts...) = y2title(gca(), text; opts...)
-
-# Synonyms
-xlabel = xtitle
-ylabel = ytitle
-x2label = x2title
-y2label = y2title
-xlabel! = xtitle!
-ylabel! = ytitle!
-x2label! = x2title!
-y2label! = y2title!
+# Generate xlim!, xlim, and associated for each axis
+for axs ∈ ["", "x", "y", "x2", "y2"]
+    f!  = Symbol(axs * "title!")
+    f   = Symbol(axs * "title")
+    f2! = Symbol(axs * "label!") # synonyms xlabel = xtitle
+    f2  = Symbol(axs * "label")
+    ex = quote
+        if isempty($axs)
+            $f!(a, text; opts...) = _title!(a, text, ∅; opts...)
+        else
+            $f!(a, text; opts...) = _title!(a, text, Symbol($axs); opts...)
+        end
+        $f!(text; opts...)   = $f!(gca(), text; opts...)
+        # overwrite
+        $f(a, text; opts...) = $f!(a, text; overwrite=true, opts...)
+        $f(text; opts...)    = $f!(gca(), text; overwrite=true, opts...)
+        # more synonyms xlabel...
+        !isempty($axs) && ($f2! = $f!; $f2 = $f)
+    end
+    eval(ex)
+end
 
 ####
 #### [x|y|x2|y2]ticks
@@ -84,25 +72,19 @@ function _ticks!(a::Option{Axes2D}, axsymb::Symbol, loc::AVR,
     return a
 end
 
-xticks!(a,  loc, lab=∅; opts...) = _ticks!(a, :x,  loc, lab; opts...)
-x2ticks!(a, loc, lab=∅; opts...) = _ticks!(a, :x2, loc, lab; opts...)
-yticks!(a,  loc, lab=∅; opts...) = _ticks!(a, :y,  loc, lab; opts...)
-y2ticks!(a, loc, lab=∅; opts...) = _ticks!(a, :y2, loc, lab; opts...)
-
-xticks!(loc::AVR,  lab=∅; opts...) = xticks!(gca(),  loc, lab; opts...)
-x2ticks!(loc::AVR, lab=∅; opts...) = x2ticks!(gca(), loc, lab; opts...)
-yticks!(loc::AVR,  lab=∅; opts...) = yticks!(gca(),  loc, lab; opts...)
-y2ticks!(loc::AVR, lab=∅; opts...) = y2ticks!(gca(), loc, lab; opts...)
-
-xticks(a,  loc, lab=∅; opts...) = xticks!(a,  loc, lab; overwrite=true, opts...)
-x2ticks(a, loc, lab=∅; opts...) = x2ticks!(a, loc, lab; overwrite=true, opts...)
-yticks(a,  loc, lab=∅; opts...) = yticks!(a,  loc, lab; overwrite=true, opts...)
-y2ticks(a, loc, lab=∅; opts...) = y2ticks!(a, loc, lab; overwrite=true, opts...)
-
-xticks(loc::AVR,  lab=∅; opts...) = xticks(gca(),  loc, lab; opts...)
-x2ticks(loc::AVR, lab=∅; opts...) = x2ticks(gca(), loc, lab; opts...)
-yticks(loc::AVR,  lab=∅; opts...) = yticks(gca(),  loc, lab; opts...)
-y2ticks(loc::AVR, lab=∅; opts...) = y2ticks(gca(), loc, lab; opts...)
+# Generate xticks!, xticks, and associated for each axis
+for axs ∈ ["", "x", "y", "x2", "y2"]
+    f!  = Symbol(axs * "ticks!")
+    f   = Symbol(axs * "ticks")
+    ex = quote
+        $f!(a, loc, lab=∅; opts...)   = _ticks!(a, Symbol($axs), loc, lab; opts...)
+        $f!(loc::AVR, lab=∅; opts...) = $f!(gca(), loc, lab; opts...)
+        # overwrite
+        $f(a, loc, lab=∅; opts...)   = $f!(a, loc, lab; overwrite=true, opts...)
+        $f(loc::AVR, lab=∅; opts...) = $f!(gca(), loc, lab; overwrite=true, opts...)
+    end
+    eval(ex)
+end
 
 ####
 #### legend!, legend
