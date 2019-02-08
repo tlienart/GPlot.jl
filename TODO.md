@@ -1,5 +1,13 @@
 # Todo
 
+### Note from plane
+
+* trying to get multiplot working with vector assignments for everything, similar for bar
+* much code duplication that might benefit from being generated for consistency, think
+* for the moment it's not working, follow error trails
+* add tests
+* use colorbrewer for default, note that only up to 10 so if more would have to warn and loop, modulo stuff.
+
 ## NOW
 
 * should be able to do `xticks("off")` and not have to do `xticks([], off=true)`, also when it's off you probably should remove any `xplaces` or `xlabels` if there's any.

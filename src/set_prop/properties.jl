@@ -85,11 +85,11 @@ const GMARKERSTYLE_OPTS = Dict{Symbol, Function}(
     :mecol            => set_mecol_v!,  # .
     :medgecolor       => set_mecol_v!,  # .
     :markeredgecol    => set_mecol_v!,  # .
-    :markeredgecolor  => set_mecol_v!   # .
+    :markeredgecolor  => set_mecol_v!,  # .
     :mecols           => set_mecol_v!,  # .
     :medgecolors      => set_mecol_v!,  # .
     :markeredgecols   => set_mecol_v!,  # .
-    :markeredgecolors => set_mecol_v!   # .
+    :markeredgecolors => set_mecol_v!,  # .
     )
 
 const BARSTYLE_OPTS = Dict{Symbol, Function}(

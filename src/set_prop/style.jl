@@ -160,7 +160,7 @@ end
 set_mcol_v!(o::Scatter2D, v::Vector{Colorant}) = throw(NotImplementedError("Marker color"))
 
 # marker edge color (if applicable)
-function set_mecol_!(o::Scatter2D, v::Vector{Colorant})
+function set_mecol_v!(o::Scatter2D, v::Vector{Colorant})
     throw(NotImplementedError("Marker edge color"))
     # @assert get_backend() == GLE "marker/only GLE backend " *
     #                                       "supported"
