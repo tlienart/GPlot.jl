@@ -4,8 +4,8 @@ abstract type Drawing2D <: Drawing end
 @with_kw mutable struct Scatter2D{T<:AMR} <: Drawing2D
     xy::T # [x, y1, y2, ...]
     # --- style
-    linestyle  ::LineStyle   = LineStyle()
-    markerstyle::MarkerStyle = MarkerStyle()
+    linestyle  ::Vector{LineStyle}
+    markerstyle::Vector{MarkerStyle}
     # --- legend and misc
     label::Option{Union{String, Vector{String}}} = ∅
 end
@@ -29,7 +29,7 @@ end
 #    label::Option{String} = ∅ # 🚫
 end
 
-@with_kw mutable struct GroupedBar2D{T<:AMR} <: Drawing2D
+@with_kw mutable struct Bar2D{T<:AMR} <: Drawing2D
     xy::T # first column x, subsequent columns y1, y2, ...
     barstyle::Vector{BarStyle} # this must be given explicitly see bar!
     # ---

@@ -29,9 +29,9 @@
 
     # GROUPEDBAR2D
     b = GPlot.BarStyle()
-    g = GPlot.GroupedBar2D(xy=rand(Float32, 5, 3), barstyle=[b, b])
+    g = GPlot.Bar2D(xy=rand(Float32, 5, 3), barstyle=[b, b])
     @test g isa GPlot.Drawing2D
-    @test g isa GPlot.GroupedBar2D{Matrix{Float32}}
+    @test g isa GPlot.Bar2D{Matrix{Float32}}
     @test g.stacked == false
     @test g.horiz == false
 end

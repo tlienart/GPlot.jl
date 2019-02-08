@@ -31,7 +31,7 @@ function set_scaling!(o::Hist2D, v::String)
    return o
 end
 
-set_horiz!(o::Union{Hist2D, GroupedBar2D}, v::Bool) = (o.horiz = v; o)
+set_horiz!(o::Union{Hist2D, Bar2D}, v::Bool) = (o.horiz = v; o)
 
 ####
 #### Fill2D
@@ -41,7 +41,7 @@ set_xmin!(o::Fill2D, v::Real) = (o.xmin = v; o)
 set_xmax!(o::Fill2D, v::Real) = (o.xmax = v; o)
 
 ####
-#### GroupedBar2D
+#### Bar2D
 ####
 
-set_stacked!(o::GroupedBar2D, v::Bool) = (o.stacked = v; o)
+set_stacked!(o::Bar2D, v::Bool) = (o.stacked = v; o)
