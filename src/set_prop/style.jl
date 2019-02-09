@@ -1,135 +1,227 @@
 ####
-#### Color related
+#### COLOR:
+####  set_color!, set_colors!, set_fill!, set_fills!, set_alpha!
 ####
 
-function set_color!(o, elem::Symbol, v; name=:color)
-    setfield!(getfield(o, elem), name, try_parse_col(v))
-    return o
+"""
+    set_color!(obj, field, col)
+
+Internal function to set the color value `col` (after parsing) to `obj.field`.
+"""
+function set_color!(obj, field::Symbol, col::CandCol; name=:color)
+    setfield!(getfield(obj, field), name, try_parse_col(col))
+    return obj
 end
 
-set_color!(o::Scatter2D, v) = set_color!(o, :linestyle, v)
-set_color!(o::Hist2D, v) = set_color!(o, :barstyle, v)
-set_color!(o::Ticks,  v) = set_color!(o.labels, :textstyle, v)
+"""
+    set_color!(obj, col)
 
-set_color!(o::Union{Title, Axis}, v) = set_color!(o, :textstyle, v)
+Internal functions to set the color value `col` (after parsing) to the appropriate
+field of object `obj`.
+"""
+set_color!(obj::Hist2D, col) = set_color!(obj, :barstyle,  col)
+set_color!(obj::Ticks, col) = set_color!(obj.labels, :textstyle, col)
+set_color!(obj::Union{Title, Axis}, col) = set_color!(obj, :textstyle, col)
 
-function set_color_v!(o, vc, el::Symbol; name=:color)
-    if vc isa Vector
-        @assert length(vc) == size(o.xy, 2)-1 "Number of $(name)s must " *
-                               "match the number of bar groups. Given: " *
-                               "$(length(vc)), expected: $(size(o.xy, 2)-1)."
-        for (i, cᵢ) ∈ enumerate(vc)
-            setfield!(getfield(o, el)[i], name, try_parse_col(cᵢ))
-        end
-    else
-        @assert size(o.xy, 2) == 2 "Only one $name given but expected the " *
-                               "number of bar groups ($(size(o.xy, 2)-1))."
-        setfield!(getfield(o, el)[1], name, try_parse_col(vc))
+"""
+    set_fill!(obj, col)
+
+Internal functions to set the fill color value `v` (after parsing) to the appropriate
+field of object `o`.
+"""
+set_fill!(obj::Fill2D, col) = set_color!(obj, :fillstyle, col)
+set_fill!(obj::Hist2D, col) = set_color!(obj, :barstyle, col; name=:fill)
+
+"""
+    set_colors!(obj, field, cols)
+
+Internal function to set the color values `cols` (after parsing) to `obj.field[i]` where
+`i` covers the number of elements (e.g. vector of `LineStyle`).
+"""
+function set_colors!(obj, field::Symbol, cols::Vector{<:CandCol}; name=:color)
+    # check dimensions match
+    @assert length(cols) == size(obj.xy, 2)-1 "Number of $(name)s must match the number of " *
+                                              "elements. Given: $(length(cols)), expected: " *
+                                              "$(size(obj.xy, 2)-1)."
+    # assign
+    for (i, col) ∈ enumerate(cols)
+        setfield!(getfield(obj, field)[i], name, try_parse_col(col))
     end
-    return o
+    return obj
 end
-set_color_v!(o::Scatter2D, vc; opts...) = set_color_v!(o, vc, :linestyle; opts...)
-set_color_v!(o::Bar2D, vc; opts...)     = set_color_v!(o, vc, :barstyle; opts...)
 
-set_fill!(o::Fill2D, v)  = set_color!(o, :fillstyle, v)
-set_fill!(o::Hist2D, v)  = set_color!(o, :barstyle, v; name=:fill)
-set_fill_v!(o::Bar2D, v) = set_color_v!(o, v; name=:fill)
+"""
+    set_colors!(obj, cols)
 
-function set_alpha!(o, el::Symbol, v::Real; name=:color)
+Internal function to set the color values `cols` (after parsing) to the appropriate fields
+of the object `obj`. If a single value is passed, all fields will be assigned to that value.
+"""
+set_colors!(obj::Scatter2D, cols::Vector; opts...) = set_colors!(obj, :linestyle, cols; opts...)
+set_colors!(obj::Bar2D, cols::Vector; opts...) = set_colors!(obj, :barstyle, cols; opts...)
+set_colors!(obj::Scatter2D, col::CandCol; opts...) =
+    set_colors!(obj, :linestyle, fill(col, length(obj.linestyle)); opts...)
+set_colors!(obj::Bar2D, col::CandCol; opts...) =
+    set_colors!(obj, :barstyle, fill(col, length(obj.barstyle)); opts...)
+
+"""
+    set_fills!(obj, cols)
+
+Internal functions to set the fill color values `cols` (after parsing) to the appropriate
+fields of object `o`. If a single value is passed, all fields will be assigned to that value.
+"""
+set_fills!(obj::Bar2D, cols) = set_colors!(obj, cols; name=:fill)
+
+"""
+    set_alpha!(obj, field, α)
+
+Internal function to set the alpha value of `obj.field` to `α`. There must be a color
+value available, it will be reinterpreted with the given alpha value.
+"""
+function set_alpha!(obj, field::Symbol, α::Real; name=:color)
     if !(gcf().transparency == true)
         @warn "Transparent colors are only supported when the figure " *
               "has its transparency property set to 'true'. Ignoring α."
-        return o
+        return obj
     end
-    (0 <= v <= 1) || throw(OptionValueError("alpha"), v)
+    0 ≤ α ≤ 1 || throw(OptionValueError("alpha"), α)
     # retrieve the color, convert it to RGB, create a RGBA object
-    c = convert(RGB, getfield(getfield(o, el), name))
-    setfield!(getfield(o, el), name, RGBA(c.r, c.g, c.b, v))
-    return o
+    col = convert(RGB, getfield(getfield(obj, field), name))
+    setfield!(getfield(obj, field), name, RGBA(col.r, col.g, col.b, α))
+    return obj
 end
 
-set_alpha!(o::Fill2D, v::Real) = set_alpha!(o, :fillstyle, v)
-set_alpha!(o::Hist2D, v::Real) = set_alpha!(o, :barstyle, v; name=:fill)
+"""
+    set_alpha!(obj, α)
+
+Internal function to set the alpha value of the appropriate field of `obj` to `α`.
+"""
+set_alpha!(obj::Fill2D, α::Real) = set_alpha!(obj, :fillstyle, α)
+set_alpha!(obj::Hist2D, α::Real) = set_alpha!(obj, :barstyle, α; name=:fill)
 
 ####
-#### Text related
+#### TEXT
+####  set_font!, set_hei!
 ####
 
-function set_font!(o, v::String)
-    @assert get_backend() == GLE "font/only GLE backend supported"
-    o.textstyle.font = get(GLE_FONTS, v) do
-        throw(OptionValueError("font", v))
+"""
+    set_font!(obj, font)
+
+Internal function to set the font associated with an object `obj` to the value `font`.
+"""
+function set_font!(obj, font::String)
+    @assert get_backend() == GLE "font // only GLE backend supported"
+    font_lc = lowercase(font)
+    obj.textstyle.font = get(GLE_FONTS, font_lc) do
+        throw(OptionValueError("font", font_lc))
     end
-    return o
+    return obj
 end
 
-function set_hei!(o, v::Real)
-    (v ≥ 0.) || throw(OptionValueError("hei", v))
-    if o isa Legend
-        o.hei = v * PT_TO_CM
+"""
+    set_hei!(obj, font)
+
+Internal function to set the font associated with an object `obj` to the value `font`.
+"""
+function set_hei!(obj, v::Real)
+    0 ≤ v || throw(OptionValueError("hei", v))
+    if obj isa Legend
+        obj.hei = v * PT_TO_CM
     else
-        o.textstyle.hei = v * PT_TO_CM
+        obj.textstyle.hei = v * PT_TO_CM
     end
-    return o
+    return obj
 end
 
 ####
 #### Line related
 ####
 
-function set_lstyle!(l::LineStyle, v::Union{Int, String})
-    if v isa Int
-        v ≥ 0 || throw(OptionValueError("lstyle", v))
-        l.lstyle = v
-    elseif v isa String
-        @assert get_backend() == GLE "lstyle/only GLE backend " *
-                                              "supported"
-        l.lstyle = get(GLE_LSTYLES, v) do
-            (v == "none") || throw(OptionValueError("lstyle", v))
-            -1
-        end
+"""
+    set_lstyle!(obj, lstyle)
+
+Internal function to set the line style associated with object `obj`. The style
+can be described by `lstyle` being a number or a String representing the pattern.
+"""
+function set_lstyle!(obj::LineStyle, v::Int)
+    0 ≤ v || throw(OptionValueError("lstyle", v))
+    obj.lstyle = v
+    return obj
+end
+function set_lstyle!(obj::LineStyle, v::String)
+    @assert get_backend() == GLE "lstyle/only GLE backend supported"
+    v_lc = lowercase(v)
+    obj.lstyle = get(GLE_LSTYLES, v_lc) do
+        throw(OptionValueError("lstyle", v_lc))
     end
-    return l
+    return obj
 end
-set_lstyle!(o, v::Union{Int, String}) = set_lstyle!(o.linestyle, v)
+set_lstyle!(o, v) = set_lstyle!(o.linestyle, v)
 
-function set_lstyle_v!(o::Scatter2D, v::Vector)
-    length(v) == length(o.linestyle) || throw(OptionValueError("lstyle, dimensions don't match"), v)
-    for i ∈ 1:length(o.linestyle)
-        set_lstyle!(o.linestyle[i], v[i])
+"""
+    set_lstyles!(obj, lstyle)
+
+Internal function to set the line styles associated with the relevant fields of `obj`.
+The style can be described by `lstyle` being a number or a String representing the pattern.
+"""
+function set_lstyles!(obj::Scatter2D, v::Vector{<:Union{Int, String}})
+    length(v) == length(obj.linestyle) || throw(OptionValueError("lstyles, dimensions " *
+                                                                 "don't match"), v)
+    for i ∈ 1:length(obj.linestyle)
+        set_lstyle!(obj.linestyle[i], v[i])
     end
-    return o
+    return obj
 end
-set_lstyle_v!(o::Scatter2D, v::Union{Int, String}) = set_lstyle_v!(o, fill(v, length(o.linestyle)))
+set_lstyles!(obj::Scatter2D, v::Union{Int, String}) =
+    set_lstyles!(obj, fill(v, length(obj.linestyle)))
 
+"""
+    set_lwidth!(obj, v)
 
-function set_lwidth!(l::LineStyle, v::Real)
-    (v ≥ 0.) || throw(OptionValueError("lwidth", v))
-    l.lwidth = v
-    return l
+Internal function to set the line width associated with the relevant field of `obj`.
+"""
+function set_lwidth!(obj::LineStyle, v::Real)
+    (0 ≤ v) || throw(OptionValueError("lwidth", v))
+    obj.lwidth = v
+    return obj
 end
-set_lwidth!(o, v::Real) = set_lwidth!(o.linestyle, v)
+set_lwidth!(obj, v) = set_lwidth!(obj.linestyle, v)
 
-function set_lwidth_v!(o::Scatter2D, v::AVR)
-    length(v) == length(o.linestyle) || throw(OptionValueError("lwidth, dimensions don't match"), v)
-    for i ∈ 1:length(o.linestyle)
-        set_lwidth!(o.linestyle[i], v[i])
+"""
+    set_lwidths!(obj, v)
+
+Internal function to set the line widths associated with the relevant fields of `obj`.
+"""
+function set_lwidths!(obj::Scatter2D, v::AVR)
+    length(v) == length(obj.linestyle) || throw(OptionValueError("lwidths, dimensions " *
+                                                                 "don't match"), v)
+    for i ∈ 1:length(obj.linestyle)
+        set_lwidth!(obj.linestyle[i], v[i])
     end
-    return o
+    return obj
 end
-set_lwidth_v!(o::Scatter2D, v::Real) = set_lwidth_v!(o, fill(v, length(o.linestyle)))
+set_lwidths!(obj::Scatter2D, v::Real) = set_lwidths!(obj, fill(v, length(obj.linestyle)))
 
-# for drawings, smooth  uses splines instead of straight lines
-set_smooth!(o, v::Bool) = (o.linestyle.smooth = v; o)
+"""
+    set_smooth!(obj, v)
 
-function set_smooth_v!(o::Scatter2D, v::Vector{Bool})
-    length(v) == length(o.linestyle) || throw(OptionValueError("smooth, dimensions don't match"), v)
-    for i ∈ 1:length(o.linestyle)
-        o.linestyle[i].smooth = v[i]
+Internal function to determine whether to use splines for a field of `obj`.
+"""
+set_smooth!(obj::LineStyle, v::Bool) = (obj.smooth = v; obj)
+
+"""
+    set_smooths!(obj, v)
+
+Internal function to determine whether to use splines for fields of `obj`.
+"""
+function set_smooths!(obj::Scatter2D, v::Vector{Bool})
+    length(v) == length(obj.linestyle) || throw(OptionValueError("smooths, dimensions " *
+                                                                 "don't match"), v)
+    for i ∈ 1:length(obj.linestyle)
+        set_smooth!(obj.linestyle[i], v[i])
     end
-    return o
+    return obj
 end
-set_smooth_v!(o::Scatter2D, v::Bool) = set_smooth_v!(o, fill(v, length(o.linestyle)))
+set_smooths!(obj::Scatter2D, v::Bool) = set_smooths!(obj, fill(v, length(obj.linestyle)))
 
 ####
 #### Marker related

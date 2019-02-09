@@ -75,7 +75,8 @@ const GLE_MARKERS = Dict{String,String}(
 const GLE_LSTYLES = Dict{String,Int}(
     "-"    => 0,
     "--"   => 9,
-    "-."   => 8
+    "-."   => 8,
+    "none" => -1,
     )
 
 const GLE_TEXSCALE = ["scale", "fixed", "none"]
