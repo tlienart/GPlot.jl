@@ -1,14 +1,15 @@
 @testset "▶ types/drawing               " begin
     # SCATTER2D
-    s = GPlot.Scatter2D(xy=rand(Float32, 3, 2))
+    s = GPlot.Scatter2D(rand(Float32, 3, 2))
     @test s isa GPlot.Drawing2D
     @test s isa GPlot.Drawing
     @test s isa GPlot.Scatter2D{Matrix{Float32}}
-    @test isnothing(s.linestyle.lwidth)
-    @test isnothing(s.markerstyle.color)
+    @test isnothing(s.linestyle[1].lwidth)
+    @test isnothing(s.markerstyle[1].color)
     @test isnothing(s.label)
-    s = GPlot.Scatter2D(xy=rand(3, 2), linestyle=GPlot.LineStyle(lwidth=0.5))
-    @test s.linestyle.lwidth == 0.5
+    s = GPlot.Scatter2D(rand(3, 2))
+    s.linestyle[1].lwidth = 0.5
+    @test s.linestyle[1].lwidth == 0.5
 
     # FILL2D
     f = GPlot.Fill2D(xy1y2=rand(Float16, 5, 3))
@@ -51,13 +52,13 @@ end
     plot!(1:3, exp.(1:3), lw=2, ls="--") # "--" is 9 in GLE
     el3 = gca().drawings[3]
     @test el3.xy == hcat(1:3, exp.(1:3))
-    @test el3.linestyle.lstyle == 9
-    @test el3.linestyle.lwidth == 2.0
+    @test el3.linestyle[1].lstyle == 9
+    @test el3.linestyle[1].lwidth == 2.0
     plot!(exp.(1:3), marker="o")
     el4 = gca().drawings[4]
     @test el4.xy == el3.xy
-    @test isnothing(el4.linestyle.lstyle) # XXX default will be "-"
-    @test el4.markerstyle.marker == "circle"
+    @test isnothing(el4.linestyle[1].lstyle) # XXX default will be "-"
+    @test el4.markerstyle[1].marker == "circle"
 
     erase!(gcf())
     plot!(1:5, 2)

@@ -13,24 +13,26 @@ set_color!(o::Ticks,  v) = set_color!(o.labels, :textstyle, v)
 
 set_color!(o::Union{Title, Axis}, v) = set_color!(o, :textstyle, v)
 
-function set_color_v!(o::Bar2D, vc; name=:color)
+function set_color_v!(o, vc, el::Symbol; name=:color)
     if vc isa Vector
         @assert length(vc) == size(o.xy, 2)-1 "Number of $(name)s must " *
                                "match the number of bar groups. Given: " *
                                "$(length(vc)), expected: $(size(o.xy, 2)-1)."
         for (i, cᵢ) ∈ enumerate(vc)
-            setfield!(o.barstyle[i], name, try_parse_col(cᵢ))
+            setfield!(getfield(o, el)[i], name, try_parse_col(cᵢ))
         end
     else
         @assert size(o.xy, 2) == 2 "Only one $name given but expected the " *
                                "number of bar groups ($(size(o.xy, 2)-1))."
-        setfield!(o.barstyle[1], name, try_parse_col(vc))
+        setfield!(getfield(o, el)[1], name, try_parse_col(vc))
     end
     return o
 end
+set_color_v!(o::Scatter2D, vc; opts...) = set_color_v!(o, vc, :linestyle; opts...)
+set_color_v!(o::Bar2D, vc; opts...)     = set_color_v!(o, vc, :barstyle; opts...)
 
-set_fill!(o::Fill2D, v) = set_color!(o, :fillstyle, v)
-set_fill!(o::Hist2D, v) = set_color!(o, :barstyle, v; name=:fill)
+set_fill!(o::Fill2D, v)  = set_color!(o, :fillstyle, v)
+set_fill!(o::Hist2D, v)  = set_color!(o, :barstyle, v; name=:fill)
 set_fill_v!(o::Bar2D, v) = set_color_v!(o, v; name=:fill)
 
 function set_alpha!(o, el::Symbol, v::Real; name=:color)
@@ -87,11 +89,11 @@ function set_lstyle!(l::LineStyle, v::Union{Int, String})
             -1
         end
     end
-    return o
+    return l
 end
-set_lstyle!(o, v::Union{Int, String}) = set_lstyle!(o.linestyle)
+set_lstyle!(o, v::Union{Int, String}) = set_lstyle!(o.linestyle, v)
 
-function set_lstyle_v!(o::Scatter2D, v::AbstractVector{Union{Int, String}})
+function set_lstyle_v!(o::Scatter2D, v::Vector)
     length(v) == length(o.linestyle) || throw(OptionValueError("lstyle, dimensions don't match"), v)
     for i ∈ 1:length(o.linestyle)
         set_lstyle!(o.linestyle[i], v[i])
@@ -104,7 +106,7 @@ set_lstyle_v!(o::Scatter2D, v::Union{Int, String}) = set_lstyle_v!(o, fill(v, le
 function set_lwidth!(l::LineStyle, v::Real)
     (v ≥ 0.) || throw(OptionValueError("lwidth", v))
     l.lwidth = v
-    return o
+    return l
 end
 set_lwidth!(o, v::Real) = set_lwidth!(o.linestyle, v)
 
@@ -123,7 +125,7 @@ set_smooth!(o, v::Bool) = (o.linestyle.smooth = v; o)
 function set_smooth_v!(o::Scatter2D, v::Vector{Bool})
     length(v) == length(o.linestyle) || throw(OptionValueError("smooth, dimensions don't match"), v)
     for i ∈ 1:length(o.linestyle)
-        o.linestyle[i] = v[i]
+        o.linestyle[i].smooth = v[i]
     end
     return o
 end
@@ -155,6 +157,7 @@ function set_msize_v!(o::Scatter2D, v::AVR)
     end
     return o
 end
+set_msize_v!(o::Scatter2D, v::Real) = set_msize_v!(o, fill(v, length(o.markerstyle)))
 
 # marker color (if applicable)
 set_mcol_v!(o::Scatter2D, v::Vector{Colorant}) = throw(NotImplementedError("Marker color"))

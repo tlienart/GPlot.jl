@@ -13,12 +13,10 @@ function plot!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
-    # create line object, set properties and push to drawing stack
-    lss = [LineStyle()   for i ∈ 1:(size(xy, 2)-1)]
-    mss = [MarkerStyle() for i ∈ 1:(size(xy, 2)-1)]
-    line = Scatter2D(xy = xy, linestyle=lss, markerstyle=mss)
-    set_properties!(line; opts...)
-    push!(a.drawings, line)
+    # create scatter object
+    scatter = Scatter2D(xy)
+    set_properties!(scatter; opts...)
+    push!(a.drawings, scatter)
     return a
 end
 
@@ -107,9 +105,9 @@ function bar!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create Bar2D object, assign properties and push to drawing stack
-    gb = Bar2D(xy = xy, barstyle=[BarStyle() for i ∈ 1:(size(xy,2)-1)])
-    set_properties!(gb; opts...)
-    push!(a.drawings, gb)
+    bar = Bar2D(xy)
+    set_properties!(bar; opts...)
+    push!(a.drawings, bar)
     return a
 end
 
