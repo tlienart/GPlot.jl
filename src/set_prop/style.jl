@@ -155,24 +155,7 @@ function set_lstyle!(obj::LineStyle, v::String)
     end
     return obj
 end
-set_lstyle!(o, v) = set_lstyle!(o.linestyle, v)
-
-"""
-    set_lstyles!(obj, lstyle)
-
-Internal function to set the line styles associated with the relevant fields of `obj`.
-The style can be described by `lstyle` being a number or a String representing the pattern.
-"""
-function set_lstyles!(obj::Scatter2D, v::Vector{<:Union{Int, String}})
-    length(v) == length(obj.linestyle) || throw(OptionValueError("lstyles, dimensions " *
-                                                                 "don't match"), v)
-    for i ∈ 1:length(obj.linestyle)
-        set_lstyle!(obj.linestyle[i], v[i])
-    end
-    return obj
-end
-set_lstyles!(obj::Scatter2D, v::Union{Int, String}) =
-    set_lstyles!(obj, fill(v, length(obj.linestyle)))
+set_lstyle!(obj, v) = set_lstyle!(o.linestyle, v)
 
 """
     set_lwidth!(obj, v)
@@ -187,41 +170,77 @@ end
 set_lwidth!(obj, v) = set_lwidth!(obj.linestyle, v)
 
 """
-    set_lwidths!(obj, v)
-
-Internal function to set the line widths associated with the relevant fields of `obj`.
-"""
-function set_lwidths!(obj::Scatter2D, v::AVR)
-    length(v) == length(obj.linestyle) || throw(OptionValueError("lwidths, dimensions " *
-                                                                 "don't match"), v)
-    for i ∈ 1:length(obj.linestyle)
-        set_lwidth!(obj.linestyle[i], v[i])
-    end
-    return obj
-end
-set_lwidths!(obj::Scatter2D, v::Real) = set_lwidths!(obj, fill(v, length(obj.linestyle)))
-
-"""
     set_smooth!(obj, v)
 
 Internal function to determine whether to use splines for a field of `obj`.
 """
 set_smooth!(obj::LineStyle, v::Bool) = (obj.smooth = v; obj)
 
-"""
-    set_smooths!(obj, v)
 
-Internal function to determine whether to use splines for fields of `obj`.
-"""
-function set_smooths!(obj::Scatter2D, v::Vector{Bool})
-    length(v) == length(obj.linestyle) || throw(OptionValueError("smooths, dimensions " *
-                                                                 "don't match"), v)
-    for i ∈ 1:length(obj.linestyle)
-        set_smooth!(obj.linestyle[i], v[i])
+for opt ∈ ["lstyle", "lwidth", "smooth"]
+    f!  = Symbol("set_" * opt * "!")
+    fs! = Symbol("set_" * opt * "s!")
+    ex = quote
+        function $fs!(obj::Scatter2D, v::Vector)
+            if length(v) != length(obj.linestyle)
+                throw(OptionValueError($opt * "s // dimensions don't match", v))
+            end
+            for i ∈ 1:length(obj.linestyle)
+                $f!(obj.linestyle[i], v[i])
+            end
+            return obj
+        end
+        $fs!(obj::Scatter2D, v) = $fs!(obj, fill(v, length(obj.linestyle)))
     end
-    return obj
+    eval(ex)
 end
-set_smooths!(obj::Scatter2D, v::Bool) = set_smooths!(obj, fill(v, length(obj.linestyle)))
+
+# """
+#     set_lstyles!(obj, lstyle)
+#
+# Internal function to set the line styles associated with the relevant fields of `obj`.
+# The style can be described by `lstyle` being a number or a String representing the pattern.
+# """
+# function set_lstyles!(obj::Scatter2D, v::Vector{<:Union{Int, String}})
+#     length(v) == length(obj.linestyle) || throw(OptionValueError("lstyles, dimensions " *
+#                                                                  "don't match"), v)
+#     for i ∈ 1:length(obj.linestyle)
+#         set_lstyle!(obj.linestyle[i], v[i])
+#     end
+#     return obj
+# end
+# set_lstyles!(obj::Scatter2D, v::Union{Int, String}) =
+#     set_lstyles!(obj, fill(v, length(obj.linestyle)))
+
+# """
+#     set_lwidths!(obj, v)
+#
+# Internal function to set the line widths associated with the relevant fields of `obj`.
+# """
+# function set_lwidths!(obj::Scatter2D, v::AVR)
+#     length(v) == length(obj.linestyle) || throw(OptionValueError("lwidths, dimensions " *
+#                                                                  "don't match"), v)
+#     for i ∈ 1:length(obj.linestyle)
+#         set_lwidth!(obj.linestyle[i], v[i])
+#     end
+#     return obj
+# end
+# set_lwidths!(obj::Scatter2D, v::Real) = set_lwidths!(obj, fill(v, length(obj.linestyle)))
+
+# """
+#     set_smooths!(obj, v)
+#
+# Internal function to determine whether to use splines for fields of `obj`.
+# """
+# function set_smooths!(obj::Scatter2D, v::Vector{Bool})
+#     length(v) == length(obj.linestyle) || throw(OptionValueError("smooths, dimensions " *
+#                                                                  "don't match"), v)
+#     for i ∈ 1:length(obj.linestyle)
+#         set_smooth!(obj.linestyle[i], v[i])
+#     end
+#     return obj
+# end
+# set_smooths!(obj::Scatter2D, v::Bool) = set_smooths!(obj, fill(v, length(obj.linestyle)))
 
 ####
 #### Marker related

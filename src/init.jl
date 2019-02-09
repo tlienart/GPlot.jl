@@ -45,6 +45,9 @@ function __init__()
 
         # if there's a working GLE backend, warm that up too
         flag && savefig(f, res=100, format="png", path=tempdir)
+
+        # clear everything
+        destroy!(f)
     end
     GP_ENV["VERBOSE"] && println(".............done in $(round(t, digits=1))s ✅")
 end
