@@ -46,23 +46,23 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D, el_counte
 
         # (2) line description
         "\n\td$el_counter" |> g
-        if obj.linestyle.lstyle == -1 # no line
-            lsc = obj.linestyle.color
+        if obj.linestyle[c].lstyle == -1 # no line
+            lsc = obj.linestyle[c].color
             isdef(lsc) && "color $(col2str(lsc))" |> (g, lt[c])
         else
             "line" |> (g, lt[c])
-            apply_linestyle!(glet, obj.linestyle)
+            apply_linestyle!(glet, obj.linestyle[c])
             String(take!(glet)) |> (g, lt[c])
             # if marker color is specified, overlay a line with the markers
             # NOTE this is not recommended as it doesn't play well with legend!
-            if isdef(obj.markerstyle.color)
+            if isdef(obj.markerstyle[c].color)
                 "\n\tlet d$(el_counter+1) = d$(el_counter)" |> g
                 el_counter += 1
                 "\n\td$el_counter" |> g
             end
         end
         # (2b) marker style
-        apply_markerstyle!(glet, obj.markerstyle)
+        apply_markerstyle!(glet, obj.markerstyle[c])
         String(take!(glet)) |> (g, lt[c])
         el_counter += 1
     end
@@ -173,10 +173,10 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
 end
 
 ####
-#### Apply GroupedBar2D
+#### Apply Bar2D
 ####
 
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::GroupedBar2D,
+function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Bar2D,
                         el_counter::Int=1)
 
     # write data to a temporary CSV file

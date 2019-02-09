@@ -44,20 +44,52 @@ const LINESTYLE_OPTS = Dict{Symbol, Function}(
     :color     => set_color!,  # .
     )
 
-const MARKERSTYLE_OPTS = Dict{Symbol, Function}(
-    :marker          => set_marker!, # set_style
-    :msize           => set_msize!,  # .
-    :markersize      => set_msize!,  # .
-    :mcol            => set_mcol!,   # .
-    :markercol       => set_mcol!,   # .
-    :markercolor     => set_mcol!,   # .
-    :mfacecol        => set_mcol!,   # .
-    :mfacecolor      => set_mcol!,   # .
-    :markerfacecolor => set_mcol!,   # .
-    :mecol           => set_mecol!,  # .
-    :medgecolor      => set_mecol!,  # .
-    :markeredgecol   => set_mecol!,  # .
-    :markeredgecolor => set_mecol!   # .
+const GLINESTYLE_OPTS = Dict{Symbol, Function}(
+    :ls         => set_lstyle_v!, # set_style
+    :lstyle     => set_lstyle_v!, # .
+    :linestyle  => set_lstyle_v!, # .
+    :lstyles    => set_lstyle_v!, # .
+    :linestyles => set_lstyle_v!, # .
+    :lw         => set_lwidth_v!, # .
+    :lwidth     => set_lwidth_v!, # .
+    :linewidth  => set_lwidth_v!, # .
+    :lwidths    => set_lwidth_v!, # .
+    :linewidths => set_lwidth_v!, # .
+    :smooth     => set_smooth_v!, # .
+    :smooths    => set_smooth_v!, # .
+    :col        => set_color_v!,  # .
+    :color      => set_color_v!,  # .
+    :cols       => set_color_v!,  # .
+    :colors     => set_color_v!,  # .
+    )
+
+const GMARKERSTYLE_OPTS = Dict{Symbol, Function}(
+    :marker           => set_marker_v!, # set_style
+    :markers          => set_marker_v!, # .
+    :msize            => set_msize_v!,  # .
+    :msizes           => set_msize_v!,  # .
+    :markersize       => set_msize_v!,  # .
+    :markersizes      => set_msize_v!,  # .
+    :mcol             => set_mcol_v!,   # .
+    :markercol        => set_mcol_v!,   # .
+    :markercolor      => set_mcol_v!,   # .
+    :mfacecol         => set_mcol_v!,   # .
+    :mfacecolor       => set_mcol_v!,   # .
+    :markerfacecolor  => set_mcol_v!,   # .
+    :mcols            => set_mcol_v!,   # .
+    :markercols       => set_mcol_v!,   # .
+    :markercolors     => set_mcol_v!,   # .
+    :mfacecols        => set_mcol_v!,   # .
+    :mfacecolors      => set_mcol_v!,   # .
+    :markerfacecolors => set_mcol_v!,   # .
+    :mecol            => set_mecol_v!,  # .
+    :medgecolor       => set_mecol_v!,  # .
+    :markeredgecol    => set_mecol_v!,  # .
+    :markeredgecolor  => set_mecol_v!,  # .
+    :mecols           => set_mecol_v!,  # .
+    :medgecolors      => set_mecol_v!,  # .
+    :markeredgecols   => set_mecol_v!,  # .
+    :markeredgecolors => set_mecol_v!,  # .
     )
 
 const BARSTYLE_OPTS = Dict{Symbol, Function}(
@@ -67,26 +99,26 @@ const BARSTYLE_OPTS = Dict{Symbol, Function}(
     )
 
 const GBARSTYLE_OPTS = Dict{Symbol, Function}(
-    :col        => set_colors!, # set_style
-    :color      => set_colors!, # .
-    :ecol       => set_colors!, # .
-    :edgecol    => set_colors!, # .
-    :edgecolor  => set_colors!, # .
-    :cols       => set_colors!, # .
-    :colors     => set_colors!, # .
-    :ecols      => set_colors!, # .
-    :edgecols   => set_colors!, # .
-    :edgecolors => set_colors!, # .
-    :fcol       => set_fills!,  # .
-    :fcolor     => set_fills!,  # .
-    :facecolor  => set_fills!,  # .
-    :fill       => set_fills!,  # .
-    :fcols      => set_fills!,  # .
-    :fcolors    => set_fills!,  # .
-    :facecolors => set_fills!,  # .
-    :fills      => set_fills!,  # .
-    :width      => set_width!,  # .
-    :binwidth   => set_width!,  # .
+    :col        => set_color_v!, # set_style
+    :color      => set_color_v!, # .
+    :ecol       => set_color_v!, # .
+    :edgecol    => set_color_v!, # .
+    :edgecolor  => set_color_v!, # .
+    :cols       => set_color_v!, # .
+    :colors     => set_color_v!, # .
+    :ecols      => set_color_v!, # .
+    :edgecols   => set_color_v!, # .
+    :edgecolors => set_color_v!, # .
+    :fcol       => set_fill_v!,  # .
+    :fcolor     => set_fill_v!,  # .
+    :facecolor  => set_fill_v!,  # .
+    :fill       => set_fill_v!,  # .
+    :fcols      => set_fill_v!,  # .
+    :fcolors    => set_fill_v!,  # .
+    :facecolors => set_fill_v!,  # .
+    :fills      => set_fill_v!,  # .
+    :width      => set_width!, # .
+    :binwidth   => set_width!, # .
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Function}(
@@ -149,8 +181,8 @@ const SCATTER2D_OPTS = Dict{Symbol, Function}(
     :label  => set_label!, # .
     :labels => set_label!, # .
     )
-merge!(SCATTER2D_OPTS, LINESTYLE_OPTS)
-merge!(SCATTER2D_OPTS, MARKERSTYLE_OPTS)
+merge!(SCATTER2D_OPTS, GLINESTYLE_OPTS)
+merge!(SCATTER2D_OPTS, GMARKERSTYLE_OPTS)
 set_properties!(s::Scatter2D; opts...) = set_properties!(SCATTER2D_OPTS, s; opts...)
 
 const FILL2D_OPTS = Dict{Symbol, Function}(
@@ -176,14 +208,14 @@ merge!(HIST2D_OPTS, BARSTYLE_OPTS)
 merge!(HIST2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(h::Hist2D; opts...) = set_properties!(HIST2D_OPTS, h; opts...)
 
-const GROUPEDBAR2D_OPTS = Dict{Symbol, Function}(
+const BAR2D_OPTS = Dict{Symbol, Function}(
     :stacked    => set_stacked!, # set_drawing
     :horiz      => set_horiz!,   # .
     :horizontal => set_horiz!,   # .
     )
-merge!(GROUPEDBAR2D_OPTS, GBARSTYLE_OPTS)
-set_properties!(gb::GroupedBar2D; opts...) =
-    set_properties!(GROUPEDBAR2D_OPTS, gb; opts...)
+merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
+set_properties!(gb::Bar2D; opts...) =
+    set_properties!(BAR2D_OPTS, gb; opts...)
 
 ####
 #### Options for FIGURE
