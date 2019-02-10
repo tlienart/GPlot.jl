@@ -17,7 +17,7 @@
     @test f isa GPlot.Fill2D{Matrix{Float16}}
     @test isnothing(f.xmin)
     @test isnothing(f.xmax)
-    @test f.fillstyle.color == colorant"cornflowerblue"
+    @test f.fillstyle.fill == colorant"cornflowerblue"
 
     # HIST2D
     h = GPlot.Hist2D(x=rand(Int16, 5))
@@ -90,7 +90,7 @@ end
     el2 = gca().drawings[2]
     el3 = gca().drawings[3]
     @test el1.xy1y2 == hcat(x, y1, y2)
-    @test el2.fillstyle.color == RGBA{Float64}(1.0,0.0,0.0,0.5)
+    @test el2.fillstyle.fill == RGBA{Float64}(1.0,0.0,0.0,0.5)
     @test el2.xy1y2 == hcat(x, 0*y2, y2)
     @test el3.xy1y2 == hcat(x, y1, 0*y1)
 

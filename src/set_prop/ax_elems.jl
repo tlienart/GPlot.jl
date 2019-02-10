@@ -22,28 +22,28 @@ end
 
 Internal function to set an object off.
 """
-set_off!(obj::Ticks, v::Bool) = (obj.off = v; obj)
+set_off!(o::Ticks, v::Bool) = (o.off = v; o)
 
 """
     set_length!(obj, v)
 
 Internal function to set the length of an object.
 """
-set_length!(obj::Ticks, v::Real) = throw(NotImplementedError("set_length!"))
+set_length!(o::Ticks, v::Real) = throw(NotImplementedError("set_length!"))
 
 """
     set_symticks!(obj, v)
 
 Internal function to set the ticks to be symetric on both side of axis.
 """
-set_symticks!(obj::Ticks, v::Bool) = throw(NotImplementedError("set_symticks!"))
+set_symticks!(o::Ticks, v::Bool) = throw(NotImplementedError("set_symticks!"))
 
 """
     set_tickscolor!(obj, v)
 
 Internal function to set the color of ticks.
 """
-set_tickscolor!(obj::Ticks, v::CandCol) = set_color!(obj, :linestyle, v)
+set_tickscolor!(o::Ticks, c::CandCol) = (o.linestyle.color = try_parse_col(c); o)
 
 ####
 #### TicksLabels

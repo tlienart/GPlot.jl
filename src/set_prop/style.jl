@@ -6,65 +6,55 @@
 """
     set_color!(obj, col)
 
-Internal function to set the color value `col` (after parsing) to `obj.field`.
-"""
-function set_color!(obj, field::Symbol, col::CandCol; name=:color)
-    setfield!(getfield(obj, field), name, try_parse_col(col))
-    return obj
-end
-
-"""
-    set_color!(obj, col)
-
 Internal functions to set the color value `col` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_color!(obj::Hist2D, col::CandCol) = set_color!(obj, :barstyle,  col)
-set_color!(obj::Ticks, col::CandCol)  = set_color!(obj.labels, :textstyle, col)
-set_color!(obj::Union{Title, Axis}, col::CandCol) = set_color!(obj, :textstyle, col)
+set_color!(o::Hist2D, c::CandCol) = (o.barstyle.color = try_parse_col(c); o)
+set_color!(o::Ticks, c::CandCol) =  (o.labels.textstyle.color = try_parse_col(c); o)
+set_color!(o::Union{Title, Axis}, c::CandCol) = (o.textstyle.color = try_parse_col(c); o)
 
 """
     set_fill!(obj, col)
 
 Internal functions to set the fill color value `v` (after parsing) to the appropriate
-field of object `o`.
+field of object `obj`.
 """
-set_fill!(obj::Fill2D, col::CandCol) = set_color!(obj, :fillstyle, col)
-set_fill!(obj::Hist2D, col::CandCol) = set_color!(obj, :barstyle, col; name=:fill)
-
-"""
-    set_colors!(obj, field, cols)
-
-Internal function to set the color values `cols` (after parsing) to `obj.field[i]` where
-`i` covers the number of elements (e.g. vector of `LineStyle`).
-"""
-function set_colors!(obj, field::Symbol,
-                     cols::Vector{<:CandCol}; name=:color)
-    # check dimensions match
-    @assert length(cols) == size(obj.xy, 2)-1 "Number of $(name)s must match the number of " *
-                                              "elements. Given: $(length(cols)), expected: " *
-                                              "$(size(obj.xy, 2)-1)."
-    # assign
-    for (i, col) ∈ enumerate(cols)
-        setfield!(getfield(obj, field)[i], name, try_parse_col(col))
-    end
-    return obj
-end
+set_fill!(o::Fill2D, c::CandCol) = (o.fillstyle.fill = try_parse_col(c); o)
+set_fill!(o::Hist2D, c::CandCol) = (o.barstyle.fill = try_parse_col(c); o)
 
 """
     set_colors!(obj, cols)
 
-Internal function to set the color values `cols` (after parsing) to the appropriate fields
-of the object `obj`. If a single value is passed, all fields will be assigned to that value.
+Internal function to set the color values `cols` (after parsing) to `obj.field[i]` where
+`i` covers the number of elements (e.g. vector of `LineStyle`).
+If a single value is passed, all fields will be assigned to that value.
 """
-set_colors!(obj::Scatter2D, cols::Vector{<:CandCol}; opts...) =
-    set_colors!(obj, :linestyle, cols; opts...)
-set_colors!(obj::Bar2D, cols::Vector{<:CandCol}; opts...) =
-    set_colors!(obj, :barstyle, cols; opts...)
-set_colors!(obj::Scatter2D, col::CandCol; opts...) =
-    set_colors!(obj, :linestyle, fill(col, length(obj.linestyle)); opts...)
-set_colors!(obj::Bar2D, col::CandCol; opts...) =
-    set_colors!(obj, :barstyle, fill(col, length(obj.barstyle)); opts...)
+function set_colors!(@nospecialize(obj), cols::Union{CandCol, Vector{<:CandCol}}; isfill=false)
+    if isa(cols, CandCol)
+        cols = fill(cols, size(obj.xy, 2)-1)
+    end
+    # check dimensions match
+    @assert length(cols) == size(obj.xy, 2)-1 "Number of $(ifelse(isfill, :fill, :color))s " *
+                                              "must match the number of elements. Given: " *
+                                              "$(length(cols)), expected: $(size(obj.xy, 2)-1)."
+    # assign
+    if isa(obj, Scatter2D)
+        for (i, col) ∈ enumerate(cols)
+            obj.linestyle[i].color = try_parse_col(col)
+        end
+    elseif isa(obj, Bar2D)
+        if isfill
+            for (i, col) ∈ enumerate(cols)
+                obj.barstyle[i].fill = try_parse_col(col)
+            end
+        else
+            for (i, col) ∈ enumerate(cols)
+                obj.barstyle[i].color = try_parse_col(col)
+            end
+        end
+    end
+    return obj
+end
 
 """
     set_fills!(obj, cols)
@@ -72,34 +62,30 @@ set_colors!(obj::Bar2D, col::CandCol; opts...) =
 Internal functions to set the fill color values `cols` (after parsing) to the appropriate
 fields of object `o`. If a single value is passed, all fields will be assigned to that value.
 """
-set_fills!(obj::Bar2D, cols::Vector{<:CandCol}) = set_colors!(obj, cols; name=:fill)
+set_fills!(o::Bar2D, c::Vector{<:CandCol}) = set_colors!(o, c; isfill=true)
 
 """
-    set_alpha!(obj, field, α)
+    set_alpha!(obj, α)
 
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(obj, field::Symbol, α::Float64; name=:color)
+function set_alpha!(@nospecialize(obj), α::Real)
     if !(gcf().transparency == true)
         @warn "Transparent colors are only supported when the figure " *
               "has its transparency property set to 'true'. Ignoring α."
         return obj
     end
     0 ≤ α ≤ 1 || throw(OptionValueError("alpha"), α)
-    # retrieve the color, convert it to RGB, create a RGBA object
-    col = convert(RGB, getfield(getfield(obj, field), name))
-    setfield!(getfield(obj, field), name, RGBA(col.r, col.g, col.b, α))
+    if isa(obj, Fill2D)
+        col = convert(RGB, obj.fillstyle.fill)
+        obj.fillstyle.fill = RGBA(col.r, col.g, col.b, α)
+    elseif isa(obj, Hist2D)
+        col = convert(RGB, obj.barstyle.fill)
+        obj.barstyle.fill = RGBA(col.r, col.g, col.b, α)
+    end
     return obj
 end
-
-"""
-    set_alpha!(obj, α)
-
-Internal function to set the alpha value of the appropriate field of `obj` to `α`.
-"""
-set_alpha!(obj::Fill2D, α) = set_alpha!(obj, :fillstyle, float(α))
-set_alpha!(obj::Hist2D, α) = set_alpha!(obj, :barstyle, float(α); name=:fill)
 
 ####
 #### TEXT
