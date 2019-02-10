@@ -8,7 +8,7 @@
 
 Internal function to set the color value `col` (after parsing) to `obj.field`.
 """
-@inline function set_color!(obj, field::Symbol, col::CandCol; name=:color)
+function set_color!(obj, field::Symbol, col::CandCol; name=:color)
     setfield!(getfield(obj, field), name, try_parse_col(col))
     return obj
 end
@@ -38,7 +38,7 @@ set_fill!(obj::Hist2D, col) = set_color!(obj, :barstyle, col; name=:fill)
 Internal function to set the color values `cols` (after parsing) to `obj.field[i]` where
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 """
-@inline function set_colors!(obj, field::Symbol, cols::Vector{<:CandCol}; name=:color)
+function set_colors!(obj, field::Symbol, cols::Vector{<:CandCol}; name=:color)
     # check dimensions match
     @assert length(cols) == size(obj.xy, 2)-1 "Number of $(name)s must match the number of " *
                                               "elements. Given: $(length(cols)), expected: " *
@@ -77,7 +77,7 @@ set_fills!(obj::Bar2D, cols) = set_colors!(obj, cols; name=:fill)
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-@inline function set_alpha!(obj, field::Symbol, α::Real; name=:color)
+function set_alpha!(obj, field::Symbol, α::Real; name=:color)
     if !(gcf().transparency == true)
         @warn "Transparent colors are only supported when the figure " *
               "has its transparency property set to 'true'. Ignoring α."
@@ -95,8 +95,8 @@ end
 
 Internal function to set the alpha value of the appropriate field of `obj` to `α`.
 """
-set_alpha!(obj::Fill2D, α::Real) = set_alpha!(obj, :fillstyle, α)
-set_alpha!(obj::Hist2D, α::Real) = set_alpha!(obj, :barstyle, α; name=:fill)
+set_alpha!(obj::Fill2D, α) = set_alpha!(obj, :fillstyle, α)
+set_alpha!(obj::Hist2D, α) = set_alpha!(obj, :barstyle, α; name=:fill)
 
 ####
 #### TEXT
@@ -142,32 +142,30 @@ end
 Internal function to set the line style associated with object `obj`. The style
 can be described by `lstyle` being a number or a String representing the pattern.
 """
-@inline function set_lstyle!(obj::LineStyle, v::Int)
+function set_lstyle!(obj::LineStyle, v::Int)
     0 ≤ v || throw(OptionValueError("lstyle", v))
     obj.lstyle = v
     return obj
 end
-@inline function set_lstyle!(obj::LineStyle, v::String)
-    @assert get_backend() == GLE "lstyle/only GLE backend supported"
+function set_lstyle!(obj::LineStyle, v::String)
+    @assert get_backend() == GLE "lstyle // only GLE backend supported"
     v_lc = lowercase(v)
     obj.lstyle = get(GLE_LSTYLES, v_lc) do
         throw(OptionValueError("lstyle", v_lc))
     end
     return obj
 end
-set_lstyle!(obj, v) = set_lstyle!(o.linestyle, v)
 
 """
     set_lwidth!(obj, v)
 
 Internal function to set the line width associated with the relevant field of `obj`.
 """
-@inline function set_lwidth!(obj::LineStyle, v::Real)
+function set_lwidth!(obj::LineStyle, v::Real)
     (0 ≤ v) || throw(OptionValueError("lwidth", v))
     obj.lwidth = v
     return obj
 end
-set_lwidth!(obj, v) = set_lwidth!(obj.linestyle, v)
 
 """
     set_smooth!(obj, v)
@@ -176,74 +174,82 @@ Internal function to determine whether to use splines for a field of `obj`.
 """
 set_smooth!(obj::LineStyle, v::Bool) = (obj.smooth = v; obj)
 
-
-for opt ∈ ["lstyle", "lwidth", "smooth"]
-    f!  = Symbol("set_" * opt * "!")
-    fs! = Symbol("set_" * opt * "s!")
-    ex = quote
-        function $fs!(obj::Scatter2D, v::Vector)
-            if length(v) != length(obj.linestyle)
-                throw(OptionValueError($opt * "s // dimensions don't match", v))
-            end
-            for i ∈ 1:length(obj.linestyle)
-                $f!(obj.linestyle[i], v[i])
-            end
-            return obj
-        end
-        $fs!(obj::Scatter2D, v) = $fs!(obj, fill(v, length(obj.linestyle)))
-    end
-    eval(ex)
-end
-
 ####
 #### Marker related
 ####
 
-# type of marker (e.g. square)
-function set_marker_v!(o::Scatter2D, v::Vector{String})
-    @assert get_backend() == GLE "marker/only GLE backend supported"
-    length(v) == length(o.markerstyle) || throw(OptionValueError("marker, dimensions don't match"), v)
-    for i ∈ 1:length(o.markerstyle)
-        o.markerstyle[i].marker = get(GLE_MARKERS, v[i]) do
-            throw(OptionValueError("marker", v[i]))
+"""
+    set_marker!(obj, marker)
+
+Internal function to set the marker associated with object `obj`. The style
+can be described by `marker` being a String describing the pattern.
+"""
+function set_marker!(obj::MarkerStyle, v::String)
+    @assert get_backend() == GLE "marker // only GLE backend supported"
+    v_lc = lowercase(v)
+    obj.marker = get(GLE_MARKERS, v_lc) do
+        throw(OptionValueError("marker", v_lc))
+    end
+    return obj
+end
+
+"""
+    set_msize!(obj, msize)
+
+Internal function to set the marker size associated with object `obj`.
+"""
+function set_msize!(obj::MarkerStyle, v::Real)
+    0 ≤ v || throw(OptionValueError("msize", v))
+    obj.msize = v
+    return obj
+end
+
+"""
+    set_mcol!(obj, col)
+
+Internal function to set the marker color.
+"""
+set_mcol!(obj::MarkerStyle, col::CandCol) = (obj.color = try_parse_col(col); obj)
+
+
+# generate functions that take vector inputs for linestyle and markerstyle
+for case ∈ (:linestyle   => ("lstyle", "lwidth", "smooth"),
+            :markerstyle => ("marker", "msize", "mcol"))
+    field = case.first
+    for opt ∈ case.second
+        f!  = Symbol("set_" * opt * "!")
+        fs! = Symbol("set_" * opt * "s!") # e.g. set_markers!
+        ex = quote
+            $f!(obj, v) = $f!(obj.$field, v)
+            # set function for a group of objects
+            function $fs!(obj::Scatter2D, v::Vector)
+                if length(v) != length(obj.$field)
+                    throw(OptionValueError($opt * "s // dimensions don't match", v))
+                end
+                for i ∈ 1:length(obj.$field)
+                    $f!(obj.$field[i], v[i])
+                end
+                return obj
+            end
+            # if expects a vector but a scalar is given, a vector of
+            # the appropriate size is filled with the scalar value
+            $fs!(obj::Scatter2D, v) = $fs!(obj, fill(v, length(obj.$field)))
         end
+        eval(ex)
     end
-    return o
-end
-set_marker_v!(o::Scatter2D, v::String) = set_marker_v!(o, fill(v, length(o.markerstyle)))
-
-# marker size
-function set_msize_v!(o::Scatter2D, v::AVR)
-    length(v) == length(o.markerstyle) || throw(OptionValueError("msize, dimensions don't match"), v)
-    for i ∈ 1:length(o.markerstyle)
-        (v[i] ≥ 0.) || throw(OptionValueError("msize", v))
-        o.markerstyle[i].msize = v[i]
-    end
-    return o
-end
-set_msize_v!(o::Scatter2D, v::Real) = set_msize_v!(o, fill(v, length(o.markerstyle)))
-
-# marker color (if applicable)
-set_mcol_v!(o::Scatter2D, v::Vector{Colorant}) = throw(NotImplementedError("Marker color"))
-
-# marker edge color (if applicable)
-function set_mecol_v!(o::Scatter2D, v::Vector{Colorant})
-    throw(NotImplementedError("Marker edge color"))
-    # @assert get_backend() == GLE "marker/only GLE backend " *
-    #                                       "supported"
-    # GP_ENV["VERBOSE"] && println("🚫  GLE does not support mecol [ignoring]")
-    # TODO, actually could overlay markers of different sizes. Would be easy
-    # to do but a bit finicky to adjust so that it doesn't look horrible.
-    # potentially the line width should be the lead for how much difference
-    # there should be in the markersize.
 end
 
 ####
 #### Bar related
 ####
 
-function set_width!(o::Bar2D, v::Real)
-    @assert v > 0 "width must be positive"
-    o.width = float(v)
-    return o
+"""
+    set_width!(obj, v)
+
+Internal function to set the bin width to value `v`.
+"""
+function set_width!(obj::Bar2D, v::Real)
+    (0 < v) || throw(OptionValueError("bin width", v))
+    obj.width = float(v)
+    return obj
 end

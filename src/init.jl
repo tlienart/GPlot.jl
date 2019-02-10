@@ -23,12 +23,11 @@ function __init__()
 
         f = Figure("___")
         x, y = [1, 2], [3, 4]
-        x2 = range(1, stop=2, length=50)
+        x2 = range(1, stop=2, length=10)
         y2 = exp.(x2)
 
         # -- plot
-        plot(x, y)
-        plot(2x, 2y, ls="--", lw=0.1, color="blue", label="label1")
+        plot(x, y); plot(x, y, ls="--", lw=0.1, color="blue", label="label1")
         plot!(x2, y2, lwidth=0.02)
         xlabel("xlabel"); ylabel("ylabel"); title("title")
         legend(pos="tl", fontsize=7)
