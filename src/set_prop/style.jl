@@ -4,7 +4,7 @@
 ####
 
 """
-    set_color!(obj, field, col)
+    set_color!(obj, col)
 
 Internal function to set the color value `col` (after parsing) to `obj.field`.
 """
@@ -19,9 +19,9 @@ end
 Internal functions to set the color value `col` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_color!(obj::Hist2D, col) = set_color!(obj, :barstyle,  col)
-set_color!(obj::Ticks, col) = set_color!(obj.labels, :textstyle, col)
-set_color!(obj::Union{Title, Axis}, col) = set_color!(obj, :textstyle, col)
+set_color!(obj::Hist2D, col::CandCol) = set_color!(obj, :barstyle,  col)
+set_color!(obj::Ticks, col::CandCol)  = set_color!(obj.labels, :textstyle, col)
+set_color!(obj::Union{Title, Axis}, col::CandCol) = set_color!(obj, :textstyle, col)
 
 """
     set_fill!(obj, col)
@@ -29,8 +29,8 @@ set_color!(obj::Union{Title, Axis}, col) = set_color!(obj, :textstyle, col)
 Internal functions to set the fill color value `v` (after parsing) to the appropriate
 field of object `o`.
 """
-set_fill!(obj::Fill2D, col) = set_color!(obj, :fillstyle, col)
-set_fill!(obj::Hist2D, col) = set_color!(obj, :barstyle, col; name=:fill)
+set_fill!(obj::Fill2D, col::CandCol) = set_color!(obj, :fillstyle, col)
+set_fill!(obj::Hist2D, col::CandCol) = set_color!(obj, :barstyle, col; name=:fill)
 
 """
     set_colors!(obj, field, cols)
@@ -38,7 +38,8 @@ set_fill!(obj::Hist2D, col) = set_color!(obj, :barstyle, col; name=:fill)
 Internal function to set the color values `cols` (after parsing) to `obj.field[i]` where
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 """
-function set_colors!(obj, field::Symbol, cols::Vector{<:CandCol}; name=:color)
+function set_colors!(obj, field::Symbol,
+                     cols::Vector{<:CandCol}; name=:color)
     # check dimensions match
     @assert length(cols) == size(obj.xy, 2)-1 "Number of $(name)s must match the number of " *
                                               "elements. Given: $(length(cols)), expected: " *
@@ -56,8 +57,10 @@ end
 Internal function to set the color values `cols` (after parsing) to the appropriate fields
 of the object `obj`. If a single value is passed, all fields will be assigned to that value.
 """
-set_colors!(obj::Scatter2D, cols::Vector; opts...) = set_colors!(obj, :linestyle, cols; opts...)
-set_colors!(obj::Bar2D, cols::Vector; opts...) = set_colors!(obj, :barstyle, cols; opts...)
+set_colors!(obj::Scatter2D, cols::Vector{<:CandCol}; opts...) =
+    set_colors!(obj, :linestyle, cols; opts...)
+set_colors!(obj::Bar2D, cols::Vector{<:CandCol}; opts...) =
+    set_colors!(obj, :barstyle, cols; opts...)
 set_colors!(obj::Scatter2D, col::CandCol; opts...) =
     set_colors!(obj, :linestyle, fill(col, length(obj.linestyle)); opts...)
 set_colors!(obj::Bar2D, col::CandCol; opts...) =
@@ -69,7 +72,7 @@ set_colors!(obj::Bar2D, col::CandCol; opts...) =
 Internal functions to set the fill color values `cols` (after parsing) to the appropriate
 fields of object `o`. If a single value is passed, all fields will be assigned to that value.
 """
-set_fills!(obj::Bar2D, cols) = set_colors!(obj, cols; name=:fill)
+set_fills!(obj::Bar2D, cols::Vector{<:CandCol}) = set_colors!(obj, cols; name=:fill)
 
 """
     set_alpha!(obj, field, α)
@@ -77,7 +80,7 @@ set_fills!(obj::Bar2D, cols) = set_colors!(obj, cols; name=:fill)
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(obj, field::Symbol, α::Real; name=:color)
+function set_alpha!(obj, field::Symbol, α::Float64; name=:color)
     if !(gcf().transparency == true)
         @warn "Transparent colors are only supported when the figure " *
               "has its transparency property set to 'true'. Ignoring α."
@@ -95,8 +98,8 @@ end
 
 Internal function to set the alpha value of the appropriate field of `obj` to `α`.
 """
-set_alpha!(obj::Fill2D, α) = set_alpha!(obj, :fillstyle, α)
-set_alpha!(obj::Hist2D, α) = set_alpha!(obj, :barstyle, α; name=:fill)
+set_alpha!(obj::Fill2D, α) = set_alpha!(obj, :fillstyle, float(α))
+set_alpha!(obj::Hist2D, α) = set_alpha!(obj, :barstyle, float(α); name=:fill)
 
 ####
 #### TEXT
