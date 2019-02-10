@@ -8,7 +8,7 @@
 
 Internal function to set the color value `col` (after parsing) to `obj.field`.
 """
-function set_color!(obj, field::Symbol, col::CandCol; name=:color)
+@inline function set_color!(obj, field::Symbol, col::CandCol; name=:color)
     setfield!(getfield(obj, field), name, try_parse_col(col))
     return obj
 end
@@ -38,7 +38,7 @@ set_fill!(obj::Hist2D, col) = set_color!(obj, :barstyle, col; name=:fill)
 Internal function to set the color values `cols` (after parsing) to `obj.field[i]` where
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 """
-function set_colors!(obj, field::Symbol, cols::Vector{<:CandCol}; name=:color)
+@inline function set_colors!(obj, field::Symbol, cols::Vector{<:CandCol}; name=:color)
     # check dimensions match
     @assert length(cols) == size(obj.xy, 2)-1 "Number of $(name)s must match the number of " *
                                               "elements. Given: $(length(cols)), expected: " *
@@ -77,7 +77,7 @@ set_fills!(obj::Bar2D, cols) = set_colors!(obj, cols; name=:fill)
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(obj, field::Symbol, α::Real; name=:color)
+@inline function set_alpha!(obj, field::Symbol, α::Real; name=:color)
     if !(gcf().transparency == true)
         @warn "Transparent colors are only supported when the figure " *
               "has its transparency property set to 'true'. Ignoring α."
@@ -142,12 +142,12 @@ end
 Internal function to set the line style associated with object `obj`. The style
 can be described by `lstyle` being a number or a String representing the pattern.
 """
-function set_lstyle!(obj::LineStyle, v::Int)
+@inline function set_lstyle!(obj::LineStyle, v::Int)
     0 ≤ v || throw(OptionValueError("lstyle", v))
     obj.lstyle = v
     return obj
 end
-function set_lstyle!(obj::LineStyle, v::String)
+@inline function set_lstyle!(obj::LineStyle, v::String)
     @assert get_backend() == GLE "lstyle/only GLE backend supported"
     v_lc = lowercase(v)
     obj.lstyle = get(GLE_LSTYLES, v_lc) do
@@ -162,7 +162,7 @@ set_lstyle!(obj, v) = set_lstyle!(o.linestyle, v)
 
 Internal function to set the line width associated with the relevant field of `obj`.
 """
-function set_lwidth!(obj::LineStyle, v::Real)
+@inline function set_lwidth!(obj::LineStyle, v::Real)
     (0 ≤ v) || throw(OptionValueError("lwidth", v))
     obj.lwidth = v
     return obj
@@ -194,53 +194,6 @@ for opt ∈ ["lstyle", "lwidth", "smooth"]
     end
     eval(ex)
 end
-
-# """
-#     set_lstyles!(obj, lstyle)
-#
-# Internal function to set the line styles associated with the relevant fields of `obj`.
-# The style can be described by `lstyle` being a number or a String representing the pattern.
-# """
-# function set_lstyles!(obj::Scatter2D, v::Vector{<:Union{Int, String}})
-#     length(v) == length(obj.linestyle) || throw(OptionValueError("lstyles, dimensions " *
-#                                                                  "don't match"), v)
-#     for i ∈ 1:length(obj.linestyle)
-#         set_lstyle!(obj.linestyle[i], v[i])
-#     end
-#     return obj
-# end
-# set_lstyles!(obj::Scatter2D, v::Union{Int, String}) =
-#     set_lstyles!(obj, fill(v, length(obj.linestyle)))
-
-# """
-#     set_lwidths!(obj, v)
-#
-# Internal function to set the line widths associated with the relevant fields of `obj`.
-# """
-# function set_lwidths!(obj::Scatter2D, v::AVR)
-#     length(v) == length(obj.linestyle) || throw(OptionValueError("lwidths, dimensions " *
-#                                                                  "don't match"), v)
-#     for i ∈ 1:length(obj.linestyle)
-#         set_lwidth!(obj.linestyle[i], v[i])
-#     end
-#     return obj
-# end
-# set_lwidths!(obj::Scatter2D, v::Real) = set_lwidths!(obj, fill(v, length(obj.linestyle)))
-
-# """
-#     set_smooths!(obj, v)
-#
-# Internal function to determine whether to use splines for fields of `obj`.
-# """
-# function set_smooths!(obj::Scatter2D, v::Vector{Bool})
-#     length(v) == length(obj.linestyle) || throw(OptionValueError("smooths, dimensions " *
-#                                                                  "don't match"), v)
-#     for i ∈ 1:length(obj.linestyle)
-#         set_smooth!(obj.linestyle[i], v[i])
-#     end
-#     return obj
-# end
-# set_smooths!(obj::Scatter2D, v::Bool) = set_smooths!(obj, fill(v, length(obj.linestyle)))
 
 ####
 #### Marker related

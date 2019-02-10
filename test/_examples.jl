@@ -49,9 +49,9 @@ t = @elapsed begin
     plot!(x1, y2, color="indianred")
     plot!(x2, y3, lstyle="none", marker="fcircle", msize=0.1, color="#0c88c2")
     plot!(x1, y4, color="#76116d", lwidth=0.1)
-    plot!(x3, y5, ls="-", color="orange", lwidth=0.05, marker="o", mcol="red",
+    plot!(x3, y5, ls="-", color="orange", lwidth=0.05, marker="o",
             label="plot2")
-    plot!(x3, y6, ls="-", color="orange", lwidth=0.05, marker="•", mcol="red")
+    plot!(x3, y6, ls="-", color="orange", lwidth=0.05, marker="•")
     # tex strings for the titles
     xtitle!(tex"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$", color="blue",
         fontsize=12)
@@ -212,11 +212,11 @@ end
 #### Axis modifications: ticks, lims
 ####
 
+x = range(0, stop=2, length=10)
+y = @. x^2 / exp(x)
+
 t = @elapsed begin
     f = Figure("simple_lim_ticks_notex", reset=true)
-
-    x = range(0, stop=2, length=10)
-    y = @. x^2 / exp(x)
 
     plot(x, y, lw=0.02, smooth=false)
 

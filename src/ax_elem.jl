@@ -2,8 +2,8 @@
 #### [x|y|x2|y2]title[!]
 ####
 
-function _title!(a::Option{Axes2D}, text::String, axsymb::Option{Symbol};
-                overwrite=false, opts...)
+@inline function _title!(a::Option{Axes2D}, text::String, axsymb::Option{Symbol};
+                         overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     prefix = ""
     obj = a
@@ -48,9 +48,9 @@ end
 #### [x|y|x2|y2]ticks
 ####
 
-function _ticks!(a::Option{Axes2D}, axsymb::Symbol, loc::AVR,
-                 lab::Option{Vector{String}}; overwrite=false,
-                 opts...)
+@inline function _ticks!(a::Option{Axes2D}, axsymb::Symbol, loc::AVR,
+                         lab::Option{Vector{String}}; overwrite=false,
+                         opts...)
     isdef(a) || (a = add_axes2d!())
     prefix = "$axsymb"
     axis = getfield(a, Symbol(prefix * "axis"))

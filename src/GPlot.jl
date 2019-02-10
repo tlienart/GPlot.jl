@@ -36,7 +36,8 @@ const GP_ENV = Dict{String, Any}(
     "VERBOSE"    => true,
     "TMP_PATH"   => mktempdir(),
     "DEL_INTERM" => true,
-    "SHOW_GSERR" => false
+    "SHOW_GSERR" => false,
+    "WARMUP"     => true,
     )
 
 include("utils.jl")

@@ -2,8 +2,8 @@
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-function _lim!(a::Option{Axes2D}, el::Symbol, min::Option{Real},
-               max::Option{Real})
+@inline function _lim!(a::Option{Axes2D}, el::Symbol, min::Option{Real},
+                       max::Option{Real})
 
     isnothing(a) && (add_axes2d!(); a=gca())
     if min isa Real && max isa Real
@@ -34,7 +34,7 @@ end
 ####
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
-function _scale!(a::Axis, v::String)
+@inline function _scale!(a::Axis, v::String)
     a.log = get(AXSCALE, v) do
         throw(OptionValueError("axis scale", v))
     end
