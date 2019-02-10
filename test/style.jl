@@ -36,9 +36,9 @@
     @test b.fill == colorant"blue"
 
     f = G.FillStyle()
-    @test f.color == colorant"cornflowerblue"
-    f = G.FillStyle(color=RGBA(0.1,0.2,0.3,0.4))
-    @test f.color == RGBA{Float64}(0.1,0.2,0.3,0.4)
+    @test f.fill == colorant"cornflowerblue"
+    f = G.FillStyle(fill=RGBA(0.1,0.2,0.3,0.4))
+    @test f.fill == RGBA{Float64}(0.1,0.2,0.3,0.4)
 end
 
 @testset "▶ set_prop/style              " begin
@@ -50,7 +50,7 @@ end
     @test gca().drawings[1].barstyle.color == colorant"blue"
     @test gca().drawings[1].barstyle.fill == colorant"indianred"
     fill_between(x, y, 2y, fcol="blue")
-    @test gca().drawings[1].fillstyle.color == colorant"blue"
+    @test gca().drawings[1].fillstyle.fill == colorant"blue"
     xticks([1,2],["a","b"],tickscolor="blue", col="red")
     @test gca().xaxis.ticks.linestyle.color == colorant"blue"
     @test gca().xaxis.ticks.labels.textstyle.color == colorant"red"

@@ -3,7 +3,7 @@
 ####
 
 function _lim!(a::Option{Axes2D}, el::Symbol, min::Option{Real},
-               max::Option{Real})
+                       max::Option{Real})
 
     isnothing(a) && (add_axes2d!(); a=gca())
     if min isa Real && max isa Real

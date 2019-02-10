@@ -26,12 +26,12 @@ function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, AMR}; opts..
     return
 end
 
-plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
+plot!(y::AVR; opts...)  = plot!(gca(), 1:length(y), y; opts...)
 plot!(xy::AMR; opts...) = plot!(gca(), xy; opts...)
 
 plot!(x::Union{ARR, AVR}, y::Real; opts...)  = plot!(gca(), x, zero(x) .+ y; opts...)
 plot!(x::Union{ARR, AVR}, y; opts...)        = plot!(gca(), x, y; opts...)
-plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
+plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...); opts...)
 
 """
     plot(xy; options...)

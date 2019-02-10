@@ -89,4 +89,8 @@ isempty(fig::Figure) = isempty(fig.axes)
 
 Remove reference to `fig` and set the current figure to nothing.
 """
-destroy!(fig) = (delete!(GP_ENV["ALLFIGS"], fig.id); GP_ENV["CURFIG"] = nothing)
+function destroy!(fig)
+    delete!(GP_ENV["ALLFIGS"], fig.id)
+    GP_ENV["CURFIG"] = nothing
+    GP_ENV["CURAXES"] = nothing
+end

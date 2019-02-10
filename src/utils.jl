@@ -20,6 +20,10 @@ take!(b::Backend)   = take!(b.io)
 
 #######################################
 
+const CandCol = Union{Colorant, String}
+
+#######################################
+
 if !isdefined(Base, :isnothing)
     isnothing(o) = o === nothing
     export isnothing
@@ -53,7 +57,7 @@ function col2str(col::Colorant)
 end
 
 # given something like "indianred" try to parse it as a color and return col
-function try_parse_col(v)
+function try_parse_col(v::CandCol)
     col = ∅
     try
         col = parse(Colorant, v)
