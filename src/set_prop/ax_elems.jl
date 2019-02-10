@@ -2,29 +2,59 @@
 #### Ticks + TicksLabels
 ####
 
-# vertical distance of text to axis
-function set_dist!(o::Union{Title,Ticks}, v::Real)
-   (v ≥ 0) || throw(OptionValueError("dist", v))
-   set_dist_!(o, v)
-   return o
-end
-set_dist_!(o::Title, v::Real) = (o.dist = v)
-set_dist_!(o::Ticks, v::Real) = (o.labels.dist = v)
+"""
+    set_dist!(obj, v)
 
+Internal function to set the vertical distance of `obj` to associated axis.
+"""
+function set_dist!(obj, v::Real)
+   0 ≤ v || throw(OptionValueError("dist", v))
+   if obj isa Ticks
+      obj.labels.dist = v
+   else
+      obj.dist = v
+   end
+   return obj
+end
+
+"""
+    set_off!(obj, v)
+
+Internal function to set an object off.
+"""
 set_off!(o::Ticks, v::Bool) = (o.off = v; o)
 
-set_length!(o, v::Real) = throw(NotImplementedError("set_length!"))
+"""
+    set_length!(obj, v)
 
-set_symticks!(o, v::Bool) = throw(NotImplementedError("set_symticks!"))
+Internal function to set the length of an object.
+"""
+set_length!(o::Ticks, v::Real) = throw(NotImplementedError("set_length!"))
 
-set_tickscolor!(o::Ticks, v) = set_color!(o, :linestyle, v)
+"""
+    set_symticks!(obj, v)
+
+Internal function to set the ticks to be symetric on both side of axis.
+"""
+set_symticks!(o::Ticks, v::Bool) = throw(NotImplementedError("set_symticks!"))
+
+"""
+    set_tickscolor!(obj, v)
+
+Internal function to set the color of ticks.
+"""
+set_tickscolor!(o::Ticks, c::CandCol) = (o.linestyle.color = try_parse_col(c); o)
 
 ####
 #### TicksLabels
 ####
 
-# rotation angle of tick labels XXX in what unit??
-set_angle!(o::Ticks, v::Real) = (o.labels.angle = v; o)
+"""
+    set_angle!(obj, v)
+
+Internal function to set the angle of display of ticks labels.
+"""
+set_angle!(o::Ticks, v) = (o.labels.angle = float(v); o)
 
 # a number format for tick labels
 set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))

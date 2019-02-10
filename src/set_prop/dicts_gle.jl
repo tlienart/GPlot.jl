@@ -75,7 +75,8 @@ const GLE_MARKERS = Dict{String,String}(
 const GLE_LSTYLES = Dict{String,Int}(
     "-"    => 0,
     "--"   => 9,
-    "-."   => 8
+    "-."   => 8,
+    "none" => -1,
     )
 
 const GLE_TEXSCALE = ["scale", "fixed", "none"]
@@ -145,6 +146,43 @@ const GLE_FONTS = Dict{String,String}(
     "computer-modern-sans-serif-italic" => "texcmssi",
     "computer-modern-typewriter"        => "texcmtt" ,
     "computer-modern-italic-typewriter" => "texcmitt",
+    # fonts with no description (yet)
+    "plsr"   => "plsr",
+    "pldr"   => "pldr",
+    "pltr"   => "pltr",
+    "plti"   => "plti",
+    "plcr"   => "plcr",
+    "plci"   => "plci",
+    "plss"   => "plss",
+    "plcs"   => "plcs",
+    "plsa"   => "plsa",
+    "plba"   => "plba",
+    "plge"   => "plge",
+    "plgg"   => "plgg",
+    "plgi"   => "plgi",
+    "plsg"   => "plsg",
+    "pshc"   => "pshc",
+    "pshcb"  => "pshcb",
+    "pshcdo" => "pshcdo",
+    "pssym"  => "pssym",
+    "zapfchancery-medium-italic" => "pszd",
+    "arial" => "arial8",
+    "arial-bold" => "arial8b",
+    "arial-bold-italic" => "arial8bi",
+    "arial-italic" => "arial8i",
+    "plcc" => "plcc",
+    "plcg" => "plcg",
+    "pscb" => "pscb",
+    "pshcbo" => "pshcbo",
+    "pszcmi" => "pszcmi",
+    "texcmex" => "texcmex",
+    "texcmsy" => "texcmsy",
+    "texex" => "texex",
+    "texmi" => "texmi",
+    "texsy" => "texsy",
+    "times" => "times8",
+    "times-bold" => "times8b",
+    "typerwiter-bold-italic" => "ttbi",
     )
 add_dict_vals!(GLE_FONTS)
 

@@ -24,5 +24,5 @@ end
 end
 
 @with_kw mutable struct FillStyle
-    color::Colorant = colorant"cornflowerblue"
+    fill::Colorant = colorant"cornflowerblue"
 end

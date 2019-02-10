@@ -8,7 +8,7 @@
     @test eltype(f.axes) == GPlot.Axes{GPlot.GLE}
     @test f.size == (12., 9.)
     @test f.textstyle.hei == 0.35 # default
-    @test isnothing(f.textstyle.font)
+    @test f.textstyle.font == "texcmss"
     @test isnothing(f.textstyle.color)
     @test isnothing(f.texlabels)
     @test isnothing(f.texscale)

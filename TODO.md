@@ -1,10 +1,122 @@
 # Todo
 
+### Note from plane
+
+* trying to get multiplot working with vector assignments for everything, similar for bar
+* much code duplication that might benefit from being generated for consistency, think
+* for the moment it's not working, follow error trails
+* add tests
+* use colorbrewer for default, note that only up to 10 so if more would have to warn and loop, modulo stuff.
+
 ## NOW
 
 * should be able to do `xticks("off")` and not have to do `xticks([], off=true)`, also when it's off you probably should remove any `xplaces` or `xlabels` if there's any.
 * [ongoing] title without `!`  don't seem to work as they should
 * legend called multiple times, will duplicate
+* savefig needs more testing
+* allow ylim etc to take array of 2 values or tuples
+* more tests for legends, either via label keyword or via construction
+* add clf / cla (synonyms of erase)
+
+### added features
+
+* hline/vline/line
+
+```
+! LINE
+amove xg(x1) yg(y1)
+aline xg(x2) yg(y2)
+```
+* text somewhere
+
+```
+! TEXT somewhere
+amove xg(x)+dx yg(y)+dy
+write $something
+```
+
+* grid
+* error bars (there's something in graphutils but?)
+* boxplot
+
+```
+sub boxplot ds0 bwidth msize
+   default ds0 1
+   default bwidth 0.4
+   default msize 1.5
+   set cap round
+   for i = 1 to ndata("d"+num$(ds0))
+      local x = dataxvalue("d"+num$(ds0), i)
+      ! avg min Q.25 Q.5 Q.75 max
+      ! 0   1   2    3   4    5
+!      local meanv = datayvalue("d"+num$(ds0), i)
+!      local minv = datayvalue("d"+num$(ds0+1), i)
+!      local q25 = datayvalue("d"+num$(ds0+2), i)
+!      local q50 = datayvalue("d"+num$(ds0+3), i)
+!      local q75 = datayvalue("d"+num$(ds0+4), i)
+!      local maxv = datayvalue("d"+num$(ds0+5), i)
+      amove xg(x)-bwidth/2 yg(minv)
+      aline xg(x)+bwidth/2 yg(minv)
+      amove xg(x) yg(minv)
+      aline xg(x) yg(q25)
+      amove xg(x)-bwidth/2 yg(q25)
+      box bwidth yg(q75)-yg(q25)
+      amove xg(x)-bwidth/2 yg(q50)
+      aline xg(x)+bwidth/2 yg(q50)
+      amove xg(x) yg(q75)
+      aline xg(x) yg(maxv)
+      amove xg(x)-bwidth/2 yg(maxv)
+      aline xg(x)+bwidth/2 yg(maxv)
+      amove xg(x) yg(meanv)
+      marker fdiamond msize*bwidth
+   next i
+end sub
+```
+
+* pie plot
+
+```
+sub pie ang1 ang2 radius colour$
+   !
+   ! draw pie wedge between ang1 and ang2
+   ! radius.... the radius
+   ! colour$... the fill color of the wedge
+   !
+   begin path fill colour$ stroke
+   rmove 0 0                       !The rmove command is neccesary to set
+   arc radius ang1 ang2            !the beginning of the path
+   closepath
+   end path
+end sub
+
+sub pie_text ang1 ang2 radius colour$ label$
+   !sub pie - Subroutine to draw a coloured pie wedge
+   !          between two supplied angles
+   !          with a key and a label
+   ! draw pie wedge between ang1 and ang2
+   ! radius.... the radius
+   ! colour$... the fill color of the wedge
+   ! label$ ... te text you want to display
+   !
+   gsave
+   begin path fill colour$ stroke
+   rmove 0 0                 !The rmove command is neccesary to set
+   arc radius ang1 ang2      !the beginning of the path
+   closepath
+   end path
+
+   !
+   ! put text in center of pie
+   !
+   set just cc
+   ang = ang1+(ang2-ang1)/2
+   rmove (radius/2)*cos(torad(ang)) (radius/2)*sin(torad(ang))
+   write label$
+   grestore
+
+end sub
+```
+
 
 ## ongoing
 

@@ -18,7 +18,7 @@ exists already, return that object.
 function Figure(id::String, g::Backend; opts...)
 
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (12., 9.), TextStyle(hei=0.35), ∅, ∅, ∅, ∅)
+               (12., 9.), TextStyle(font="texcmss", hei=0.35), ∅, ∅, ∅, ∅)
 
     set_properties!(f; opts...)
     GP_ENV["ALLFIGS"][id] = f
@@ -89,4 +89,8 @@ isempty(fig::Figure) = isempty(fig.axes)
 
 Remove reference to `fig` and set the current figure to nothing.
 """
-destroy!(fig) = (delete!(GP_ENV["ALLFIGS"], fig.id); GP_ENV["CURFIG"] = nothing)
+function destroy!(fig)
+    delete!(GP_ENV["ALLFIGS"], fig.id)
+    GP_ENV["CURFIG"] = nothing
+    GP_ENV["CURAXES"] = nothing
+end

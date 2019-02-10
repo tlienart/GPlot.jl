@@ -1,3 +1,5 @@
 # Basic Plots
 
-TBA
+## Line and scatter plot
+
+## Bar plot

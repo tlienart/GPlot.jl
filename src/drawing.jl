@@ -13,10 +13,10 @@ function plot!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
-    # create line object, set properties and push to drawing stack
-    line = Scatter2D(xy = xy)
-    set_properties!(line; opts...)
-    push!(a.drawings, line)
+    # create scatter object
+    scatter = Scatter2D(xy)
+    set_properties!(scatter; opts...)
+    push!(a.drawings, scatter)
     return a
 end
 
@@ -26,14 +26,12 @@ function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, AMR}; opts..
     return
 end
 
-plot!(y::AVR; opts...) = plot!(gca(), 1:length(y), y; opts...)
+plot!(y::AVR; opts...)  = plot!(gca(), 1:length(y), y; opts...)
 plot!(xy::AMR; opts...) = plot!(gca(), xy; opts...)
 
 plot!(x::Union{ARR, AVR}, y::Real; opts...)  = plot!(gca(), x, zero(x) .+ y; opts...)
 plot!(x::Union{ARR, AVR}, y; opts...)        = plot!(gca(), x, y; opts...)
-plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
-
-###
+plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...); opts...)
 
 """
     plot(xy; options...)
@@ -43,9 +41,7 @@ plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...))
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(xy::AMR; opts...)                      = plot!(xy; overwrite=true, opts...)
-plot(x::Union{ARR, AVR}, y; opts...)        = plot!(x, y; overwrite=true, opts...)
-plot(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(hcat(x, y, ys...); overwrite=true, opts...)
+plot(a...; opts...) = plot!(a...; overwrite=true, opts...)
 
 ####
 #### fill_between!, fill_between
@@ -73,7 +69,7 @@ fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x, zero(x) .
 fill_between!(x, y1, y2::Real; opts...)      = fill_between!(gca(), x, y1, zero(x) .+ y2; opts...)
 fill_between!(x, y1::AVR, y2::AVR; opts...)  = fill_between!(gca(), x, y1, y2; opts...)
 
-fill_between(x, y1, y2; opts...) = fill_between!(x, y1, y2; overwrite=true, opts...)
+fill_between(a...; opts...) = fill_between!(a...; overwrite=true, opts...)
 
 ####
 #### hist, hist!
@@ -108,10 +104,10 @@ function bar!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
-    # create groupedbar2d object, assign properties and push to drawing stack
-    gb = GroupedBar2D(xy = xy, barstyle=[BarStyle() for i ∈ 1:(size(xy,2)-1)])
-    set_properties!(gb; opts...)
-    push!(a.drawings, gb)
+    # create Bar2D object, assign properties and push to drawing stack
+    bar = Bar2D(xy)
+    set_properties!(bar; opts...)
+    push!(a.drawings, bar)
     return a
 end
 
@@ -125,6 +121,4 @@ bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
 bar!(x, y::AMR; opts...) = bar!(gca(), x, y; opts...)
 bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...); opts...)
 
-bar(y; opts...) = bar!(y; overwrite=true, opts...)
-bar(x, y; opts...) = bar!(x, y; overwrite=true, opts...)
-bar(x, y, ys...; opts...) = bar!(x, hcat(y, ys...); overwrite=true, opts...)
+bar(a...; opts...) =  bar!(a...; overwrite=true, opts...)
