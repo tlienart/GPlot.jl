@@ -62,7 +62,7 @@ end
 Internal functions to set the fill color values `cols` (after parsing) to the appropriate
 fields of object `o`. If a single value is passed, all fields will be assigned to that value.
 """
-set_fills!(o::Bar2D, c::Vector{<:CandCol}) = set_colors!(o, c; isfill=true)
+set_fills!(o::Bar2D, c) = set_colors!(o, c; isfill=true)
 
 """
     set_alpha!(obj, α)

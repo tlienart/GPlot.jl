@@ -33,7 +33,7 @@ for axs ∈ ["x", "y", "x2", "y2"]
 end
 
 math!(a::Axes2D) = (a.math = true; a)
-math!(::Nothing) = (add_axes!(); math!(gca()))
+math!(::Nothing) = (add_axes2d!(); math!(gca()))
 math!() = math!(gca())
 math = math!
 
@@ -46,7 +46,7 @@ function grid!(a::Axes2D, which::Vector{String}=["x", "y"])
     end
     return a
 end
-grid!(::Nothing) = (add_axes!(); grid!(gca()))
+grid!(::Nothing) = (add_axes2d!(); grid!(gca()))
 grid!() = grid!(gca())
 grid = grid!
 

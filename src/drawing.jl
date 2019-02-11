@@ -15,7 +15,12 @@ function plot!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
     overwrite && erase!(a)
     # create scatter object
     scatter = Scatter2D(xy)
-    set_properties!(scatter; opts...)
+    # if there's more than 20 points, default to smooth
+    if size(xy, 1) ≥ 20
+        set_properties!(scatter; smooth=true, opts...)
+    else
+        set_properties!(scatter; opts...)
+    end
     push!(a.drawings, scatter)
     return a
 end
