@@ -147,7 +147,7 @@ end
 
     # Scatter2D (see also apply_linestyle)
     plot([1, 2], exp.([1, 2]), lwidth=2.0)
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "data")
     isin(s, "d1=c1,c2")
     isin(s, "d1 line lwidth 2.0")

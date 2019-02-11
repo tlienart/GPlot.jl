@@ -19,7 +19,7 @@ function assemble_figure(f::Figure{GLE}; debug=false)::Option{String}
         "\nset texscale"    |> g
         ifelse(isdef(f.texscale), f.texscale, "scale") |> g
     end
-    foreach(a -> apply_axes!(g, a), f.axes)
+    foreach(a -> apply_axes!(g, a, f.id), f.axes)
     # deal with proper dir
     if debug
         return String(take!(g))

@@ -61,7 +61,6 @@ draw.
     fillstyle::FillStyle = FillStyle()
 end
 
-
 """
     Hist2D <: Drawing2D
 
@@ -78,7 +77,6 @@ a histogram.
     scaling::Option{String}  = ∅
 #    label::Option{String} = ∅ # 🚫
 end
-
 
 """
     Bar2D <: Drawing2D

@@ -1,4 +1,4 @@
-function apply_textstyle!(g::GLE, s::TextStyle)
+function apply_textstyle!(g, s)
     isanydef(s) || return
     isdef(s.font)  && "font $(s.font)"            |> g
     isdef(s.hei)   && "hei $(s.hei)"              |> g
@@ -6,16 +6,16 @@ function apply_textstyle!(g::GLE, s::TextStyle)
     return
 end
 
-function apply_linestyle!(g::GLE, s::LineStyle)
+function apply_linestyle!(g, s; legend=false)
     isanydef(s) || return
     isdef(s.lstyle) && "lstyle $(s.lstyle)"        |> g
     isdef(s.lwidth) && "lwidth $(s.lwidth)"        |> g
     isdef(s.color)  && "color $(col2str(s.color))" |> g
-    isdef(s.smooth) && "smooth"                    |> g # only for dn lines
+    legend || isdef(s.smooth) && "smooth"          |> g # only for dn lines
     return
 end
 
-function apply_markerstyle!(g::GLE, s::MarkerStyle)
+function apply_markerstyle!(g, s)
     isanydef(s) || return
     isdef(s.marker) && "marker $(s.marker)"        |> g
     isdef(s.msize)  && "msize $(s.msize)"          |> g
@@ -23,7 +23,7 @@ function apply_markerstyle!(g::GLE, s::MarkerStyle)
     return
 end
 
-function apply_barstyle!(g::GLE, s::BarStyle)
+function apply_barstyle!(g, s)
     isanydef(s) || return
     isdef(s.color) && "color $(col2str(s.color))" |> g
     isdef(s.fill)  && "fill $(col2str(s.fill))"   |> g
@@ -32,7 +32,7 @@ end
 
 # assumption that if one is defined, all are defined (this is checked
 # with the set_properties!)
-function apply_barstyles_nostack!(g::GLE, v::Vector{BarStyle})
+function apply_barstyles_nostack!(g, v)
     isanydef(v[1]) || return # silly case...
     isdef(v[1].color) && "color $(svec2str((col2str(s.color) for s ∈ v)))" |> g
     isdef(v[1].fill)  && "fill $(svec2str((col2str(s.fill) for s ∈ v)))"   |> g

@@ -1,4 +1,4 @@
-function apply_title!(g::GLE, t::Title)
+function apply_title!(g, t)
     # [x]title ...
     p = isdef(t.prefix) ? "$(t.prefix)" : ""
     "\n\t$(p)title \"$(t.text)\""     |> g
@@ -7,7 +7,7 @@ function apply_title!(g::GLE, t::Title)
     return
 end
 
-function apply_ticks!(g::GLE, t::Ticks)
+function apply_ticks!(g, t)
     # [x]ticks ...
     (isdef(t.off) || isanydef(t.linestyle)) && begin
         "\n\t$(t.prefix)ticks" |> g
@@ -23,7 +23,7 @@ function apply_ticks!(g::GLE, t::Ticks)
     return
 end
 
-function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
+function apply_tickslabels!(g, t, prefix)
     # [x]names "names1" ...
     isdef(t.names) && "\n\t$(prefix)names $(vec2str(t.names))" |> g
     # [x]labels ...

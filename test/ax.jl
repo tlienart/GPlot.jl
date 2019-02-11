@@ -136,36 +136,36 @@ end
     g = G.GLE()
     f = G.Figure();
     G.add_axes2d!()
-    G.apply_axes!(g, f.axes[1])
+    G.apply_axes!(g, f.axes[1], f.id)
     s = String(take!(g))
     isin(s, "begin graph")
     isin(s, "scale auto")
     isin(s, "end graph")
     f.axes[1].math = true
     f.axes[1].size = (10.,8.)
-    G.apply_axes!(g, f.axes[1])
+    G.apply_axes!(g, f.axes[1], f.id)
     s = String(take!(g))
     isin(s, "math")
     isin(s, "size 10.0 8.0")
 
     # AXES3D
     # XXX 3D not supported yet
-    @test_throws G.NotImplementedError G.apply_axes!(g, G.Axes3D{G.GLE}())
+    @test_throws G.NotImplementedError G.apply_axes!(g, G.Axes3D{G.GLE}(), f.id)
 
     # AXIS (see also apply_ticks, apply_textstyle)
     erase!(f)
     G.add_axes2d!()
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     # XXX by default subticks are off (may change)
     isin(s, "xsubticks off")
     isin(s, "ysubticks off")
     isin(s, "x2subticks off")
     isin(s, "y2subticks off")
     f.axes[1].xaxis.off = true
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "xaxis off")
     f.axes[1].xaxis.off = false
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     notisin(s, "xaxis off")
     f.axes[1].xaxis.base = 0.1
     f.axes[1].yaxis.lwidth = 2.0
@@ -173,7 +173,7 @@ end
     f.axes[1].y2axis.log = true
     f.axes[1].xaxis.min = 0.0
     f.axes[1].yaxis.max = 2.0
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "xaxis  base 0.1 min 0.0") # NOTE extra space due to 'off'
     isin(s, "x2axis grid")
     isin(s, "yaxis lwidth 2.0 max 2.0")

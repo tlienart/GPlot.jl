@@ -1,4 +1,10 @@
-function add_dict_vals!(d::Dict{String,String})
+"""
+    add_dict_vals!(d)
+
+Internal function to add the values of a dictionary as keys with the same values. So for instance
+if the dictionary has a pair "s" => "square", it will add "square" => "square".
+"""
+function add_dict_vals!(d)
     for v ∈ values(d)
         get(d, v) do
             d[v] = v
