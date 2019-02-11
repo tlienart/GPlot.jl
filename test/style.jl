@@ -44,8 +44,9 @@ end
 @testset "▶ set_prop/style              " begin
     # color
     x, y = 1:2, exp.(1:2)
-    plot(x, y, col="indianred")
+    plot(x, y, col="indianred", mcol="blue")
     @test gca().drawings[1].linestyle[1].color == colorant"indianred"
+    @test gca().drawings[1].markerstyle[1].color == colorant"blue"
     hist(y, fcol="indianred", ecol="blue")
     @test gca().drawings[1].barstyle.color == colorant"blue"
     @test gca().drawings[1].barstyle.fill == colorant"indianred"

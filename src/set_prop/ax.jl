@@ -3,7 +3,7 @@
 
 Internal function to set the title of an Axis object.
 """
-set_title!(a::Axis, t::String) = (a.title.text = t; a)
+set_title!(a::Axis, t::String) = (a.title = Title(text=t); a)
 
 """
     set_title!(axis, s)

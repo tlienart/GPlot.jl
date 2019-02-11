@@ -16,14 +16,15 @@ for axs ∈ ["x", "y", "x2", "y2"]
     ff = Symbol(axs[1] * "axis") # :x2axis->:xaxis (for grid)
     ex = quote
         $f!(a::Axis; opts...)   = (set_properties!(a; opts...); a)
-        $f!(::Nothing; opts...) = $f!(add_axes2d!().$f; opts...)
+        $f!(a::Axes; opts...)   = (set_properties!(a.$f; opts...); a)
+        $f!(::Nothing; opts...) = $f!(add_axes2d!(); opts...)
         function $f!(s::String=""; opts...)
-            isempty(s) && return $f!(gca().$f; opts...)
+            isempty(s) && return $f!(gca(); opts...)
             # try to interpret the string as a shorthand
             s_lc = lowercase(s)
-            s_lc == "off"  && return $f!(gca().$f; off=true, opts...)
-            s_lc == "grid" && return $f!(gca().$ff; grid=true, opts...)
-            s_lc == "log"  && return $f!(gca().$f; log=true, opts...)
+            s_lc == "off"  && return $f!(gca(); off=true, opts...)
+            s_lc == "grid" && return $f!(gca(); grid=true, opts...)
+            s_lc == "log"  && return $f!(gca(); log=true, opts...)
             throw(OptionValueError("Unrecognised shorthand toggle for axis.", s))
         end
         $f = $f! # synonym
