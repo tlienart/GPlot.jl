@@ -24,6 +24,18 @@ end
 #### Apply a Scatter2D object
 ####
 
+"""
+    auxpath(number)
+
+Internal function to generate a path to an auxiliary file storing drawing data for the current
+axes of the current figure.
+"""
+function auxpath(number)
+    path = GP_ENV["TMP_PATH"]
+    axid = isdef(gca().origin) ? "$(gca().origin[1])_$(gca().origin[2])" : ""
+    return joinpath(path, "$(gcf().id)_$(axid)_d$number.csv")
+end
+
 function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D, el_counter::Int=1)
 
     # temporary buffers to help for the legend
@@ -31,7 +43,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D, el_counte
     glet = GLE()
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
+    faux = auxpath(el_counter)
     writedlm(faux, obj.xy)
 
     # >>>>>>>>>>>>>>>>
@@ -93,7 +105,7 @@ end
 function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
+    faux = auxpath(el_counter)
     writedlm(faux, obj.xy1y2)
 
     # >>>>>>>>>>>>>>>>
@@ -106,7 +118,7 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Fill2D, el_counter::Int=1)
     "\n\tfill d$(el_counter),d$(el_counter+1)" |> g
 
     # color is not optional
-    "color $(col2str(obj.fillstyle.color))" |> g
+    "color $(col2str(obj.fillstyle.fill))" |> g
 
     isdef(obj.xmin) && "xmin $(obj.xmin)" |> g
     isdef(obj.xmax) && "xmax $(obj.xmax)" |> g
@@ -127,7 +139,7 @@ function apply_drawing!(g::GLE, ::IOBuffer, obj::Hist2D, el_counter::Int=1)
     # glet = GLE()
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
+    faux = auxpath(el_counter)
     writedlm(faux, obj.x)
 
     # >>>>>>>>>>>>>>>>
@@ -180,7 +192,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Bar2D,
                         el_counter::Int=1)
 
     # write data to a temporary CSV file
-    faux = joinpath(GP_ENV["TMP_PATH"], gcf().id * "_auxdat_$el_counter.csv")
+    faux = auxpath(el_counter)
     writedlm(faux, obj.xy)
 
     # >>>>>>>>>>>>>>>>
