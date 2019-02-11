@@ -2,11 +2,17 @@
 
 using GPlot
 
-using DelimitedFiles
+f = Figure()
 
-dat = readdlm("../GPlotExamples.jl/targets/2d-complex1/decay.dat")
+x = range(-5, 5, length=100)
+y = @. 1-exp(-sin(x) * cos(x)/x)
 
-f = Figure(size=(11, 8), latex=true)
-bar(dat[:, 1], dat[:, 2], fcol="yellow", ecol="black", width=3)
+plot(x, y, col="blue")
+
+ylim(-1, 1)
+
+#y2axis("off")
+
+preview()
 
 GPlot.debug_gle(f)

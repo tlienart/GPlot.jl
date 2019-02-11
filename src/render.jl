@@ -13,7 +13,7 @@ end
 function savefig(fig::Figure{GLE}, fn::String="";
                  format::String="png", path::String="", opts...)
 
-    isempty(fig) && (@warn "The figure is empty, nothing to save."; return)
+    isempty(fig) && (@warn "The figure is empty, nothing to render."; return)
     isempty(fn)  && (fn = joinpath(path, fig.id * ".$format"))
 
     # buffer for the GLE command that will be called
@@ -86,6 +86,7 @@ function PreviewFigure(fig::Figure)
     disp || error("Preview is only available in Juno and IJulia.")
     # trigger a build
     fname = savefig(fig, res=100)
+    isdef(fname) || return
     return PreviewFigure(fig, fname)
 end
 

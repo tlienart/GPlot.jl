@@ -213,6 +213,23 @@ set_properties!(gb::Bar2D; opts...) =
 #### Options for FIGURE
 ####
 
+const AXIS_OPTS = Dict{Symbol, Function}(
+    :title  => set_title!,  # set_ax
+    :base   => set_base!,   # .
+    :min    => set_min!,    # .
+    :max    => set_max!,    # .
+    :grid   => set_grid!,   # .
+    :log    => set_log!,    # .
+    :lwidth => set_lwidth!, # set_style
+    :off    => set_off!,    # set_ax_elems
+    )
+merge!(AXIS_OPTS, TEXTSTYLE_OPTS)
+set_properties!(a::Axis; opts...) = set_properties!(AXIS_OPTS, a; opts...)
+
+####
+#### Options for FIGURE
+####
+
 const FIGURE_OPTS = Dict{Symbol, Function}(
     :size         => set_size!,         # set_figure
     :tex          => set_texlabels!,    # .

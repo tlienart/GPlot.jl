@@ -129,6 +129,43 @@ end
     @test f.axes[1].y2axis.log == false
     y2scale(f.axes[1], "log")
     @test f.axes[1].y2axis.log
+
+    # xaxis, yaxis, ... with shorthands
+    erase!(gcf())
+    xaxis("grid")
+    @test f.axes[1].xaxis.grid
+    yaxis("grid")
+    @test f.axes[1].xaxis.grid
+    cla()
+    @test isnothing(f.axes[1].xaxis.grid)
+    xaxis("log")
+    @test f.axes[1].xaxis.log
+    y2axis("off")
+    @test f.axes[1].y2axis.off
+    cla()
+    yaxis(title="blah", grid=true, log=true)
+    @test f.axes[1].yaxis.log
+    @test f.axes[1].yaxis.grid
+    @test f.axes[1].yaxis.title.text == "blah"
+
+    # math / grid
+    cla()
+    math()
+    @test f.axes[1].math
+    cla()
+    grid()
+    @test f.axes[1].xaxis.grid && f.axes[1].yaxis.grid
+end
+
+@testset "▶ set_prop/ax                 " begin
+    f = Figure()
+    yaxis(title="blah", base=0.3, min=0, max=4, grid=true, log=true)
+    @test f.axes[1].yaxis.title.text  == "blah"
+    @test f.axes[1].yaxis.base == 0.3
+    @test f.axes[1].yaxis.min == 0.0
+    @test f.axes[1].yaxis.max == 4.0
+    @test f.axes[1].yaxis.grid
+    @test f.axes[1].yaxis.log
 end
 
 @testset "▶ apply_gle/ax                " begin

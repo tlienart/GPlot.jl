@@ -44,6 +44,20 @@ function clear!(obj::T; exclude=Vector{Symbol}()) where T
     return
 end
 
+# see cla! (clear axes)
+function reset!(obj::T; exclude=Vector{Symbol}()) where T
+    # create a new object of the same type, assumes there is
+    # a constructor that accepts empty input
+    fresh = T()
+    for fn ∈ fieldnames(T)
+        fn ∈ exclude && continue
+        # set all fields to the field value given by the default
+        # constructor (but keeps the address of the parent object)
+        setfield!(obj, fn, deepcopy(getfield(fresh, fn)))
+    end
+    return obj
+end
+
 #######################################
 
 # return a number with 3 digits accuracy, useful in col2str

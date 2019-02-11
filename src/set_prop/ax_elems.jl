@@ -22,7 +22,7 @@ end
 
 Internal function to set an object off.
 """
-set_off!(o::Ticks, v::Bool) = (o.off = v; o)
+set_off!(o::Union{Ticks, Axis}, v::Bool) = (o.off = v; o)
 
 """
     set_length!(obj, v)
