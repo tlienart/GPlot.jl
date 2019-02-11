@@ -6,7 +6,7 @@ using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, erase!,
+export Figure, gcf, gca, clf, cla, erase!,
     # Layout
     layout!, layout, subplot,
     # Drawings
@@ -27,6 +27,11 @@ export Figure, gcf, gca, erase!,
     # -- scale
     xscale!, x2scale!, yscale!, y2scale!,
     xscale, x2scale, yscale, y2scale,
+    # -- misc
+    xaxis!, x2axis!, yaxis!, y2axis!,
+    xaxis, x2axis, yaxis, y2axis,
+    grid!, math!,
+    grid, math,
     # Preview / rendering / saving
     preview, render, savefig, isempty,
     # Simple macros for tex strings
@@ -65,6 +70,7 @@ include("set_prop/dicts_shared.jl")
 include("set_prop/style.jl")
 include("set_prop/drawing.jl")
 include("set_prop/ax_elems.jl")
+include("set_prop/ax.jl")
 include("set_prop/figure.jl")
 include("set_prop/properties.jl")
 

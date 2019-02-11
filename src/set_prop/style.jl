@@ -150,7 +150,7 @@ end
 
 Internal function to set the line width associated with the relevant field of `obj`.
 """
-function set_lwidth!(obj::LineStyle, v::Real)
+function set_lwidth!(obj::Union{LineStyle, Axis}, v::Real)
     (0 ≤ v) || throw(OptionValueError("lwidth", v))
     obj.lwidth = v
     return obj
