@@ -1,9 +1,26 @@
 ####
+#### [x|y|...]axis(...)
+####
+
+for axs ∈ ["x", "y", "x2", "y2"]
+    f! = Symbol(axs * "axis!")
+    f  = Symbol(axs * "axis")
+    ex = quote
+        $f!(a::Axis; opts...)    = (set_properties!(a; opts...); a)
+        $f!(a::Nothing; opts...) = $f!(add_axes2d!(); opts...)
+        $f!(; opts...)           = $f!(gca(); opts...)
+        # synonym
+        $f = $f!
+    end
+    eval(ex)
+end
+
+
+####
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-function _lim!(a::Option{Axes2D}, el::Symbol, min::Option{Real},
-                       max::Option{Real})
+function _lim!(a::Option{Axes2D}, el::Symbol, min::Option{Real}, max::Option{Real})
 
     isnothing(a) && (add_axes2d!(); a=gca())
     if min isa Real && max isa Real
@@ -32,8 +49,9 @@ for axs ∈ ["x", "y", "x2", "y2"]
 end
 
 ####
-#### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
+#### [x|y]scale, [x|y]scale! (synonyms though with ! is preferred)
 ####
+
 function _scale!(a::Axis, v::String)
     a.log = get(AXSCALE, v) do
         throw(OptionValueError("axis scale", v))
