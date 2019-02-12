@@ -99,18 +99,12 @@ function set_font!(obj, font::String)
 end
 
 """
-    set_hei!(obj, font)
+    set_hei!(obj, fontsize)
 
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
-function set_hei!(obj, v::Float64)
-    if obj isa Legend
-        obj.hei = v * PT_TO_CM
-    else
-        obj.textstyle.hei = v * PT_TO_CM
-    end
-    return obj
-end
+set_hei!(o::Legend, v::Float64) = (o.hei = v * PT_TO_CM; o)
+set_hei!(o, v::Float64) = (o.textstyle.hei = v * PT_TO_CM; o)
 
 ####
 #### Line related
@@ -122,18 +116,18 @@ end
 Internal function to set the line style associated with object `obj`. The style
 can be described by `lstyle` being a number or a String representing the pattern.
 """
-function set_lstyle!(obj::LineStyle, v::Int)
+function set_lstyle!(o::LineStyle, v::Int)
     0 < v || throw(OptionValueError("lstyle", v))
-    obj.lstyle = v
-    return obj
+    o.lstyle = v
+    return o
 end
-function set_lstyle!(obj::LineStyle, v::String)
+function set_lstyle!(o::LineStyle, v::String)
     @assert get_backend() == GLE "lstyle // only GLE backend supported"
     v_lc = lowercase(v)
-    obj.lstyle = get(GLE_LSTYLES, v_lc) do
+    o.lstyle = get(GLE_LSTYLES, v_lc) do
         throw(OptionValueError("lstyle", v_lc))
     end
-    return obj
+    return o
 end
 set_lstyle!(o::Ticks, v::String) = set_lstyle!(o.linestyle, v)
 
@@ -162,13 +156,13 @@ set_smooth!(o::LineStyle, v::Bool) = (o.smooth = v; o)
 Internal function to set the marker associated with object `obj`. The style
 can be described by `marker` being a String describing the pattern.
 """
-function set_marker!(obj::MarkerStyle, v::String)
+function set_marker!(o::MarkerStyle, v::String)
     @assert get_backend() == GLE "marker // only GLE backend supported"
     v_lc = lowercase(v)
-    obj.marker = get(GLE_MARKERS, v_lc) do
+    o.marker = get(GLE_MARKERS, v_lc) do
         throw(OptionValueError("marker", v_lc))
     end
-    return obj
+    return o
 end
 
 """
@@ -207,7 +201,6 @@ for case ∈ (:linestyle   => ("lstyle", "lwidth", "smooth"),
             # if expects a vector but a scalar is given, a vector of
             # the appropriate size is filled with the scalar value
             $f_vector!(o::Scatter2D, v) = $f_vector!(o, fill(v, length(o.$field)))
-            #            $f!(obj, v) = $f!(obj.$field, v)
         end
         eval(ex)
     end

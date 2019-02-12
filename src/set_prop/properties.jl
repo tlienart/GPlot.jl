@@ -11,7 +11,7 @@ Set properties of an object `obj` given options (`opts`) of the form
 `optname=value` an applying it through appropriate application function
 stored in the dictionary `dict`.
 """
-function set_properties!(dict, obj; opts...)
+function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj; opts...)
     for optname ∈ opts.itr
         argcheck, setprop! = get(dict, optname) do
             throw(UnknownOptionError(optname, obj))
@@ -22,7 +22,7 @@ function set_properties!(dict, obj; opts...)
 end
 
 ####
-#### Value checkers
+#### Value checkers for set_properties functions
 ####
 
 id(x, ::Symbol) = x

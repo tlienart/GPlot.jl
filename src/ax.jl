@@ -39,7 +39,9 @@ math = math!
 function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)
     for ax ∈ which
         ax_lc = lowercase(ax)
-        @assert ax_lc ∈ ("x", "x2", "y", "y2") "Unrecognized ax symbol $ax."
+        if ax_lc ∉ ("x", "x2", "y", "y2")
+            throw(OptionValueError("Unrecognized ax symbol.", ax))
+        end
         # all options affect the ticks (in particular: color and width)
         axsym = Symbol(ax_lc * "axis")
         ticks = eval(:($a.$axsym.ticks))
@@ -68,27 +70,35 @@ grid = grid!
 
 function _lim!(a::Axes2D, el::Symbol, min::Option{Float64}, max::Option{Float64})
     if min !== nothing && max !== nothing
-        @assert min < max "min must be strictly smaller than max"
+        if min > max
+            throw(OptionValueError("min must be strictly smaller than max", (min, max)))
+        end
     end
     axis = getfield(a, el)
     setfield!(axis, :min, min)
     setfield!(axis, :max, max)
     return a
 end
-_lim!(::Nothing, el, min, max) = _lim!(add_axes2d!(), el, min, max)
+_lim!(::Nothing, el, min, max) = _lim!(add_axes2d!(), el, fl(min), fl(max))
 
 # Generate xlim!, xlim, and associated for each axis
 for axs ∈ ("x", "y", "x2", "y2")
     f! = Symbol(axs * "lim!")
     f  = Symbol(axs * "lim")
     ex = quote
-        $f!(a, min, max)    = _lim!(a, Symbol($axs * "axis"), fl(min), fl(max))
-        $f!(min, max)       = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
-        $f!(; min=∅, max=∅) = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
+        $f!(a::Axes2D, min::Option{Real}, max::Option{Real}) =
+            _lim!(a, Symbol($axs * "axis"), fl(min), fl(max))
+        $f!(min::Option{Real}, max::Option{Real}) =
+            _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
+        $f!(; min::Option{Real}=∅, max::Option{Real}=∅) =
+            _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
         # synonyms
-        $f(a, min, max)    = _lim!(a, Symbol($axs * "axis"), fl(min), fl(max))
-        $f(min, max)       = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
-        $f(; min=∅, max=∅) = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
+        $f(a::Axes2D, min::Option{Real}, max::Option{Real}) =
+            _lim!(a, Symbol($axs * "axis"), fl(min), fl(max))
+        $f(min::Option{Real}, max::Option{Real}) =
+            _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
+        $f(; min::Option{Real}=∅, max::Option{Real}=∅) =
+            _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
     end
     eval(ex)
 end
@@ -109,12 +119,12 @@ for axs ∈ ("x", "y", "x2", "y2")
     f! = Symbol(axs * "scale!")       # xscale!
     f  = Symbol(axs * "scale")        # xscale
     ex = quote
-        $f!(a::Axes2D, v) = _scale!(getfield(a, Symbol($axs * "axis")), v)
-        $f!(::Nothing, v) = $f!(add_axes2d!(), v)
-        $f!(v)            = $f!(gca(), v)
+        $f!(a::Axes2D, v::String) = _scale!(getfield(a, Symbol($axs * "axis")), v)
+        $f!(::Nothing, v::String) = $f!(add_axes2d!(), v)
+        $f!(v::String)            = $f!(gca(), v)
         # synonyms
-        $f(a, v) = $f!(a, v)
-        $f(v)    = $f!(gca(), v)
+        $f(a::Axes2D, v::String) = $f!(a, v)
+        $f(v::String)            = $f!(gca(), v)
     end
     eval(ex)
 end

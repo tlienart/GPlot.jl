@@ -3,7 +3,7 @@
 
 Sets a tuple indicating (width, height) size of the figure.
 """
-set_size!(o::Figure, t::NTuple{2, Float64}) = (o.size = t; o)
+set_size!(o::Figure, t::NTuple{2,Float64}) = (o.size = t; o)
 
 """
    set_texlabels!(o, v)

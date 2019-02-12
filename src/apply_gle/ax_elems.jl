@@ -12,7 +12,12 @@ function apply_title!(g::GLE, t::Title, p::String="")
     return
 end
 
-function apply_ticks!(g, t)
+"""
+    apply_ticks!(g, t)
+
+Internal function to apply a `Ticks` object `t` in a GLE context.
+"""
+function apply_ticks!(g::GLE, t::Ticks)
     # [x]ticks ...
     (isdef(t.off) || isanydef(t.linestyle)) && begin
         "\n\t$(t.prefix)ticks" |> g
@@ -28,7 +33,13 @@ function apply_ticks!(g, t)
     return
 end
 
-function apply_tickslabels!(g, t, prefix)
+"""
+    apply_tickslabels!(g, t, p)
+
+Internal function to apply a `TicksLabels` object `t` in a GLE context.
+The prefix `p` indicates which axis we're on.
+"""
+function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
     # [x]names "names1" ...
     isdef(t.names) && "\n\t$(prefix)names $(vec2str(t.names))" |> g
     # [x]labels ...

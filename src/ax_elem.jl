@@ -7,7 +7,8 @@
 
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
-function _title!(a::Axes2D, text::String, el::Symbol; overwrite=false, opts...)
+function _title!(a::Axes2D, text::String, el::Symbol;
+                 overwrite=false, opts...)
     obj = (el == :axis) ? a : getfield(a, el)
     if isdef(obj.title)
         # if overwrite, clear the current title
@@ -22,18 +23,22 @@ end
 _title!(::Nothing, a...; o...) = _title!(add_axes2d!(), a...; o...)
 
 # Generate xlim!, xlim, and associated for each axis
-for axs ∈ ["", "x", "y", "x2", "y2"]
+for axs ∈ ("", "x", "y", "x2", "y2")
     f!  = Symbol(axs * "title!")
     f   = Symbol(axs * "title")
     f2! = Symbol(axs * "label!") # synonyms xlabel = xtitle
     f2  = Symbol(axs * "label")
     ex = quote
         # mutate
-        $f!(a, text; opts...) = _title!(a, text, Symbol($axs * "axis"); opts...)
-        $f!(text; opts...)    = _title!(gca(), text, Symbol($axs * "axis"); opts...)
+        $f!(a::Axes2D, text::String; opts...) =
+            _title!(a, text, Symbol($axs * "axis"); opts...)
+        $f!(text::String; opts...) =
+            _title!(gca(), text, Symbol($axs * "axis"); opts...)
         # overwrite
-        $f(a, text; opts...) = _title!(a, text, Symbol($axs * "axis"); overwrite=true, opts...)
-        $f(text; opts...)    = _title!(gca(), text, Symbol($axs * "axis"); overwrite=true, opts...)
+        $f(a::Axes2D, text::String; opts...) =
+            _title!(a, text, Symbol($axs * "axis"); overwrite=true, opts...)
+        $f(text::String; opts...) =
+            _title!(gca(), text, Symbol($axs * "axis"); overwrite=true, opts...)
         # more synonyms xlabel...
         !isempty($axs) && ($f2! = $f!; $f2 = $f)
     end
@@ -55,8 +60,9 @@ function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64},
     end
     axis.ticks.places = loc
     if isdef(lab)
-        @assert length(lab) == length(loc) "Ticks location and ticks labels " *
-                                           "must have the same length."
+        if length(lab) != length(loc)
+            throw(OptionValueError("Ticks locations and labels must have the same length.", lab))
+        end
         axis.ticks.labels = TicksLabels(names=lab)
     end
     set_properties!(axis.ticks; opts...)
@@ -65,15 +71,19 @@ end
 _ticks!(::Nothing, a...; o...) = _ticks!(add_axes2d!(), a...; o...)
 
 # Generate xticks!, xticks, and associated for each axis
-for axs ∈ ["", "x", "y", "x2", "y2"]
+for axs ∈ ("", "x", "y", "x2", "y2")
     f! = Symbol(axs * "ticks!")
     f  = Symbol(axs * "ticks")
     ex = quote
-        $f!(a, loc::AVR, lab=∅; opts...) = _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
-        $f!(loc::AVR, lab=∅; opts...) = _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
+        $f!(a::Axes2D, loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
+            _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
+        $f!(loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
+            _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
         # overwrite
-        $f(a, loc::AVR, lab=∅; opts...) = _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
-        $f(loc::AVR, lab=∅; opts...) = _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
+        $f(a::Axes2D, loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
+            _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
+        $f(loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
+            _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
     end
     eval(ex)
 end

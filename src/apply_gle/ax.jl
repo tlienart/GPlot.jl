@@ -1,4 +1,9 @@
-function apply_axis!(g, a)
+"""
+    apply_axis!(g, a)
+
+Internal function to apply an `Axis` object `a` in a GLE context.
+"""
+function apply_axis!(g::GLE, a::Axis)
     apply_ticks!(g, a.ticks)
     isdef(a.title) && apply_title!(g, a.title, a.prefix)
     P1 = any(isdef, (a.off, a.base, a.lwidth, a.log, a.min, a.max, a.ticks.grid))
@@ -17,7 +22,13 @@ function apply_axis!(g, a)
     return
 end
 
+"""
+    apply_axes!(g, a, figid)
 
+Internal function to apply an `Axes2D` object `a` in a GLE context.
+The `figid` is useful to keep track of the figure the axes belong to
+which is required in the `apply_drawings` subroutine that is called.
+"""
 function apply_axes!(g, a::Axes2D, figid)
     isdef(a.origin) && "\namove $(a.origin[1]) $(a.origin[2])" |> g
     scale = ifelse(isdef(a.origin), "fullsize", "scale auto")
@@ -26,13 +37,12 @@ function apply_axes!(g, a::Axes2D, figid)
     isdef(a.size) && "\n\tsize $(a.size[1]) $(a.size[2])" |> g
     foreach(a -> apply_axis!(g, a), (a.xaxis, a.x2axis, a.yaxis, a.y2axis))
     isdef(a.title) && apply_title!(g, a.title)
-    leg_entries = apply_drawings!(g, a.drawings, a.origin, figid)
+    origid = ifelse(isdef(a.origin), a.origin, (0.,0.))
+    leg_entries = apply_drawings!(g, a.drawings, origid, figid)
     "\nend graph" |> g
     isdef(a.legend) && apply_legend!(g, a.legend, leg_entries)
     return
 end
-
-
 function apply_axes!(g, a::Axes3D, figid)
     throw(NotImplementedError("apply_axes:GLE/3D"))
     return

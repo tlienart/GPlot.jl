@@ -91,7 +91,7 @@ hist!(::Nothing, a...; o...) = hist!(add_axes2d!(), a...; o...)
 
 hist!(x::AVR; o...) = hist!(gca(), fl(x); o...)
 
-hist(x; o...)  = hist!(x; overwrite=true, o...)
+hist(x::AVR; o...)  = hist!(fl(x); overwrite=true, o...)
 
 ####
 #### bar!, bar

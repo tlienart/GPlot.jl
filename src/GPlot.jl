@@ -33,7 +33,7 @@ export Figure, gcf, gca, clf, cla, erase!,
     grid!, math!,
     grid, math,
     # Preview / rendering / saving
-    preview, render, savefig, isempty,
+    preview, render, savefig, isempty, debug_gle,
     # Simple macros for tex strings
     @t_str, @tex_str
 

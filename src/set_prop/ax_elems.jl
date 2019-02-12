@@ -7,14 +7,8 @@
 
 Internal function to set the vertical distance of `obj` to associated axis.
 """
-function set_dist!(obj, v::Float64)
-   if obj isa Ticks
-      obj.labels.dist = v
-   else
-      obj.dist = v
-   end
-   return obj
-end
+set_dist!(o::Ticks, v::Float64) = (o.labels.dist = v; o)
+set_dist!(o, v::Float64) = (o.dist = v; o)
 
 """
     set_off!(obj, v)
@@ -65,8 +59,16 @@ set_angle!(o::Ticks, v::Float64) = (o.labels.angle = v; o)
 # a number format for tick labels
 set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))
 
-# shift the tick labels (positive or negative)
+"""
+    set_shift!(obj, v)
+
+Internal function to set the horizontal shift for ticks.
+"""
 set_shift!(o::Ticks, v::Float64) = (o.labels.shift = v; o)
 
-# hide ticks labels
+"""
+    set_labels_off!(obj, v)
+
+Internal function to hide the ticks labels.
+"""
 set_labels_off!(o::Ticks, v::Bool) = (o.labels.off = v; o)
