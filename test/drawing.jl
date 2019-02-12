@@ -1,6 +1,6 @@
 @testset "▶ types/drawing               " begin
     # SCATTER2D
-    s = GPlot.Scatter2D(rand(Float32, 3, 2))
+    s = GPlot.Scatter2D(rand(Float64, 3, 2))
     @test s isa GPlot.Drawing2D
     @test s isa GPlot.Drawing
     @test s isa GPlot.Scatter2D
@@ -22,7 +22,7 @@
     # HIST2D
     h = GPlot.Hist2D(x=rand(Int16, 5))
     @test h isa GPlot.Drawing2D
-    @test h isa GPlot.Hist2D{Vector{Int16}}
+    @test h isa GPlot.Hist2D
     @test isnothing(h.barstyle.color)
     @test h.horiz == false
     @test isnothing(h.bins)
