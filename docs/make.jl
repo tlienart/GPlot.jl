@@ -4,10 +4,8 @@ makedocs(
     modules = [GPlot],
     format = Documenter.HTML(
         # Use clean URLs, unless built as a "local" build
-        prettyurls = !("local" in ARGS),
-        canonical = "https://tlienart.github.io/GPlot.jl/stable/",
-    ),
-    clean = false,
+        prettyurls = !("local" in ARGS)
+        ),
     sitename = "GPlot.jl",
     authors  = "Thibaut Lienart",
     pages    = [
@@ -30,6 +28,5 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/tlienart/GPlot.jl.git",
-    target = "build",
+    repo = "github.com/tlienart/GPlot.jl.git"
 )

@@ -29,7 +29,7 @@ preview()
 
 which will show the current figure:
 
-![](/assets/quickstart/step1.svg)
+![](../assets/quickstart/step1.svg)
 
 Let's add another curve on this and change the colour.
 Let's also specify where the ticks have to be, add a legend, etc.
@@ -54,7 +54,7 @@ Let's preview this again
 preview()
 ```
 
-![](/assets/quickstart/step2.svg)
+![](../assets/quickstart/step2.svg)
 
 We won't go much further in this quickstart, hopefully by now you should see that the syntax is heavily inspired from Matplotlib.
 One last thing is to save the figure we've just so defined.
