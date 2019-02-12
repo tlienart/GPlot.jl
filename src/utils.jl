@@ -25,11 +25,11 @@ const CandCol = Union{Colorant, String}
 #######################################
 
 if !isdefined(Base, :isnothing)
-    isnothing(o) = o === nothing
+    isnothing(o) = (o === nothing)
     export isnothing
 end
 
-isdef(el) = !isnothing(el)
+isdef(el) = (el !== nothing)
 
 # check if object `obj` has at least one field that is not "Nothing"
 # this is useful when dealing with objects with lots of "Optional" fields

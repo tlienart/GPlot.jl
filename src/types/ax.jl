@@ -11,7 +11,6 @@
     max   ::Option{Float64} = ∅ # maximum span of the axis
     # -- toggle-able
     off   ::Option{Bool}    = ∅ # if true, axis is not shown
-    grid  ::Option{Bool}    = ∅ # ? draw ⟂ lines to that axis
     log   ::Option{Bool}    = ∅ # log scale
 end
 Axis(p::String) = Axis(prefix=p, ticks=Ticks(p))

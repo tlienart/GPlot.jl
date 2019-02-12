@@ -1,16 +1,16 @@
 function apply_axis!(g, a)
     apply_ticks!(g, a.ticks)
     isdef(a.title) && apply_title!(g, a.title)
-    P1 = any(isdef, (a.off, a.base, a.lwidth, a.grid, a.log, a.min, a.max))
+    P1 = any(isdef, (a.off, a.base, a.lwidth, a.log, a.min, a.max, a.ticks.grid))
     (P1 || isanydef(a.textstyle)) && begin
         "\n\t$(a.prefix)axis" |> g
-        isdef(a.off)    && ifelse(a.off, "off", "")   |> g
-        isdef(a.base)   && "base $(a.base)"           |> g
-        isdef(a.lwidth) && "lwidth $(a.lwidth)"       |> g
-        isdef(a.grid)   && ifelse(a.grid, "grid", "") |> g
-        isdef(a.log)    && ifelse(a.log,  "log", "")  |> g
-        isdef(a.min)    && "min $(a.min)"             |> g
-        isdef(a.max)    && "max $(a.max)"             |> g
+        isdef(a.off)    && ifelse(a.off, "off", "")  |> g
+        isdef(a.base)   && "base $(a.base)"          |> g
+        isdef(a.lwidth) && "lwidth $(a.lwidth)"      |> g
+        isdef(a.log)    && ifelse(a.log,  "log", "") |> g
+        isdef(a.min)    && "min $(a.min)"            |> g
+        isdef(a.max)    && "max $(a.max)"            |> g
+        isdef(a.ticks.grid) && ifelse(a.ticks.grid, "grid", "") |> g
         apply_textstyle!(g, a.textstyle)
     end
     "\n\t$(a.prefix)subticks off" |> g

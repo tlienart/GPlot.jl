@@ -23,7 +23,6 @@ for axs ∈ ("x", "y", "x2", "y2")
             # try to interpret the string as a shorthand
             s_lc = lowercase(s)
             s_lc == "off"  && return $f!(gca(); off=true, opts...)
-            s_lc == "grid" && return $f!(gca(); grid=true, opts...)
             s_lc == "log"  && return $f!(gca(); log=true, opts...)
             throw(OptionValueError("Unrecognised shorthand toggle for axis.", s))
         end
@@ -37,17 +36,14 @@ math!(::Nothing) = (add_axes2d!(); math!(gca()))
 math!() = math!(gca())
 math = math!
 
-function grid!(a::Axes2D, which::Vector{String}=["x", "y"]; opts...)
+function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)
     for ax ∈ which
         ax_lc = lowercase(ax)
         @assert ax_lc ∈ ("x", "x2", "y", "y2") "Unrecognized ax symbol $ax."
         # all options affect the ticks (in particular: color and width)
         axsym = Symbol(ax_lc * "axis")
-        axis  = getfield(a, axsym)
-        setfield!(axis, :grid, true)
-        # NOTE the gymnastics with ticks is required otherwise
-        # it makes a copy along the way and doesn't change `a`
-        ticks = axis.ticks
+        ticks = eval(:($a.$axsym.ticks))
+        ticks.grid = true
         for optname ∈ opts.itr
             if optname ∈ (:col, :color)
                 set_tickscolor!(ticks, opts[optname])

@@ -45,6 +45,13 @@ Internal function to set the color of ticks.
 """
 set_tickscolor!(o::Ticks, c::CandCol) = (o.linestyle.color = try_parse_col(c); o)
 
+"""
+    set_grid!(obj, b)
+
+Internal function to toggle the grid option of the `ticks` object.
+"""
+set_grid!(o::Ticks, b::Bool) = (o.grid = b; o)
+
 ####
 #### TicksLabels
 ####

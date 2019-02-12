@@ -57,15 +57,14 @@ function _ticks!(a::Option{Axes2D}, axsymb::Symbol, loc::AVR,
     locf = convert(Vector{Float64}, loc)
     # if overwrite, clear the current ticks object
     overwrite && clear!(axis.ticks)
-    if isdef(axis.ticks.places) && !(axis.ticks.places == locf)
-        # locations have changed, so overwrite the labels
+    # if locations have changed, remove the labels, rewrite locs
+    if isdef(axis.ticks.places) && axis.ticks.places != locf
         clear!(axis.ticks.labels)
     end
-    axis.ticks = Ticks(prefix=prefix, places=locf)
+    axis.ticks.places = locf
     if isdef(lab)
-        @assert length(lab) == length(loc) "Ticks location and " *
-                                           "ticks labels must have " *
-                                           "the same length."
+        @assert length(lab) == length(loc) "Ticks location and ticks labels " *
+                                           "must have the same length."
         axis.ticks.labels = TicksLabels(names=lab)
     end
     set_properties!(axis.ticks; opts...)
