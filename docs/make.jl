@@ -1,6 +1,7 @@
 using Documenter, GPlot
 
 makedocs(
+    modules = [GPlot],
     format = Documenter.HTML(
         # Use clean URLs, unless built as a "local" build
         prettyurls = !("local" in ARGS),
