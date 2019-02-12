@@ -62,22 +62,17 @@ set_fills!(o::Bar2D, c::Color) = set_colors!(o, fill(c, size(o.xy, 2)-1), :barst
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(obj, α::Real)
-    if !(gcf().transparency == true)
-        @warn "Transparent colors are only supported when the figure " *
-              "has its transparency property set to 'true'. Ignoring α."
-        return obj
+function set_alpha!(o::Union{Fill2D, Hist2D}, α::Float64, parent::Symbol)
+    α == 1.0 && return o
+    ex = quote
+        c = convert(RGB, $o.$parent.fill)
+        $o.$parent.fill = RGBA(c.r, c.g, c.b, $α)
     end
-    0 ≤ α ≤ 1 || throw(OptionValueError("alpha"), α)
-    if isa(obj, Fill2D)
-        col = convert(RGB, obj.fillstyle.fill)
-        obj.fillstyle.fill = RGBA(col.r, col.g, col.b, α)
-    elseif isa(obj, Hist2D)
-        col = convert(RGB, obj.barstyle.fill)
-        obj.barstyle.fill = RGBA(col.r, col.g, col.b, α)
-    end
-    return obj
+    eval(ex)
+    return o
 end
+set_alpha!(o::Fill2D, α::Float64) = set_alpha!(o, α, :fillstyle)
+set_alpha!(o::Hist2D, α::Float64) = set_alpha!(o, α, :barstyle)
 
 ####
 #### TEXT

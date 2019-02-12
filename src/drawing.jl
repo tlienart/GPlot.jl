@@ -62,9 +62,14 @@ function fill_between!(a::Axes2D, xy1y2::Matrix{Float64}; overwrite=false, o...)
 end
 fill_between!(::Nothing, a...; o...) = fill_between!(add_axes2d!(), a...; o...)
 
-fill_between!(x, y1::Real, y2::AVR; o...) = fill_between!(gca(),fl(hcat(x, zero(x).+y1, y2)); o...)
-fill_between!(x, y1, y2::Real; o...) = fill_between!(gca(), fl(hcat(x, y1, zero(x) .+ y2)); o...)
-fill_between!(x, y1::AVR, y2::AVR; o...) = fill_between!(gca(), fl(hcat(x, y1, y2)); o...)
+fill_between!(x::Union{ARR,AVR}, y1::Real, y2::Real; o...) =
+    fill_between!(gca(),fl(hcat(x, zero(x).+y1, zero(x).+y2)); o...)
+fill_between!(x::Union{ARR,AVR}, y1::Real, y2::AVR; o...) =
+    fill_between!(gca(),fl(hcat(x, zero(x).+y1, y2)); o...)
+fill_between!(x::Union{ARR,AVR}, y1::AVR, y2::Real; o...) =
+    fill_between!(gca(), fl(hcat(x, y1, zero(x) .+ y2)); o...)
+fill_between!(x::Union{ARR,AVR}, y1::AVR, y2::AVR; o...) =
+    fill_between!(gca(), fl(hcat(x, y1, y2)); o...)
 
 fill_between(a...; o...) = fill_between!(a...; overwrite=true, o...)
 
@@ -109,7 +114,7 @@ end
 bar!(::Nothing, a...; o...) = bar!(add_axes2d!(), a...; o...)
 
 bar!(y::AVR; o...) = bar!(gca(), fl(hcat(1:length(y), y)); o...)
-bar!(x, y::AMR; o...) = bar!(gca(), fl(hcat(x, y)); o...)
-bar!(x, y, ys...; o...) = bar!(gca(), fl(hcat(x, y, ys...)); o...)
+bar!(x::Union{ARR,AVR}, y::AMR; o...) = bar!(gca(), fl(hcat(x, y)); o...)
+bar!(x::Union{ARR,AVR}, y::AVR, ys...; o...) = bar!(gca(), fl(hcat(x, y, ys...)); o...)
 
 bar(a...; o...) =  bar!(a...; overwrite=true, o...)

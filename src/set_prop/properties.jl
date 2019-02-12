@@ -46,6 +46,16 @@ col2(c::Colorant, ::Symbol) = c
 col2(s::String, ::Symbol)   = try_parse_colorant(s)
 col2(v::Vector, s::Symbol)  = col2.(v, s)
 
+function alpha(α::Real, optname::Symbol)
+    if !gcf().transparency
+        @warn "Transparent colors are only supported when the figure " *
+              "has its transparency property set to 'true'. Ignoring α."
+        return 1.0 # fully opaque
+    end
+    0 < α < 1 || throw(OptionValueError("alpha"), α)
+    return fl(α)
+end
+
 ####
 #### Options for STYLE
 ####
@@ -139,14 +149,14 @@ const GBARSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :col       => col2 => set_fill!, # set_style
-    :color     => col2 => set_fill!, # .
-    :fcol      => col2 => set_fill!, # .
-    :ffill     => col2 => set_fill!, # .
-    :facecol   => col2 => set_fill!, # .
-    :facefill  => col2 => set_fill!, # .
-    :fill      => col2 => set_fill!, # .
-    :alpha     => id   => set_alpha!, # .
+    :col       => col2  => set_fill!, # set_style
+    :color     => col2  => set_fill!, # .
+    :fcol      => col2  => set_fill!, # .
+    :ffill     => col2  => set_fill!, # .
+    :facecol   => col2  => set_fill!, # .
+    :facefill  => col2  => set_fill!, # .
+    :fill      => col2  => set_fill!, # .
+    :alpha     => alpha => set_alpha!, # .
     )
 
 ####
