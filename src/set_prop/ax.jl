@@ -34,13 +34,6 @@ Internal function to set the maximum value of the `axis`. Note that
 set_max!(a::Axis, m::Real) = (a.max = float(m); a)
 
 """
-    set_grid!(axis, b)
-
-Internal function to toggle the grid option of the `axis` object.
-"""
-set_grid!(a::Axis, b::Bool) = (a.grid = b; a)
-
-"""
     set_log!(axis, b)
 
 Internal function to toggle the log option of the `axis` object.

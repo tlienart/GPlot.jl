@@ -37,6 +37,7 @@
     @test isnothing(t.off)
     @test isnothing(t.length)
     @test isnothing(t.symticks)
+    @test isnothing(t.grid)
 end
 
 @testset "▶ /ax_elem                    " begin
@@ -91,12 +92,21 @@ end
     y2ticks!([3, 5])
     @test f.axes[1].y2axis.ticks.places == [3., 5.]
 
+    # grid
+    cla()
+    grid(which=["x", "y"], lstyle="--", color="lightgray")
+    @test gca().xaxis.ticks.linestyle.lstyle == 9
+    @test gca().yaxis.ticks.linestyle.lstyle == 9
+    @test gca().xaxis.ticks.linestyle.color == colorant"lightgray"
+    @test gca().yaxis.ticks.linestyle.color == colorant"lightgray"
+
     # legend
     erase!(f)
     legend(position="top-left")
     @test f.axes[1].legend.position == "tl"
     legend!(position="bottom-right")
     @test f.axes[1].legend.position == "br"
+
 end
 
 @testset "▶ set_prop/ax_elem            " begin

@@ -19,7 +19,7 @@ x2axis("off")
 
 grid(color="lightgray", ls="-")
 
-xticks(-5:2.5:5)
+xticks!(-5:2.5:5)
 
 preview()
 

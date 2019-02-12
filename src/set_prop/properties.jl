@@ -152,6 +152,7 @@ const TICKS_OPTS = Dict{Symbol, Function}(
     :symticks   => set_symticks!,   # .
     :tickscol   => set_tickscolor!, # .
     :tickscolor => set_tickscolor!, # .
+    :grid       => set_grid!,       # .
     # labels related
     :hidelabels => set_labels_off!, # set_ax_elems
     :angle      => set_angle!,      # .
@@ -218,7 +219,6 @@ const AXIS_OPTS = Dict{Symbol, Function}(
     :base   => set_base!,   # .
     :min    => set_min!,    # .
     :max    => set_max!,    # .
-    :grid   => set_grid!,   # .
     :log    => set_log!,    # .
     :lwidth => set_lwidth!, # set_style
     :off    => set_off!,    # set_ax_elems

@@ -10,7 +10,6 @@
     @test isnothing(a.off)
     @test isnothing(a.base)
     @test isnothing(a.lwidth)
-    @test isnothing(a.grid)
     @test isnothing(a.log)
     @test isnothing(a.min)
     @test isnothing(a.max)
@@ -132,39 +131,28 @@ end
 
     # xaxis, yaxis, ... with shorthands
     erase!(gcf())
-    xaxis("grid")
-    @test f.axes[1].xaxis.grid
-    yaxis("grid")
-    @test f.axes[1].xaxis.grid
-    cla()
-    @test isnothing(f.axes[1].xaxis.grid)
     xaxis("log")
     @test f.axes[1].xaxis.log
     y2axis("off")
     @test f.axes[1].y2axis.off
     cla()
-    yaxis(title="blah", grid=true, log=true)
+    yaxis(title="blah", log=true)
     @test f.axes[1].yaxis.log
-    @test f.axes[1].yaxis.grid
     @test f.axes[1].yaxis.title.text == "blah"
 
-    # math / grid
+    # math
     cla()
     math()
     @test f.axes[1].math
-    cla()
-    grid()
-    @test f.axes[1].xaxis.grid && f.axes[1].yaxis.grid
 end
 
 @testset "▶ set_prop/ax                 " begin
     f = Figure()
-    yaxis(title="blah", base=0.3, min=0, max=4, grid=true, log=true)
+    yaxis(title="blah", base=0.3, min=0, max=4, log=true)
     @test f.axes[1].yaxis.title.text  == "blah"
     @test f.axes[1].yaxis.base == 0.3
     @test f.axes[1].yaxis.min == 0.0
     @test f.axes[1].yaxis.max == 4.0
-    @test f.axes[1].yaxis.grid
     @test f.axes[1].yaxis.log
 end
 
@@ -206,7 +194,7 @@ end
     notisin(s, "xaxis off")
     f.axes[1].xaxis.base = 0.1
     f.axes[1].yaxis.lwidth = 2.0
-    f.axes[1].x2axis.grid = true
+    f.axes[1].x2axis.ticks.grid = true
     f.axes[1].y2axis.log = true
     f.axes[1].xaxis.min = 0.0
     f.axes[1].yaxis.max = 2.0
