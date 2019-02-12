@@ -61,8 +61,9 @@ end
 #######################################
 
 fl(::Nothing) = nothing
-fl(x::Real)   = float(x)
-fl(v::AVR)    = convert(Vector{Float64}, v)
+fl(x::Real)   = Float64(x)
+fl(v::Union{AVR, ARR}) = convert(Vector{Float64}, v)
+fl(m::AMR) = convert(Matrix{Float64}, m)
 
 #######################################
 

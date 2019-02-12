@@ -9,34 +9,29 @@
 
 Add one or several line plots on the current axes.
 """
-function plot!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
-    isdef(a) || (a = add_axes2d!())
+function plot!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, opts...)
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create scatter object
-    scatter = Scatter2D(xy)
+    s = Scatter2D(xy)
     # if there's more than 20 points, default to smooth
     if size(xy, 1) ≥ 20
-        set_properties!(scatter; smooth=true, opts...)
+        set_properties!(s; smooth=true, opts...)
     else
-        set_properties!(scatter; opts...)
+        set_properties!(s; opts...)
     end
-    push!(a.drawings, scatter)
+    # push to the drawing stack
+    push!(a.drawings, s)
     return a
 end
+plot!(::Nothing, a...; o...) = plot!(add_axes2d!(), a...; o...)
 
-function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, AMR}; opts...)
-    @assert length(x) == size(y, 1) "x and y must have matching dimensions"
-    plot!(a, hcat(x, y); opts...)
-    return
-end
+plot!(y::AVR; opts...)  = plot!(gca(), hcat(fl(1:length(y)), fl(y)); opts...)
+plot!(xy::AMR; opts...) = plot!(gca(), fl(xy); opts...)
 
-plot!(y::AVR; opts...)  = plot!(gca(), 1:length(y), y; opts...)
-plot!(xy::AMR; opts...) = plot!(gca(), xy; opts...)
-
-plot!(x::Union{ARR, AVR}, y::Real; opts...)  = plot!(gca(), x, zero(x) .+ y; opts...)
-plot!(x::Union{ARR, AVR}, y; opts...)        = plot!(gca(), x, y; opts...)
-plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...); opts...)
+plot!(x::Union{ARR, AVR}, y::Real; opts...)  = plot!(gca(), fl(hcat(x, fill(y, length(x)))); opts...)
+plot!(x::Union{ARR, AVR}, y; opts...)        = plot!(gca(), fl(hcat(x, y)); opts...)
+plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), fl(hcat(x, y, ys...)); opts...)
 
 """
     plot(xy; options...)
