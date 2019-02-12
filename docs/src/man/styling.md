@@ -8,6 +8,16 @@ Pages = ["styling.md"]
 
 ## Axes and Axis
 
+TBD:
+- note that x2axis/y2axis revert to xaxis/yaxis (GLE restriction)
+- cannot have xaxis off and x2axis on, same for y
+- if xticks happens after grid it will disable, should use xticks! if want to change position
+
+## LineStyle
+
+TBD:
+- default to smooth if more than 20 points.
+
 ## Fonts
 
 The parent font of the figure can be defined by passing it as argument to the constructor `Figure(font=...)`.

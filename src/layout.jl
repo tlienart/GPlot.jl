@@ -1,4 +1,8 @@
-function layout!(f::Figure{B}, anchors=Matrix{Float64}) where B<:Backend
+function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
+    #  ______________________
+    # |                      |
+    # |  X    Y    W    H    |
+    # |______________________|
     @assert size(anchors, 2) == 4 "anchors must be of size ((nrows*ncols) × 4)"
     @assert all(0 .<= anchors .<= 1) "layout relative anchors must be between 0 and 1"
 
@@ -7,8 +11,7 @@ function layout!(f::Figure{B}, anchors=Matrix{Float64}) where B<:Backend
     # fill with Axes2D, if later there are axes3D it will just replace
     for i ∈ 1:size(anchors, 1)
         add_axes!(f, Axes2D{B}(origin=(anchors[i, 1]*W, anchors[i, 2]*H),
-                               size=(anchors[i, 3]*W, anchors[i, 4]*H),
-                               title=Title()))
+                                 size=(anchors[i, 3]*W, anchors[i, 4]*H)))
     end
     return f
 end
@@ -33,10 +36,10 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
         # | a4     a5     a6     |
         # |______________________|
 
-        vbox = 1/nrows
-        voff = 0 # vbox/10
-        hbox = 1/ncols
-        hoff = 0 # hbox/10
+        vbox = 0.85 * 1/nrows
+        voff = 0.15 * 1/nrows # vertical gap
+        hbox = 0.85 * 1/ncols
+        hoff = 0.15 * 1/ncols # horizontal gap
 
         grid = zeros(nrows*ncols, 4)
         k = 1
@@ -53,10 +56,10 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
     # 2. if there are axes, check that it matches, if it doesn't
     else
         @assert length(f.axes) == nrows*ncols "the layout description does not match the " *
-                        "current axes. If you want to change the layout of the current " *
-                        "figure use erase!(gcf()) first to remove the existing axes."
+                                              "current axes. If you want to change the " *
+                                              "layout of the current figure use erase!(gcf()) " *
+                                              "first to remove the existing axes."
     end
-
     # 3. select the relevant axes and make them the current ones
     curax = f.axes[idx]
     GP_ENV["CURAXES"] = curax

@@ -5,13 +5,10 @@
     @test isnothing(t.textstyle.font)
     @test isnothing(t.textstyle.hei)
     @test isnothing(t.textstyle.color)
-    @test isnothing(t.prefix)
     @test isnothing(t.dist)
 
-    t = GPlot.Title(text="title", textstyle=GPlot.TextStyle(font="psh"),
-                    prefix="x", dist=0.3)
+    t = GPlot.Title(text="title", textstyle=GPlot.TextStyle(font="psh"), dist=0.3)
     @test t.textstyle.font == "psh"
-    @test t.prefix == "x"
     @test t.dist == 0.3
 
     # LEGEND
@@ -37,6 +34,7 @@
     @test isnothing(t.off)
     @test isnothing(t.length)
     @test isnothing(t.symticks)
+    @test isnothing(t.grid)
 end
 
 @testset "▶ /ax_elem                    " begin
@@ -91,12 +89,21 @@ end
     y2ticks!([3, 5])
     @test f.axes[1].y2axis.ticks.places == [3., 5.]
 
+    # grid
+    cla()
+    grid(which=["x", "y"], lstyle="--", color="lightgray")
+    @test gca().xaxis.ticks.linestyle.lstyle == 9
+    @test gca().yaxis.ticks.linestyle.lstyle == 9
+    @test gca().xaxis.ticks.linestyle.color == colorant"lightgray"
+    @test gca().yaxis.ticks.linestyle.color == colorant"lightgray"
+
     # legend
     erase!(f)
     legend(position="top-left")
     @test f.axes[1].legend.position == "tl"
     legend!(position="bottom-right")
     @test f.axes[1].legend.position == "br"
+
 end
 
 @testset "▶ set_prop/ax_elem            " begin
@@ -132,24 +139,24 @@ end
     erase!(f)
     title("title")
     xlabel("xlabel", dist=0.5)
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "title \"title\"")
     isin(s, "xtitle \"xlabel\" dist 0.5")
 
     # ticks (see also apply_linestyle, apply_tickslabels)
     erase!(f)
     y2ticks([1, 2])
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "y2places 1.0 2.0")
     xticks([1, 2], off=true)
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "xticks off")
     # XXX test symticks, length
 
     # tickslabels (see also apply_textstyle)
     erase!(f)
     x2ticks([1, 2], ["a", "b"], dist=0.5, angle=45, shift=1)
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "x2places 1.0 2.0")
     isin(s, "x2names \"a\" \"b\"")
     isin(s, "x2labels dist 0.5")

@@ -1,3 +1,9 @@
+"""
+    add_dict_vals!(d)
+
+Internal function to add the values of a dictionary as keys with the same values. So for instance
+if the dictionary has a pair "s" => "square", it will add "square" => "square".
+"""
 function add_dict_vals!(d::Dict{String,String})
     for v ∈ values(d)
         get(d, v) do
@@ -79,7 +85,7 @@ const GLE_LSTYLES = Dict{String,Int}(
     "none" => -1,
     )
 
-const GLE_TEXSCALE = ["scale", "fixed", "none"]
+const GLE_TEXSCALE = ("scale", "fixed", "none")
 
 const GLE_FONTS = Dict{String,String}(
     "roman"                 => "rm"     ,

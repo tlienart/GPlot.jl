@@ -231,3 +231,33 @@ t = @elapsed begin
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
 end; println("$(f.id)...done in $(round(t, digits=2))s")
+
+####
+#### Simple line plot with scatter and axis manips
+####
+
+x = range(-5, 5, length=100)
+xs = range(-5, 5, length=20)
+
+t = @elapsed begin
+    f = Figure("simple_scatter_notex", reset=true)
+
+    λ(x) = 1-exp(-sin(x) * cos(x)/x)
+
+    plot(x, λ.(x), col="blue")
+    scatter!(xs, λ.(xs), col="red")
+
+    ylim(-.5, .75)
+
+    y2axis("off")
+    x2axis("off")
+
+    grid()
+    xticks(-5:2.5:5, tickscol="lightgray")
+    yticks(-.5:0.25:.75, tickscol="lightgray")
+
+    preview(f)
+
+    PREVIEW && preview(f)
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end

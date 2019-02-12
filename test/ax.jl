@@ -10,7 +10,6 @@
     @test isnothing(a.off)
     @test isnothing(a.base)
     @test isnothing(a.lwidth)
-    @test isnothing(a.grid)
     @test isnothing(a.log)
     @test isnothing(a.min)
     @test isnothing(a.max)
@@ -129,6 +128,32 @@ end
     @test f.axes[1].y2axis.log == false
     y2scale(f.axes[1], "log")
     @test f.axes[1].y2axis.log
+
+    # xaxis, yaxis, ... with shorthands
+    erase!(gcf())
+    xaxis("log")
+    @test f.axes[1].xaxis.log
+    y2axis("off")
+    @test f.axes[1].y2axis.off
+    cla()
+    yaxis(title="blah", log=true)
+    @test f.axes[1].yaxis.log
+    @test f.axes[1].yaxis.title.text == "blah"
+
+    # math
+    cla()
+    math()
+    @test f.axes[1].math
+end
+
+@testset "▶ set_prop/ax                 " begin
+    f = Figure()
+    yaxis(title="blah", base=0.3, min=0, max=4, log=true)
+    @test f.axes[1].yaxis.title.text  == "blah"
+    @test f.axes[1].yaxis.base == 0.3
+    @test f.axes[1].yaxis.min == 0.0
+    @test f.axes[1].yaxis.max == 4.0
+    @test f.axes[1].yaxis.log
 end
 
 @testset "▶ apply_gle/ax                " begin
@@ -136,44 +161,44 @@ end
     g = G.GLE()
     f = G.Figure();
     G.add_axes2d!()
-    G.apply_axes!(g, f.axes[1])
+    G.apply_axes!(g, f.axes[1], f.id)
     s = String(take!(g))
     isin(s, "begin graph")
     isin(s, "scale auto")
     isin(s, "end graph")
     f.axes[1].math = true
     f.axes[1].size = (10.,8.)
-    G.apply_axes!(g, f.axes[1])
+    G.apply_axes!(g, f.axes[1], f.id)
     s = String(take!(g))
     isin(s, "math")
     isin(s, "size 10.0 8.0")
 
     # AXES3D
     # XXX 3D not supported yet
-    @test_throws G.NotImplementedError G.apply_axes!(g, G.Axes3D{G.GLE}())
+    @test_throws G.NotImplementedError G.apply_axes!(g, G.Axes3D{G.GLE}(), f.id)
 
     # AXIS (see also apply_ticks, apply_textstyle)
     erase!(f)
     G.add_axes2d!()
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     # XXX by default subticks are off (may change)
     isin(s, "xsubticks off")
     isin(s, "ysubticks off")
     isin(s, "x2subticks off")
     isin(s, "y2subticks off")
     f.axes[1].xaxis.off = true
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "xaxis off")
     f.axes[1].xaxis.off = false
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     notisin(s, "xaxis off")
     f.axes[1].xaxis.base = 0.1
     f.axes[1].yaxis.lwidth = 2.0
-    f.axes[1].x2axis.grid = true
+    f.axes[1].x2axis.ticks.grid = true
     f.axes[1].y2axis.log = true
     f.axes[1].xaxis.min = 0.0
     f.axes[1].yaxis.max = 2.0
-    G.apply_axes!(g, f.axes[1]); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "xaxis  base 0.1 min 0.0") # NOTE extra space due to 'off'
     isin(s, "x2axis grid")
     isin(s, "yaxis lwidth 2.0 max 2.0")

@@ -6,12 +6,12 @@ using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, erase!,
+export Figure, gcf, gca, clf, cla, erase!,
     # Layout
     layout!, layout, subplot,
     # Drawings
-    plot, plot!, fill_between, fill_between!, hist, hist!,
-    bar, bar!,
+    plot!, scatter!, fill_between!, hist!, bar!,
+    plot, scatter, fill_between, hist, bar,
     # Axis / Axes
     # -- titles
     title!, xtitle!, x2title!, ytitle!, y2title!,
@@ -27,8 +27,13 @@ export Figure, gcf, gca, erase!,
     # -- scale
     xscale!, x2scale!, yscale!, y2scale!,
     xscale, x2scale, yscale, y2scale,
+    # -- misc
+    xaxis!, x2axis!, yaxis!, y2axis!,
+    xaxis, x2axis, yaxis, y2axis,
+    grid!, math!,
+    grid, math,
     # Preview / rendering / saving
-    preview, render, savefig, isempty,
+    preview, render, savefig, isempty, debug_gle,
     # Simple macros for tex strings
     @t_str, @tex_str
 
@@ -40,8 +45,6 @@ const GP_ENV = Dict{String, Any}(
     "WARMUP"     => true,
     )
 
-include("utils.jl")
-
 const ∅   = nothing
 const ARR = AbstractRange{<:Real}
 const AVR = AbstractVector{<:Real}
@@ -49,6 +52,8 @@ const AMR = Matrix{<:Real}
 
 const PT_TO_CM  = 0.0352778         # 1pt in cm
 const Option{T} = Union{Nothing, T} # a useful type for optional values
+
+include("utils.jl")
 
 # Type of objects
 include("types/style.jl")
@@ -65,6 +70,7 @@ include("set_prop/dicts_shared.jl")
 include("set_prop/style.jl")
 include("set_prop/drawing.jl")
 include("set_prop/ax_elems.jl")
+include("set_prop/ax.jl")
 include("set_prop/figure.jl")
 include("set_prop/properties.jl")
 

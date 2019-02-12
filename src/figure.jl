@@ -40,7 +40,6 @@ function Figure(id::String="_fig_"; reset=false, opts...)
     return f
 end
 
-
 """
     add_axes!(fig, ax)
 
@@ -75,7 +74,8 @@ function erase!(f::Figure)
     GP_ENV["CURAXES"] = nothing
     return
 end
-
+clf!() = erase!(gcf())
+clf = clf!
 
 """
     isempty(fig)

@@ -2,11 +2,28 @@
 
 using GPlot
 
-using DelimitedFiles
+f = Figure()
 
-dat = readdlm("../GPlotExamples.jl/targets/2d-complex1/decay.dat")
+x = range(-5, 5, length=100)
+xs = range(-5, 5, length=20)
 
-f = Figure(size=(11, 8), latex=true)
-bar(dat[:, 1], dat[:, 2], fcol="yellow", ecol="black", width=3)
+λ(x) = 1-exp(-sin(x) * cos(x)/x)
+
+plot(x, λ.(x), col="blue")
+scatter!(xs, λ.(xs), col="red")
+
+ylim(-.5, .75)
+xtitle("blah")
+title("hello")
+
+y2axis("off")
+x2axis("off")
+
+grid(color="lightgray", ls="-")
+
+xticks!(-5:2.5:5)
+
+preview()
+
 
 GPlot.debug_gle(f)

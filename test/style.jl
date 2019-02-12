@@ -44,8 +44,9 @@ end
 @testset "▶ set_prop/style              " begin
     # color
     x, y = 1:2, exp.(1:2)
-    plot(x, y, col="indianred")
+    plot(x, y, col="indianred", mcol="blue")
     @test gca().drawings[1].linestyle[1].color == colorant"indianred"
+    @test gca().drawings[1].markerstyle[1].color == colorant"blue"
     hist(y, fcol="indianred", ecol="blue")
     @test gca().drawings[1].barstyle.color == colorant"blue"
     @test gca().drawings[1].barstyle.fill == colorant"indianred"
@@ -61,7 +62,7 @@ end
     @test gca().drawings[1].barstyle[2].color == colorant"blue"
     @test gca().drawings[1].barstyle[1].fill == colorant"blue"
     @test gca().drawings[1].barstyle[2].fill == colorant"red"
-    @test_throws AssertionError bar(x, y, 2y, colors=["red"])
+    @test_throws G.OptionValueError bar(x, y, 2y, colors=["red"])
 
     f = Figure(transparency=true)
     hist(y, fcol="indianred", alpha=0.5)

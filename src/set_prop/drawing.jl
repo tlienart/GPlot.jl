@@ -37,8 +37,8 @@ set_horiz!(o::Union{Hist2D, Bar2D}, v::Bool) = (o.horiz = v; o)
 #### Fill2D
 ####
 
-set_xmin!(o::Fill2D, v::Real) = (o.xmin = v; o)
-set_xmax!(o::Fill2D, v::Real) = (o.xmax = v; o)
+set_xmin!(o::Fill2D, v::Float64) = (o.xmin = v; o)
+set_xmax!(o::Fill2D, v::Float64) = (o.xmax = v; o)
 
 ####
 #### Bar2D

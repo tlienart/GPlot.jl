@@ -5,13 +5,13 @@
     textstyle::TextStyle = TextStyle() # parent textstyle of axis
     # ---
     title ::Option{Title}   = ∅ # title of the axis
-    off   ::Option{Bool}    = ∅ # if true, axis is not shown
     base  ::Option{Float64} = ∅ # scale font and ticks
     lwidth::Option{Float64} = ∅ # width of the axis spine
-    grid  ::Option{Bool}    = ∅ # ? draw ⟂ lines to that axis
-    log   ::Option{Bool}    = ∅ # log scale
     min   ::Option{Float64} = ∅ # minimum span of the axis
     max   ::Option{Float64} = ∅ # maximum span of the axis
+    # -- toggle-able
+    off   ::Option{Bool}    = ∅ # if true, axis is not shown
+    log   ::Option{Bool}    = ∅ # log scale
 end
 Axis(p::String) = Axis(prefix=p, ticks=Ticks(p))
 
@@ -26,12 +26,13 @@ abstract type Axes{B <: Backend} end
     # ---
     drawings::Vector{Drawing} = Vector{Drawing}()
     # ---
-    title ::Option{Title}              = ∅
-    size  ::Option{NTuple{2, Float64}} = ∅ # (width cm, height cm)
-    math  ::Option{Bool}               = ∅ # axis crossing (0, 0)
-    legend::Option{Legend}             = ∅
+    title ::Option{Title}             = ∅
+    size  ::Option{NTuple{2,Float64}} = ∅ # (width cm, height cm)
+    legend::Option{Legend}            = ∅
+    # -- toggle-able
+    math  ::Option{Bool}              = ∅ # axis crossing (0, 0)
     # ---
-    origin::Option{NTuple{2, Float64}} = ∅ # related to layout
+    origin::Option{NTuple{2,Float64}} = ∅ # related to layout
 end
 
 

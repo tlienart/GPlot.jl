@@ -3,7 +3,6 @@
     # ---
     textstyle::TextStyle = TextStyle()
     # ---
-    prefix::Option{String}  = ∅  # x, x2, y, y2, z
     dist  ::Option{Float64} = ∅  # distance labels - title
 end
 
@@ -36,8 +35,10 @@ end
     linestyle::LineStyle   = LineStyle()   # how the ticks marks look
     # ---
     places   ::Option{Vector{Float64}} = ∅ # where the ticks are
-    off      ::Option{Bool}            = ∅ # whether to suppress them
-    length   ::Option{Float64}         = ∅ # how long the ticks
-    symticks ::Option{Bool}            = ∅ # draws ticks on 2 sides of spine
+    length   ::Option{Float64}         = ∅ # how long the ticks spine
+    # --- toggle-able
+    symticks ::Option{Bool}    = ∅ # draws ticks on 2 sides of
+    off      ::Option{Bool}    = ∅ # whether to suppress them
+    grid     ::Option{Bool}    = ∅ # ticks increased to mirrorred axis
 end
 Ticks(p::String) = Ticks(prefix=p)

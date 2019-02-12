@@ -3,20 +3,14 @@
 ### Note from plane
 
 * trying to get multiplot working with vector assignments for everything, similar for bar
-* much code duplication that might benefit from being generated for consistency, think
-* for the moment it's not working, follow error trails
-* add tests
 * use colorbrewer for default, note that only up to 10 so if more would have to warn and loop, modulo stuff.
 
 ## NOW
 
 * should be able to do `xticks("off")` and not have to do `xticks([], off=true)`, also when it's off you probably should remove any `xplaces` or `xlabels` if there's any.
-* [ongoing] title without `!`  don't seem to work as they should
 * legend called multiple times, will duplicate
 * savefig needs more testing
-* allow ylim etc to take array of 2 values or tuples
 * more tests for legends, either via label keyword or via construction
-* add clf / cla (synonyms of erase)
 
 ### added features
 
@@ -35,7 +29,6 @@ amove xg(x)+dx yg(y)+dy
 write $something
 ```
 
-* grid
 * error bars (there's something in graphutils but?)
 * boxplot
 
@@ -117,11 +110,6 @@ sub pie_text ang1 ang2 radius colour$ label$
 end sub
 ```
 
-
-## ongoing
-
-* start systematic testing or it will become a mess very quickly
-* make smooth=true default above a given number of points probably as would be expected by user.
 * recommendation to have size not too small so that `hei` can be larger than `0.35` (~10pt) otherwise may have issue with the latex looking squeezed and funny
 
 --------

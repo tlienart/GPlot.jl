@@ -20,16 +20,12 @@ take!(b::Backend)   = take!(b.io)
 
 #######################################
 
-const CandCol = Union{Colorant, String}
-
-#######################################
-
 if !isdefined(Base, :isnothing)
-    isnothing(o) = o === nothing
+    isnothing(o) = (o === nothing)
     export isnothing
 end
 
-isdef(el) = !isnothing(el)
+isdef(el) = (el !== nothing)
 
 # check if object `obj` has at least one field that is not "Nothing"
 # this is useful when dealing with objects with lots of "Optional" fields
@@ -44,6 +40,28 @@ function clear!(obj::T; exclude=Vector{Symbol}()) where T
     return
 end
 
+# see cla! (clear axes)
+function reset!(obj::T; exclude=Vector{Symbol}()) where T
+    # create a new object of the same type, assumes there is
+    # a constructor that accepts empty input
+    fresh = T()
+    for fn ∈ fieldnames(T)
+        fn ∈ exclude && continue
+        # set all fields to the field value given by the default
+        # constructor (but keeps the address of the parent object)
+        setfield!(obj, fn, deepcopy(getfield(fresh, fn)))
+    end
+    return obj
+end
+
+#######################################
+
+fl(::Nothing) = nothing
+fl(x::Real)   = Float64(x)
+fl(v::Union{AVR, ARR}) = convert(Vector{Float64}, v)
+fl(m::AMR) = convert(Matrix{Float64}, m)
+fl(t::Tuple{<:Real, <:Real}) = Float64.(t)
+
 #######################################
 
 # return a number with 3 digits accuracy, useful in col2str
@@ -57,17 +75,26 @@ function col2str(col::Colorant)
 end
 
 # given something like "indianred" try to parse it as a color and return col
-function try_parse_col(v::CandCol)
+function try_parse_color(s::String)
     col = ∅
     try
-        col = parse(Colorant, v)
+        col = parse(Color, s)
+    catch e
+        throw(OptionValueError("color", s))
+    end
+    return col
+end
+function try_parse_colorant(s::String)
+    col = ∅
+    try
+        col = parse(Colorant, s)
         if col isa TransparentColor && !(gcf().transparency == true)
             @warn "Transparent colors are only supported when the figure " *
                   "has its transparency property set to 'true'. Ignoring α."
             col = convert(Color, col)
         end
     catch e
-        throw(OptionValueError("color", v))
+        throw(OptionValueError("colorant", s))
     end
     return col
 end
