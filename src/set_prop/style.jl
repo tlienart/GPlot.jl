@@ -111,8 +111,7 @@ end
 
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
-function set_hei!(obj, v::Real)
-    0 ≤ v || throw(OptionValueError("hei", v))
+function set_hei!(obj, v::Float64)
     if obj isa Legend
         obj.hei = v * PT_TO_CM
     else
@@ -132,7 +131,7 @@ Internal function to set the line style associated with object `obj`. The style
 can be described by `lstyle` being a number or a String representing the pattern.
 """
 function set_lstyle!(obj::LineStyle, v::Int)
-    0 ≤ v || throw(OptionValueError("lstyle", v))
+    0 < v || throw(OptionValueError("lstyle", v))
     obj.lstyle = v
     return obj
 end
@@ -150,11 +149,7 @@ end
 
 Internal function to set the line width associated with the relevant field of `obj`.
 """
-function set_lwidth!(obj::Union{LineStyle, Axis}, v::Real)
-    (0 ≤ v) || throw(OptionValueError("lwidth", v))
-    obj.lwidth = v
-    return obj
-end
+set_lwidth!(obj::Union{LineStyle, Axis}, v::Float64) = (obj.lwidth = v; obj)
 
 """
     set_smooth!(obj, v)
@@ -187,11 +182,7 @@ end
 
 Internal function to set the marker size associated with object `obj`.
 """
-function set_msize!(obj::MarkerStyle, v::Real)
-    0 ≤ v || throw(OptionValueError("msize", v))
-    obj.msize = v
-    return obj
-end
+set_msize!(obj::MarkerStyle, v::Float64) = (obj.msize = v; obj)
 
 """
     set_mcol!(obj, col)
@@ -237,8 +228,4 @@ end
 
 Internal function to set the bin width to value `v`.
 """
-function set_width!(obj::Bar2D, v::Real)
-    (0 < v) || throw(OptionValueError("bin width", v))
-    obj.width = float(v)
-    return obj
-end
+set_width!(obj::Bar2D, v::Float64) = (obj.width = v; obj)

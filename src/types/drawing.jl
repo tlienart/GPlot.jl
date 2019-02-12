@@ -102,7 +102,7 @@ end
 Internal constructor for `Bar2D` object initialising an empty vector of `BarStyle`
 of the appropriate size.
 """
-function Bar2D(xy::AMR)
+function Bar2D(xy::Matrix{Float64})
     n   = size(xy, 2) - 1 # first column is x
     bss = [BarStyle() for i ∈ 1:n]
     Bar2D(xy=xy, barstyle=bss)
