@@ -3,7 +3,6 @@
     # ---
     textstyle::TextStyle = TextStyle()
     # ---
-    prefix::Option{String}  = ∅  # x, x2, y, y2, z
     dist  ::Option{Float64} = ∅  # distance labels - title
 end
 

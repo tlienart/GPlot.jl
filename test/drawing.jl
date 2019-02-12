@@ -1,9 +1,9 @@
 @testset "▶ types/drawing               " begin
     # SCATTER2D
-    s = GPlot.Scatter2D(rand(Float32, 3, 2))
+    s = GPlot.Scatter2D(rand(Float64, 3, 2))
     @test s isa GPlot.Drawing2D
     @test s isa GPlot.Drawing
-    @test s isa GPlot.Scatter2D{Matrix{Float32}}
+    @test s isa GPlot.Scatter2D
     @test isnothing(s.linestyle[1].lwidth)
     @test isnothing(s.markerstyle[1].color)
     @test isnothing(s.label)
@@ -14,7 +14,7 @@
     # FILL2D
     f = GPlot.Fill2D(xy1y2=rand(Float16, 5, 3))
     @test f isa GPlot.Drawing2D
-    @test f isa GPlot.Fill2D{Matrix{Float16}}
+    @test f isa GPlot.Fill2D
     @test isnothing(f.xmin)
     @test isnothing(f.xmax)
     @test f.fillstyle.fill == colorant"cornflowerblue"
@@ -22,7 +22,7 @@
     # HIST2D
     h = GPlot.Hist2D(x=rand(Int16, 5))
     @test h isa GPlot.Drawing2D
-    @test h isa GPlot.Hist2D{Vector{Int16}}
+    @test h isa GPlot.Hist2D
     @test isnothing(h.barstyle.color)
     @test h.horiz == false
     @test isnothing(h.bins)
@@ -32,7 +32,7 @@
     b = GPlot.BarStyle()
     g = GPlot.Bar2D(xy=rand(Float32, 5, 3), barstyle=[b, b])
     @test g isa GPlot.Drawing2D
-    @test g isa GPlot.Bar2D{Matrix{Float32}}
+    @test g isa GPlot.Bar2D
     @test g.stacked == false
     @test g.horiz == false
 end

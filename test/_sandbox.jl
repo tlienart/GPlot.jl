@@ -13,6 +13,8 @@ plot(x, λ.(x), col="blue")
 scatter!(xs, λ.(xs), col="red")
 
 ylim(-.5, .75)
+xtitle("blah")
+title("hello")
 
 y2axis("off")
 x2axis("off")

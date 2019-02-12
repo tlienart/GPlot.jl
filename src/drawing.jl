@@ -5,38 +5,33 @@
 """
     plot!(xy; options...)
     plot!(x, y; options...)
-    plot!(x, y1, y2, ...; options)
+    plot!(x, y1, y2, ...; options...)
 
 Add one or several line plots on the current axes.
 """
-function plot!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
-    isdef(a) || (a = add_axes2d!())
+function plot!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, o...)
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create scatter object
-    scatter = Scatter2D(xy)
+    s = Scatter2D(xy)
     # if there's more than 20 points, default to smooth
     if size(xy, 1) ≥ 20
-        set_properties!(scatter; smooth=true, opts...)
+        set_properties!(s; smooth=true, o...)
     else
-        set_properties!(scatter; opts...)
+        set_properties!(s; o...)
     end
-    push!(a.drawings, scatter)
+    # push to the drawing stack
+    push!(a.drawings, s)
     return a
 end
+plot!(::Nothing, a...; o...) = plot!(add_axes2d!(), a...; o...)
 
-function plot!(a::Option{Axes2D}, x::Union{ARR, AVR}, y::Union{AVR, AMR}; opts...)
-    @assert length(x) == size(y, 1) "x and y must have matching dimensions"
-    plot!(a, hcat(x, y); opts...)
-    return
-end
+plot!(y::AVR; o...)  = plot!(gca(), hcat(fl(1:length(y)), fl(y)); o...)
+plot!(xy::AMR; o...) = plot!(gca(), fl(xy); o...)
 
-plot!(y::AVR; opts...)  = plot!(gca(), 1:length(y), y; opts...)
-plot!(xy::AMR; opts...) = plot!(gca(), xy; opts...)
-
-plot!(x::Union{ARR, AVR}, y::Real; opts...)  = plot!(gca(), x, zero(x) .+ y; opts...)
-plot!(x::Union{ARR, AVR}, y; opts...)        = plot!(gca(), x, y; opts...)
-plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...); opts...)
+plot!(x::Union{ARR, AVR}, y::Real; o...)  = plot!(gca(), fl(hcat(x, fill(y, length(x)))); o...)
+plot!(x::Union{ARR, AVR}, y; o...)        = plot!(gca(), fl(hcat(x, y)); o...)
+plot!(x::Union{ARR, AVR}, y, ys...; o...) = plot!(gca(), fl(hcat(x, y, ys...)); o...)
 
 """
     plot(xy; options...)
@@ -46,7 +41,7 @@ plot!(x::Union{ARR, AVR}, y, ys...; opts...) = plot!(gca(), hcat(x, y, ys...); o
 Add one or several line plots on cleaned up axes on the current figure
 (deletes any drawing that might be on the axes).
 """
-plot(a...; opts...) = plot!(a...; overwrite=true, opts...)
+plot(a...; o...) = plot!(a...; overwrite=true, o...)
 
 scatter!(a...; o...) = plot!(a...; ls="none", marker="o", o...)
 scatter(a...; o...) = plot!(a...; ls="none", marker="o", overwrite=true, o...)
@@ -56,29 +51,27 @@ scatter(a...; o...) = plot!(a...; ls="none", marker="o", overwrite=true, o...)
 #### fill_between!, fill_between
 ####
 
-function fill_between!(a::Option{Axes2D}, xy1y2::AMR; overwrite=false, opts...)
-    isdef(a) || (a = add_axes2d!())
+function fill_between!(a::Axes2D, xy1y2::Matrix{Float64}; overwrite=false, o...)
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create fill object, set properties and push to drawing stack
     fill = Fill2D(xy1y2 = xy1y2)
-    set_properties!(fill; opts...)
+    set_properties!(fill; o...)
     push!(a.drawings, fill)
     return a
 end
+fill_between!(::Nothing, a...; o...) = fill_between!(add_axes2d!(), a...; o...)
 
-function fill_between!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y1::AVR,
-                        y2::AVR; opts...)
-    @assert length(x) == length(y1) == length(y2) "x, y1, y2 must have the same length"
-    fill_between!(axes, hcat(x, y1, y2); opts...)
-    return
-end
+fill_between!(x::Union{ARR,AVR}, y1::Real, y2::Real; o...) =
+    fill_between!(gca(),fl(hcat(x, zero(x).+y1, zero(x).+y2)); o...)
+fill_between!(x::Union{ARR,AVR}, y1::Real, y2::AVR; o...) =
+    fill_between!(gca(),fl(hcat(x, zero(x).+y1, y2)); o...)
+fill_between!(x::Union{ARR,AVR}, y1::AVR, y2::Real; o...) =
+    fill_between!(gca(), fl(hcat(x, y1, zero(x) .+ y2)); o...)
+fill_between!(x::Union{ARR,AVR}, y1::AVR, y2::AVR; o...) =
+    fill_between!(gca(), fl(hcat(x, y1, y2)); o...)
 
-fill_between!(x, y1::Real, y2::AVR; opts...) = fill_between!(gca(), x, zero(x) .+ y1, y2; opts...)
-fill_between!(x, y1, y2::Real; opts...)      = fill_between!(gca(), x, y1, zero(x) .+ y2; opts...)
-fill_between!(x, y1::AVR, y2::AVR; opts...)  = fill_between!(gca(), x, y1, y2; opts...)
-
-fill_between(a...; opts...) = fill_between!(a...; overwrite=true, opts...)
+fill_between(a...; o...) = fill_between!(a...; overwrite=true, o...)
 
 ####
 #### hist, hist!
@@ -89,45 +82,39 @@ fill_between(a...; opts...) = fill_between!(a...; overwrite=true, opts...)
 
 Add a histogram of `x` on the current axes.
 """
-function hist!(a::Option{Axes2D}, x::AVR; overwrite=false, opts...)
+function hist!(a::Axes2D, x::Vector{Float64}; overwrite=false, o...)
     isdef(a) || (a = add_axes2d!())
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create hist2d object assign properties and push to drawing stack
     hist = Hist2D(x = x)
-    set_properties!(hist; opts...)
+    set_properties!(hist; o...)
     push!(a.drawings, hist)
     return a
 end
+hist!(::Nothing, a...; o...) = hist!(add_axes2d!(), a...; o...)
 
-hist!(x::AVR; opts...) = hist!(gca(), x; opts...)
+hist!(x::AVR; o...) = hist!(gca(), fl(x); o...)
 
-hist(x; opts...)  = hist!(x; overwrite=true, opts...)
-
+hist(x::AVR; o...)  = hist!(fl(x); overwrite=true, o...)
 
 ####
 #### bar!, bar
 ####
 
-function bar!(a::Option{Axes2D}, xy::AMR; overwrite=false, opts...)
-    isdef(a) || (a = add_axes2d!())
+function bar!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, o...)
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create Bar2D object, assign properties and push to drawing stack
     bar = Bar2D(xy)
-    set_properties!(bar; opts...)
+    set_properties!(bar; o...)
     push!(a.drawings, bar)
     return a
 end
+bar!(::Nothing, a...; o...) = bar!(add_axes2d!(), a...; o...)
 
-function bar!(axes::Option{Axes2D}, x::Union{ARR, AVR}, y::AMR; opts...)
-    @assert length(x) == size(y, 1) "The number of rows in `y` must match the length of `x`"
-    bar!(axes, hcat(x, y); opts...)
-    return
-end
+bar!(y::AVR; o...) = bar!(gca(), fl(hcat(1:length(y), y)); o...)
+bar!(x::Union{ARR,AVR}, y::AMR; o...) = bar!(gca(), fl(hcat(x, y)); o...)
+bar!(x::Union{ARR,AVR}, y::AVR, ys...; o...) = bar!(gca(), fl(hcat(x, y, ys...)); o...)
 
-bar!(y::AVR; opts...) = bar!(gca(), hcat(1:length(y), y); opts...)
-bar!(x, y::AMR; opts...) = bar!(gca(), x, y; opts...)
-bar!(x, y, ys...; opts...) = bar!(gca(), x, hcat(y, ys...); opts...)
-
-bar(a...; opts...) =  bar!(a...; overwrite=true, opts...)
+bar(a...; o...) =  bar!(a...; overwrite=true, o...)

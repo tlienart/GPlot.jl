@@ -26,13 +26,13 @@ abstract type Axes{B <: Backend} end
     # ---
     drawings::Vector{Drawing} = Vector{Drawing}()
     # ---
-    title ::Option{Title}              = ∅
-    size  ::Option{NTuple{2, Float64}} = ∅ # (width cm, height cm)
-    legend::Option{Legend}             = ∅
+    title ::Option{Title}             = ∅
+    size  ::Option{NTuple{2,Float64}} = ∅ # (width cm, height cm)
+    legend::Option{Legend}            = ∅
     # -- toggle-able
-    math  ::Option{Bool}               = ∅ # axis crossing (0, 0)
+    math  ::Option{Bool}              = ∅ # axis crossing (0, 0)
     # ---
-    origin::Option{NTuple{2, Float64}} = ∅ # related to layout
+    origin::Option{NTuple{2,Float64}} = ∅ # related to layout
 end
 
 
