@@ -30,10 +30,10 @@ for axs ∈ ["", "x", "y", "x2", "y2"]
     ex = quote
         # mutate
         $f!(a, text; opts...) = _title!(a, text, Symbol($axs * "axis"); opts...)
-        $f!(text; opts...)    = $f!(gca(), text; opts...)
+        $f!(text; opts...)    = _title!(gca(), text, Symbol($axs * "axis"); opts...)
         # overwrite
-        $f(a, text; opts...) = $f!(a, text; overwrite=true, opts...)
-        $f(text; opts...)    = $f!(gca(), text; overwrite=true, opts...)
+        $f(a, text; opts...) = _title!(a, text, Symbol($axs * "axis"); overwrite=true, opts...)
+        $f(text; opts...)    = _title!(gca(), text, Symbol($axs * "axis"); overwrite=true, opts...)
         # more synonyms xlabel...
         !isempty($axs) && ($f2! = $f!; $f2 = $f)
     end
@@ -47,14 +47,13 @@ end
 function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64},
                  lab::Option{Vector{String}}; overwrite=false, opts...)
     axis = getfield(a, axs)
-    locf = convert(Vector{Float64}, loc)
     # if overwrite, clear the current ticks object
     overwrite && clear!(axis.ticks)
     # if locations have changed, remove the labels, rewrite locs
-    if isdef(axis.ticks.places) && axis.ticks.places != locf
+    if isdef(axis.ticks.places) && axis.ticks.places != loc
         clear!(axis.ticks.labels)
     end
-    axis.ticks.places = locf
+    axis.ticks.places = loc
     if isdef(lab)
         @assert length(lab) == length(loc) "Ticks location and ticks labels " *
                                            "must have the same length."
@@ -70,12 +69,11 @@ for axs ∈ ["", "x", "y", "x2", "y2"]
     f! = Symbol(axs * "ticks!")
     f  = Symbol(axs * "ticks")
     ex = quote
-        $f!(a, loc::AVR, lab=∅; opts...) =
-            _ticks!(a, Symbol($axs * "axis"), convert(Vector{Float64}, loc), lab; opts...)
-        $f!(loc::AVR, lab=∅; opts...) = $f!(gca(), convert(Vector{Float64}, loc), lab; opts...)
+        $f!(a, loc::AVR, lab=∅; opts...) = _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
+        $f!(loc::AVR, lab=∅; opts...) = _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
         # overwrite
-        $f(a, loc::AVR, lab=∅; opts...) = $f!(a, loc, lab; overwrite=true, opts...)
-        $f(loc::AVR, lab=∅; opts...)    = $f!(gca(), loc, lab; overwrite=true, opts...)
+        $f(a, loc::AVR, lab=∅; opts...) = _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
+        $f(loc::AVR, lab=∅; opts...) = _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
     end
     eval(ex)
 end

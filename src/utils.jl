@@ -60,6 +60,12 @@ end
 
 #######################################
 
+fl(::Nothing) = nothing
+fl(x::Real)   = float(x)
+fl(v::AVR)    = convert(Vector{Float64}, v)
+
+#######################################
+
 # return a number with 3 digits accuracy, useful in col2str
 round3d(x::Real) = round(x, digits=3)
 

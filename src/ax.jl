@@ -58,7 +58,7 @@ function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)
     end
     return a
 end
-grid!(::Nothing; opts...) = (add_axes2d!(); grid!(gca(); opts...))
+grid!(::Nothing; opts...) = grid!(add_axes2d!(); opts...)
 grid!(; opts...) = grid!(gca(); opts...)
 grid = grid!
 
@@ -66,13 +66,13 @@ grid = grid!
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-function _lim!(a::Axes2D, el::Symbol, min::Option{Real}, max::Option{Real})
-    if min isa Real && max isa Real
+function _lim!(a::Axes2D, el::Symbol, min::Option{Float64}, max::Option{Float64})
+    if min !== nothing && max !== nothing
         @assert min < max "min must be strictly smaller than max"
     end
     axis = getfield(a, el)
-    setfield!(axis, :min, float(min))
-    setfield!(axis, :max, float(max))
+    setfield!(axis, :min, min)
+    setfield!(axis, :max, max)
     return a
 end
 _lim!(::Nothing, el, min, max) = _lim!(add_axes2d!(), el, min, max)
@@ -82,13 +82,13 @@ for axs ∈ ("x", "y", "x2", "y2")
     f! = Symbol(axs * "lim!")
     f  = Symbol(axs * "lim")
     ex = quote
-        $f!(a, min, max)    = _lim!(a, Symbol($axs * "axis"), min, max)
-        $f!(min, max)       = $f!(gca(), min, max)
-        $f!(; min=∅, max=∅) = $f!(gca(), min, max)
+        $f!(a, min, max)    = _lim!(a, Symbol($axs * "axis"), fl(min), fl(max))
+        $f!(min, max)       = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
+        $f!(; min=∅, max=∅) = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
         # synonyms
-        $f(a, min, max)    = $f!(a, min, max)
-        $f(min, max)       = $f!(gca(), min, max)
-        $f(; min=∅, max=∅) = $f!(gca(), min, max)
+        $f(a, min, max)    = _lim!(a, Symbol($axs * "axis"), fl(min), fl(max))
+        $f(min, max)       = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
+        $f(; min=∅, max=∅) = _lim!(gca(), Symbol($axs * "axis"), fl(min), fl(max))
     end
     eval(ex)
 end
