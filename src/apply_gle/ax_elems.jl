@@ -1,6 +1,11 @@
-function apply_title!(g, t)
+"""
+    apply_title!(g, t, p)
+
+Internal function to apply a `Title` object `t` in a GLE context.
+The argument `p` specifies the prefix.
+"""
+function apply_title!(g::GLE, t::Title, p::String="")
     # [x]title ...
-    p = isdef(t.prefix) ? "$(t.prefix)" : ""
     "\n\t$(p)title \"$(t.text)\""     |> g
     isdef(t.dist) && "dist $(t.dist)" |> g
     apply_textstyle!(g, t.textstyle)

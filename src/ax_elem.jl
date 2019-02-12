@@ -2,25 +2,24 @@
 #### [x|y|x2|y2]title[!]
 ####
 
-function _title!(a::Option{Axes2D}, text::String, axsymb::Option{Symbol};
-                         overwrite=false, opts...)
-    isdef(a) || (a = add_axes2d!())
-    prefix = ""
-    obj = a
-    if isdef(axsymb)
-        prefix = "$axsymb"
-        obj = getfield(a, Symbol(prefix * "axis"))
-    end
+"""
+    _title!(a, text, el)
+
+Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
+"""
+function _title!(a::Axes2D, text::String, el::Symbol; overwrite=false, opts...)
+    obj = (el == :axis) ? a : getfield(a, el)
     if isdef(obj.title)
         # if overwrite, clear the current title
         overwrite && clear!(obj.title)
         obj.title.text = text
-    else
-        obj.title = Title(text=text, prefix=prefix)
+    else # title doesn't exist, create one
+        obj.title = Title(text=text)
     end
     set_properties!(obj.title; opts...)
     return a
 end
+_title!(::Nothing, a...; o...) = _title!(add_axes2d!(), a...; o...)
 
 # Generate xlim!, xlim, and associated for each axis
 for axs ∈ ["", "x", "y", "x2", "y2"]
@@ -29,12 +28,9 @@ for axs ∈ ["", "x", "y", "x2", "y2"]
     f2! = Symbol(axs * "label!") # synonyms xlabel = xtitle
     f2  = Symbol(axs * "label")
     ex = quote
-        if isempty($axs)
-            $f!(a, text; opts...) = _title!(a, text, ∅; opts...)
-        else
-            $f!(a, text; opts...) = _title!(a, text, Symbol($axs); opts...)
-        end
-        $f!(text; opts...)   = $f!(gca(), text; opts...)
+        # mutate
+        $f!(a, text; opts...) = _title!(a, text, Symbol($axs * "axis"); opts...)
+        $f!(text; opts...)    = $f!(gca(), text; opts...)
         # overwrite
         $f(a, text; opts...) = $f!(a, text; overwrite=true, opts...)
         $f(text; opts...)    = $f!(gca(), text; overwrite=true, opts...)

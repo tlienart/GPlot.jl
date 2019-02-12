@@ -5,13 +5,10 @@
     @test isnothing(t.textstyle.font)
     @test isnothing(t.textstyle.hei)
     @test isnothing(t.textstyle.color)
-    @test isnothing(t.prefix)
     @test isnothing(t.dist)
 
-    t = GPlot.Title(text="title", textstyle=GPlot.TextStyle(font="psh"),
-                    prefix="x", dist=0.3)
+    t = GPlot.Title(text="title", textstyle=GPlot.TextStyle(font="psh"), dist=0.3)
     @test t.textstyle.font == "psh"
-    @test t.prefix == "x"
     @test t.dist == 0.3
 
     # LEGEND

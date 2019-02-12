@@ -1,6 +1,6 @@
 function apply_axis!(g, a)
     apply_ticks!(g, a.ticks)
-    isdef(a.title) && apply_title!(g, a.title)
+    isdef(a.title) && apply_title!(g, a.title, a.prefix)
     P1 = any(isdef, (a.off, a.base, a.lwidth, a.log, a.min, a.max, a.ticks.grid))
     (P1 || isanydef(a.textstyle)) && begin
         "\n\t$(a.prefix)axis" |> g
