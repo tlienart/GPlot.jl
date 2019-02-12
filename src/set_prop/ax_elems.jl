@@ -7,8 +7,7 @@
 
 Internal function to set the vertical distance of `obj` to associated axis.
 """
-function set_dist!(obj, v::Real)
-   0 ≤ v || throw(OptionValueError("dist", v))
+function set_dist!(obj, v::Float64)
    if obj isa Ticks
       obj.labels.dist = v
    else
@@ -29,7 +28,7 @@ set_off!(o::Union{Ticks, Axis}, v::Bool) = (o.off = v; o)
 
 Internal function to set the length of an object.
 """
-set_length!(o::Ticks, v::Real) = throw(NotImplementedError("set_length!"))
+set_length!(o::Ticks, v::Float64) = throw(NotImplementedError("set_length!"))
 
 """
     set_symticks!(obj, v)
@@ -61,13 +60,13 @@ set_grid!(o::Ticks, b::Bool) = (o.grid = b; o)
 
 Internal function to set the angle of display of ticks labels.
 """
-set_angle!(o::Ticks, v) = (o.labels.angle = float(v); o)
+set_angle!(o::Ticks, v::Float64) = (o.labels.angle = v; o)
 
 # a number format for tick labels
 set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))
 
 # shift the tick labels (positive or negative)
-set_shift!(o::Ticks, v::Real) = (o.labels.shift = v; o)
+set_shift!(o::Ticks, v::Float64) = (o.labels.shift = v; o)
 
 # hide ticks labels
 set_labels_off!(o::Ticks, v::Bool) = (o.labels.off = v; o)

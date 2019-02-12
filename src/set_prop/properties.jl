@@ -27,9 +27,16 @@ end
 
 id(x, ::Symbol) = x
 
-function posfl(x::Union{Real, AVR}, optname::Symbol)
+fl(x, ::Symbol) = fl(x)
+
+function posfl(x, optname::Symbol)
     all(0 .< x) || throw(OptionValueError(String(optname), x))
     fl(x)
+end
+
+function posint(x::Int, optname::Symbol)
+    0 < x || throw(OptionValueError(String(optname), x))
+    x
 end
 
 const TEXTSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
@@ -136,7 +143,7 @@ const FILLSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
 ####
 
 const TITLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :dist   => id => set_dist!
+    :dist   => posfl => set_dist!
     )
 merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
@@ -153,7 +160,7 @@ const TICKS_OPTS = Dict{Symbol, Pair{Function, Function}}(
     # ticks related
     :off        => id => set_off!,        # set_ax_elems
     :hideticks  => id => set_off!,        # .
-    :len        => id => set_length!,     # .
+    :len        => posfl => set_length!,     # .
     :length     => id => set_length!,     # .
     :sym        => id => set_symticks!,   # .
     :symticks   => id => set_symticks!,   # .
@@ -162,9 +169,9 @@ const TICKS_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :grid       => id => set_grid!,       # .
     # labels related
     :hidelabels => id => set_labels_off!, # set_ax_elems
-    :angle      => id => set_angle!,      # .
+    :angle      => fl => set_angle!,      # .
     :format     => id => set_format!,     # .
-    :shift      => id => set_shift!,      # .
+    :shift      => fl => set_shift!,      # .
     :dist       => id => set_dist!,       # .
     )
 merge!(TICKS_OPTS, LINESTYLE_OPTS) # ticks line
@@ -186,19 +193,19 @@ merge!(SCATTER2D_OPTS, GMARKERSTYLE_OPTS)
 set_properties!(s::Scatter2D; opts...) = set_properties!(SCATTER2D_OPTS, s; opts...)
 
 const FILL2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :from => id => set_xmin!,
-    :min  => id => set_xmin!,
-    :xmin => id => set_xmin!,
-    :to   => id => set_xmax!,
-    :max  => id => set_xmax!,
-    :xmax => id => set_xmax!,
+    :from => fl => set_xmin!,
+    :min  => fl => set_xmin!,
+    :xmin => fl => set_xmin!,
+    :to   => fl => set_xmax!,
+    :max  => fl => set_xmax!,
+    :xmax => fl => set_xmax!,
     )
 merge!(FILL2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(f::Fill2D; opts...) = set_properties!(FILL2D_OPTS, f; opts...)
 
 const HIST2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :bins       => id => set_bins!,    # set_drawing
-    :nbins      => id => set_bins!,    # .
+    :bins       => posint => set_bins!,    # set_drawing
+    :nbins      => posint => set_bins!,    # .
     :scaling    => id => set_scaling!, # .
     :norm       => id => set_scaling!, # .
     :horiz      => id => set_horiz!,   # .
@@ -223,9 +230,9 @@ set_properties!(gb::Bar2D; opts...) =
 
 const AXIS_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :title  => id => set_title!,  # set_ax
-    :base   => id => set_base!,   # .
-    :min    => id => set_min!,    # .
-    :max    => id => set_max!,    # .
+    :base   => posfl => set_base!,   # .
+    :min    => fl => set_min!,    # .
+    :max    => fl => set_max!,    # .
     :log    => id => set_log!,    # .
     :lwidth => posfl => set_lwidth!, # set_style
     :off    => id => set_off!,    # set_ax_elems
@@ -238,7 +245,7 @@ set_properties!(a::Axis; opts...) = set_properties!(AXIS_OPTS, a; opts...)
 ####
 
 const FIGURE_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :size         => id => set_size!,         # set_figure
+    :size         => posfl => set_size!,         # set_figure
     :tex          => id => set_texlabels!,    # .
     :hastex       => id => set_texlabels!,    # .
     :latex        => id => set_texlabels!,    # .

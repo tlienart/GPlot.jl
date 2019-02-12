@@ -29,7 +29,7 @@ Internal function to set the color values `cols` (after parsing) to `obj.field[i
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 If a single value is passed, all fields will be assigned to that value.
 """
-function set_colors!(@nospecialize(obj), cols::Union{CandCol, Vector{<:CandCol}}; isfill=false)
+function set_colors!(obj, cols::Union{CandCol, Vector{<:CandCol}}; isfill=false)
     if isa(cols, CandCol)
         cols = fill(cols, size(obj.xy, 2)-1)
     end
@@ -70,7 +70,7 @@ set_fills!(o::Bar2D, c) = set_colors!(o, c; isfill=true)
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(@nospecialize(obj), α::Real)
+function set_alpha!(obj, α::Real)
     if !(gcf().transparency == true)
         @warn "Transparent colors are only supported when the figure " *
               "has its transparency property set to 'true'. Ignoring α."

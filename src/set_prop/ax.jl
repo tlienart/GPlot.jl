@@ -11,11 +11,7 @@ set_title!(a::Axis, t::String) = (a.title = Title(text=t); a)
 Internal function to set the base scale of an Axis object relative
 to the parent font size.
 """
-function set_base!(a::Axis, s::Real)
-    0 ≤ s || throw(OptionValueError("base", s))
-    a.base = float(s)
-    return a
-end
+set_base!(a::Axis, s::Float64) = (a.base = s; a)
 
 """
     set_min!(axis, m)
@@ -23,7 +19,7 @@ end
 Internal function to set the minimum value of the `axis`. Note that
 `[x|y|x2|y2]lim!` is preferred.
 """
-set_min!(a::Axis, m::Real) = (a.min = float(m); a)
+set_min!(a::Axis, m::Float64) = (a.min = m; a)
 
 """
     set_max!(axis, m)
@@ -31,7 +27,7 @@ set_min!(a::Axis, m::Real) = (a.min = float(m); a)
 Internal function to set the maximum value of the `axis`. Note that
 `[x|y|x2|y2]lim!` is preferred.
 """
-set_max!(a::Axis, m::Real) = (a.max = float(m); a)
+set_max!(a::Axis, m::Float64) = (a.max = m; a)
 
 """
     set_log!(axis, b)

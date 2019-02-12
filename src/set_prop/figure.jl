@@ -1,24 +1,19 @@
 """
-   set_size!
+   set_size!(o, t)
 
-Sets a tuple indicating width,height size of the figure.
+Sets a tuple indicating (width, height) size of the figure.
 """
-function set_size!(o::Figure, (w, h)::Tuple{Real,Real})
-   (w ≥ 0) && (h ≥ 0) || throw(OptionValueError("size", v))
-   o.size = float.((w, h))
-   return o
-end
-
+set_size!(o::Figure, t::NTuple{2, Float64}) = (o.size = t; o)
 
 """
-   set_texlabels!
+   set_texlabels!(o, v)
 
 Sets a bool variable indicating whether the figure has LaTex labels or not.
 """
 set_texlabels!(o::Figure, v::Bool) = (o.texlabels = ifelse(v, v, ∅); o)
 
 """
-   set_texscale!
+   set_texscale!(o, v)
 
 Sets a string variable indicating the type of scaling (`fixed`, `scale` or `none`)
 * `fixed`: keep LaTeX in std size as close as possible to the ambient fontsize
@@ -41,7 +36,7 @@ packages). Bear in mind that only `pdflatex` can be used and so not all font
 packages can be used nor some commands like `fontspec` which are meant for
 XeLaTeX or LuaLaTex.
 """
-set_texpreamble!(o::Figure, v::AbstractString) = (o.texpreamble = v; o)
+set_texpreamble!(o::Figure, v::String) = (o.texpreamble = v; o)
 
 
 """

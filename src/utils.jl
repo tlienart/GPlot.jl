@@ -64,6 +64,7 @@ fl(::Nothing) = nothing
 fl(x::Real)   = Float64(x)
 fl(v::Union{AVR, ARR}) = convert(Vector{Float64}, v)
 fl(m::AMR) = convert(Matrix{Float64}, m)
+fl(t::Tuple{<:Real, <:Real}) = Float64.(t)
 
 #######################################
 
