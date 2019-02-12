@@ -46,11 +46,11 @@ function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)
         ticks.grid = true
         for optname ∈ opts.itr
             if optname ∈ (:col, :color)
-                set_tickscolor!(ticks, opts[optname])
+                set_tickscolor!(ticks, col(opts[optname], optname))
             elseif optname ∈ (:ls, :lstyle, :linestyle)
                 set_lstyle!(ticks, opts[optname])
             elseif optname ∈ (:lw, :lwidth, :linewidth)
-                set_lwidth!(ticks, opts[optname])
+                set_lwidth!(ticks, posfl(opts[optname], optname))
             else
                 throw(UnknownOptionError(optname, a))
             end

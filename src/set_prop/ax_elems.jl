@@ -42,7 +42,7 @@ set_symticks!(o::Ticks, v::Bool) = throw(NotImplementedError("set_symticks!"))
 
 Internal function to set the color of ticks.
 """
-set_tickscolor!(o::Ticks, c::CandCol) = (o.linestyle.color = try_parse_col(c); o)
+set_tickscolor!(o::Ticks, c::Color) = (o.linestyle.color = c; o)
 
 """
     set_grid!(obj, b)
