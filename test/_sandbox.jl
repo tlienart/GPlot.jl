@@ -5,14 +5,23 @@ using GPlot
 f = Figure()
 
 x = range(-5, 5, length=100)
-y = @. 1-exp(-sin(x) * cos(x)/x)
+xs = range(-5, 5, length=20)
 
-plot(x, y, col="blue")
+λ(x) = 1-exp(-sin(x) * cos(x)/x)
 
-ylim(-1, 1)
+plot(x, λ.(x), col="blue")
+scatter!(xs, λ.(xs), col="red")
 
-#y2axis("off")
+ylim(-.5, .75)
+
+y2axis("off")
+x2axis("off")
+
+grid(color="lightgray", ls="-")
+
+xticks(-5:2.5:5)
 
 preview()
+
 
 GPlot.debug_gle(f)

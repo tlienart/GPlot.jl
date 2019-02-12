@@ -48,6 +48,10 @@ Add one or several line plots on cleaned up axes on the current figure
 """
 plot(a...; opts...) = plot!(a...; overwrite=true, opts...)
 
+scatter!(a...; o...) = plot!(a...; ls="none", marker="o", o...)
+scatter(a...; o...) = plot!(a...; ls="none", marker="o", overwrite=true, o...)
+
+
 ####
 #### fill_between!, fill_between
 ####

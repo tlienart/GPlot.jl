@@ -10,7 +10,7 @@ cla = cla!
 #### [x|y|...]axis(...)
 ####
 
-for axs ∈ ["x", "y", "x2", "y2"]
+for axs ∈ ("x", "y", "x2", "y2")
     f! = Symbol(axs * "axis!")   # :xaxis! ...
     f  = Symbol(axs * "axis")    # :xaxis  ...
     ff = Symbol(axs[1] * "axis") # :x2axis->:xaxis (for grid)
@@ -37,17 +37,33 @@ math!(::Nothing) = (add_axes2d!(); math!(gca()))
 math!() = math!(gca())
 math = math!
 
-function grid!(a::Axes2D, which::Vector{String}=["x", "y"])
+function grid!(a::Axes2D, which::Vector{String}=["x", "y"]; opts...)
     for ax ∈ which
         ax_lc = lowercase(ax)
-        @assert ax ∈ ["x", "x2", "y", "y2"] "Unrecognized ax symbol $ax."
-        axis = Symbol(ax_lc * "axis")
-        setfield!(getfield(a, axis), :grid, true)
+        @assert ax_lc ∈ ("x", "x2", "y", "y2") "Unrecognized ax symbol $ax."
+        # all options affect the ticks (in particular: color and width)
+        axsym = Symbol(ax_lc * "axis")
+        axis  = getfield(a, axsym)
+        setfield!(axis, :grid, true)
+        # NOTE the gymnastics with ticks is required otherwise
+        # it makes a copy along the way and doesn't change `a`
+        ticks = axis.ticks
+        for optname ∈ opts.itr
+            if optname ∈ (:col, :color)
+                set_tickscolor!(ticks, opts[optname])
+            elseif optname ∈ (:ls, :lstyle, :linestyle)
+                set_lstyle!(ticks, opts[optname])
+            elseif optname ∈ (:lw, :lwidth, :linewidth)
+                set_lwidth!(ticks, opts[optname])
+            else
+                throw(UnknownOptionError(optname, a))
+            end
+        end
     end
     return a
 end
-grid!(::Nothing) = (add_axes2d!(); grid!(gca()))
-grid!() = grid!(gca())
+grid!(::Nothing; opts...) = (add_axes2d!(); grid!(gca(); opts...))
+grid!(; opts...) = grid!(gca(); opts...)
 grid = grid!
 
 ####
@@ -66,7 +82,7 @@ end
 _lim!(::Nothing, el, min, max) = _lim!(add_axes2d!(), el, min, max)
 
 # Generate xlim!, xlim, and associated for each axis
-for axs ∈ ["x", "y", "x2", "y2"]
+for axs ∈ ("x", "y", "x2", "y2")
     f! = Symbol(axs * "lim!")
     f  = Symbol(axs * "lim")
     ex = quote
@@ -93,7 +109,7 @@ function _scale!(a::Axis, v::String)
 end
 
 # Generate xscale!, xscale, and associated for each axis
-for axs ∈ ["x", "y", "x2", "y2"]
+for axs ∈ ("x", "y", "x2", "y2")
     f! = Symbol(axs * "scale!")       # xscale!
     f  = Symbol(axs * "scale")        # xscale
     ex = quote

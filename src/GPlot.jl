@@ -10,8 +10,8 @@ export Figure, gcf, gca, clf, cla, erase!,
     # Layout
     layout!, layout, subplot,
     # Drawings
-    plot, plot!, fill_between, fill_between!, hist, hist!,
-    bar, bar!,
+    plot!, scatter!, fill_between!, hist!, bar!,
+    plot, scatter, fill_between, hist, bar,
     # Axis / Axes
     # -- titles
     title!, xtitle!, x2title!, ytitle!, y2title!,

@@ -151,7 +151,7 @@ const TICKS_OPTS = Dict{Symbol, Function}(
     :sym        => set_symticks!,   # .
     :symticks   => set_symticks!,   # .
     :tickscol   => set_tickscolor!, # .
-    :tickscolor => set_tickscolor!, #
+    :tickscolor => set_tickscolor!, # .
     # labels related
     :hidelabels => set_labels_off!, # set_ax_elems
     :angle      => set_angle!,      # .
