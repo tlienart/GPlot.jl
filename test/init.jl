@@ -1,4 +1,5 @@
 @testset "▶ /init                       " begin
+    G.__init__()
     @test G.GP_ENV["VERBOSE"]
     @test isdir(G.GP_ENV["TMP_PATH"])
     @test G.GP_ENV["DEL_INTERM"]

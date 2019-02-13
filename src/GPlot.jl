@@ -6,7 +6,7 @@ using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, clf, cla, erase!,
+export Figure, gcf, gca, clf!, cla!, clf, cla, erase!,
     # Layout
     layout!, layout, subplot,
     # Drawings
