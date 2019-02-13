@@ -1,4 +1,5 @@
 @testset "▶ /init                       " begin
+    println("testing init... (re-warming)")
     G.__init__()
     @test G.GP_ENV["VERBOSE"]
     @test isdir(G.GP_ENV["TMP_PATH"])
