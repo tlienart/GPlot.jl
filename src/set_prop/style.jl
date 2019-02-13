@@ -132,7 +132,7 @@ set_lstyle!(o::Ticks, v::String) = set_lstyle!(o.linestyle, v)
 Internal function to set the line width associated with the relevant field of `obj`.
 """
 set_lwidth!(o::Union{LineStyle, Axis}, v::Float64) = (o.lwidth = v; o)
-set_lwidth!(o::Ticks, v::String) = set_lwidth!(o.linestyle, v)
+set_lwidth!(o::Ticks, v::Float64) = set_lwidth!(o.linestyle, v)
 
 """
     set_smooth!(obj, v)
