@@ -40,11 +40,8 @@ function posint(x::Int, optname::Symbol)
 end
 
 col(c::Color, ::Symbol)     = c
-col(s::String, ::Symbol)    = try_parse_color(s)
+col(s::String, ::Symbol)    = parse(Color, s)
 col(v::Vector, s::Symbol)   = col.(v, s)
-col2(c::Colorant, ::Symbol) = c
-col2(s::String, ::Symbol)   = try_parse_colorant(s)
-col2(v::Vector, s::Symbol)  = col2.(v, s)
 
 function alpha(α::Real, optname::Symbol)
     if !gcf().transparency
@@ -149,13 +146,13 @@ const GBARSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :col       => col2  => set_fill!, # set_style
-    :color     => col2  => set_fill!, # .
-    :fcol      => col2  => set_fill!, # .
-    :ffill     => col2  => set_fill!, # .
-    :facecol   => col2  => set_fill!, # .
-    :facefill  => col2  => set_fill!, # .
-    :fill      => col2  => set_fill!, # .
+    :col       => col   => set_fill!, # set_style
+    :color     => col   => set_fill!, # .
+    :fcol      => col   => set_fill!, # .
+    :ffill     => col   => set_fill!, # .
+    :facecol   => col   => set_fill!, # .
+    :facefill  => col   => set_fill!, # .
+    :fill      => col   => set_fill!, # .
     :alpha     => alpha => set_alpha!, # .
     )
 
