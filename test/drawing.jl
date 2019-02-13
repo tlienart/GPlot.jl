@@ -125,6 +125,7 @@ end
     @test gca().drawings[1].x == x
 
     # BAR
+    cla()
     bar(x)
     y = rand(Float32, 10, 3)
     @test gca().drawings[1].xy == hcat(1:length(x), x)
@@ -134,7 +135,6 @@ end
     @test gca().drawings[1].xy == hcat(x, y)
     bar!(x, x, x)
     @test gca().drawings[2].xy == hcat(x, x, x)
-
 end
 
 @testset "▶ set_prop/drawing            " begin
