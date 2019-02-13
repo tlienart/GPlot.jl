@@ -83,6 +83,19 @@ end
     el = gca().drawings[1]
     @test el.xy == hcat(x, y, 2y, 3y)
 
+    erase!(gcf())
+    # -- scatterplot
+    scatter(x, y)
+    scatter!(2x, 2y, 3y)
+    el1 = gca().drawings[1]
+    el2 = gca().drawings[2]
+    @test el1.linestyle[1].lstyle == -1
+    @test el1.markerstyle[1].marker == "circle"
+    @test el2.linestyle[1].lstyle == -1
+    @test el2.linestyle[2].lstyle == -1
+    @test el2.markerstyle[1].marker == "circle"
+    @test el2.markerstyle[2].marker == "circle"
+
     # FILL2D
     erase!(gcf())
     gcf().transparency = true
