@@ -43,7 +43,5 @@ function apply_axes!(g, a::Axes2D, figid)
     isdef(a.legend) && apply_legend!(g, a.legend, leg_entries)
     return
 end
-function apply_axes!(g, a::Axes3D, figid)
-    throw(NotImplementedError("apply_axes:GLE/3D"))
-    return
-end
+
+apply_axes!(g, a::Axes3D, figid) = throw(NotImplementedError("apply_axes:GLE/3D"))

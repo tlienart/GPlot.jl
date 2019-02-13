@@ -38,7 +38,7 @@ function __init__()
         hasbackend && savefig(f, res=100, format="png", path=tempdir)
 
         # -- hist
-        destroy!(f)
+        destroy(f)
         f = Figure()
         x = rand(10)
         hist(x, fill="cornflowerblue", color="white", scaling="pdf", nbins=50)
@@ -49,7 +49,7 @@ function __init__()
         hasbackend && savefig(f, format="pdf", path=tempdir)
 
         # clear everything
-        destroy!(f)
+        destroy(f)
     end
     GP_ENV["VERBOSE"] && println(".............done in $(round(t, digits=1))s ✅")
     return

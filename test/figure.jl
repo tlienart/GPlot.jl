@@ -37,8 +37,8 @@
     GPlot.erase!(f3)
     @test isempty(f3)
 
-    GPlot.destroy!(f3)
-    @test !("test" ∈ keys(GPlot.GP_ENV["ALLFIGS"]))
+    GPlot.destroy(f3)
+    @test "test" ∉ keys(GPlot.GP_ENV["ALLFIGS"])
 end
 
 
