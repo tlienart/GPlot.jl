@@ -142,6 +142,7 @@ end
     @test_throws G.OptionValueError x2axis("somethingweird")
     @test_throws G.OptionValueError grid(which=["akdjf"])
 
+    clf()
     grid(lw=0.5)
     @test f.axes[1].xaxis.ticks.linestyle.lwidth == 0.5
     @test f.axes[1].yaxis.ticks.linestyle.lwidth == 0.5
@@ -150,6 +151,9 @@ end
     clf()
     math()
     @test f.axes[1].math
+
+    # more misc
+    @test_throws G.OptionValueError xlim(5, 2)
 end
 
 @testset "▶ set_prop/ax                 " begin
