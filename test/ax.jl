@@ -139,11 +139,21 @@ end
     yaxis(title="blah", log=true)
     @test f.axes[1].yaxis.log
     @test f.axes[1].yaxis.title.text == "blah"
+    @test_throws G.OptionValueError x2axis("somethingweird")
+    @test_throws G.OptionValueError grid(which=["akdjf"])
+
+    clf()
+    grid(lw=0.5)
+    @test f.axes[1].xaxis.ticks.linestyle.lwidth == 0.5
+    @test f.axes[1].yaxis.ticks.linestyle.lwidth == 0.5
 
     # math
-    cla()
+    clf()
     math()
     @test f.axes[1].math
+
+    # more misc
+    @test_throws G.OptionValueError xlim(5, 2)
 end
 
 @testset "▶ set_prop/ax                 " begin

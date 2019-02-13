@@ -36,8 +36,6 @@ end
 
     @test GPlot.round3d(pi) == 3.142
     @test GPlot.col2str(colorant"red") == "rgba(1.0,0.0,0.0,1.0)"
-    @test GPlot.try_parse_color("red") == colorant"red"
-    @test_throws GPlot.OptionValueError GPlot.try_parse_color("redd")
 
     @test GPlot.vec2str([1,2,3]) == "1 2 3 "
     @test GPlot.vec2str(["a","b","c"]) == "\"a\" \"b\" \"c\" "
@@ -48,4 +46,7 @@ end
     @test t"\sin(x)+\cos(x)" == "\\sin(x)+\\cos(x)"
     _α = 5
     @test t"\sin(##_α x)" == "\\sin(5 x)"
+
+    @test G.fl(nothing) === nothing
+    @test G.fl(2) == 2.0
 end

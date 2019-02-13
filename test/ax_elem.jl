@@ -82,6 +82,8 @@ end
     @test f.axes[1].xaxis.ticks.places == [1.0, 2.3]
     @test isnothing(f.axes[1].xaxis.ticks.labels.names)
 
+    @test_throws G.OptionValueError xticks([1, 2], ["A", "B", "C"])
+
     x2ticks!([3, 5])
     @test f.axes[1].x2axis.ticks.places == [3., 5.]
     yticks!([3, 5])

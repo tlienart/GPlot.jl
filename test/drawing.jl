@@ -83,6 +83,19 @@ end
     el = gca().drawings[1]
     @test el.xy == hcat(x, y, 2y, 3y)
 
+    erase!(gcf())
+    # -- scatterplot
+    scatter(x, y)
+    scatter!(2x, 2y, 3y)
+    el1 = gca().drawings[1]
+    el2 = gca().drawings[2]
+    @test el1.linestyle[1].lstyle == -1
+    @test el1.markerstyle[1].marker == "circle"
+    @test el2.linestyle[1].lstyle == -1
+    @test el2.linestyle[2].lstyle == -1
+    @test el2.markerstyle[1].marker == "circle"
+    @test el2.markerstyle[2].marker == "circle"
+
     # FILL2D
     erase!(gcf())
     gcf().transparency = true
@@ -100,6 +113,11 @@ end
     @test el2.xy1y2 == hcat(x, 0*y2, y2)
     @test el3.xy1y2 == hcat(x, y1, 0*y1)
 
+    cla()
+    fill_between(x, 1, 2)
+    el = gca().drawings[1]
+    @test el.xy1y2 == G.fl(hcat(x, zero(x).+1, zero(x).+2))
+
     # HIST2D
     erase!(gcf())
     x = rand(Float32, 10)
@@ -107,6 +125,7 @@ end
     @test gca().drawings[1].x == x
 
     # BAR
+    cla()
     bar(x)
     y = rand(Float32, 10, 3)
     @test gca().drawings[1].xy == hcat(1:length(x), x)
@@ -116,7 +135,6 @@ end
     @test gca().drawings[1].xy == hcat(x, y)
     bar!(x, x, x)
     @test gca().drawings[2].xy == hcat(x, x, x)
-
 end
 
 @testset "▶ set_prop/drawing            " begin
