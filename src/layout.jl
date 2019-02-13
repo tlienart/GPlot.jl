@@ -1,3 +1,19 @@
+"""
+    layout!(f, anchors)
+
+Describes a custom grid layout allowing to specify where the axes origin should
+be and how big (all relative to width/height of the figure). The `anchors` matrix
+is a `n × 4` matrix where `n` is the total number of axes. The first two columns
+indicate the relative position of the origin (so that the actual position is
+`(anchors[k,1]W, anchors[k,2]H)` where `W,H=gcf().size`). The last two
+columns indicate the size of the axes.
+
+# Examples
+```jl
+julia> layout!(f, [0.1 0.1 0.3 0.3;  # origin = (0.1W,0.1H)
+                   0.1 0.5 0.3 0.3]) # size = (0.3W, 0.3H)
+```
+"""
 function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     #  ______________________
     # |                      |
@@ -16,9 +32,28 @@ function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     return f
 end
 
-# synonym
-layout(f, anchors) = layout!(f, anchors)
+"""
+    layout(f, anchors)
 
+See: [`layout!`](@ref).
+"""
+layout = layout!
+
+"""
+    subplot(a, b, c)
+    subplot(abc)
+
+Describe an automatic grid layout of axes of size `a × b` and selects axes `c`.
+The axes are counted from the top left (1) increasing towards the right and the bottom.
+
+# Examples
+```jl
+julia> subplot(222) # `2×2` grid layout, select top-right axes
+julia> subplot(224) # selects bottom-right axes.
+```
+
+See also: [`layout!`](@ref) to specify a custom layout.
+"""
 function subplot(nrows::Int, ncols::Int, idx::Int)
     @assert 1 <= nrows <= 9 "nrows must be between 1 and 9"
     @assert 1 <= ncols <= 9 "ncols must be between 1 and 9"

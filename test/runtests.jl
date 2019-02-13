@@ -20,3 +20,6 @@ include("drawing.jl")
 
 # 12 feb 19
 include("style.jl")
+
+# 13 feb 19
+include("layout.jl")
