@@ -113,6 +113,11 @@ end
     @test el2.xy1y2 == hcat(x, 0*y2, y2)
     @test el3.xy1y2 == hcat(x, y1, 0*y1)
 
+    cla()
+    fill_between(x, 1, 2)
+    el = gca().drawings[1]
+    @test el.xy1y2 == G.fl(hcat(x, zero(x).+1, zero(x).+2))
+
     # HIST2D
     erase!(gcf())
     x = rand(Float32, 10)
