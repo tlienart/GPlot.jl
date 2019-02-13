@@ -170,11 +170,48 @@ end
     G.add_axes2d!()
 
     # Scatter2D (see also apply_linestyle)
-    plot([1, 2], exp.([1, 2]), lwidth=2.0)
+    plot([1, 2], exp.([1, 2]), lwidth=2.0, label="line")
+    legend()
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "data")
     isin(s, "d1=c1,c2")
     isin(s, "d1 line lwidth 2.0")
+    isin(s, "begin key")
+    isin(s, "compact")
+    isin(s, "text \"line\" line lwidth 2.0")
+    isin(s, "end key")
 
-    # XXX test marker and legend
+    clf()
+    scatter([1, 2], exp.([1, 2]), color="blue")
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    isin(s, "d1=c1,c2")
+    isin(s, "d1 color rgba(0.0,0.0,1.0,1.0) marker circle")
+
+    # FILL2D
+    clf()
+    fill_between([1, 2], 1, 2)
+    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    isin(s, "d1=c1,c2 d2=c1,c3")
+    isin(s, "fill d1,d2 color rgba(0.392,0.584,0.929,1.0)")
+
+    # HIST2D
+    clf()
+    x = [0.1, 0.1, 0.2, 0.1, 0.3, 0.5, 0.7, 0.2, 0.1]
+    hist(x, norm="pdf", fcol="blue", ecol="red")
+    s = G.assemble_figure(gcf(), debug=true)
+    isin(s, "_0.0_0.0_d1.csv")
+    isin(s, "let d2 = hist d1 from $(minimum(x)) to $(maximum(x)) bins 9")
+    isin(s, "let d2 = d2*1.666")
+    isin(s, "bar d2 width 0.066")
+    isin(s, "color rgba(1.0,0.0,0.0,1.0) fill rgba(0.0,0.0,1.0,1.0)")
+
+    # BAR2D
+    clf()
+    x  = [1, 2, 3, 4, 5]
+    y  = [3, 3, 4, 4, 3]
+    y2 = [5, 5, 6, 6, 5]
+    bar(x, y, y2, stacked=true)
+    s = G.assemble_figure(gcf(), debug=true)
+    isin(s, "bar d1")
+    isin(s, "bar d2 from d1")
 end

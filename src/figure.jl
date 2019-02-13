@@ -72,7 +72,7 @@ function erase!(f::Figure)
     # give `f` a fresh set of axes
     f.axes = Vector{Axes{typeof(f.g)}}()
     GP_ENV["CURAXES"] = nothing
-    return
+    return f
 end
 clf!() = erase!(gcf())
 clf = clf!
@@ -85,12 +85,13 @@ Return a bool indicating whether `fig` has axes or not.
 isempty(fig::Figure) = isempty(fig.axes)
 
 """
-    destroy!(fig)
+    destroy(fig)
 
 Remove reference to `fig` and set the current figure to nothing.
 """
-function destroy!(fig)
+function destroy(fig)
     delete!(GP_ENV["ALLFIGS"], fig.id)
     GP_ENV["CURFIG"] = nothing
     GP_ENV["CURAXES"] = nothing
+    return
 end

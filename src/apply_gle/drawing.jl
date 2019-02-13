@@ -165,7 +165,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Hist2D,
     # glet = GLE()
 
     # write data to a temporary CSV file
-    faux = auxpath(el_counter)
+    faux = auxpath(el_counter, origin, figid)
     writedlm(faux, obj.x)
 
     # >>>>>>>>>>>>>>>>
