@@ -30,15 +30,10 @@ for axs ∈ ("", "x", "y", "x2", "y2")
     f2  = Symbol(axs * "label")
     ex = quote
         # mutate
-        $f!(a::Axes2D, text::String; opts...) =
-            _title!(a, text, Symbol($axs * "axis"); opts...)
-        $f!(text::String; opts...) =
-            _title!(gca(), text, Symbol($axs * "axis"); opts...)
+        $f!(a::Axes2D, t::String; o...) = _title!(a, t, Symbol($axs * "axis"); o...)
+        $f!(t::String; o...) = _title!(gca(), t, Symbol($axs * "axis"); o...)
         # overwrite
-        $f(a::Axes2D, text::String; opts...) =
-            _title!(a, text, Symbol($axs * "axis"); overwrite=true, opts...)
-        $f(text::String; opts...) =
-            _title!(gca(), text, Symbol($axs * "axis"); overwrite=true, opts...)
+        $f(a...; o...) = $f!(a...; overwrite=true, o...)
         # more synonyms xlabel...
         !isempty($axs) && ($f2! = $f!; $f2 = $f)
     end
@@ -59,6 +54,16 @@ function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64},
         clear!(axis.ticks.labels)
     end
     axis.ticks.places = loc
+    # check if axis limits are ok with the locations and adjust
+    # as necessary
+    minloc, maxloc = minimum(loc), maximum(loc)
+    if isnothing(axis.min) || axis.min > minloc
+        axis.min = minloc - 0.1abs(minloc)
+    end
+    if isnothing(axis.max) || axis.max < maxloc
+        axis.max = maxloc + 0.1abs(maxloc)
+    end
+    # check if the labels match
     if isdef(lab)
         if length(lab) != length(loc)
             throw(OptionValueError("Ticks locations and labels must have the same length.", lab))
@@ -71,19 +76,30 @@ end
 _ticks!(::Nothing, a...; o...) = _ticks!(add_axes2d!(), a...; o...)
 
 # Generate xticks!, xticks, and associated for each axis
-for axs ∈ ("", "x", "y", "x2", "y2")
+for axs ∈ ("x", "y", "x2", "y2")
     f! = Symbol(axs * "ticks!")
     f  = Symbol(axs * "ticks")
+    a  = Symbol(axs * "axis")
     ex = quote
-        $f!(a::Axes2D, loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
+        $f!(a::Axes2D, loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; o...) =
             _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
         $f!(loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
             _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
+        function $f!(s::String; o...)
+            s_lc = lowercase(s)
+            if s_lc == "off"
+                ax = getfield(gca(), Symbol($axs * "axis"))
+                reset!(ax.ticks)
+                @show ax.ticks.labels.names
+                ax.ticks.off = true
+                ax.ticks.labels.off = true
+            else
+                throw(OptionValueError("Unrecognised shorthand for $f:", s))
+            end
+            return gca()
+        end
         # overwrite
-        $f(a::Axes2D, loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
-            _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
-        $f(loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
-            _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; overwrite=true, opts...)
+        $f(a...; o...) = $f!(a...; overwrite=true, o...)
     end
     eval(ex)
 end

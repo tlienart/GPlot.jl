@@ -1,7 +1,7 @@
 @with_kw mutable struct Axis
     prefix::String # x, y, x2, y2, z
-    ticks ::Ticks  # ticks of the axis
     # ---
+    ticks    ::Ticks     = Ticks()  # ticks of the axis
     textstyle::TextStyle = TextStyle() # parent textstyle of axis
     # ---
     title ::Option{Title}   = ∅ # title of the axis
@@ -13,7 +13,7 @@
     off   ::Option{Bool}    = ∅ # if true, axis is not shown
     log   ::Option{Bool}    = ∅ # log scale
 end
-Axis(p::String) = Axis(prefix=p, ticks=Ticks(p))
+Axis(p::String) = Axis(prefix=p)
 
 
 abstract type Axes{B <: Backend} end
