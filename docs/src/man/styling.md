@@ -12,6 +12,7 @@ TBD:
 - note that x2axis/y2axis revert to xaxis/yaxis (GLE restriction)
 - cannot have xaxis off and x2axis on, same for y
 - if xticks happens after grid it will disable, should use xticks! if want to change position
+- ticks angle are in degrees, rotation is clockwise (e.g. 45)
 
 ## LineStyle
 

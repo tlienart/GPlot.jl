@@ -253,7 +253,7 @@ t = @elapsed begin
     x2axis("off")
 
     grid()
-    xticks(-5:2.5:5, tickscol="lightgray")
+    xticks(-5:2.5:5, tickscol="lightgray", angle=45)
     yticks(-.5:0.25:.75, tickscol="lightgray")
 
     preview(f)

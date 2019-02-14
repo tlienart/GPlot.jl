@@ -52,7 +52,7 @@ set_grid!(o::Ticks, b::Bool) = (o.grid = b; o)
 """
     set_angle!(obj, v)
 
-Internal function to set the angle of display of ticks labels.
+Internal function to set the angle of display of ticks labels (in degrees).
 """
 set_angle!(o::Ticks, v::Float64) = (o.labels.angle = v; o)
 
