@@ -21,8 +21,7 @@
     @test l.hei == 0.3
 
     # TICKS AND TICKSLABELS
-    t = GPlot.Ticks("x")
-    @test t.prefix == "x"
+    t = GPlot.Ticks()
     @test isnothing(t.labels.names)
     @test isnothing(t.labels.off)
     @test isnothing(t.labels.angle)
@@ -106,6 +105,15 @@ end
     legend!(position="bottom-right")
     @test f.axes[1].legend.position == "br"
 
+    # limits for ticks
+    erase!(f)
+    x2lim(-2, 3)
+    x2ticks([-5, -3, 4])
+    @test gca().x2axis.min == -5 - (0.1 * 5)
+    @test gca().x2axis.max ==  4 + (0.1 * 4)
+    x2ticks("off")
+    @test gca().x2axis.ticks.off
+    @test gca().x2axis.ticks.labels.off
 end
 
 @testset "▶ set_prop/ax_elem            " begin

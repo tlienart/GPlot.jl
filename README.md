@@ -5,7 +5,7 @@
 | [![Build Status](https://travis-ci.org/tlienart/GPlot.jl.svg?branch=master)](https://travis-ci.org/tlienart/GPlot.jl) | [![codecov.io](http://codecov.io/github/tlienart/GPlot.jl/coverage.svg?branch=master)](http://codecov.io/github/tlienart/GPlot.jl?branch=master) | [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://tlienart.github.io/GPlot.jl/dev)
 
 
-[WIP] If you think this project could be fun to work on and would like to help, I'll be happy to hear from you (even if just to help me test the code).
+[WIP] If you think this project could be interesting to work on and would like to help, I'll be happy to hear from you. One of the most helpful would simply be to use the code and report issues here.
 
 ## What's this about
 

@@ -13,23 +13,24 @@ function apply_title!(g::GLE, t::Title, p::String="")
 end
 
 """
-    apply_ticks!(g, t)
+    apply_ticks!(g, t, p)
 
-Internal function to apply a `Ticks` object `t` in a GLE context.
+Internal function to apply a `Ticks` object `t` in a GLE context for an axis
+prefixed by `p`.
 """
-function apply_ticks!(g::GLE, t::Ticks)
+function apply_ticks!(g::GLE, t::Ticks, prefix::String)
     # [x]ticks ...
     (isdef(t.off) || isanydef(t.linestyle)) && begin
-        "\n\t$(t.prefix)ticks" |> g
+        "\n\t$(prefix)ticks" |> g
         isdef(t.off)    && ifelse(t.off, "off", "") |> g
         isdef(t.length) && "length $(t.length)"     |> g
         apply_linestyle!(g, t.linestyle)
     end
     # [x]places pos1 pos2 ...
-    isdef(t.places) && "\n\t$(t.prefix)places $(vec2str(t.places))" |> g
+    isdef(t.places) && "\n\t$(prefix)places $(vec2str(t.places))" |> g
     # [x]xaxis symticks
-    isdef(t.symticks) && "\n\t$(t.prefix)axis symticks" |> g
-    apply_tickslabels!(g, t.labels, t.prefix)
+    isdef(t.symticks) && "\n\t$(prefix)axis symticks" |> g
+    apply_tickslabels!(g, t.labels, prefix)
     return
 end
 

@@ -29,8 +29,6 @@ end
 end
 
 @with_kw mutable struct Ticks
-    prefix::String                       # x, y, x2, y2, z
-    # ---
     labels   ::TicksLabels = TicksLabels() # their label
     linestyle::LineStyle   = LineStyle()   # how the ticks marks look
     # ---
