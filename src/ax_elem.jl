@@ -90,7 +90,6 @@ for axs ∈ ("x", "y", "x2", "y2")
             if s_lc == "off"
                 ax = getfield(gca(), Symbol($axs * "axis"))
                 reset!(ax.ticks)
-                @show ax.ticks.labels.names
                 ax.ticks.off = true
                 ax.ticks.labels.off = true
             else

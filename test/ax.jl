@@ -2,7 +2,6 @@
     # CONSTRUCTORS
     a = GPlot.Axis("x")
     @test a.prefix == "x"
-    @test a.ticks.prefix == "x"
     @test isnothing(a.textstyle.hei)
     @test isnothing(a.textstyle.font)
     @test isnothing(a.textstyle.color)
