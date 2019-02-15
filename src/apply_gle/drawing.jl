@@ -62,12 +62,17 @@ and `origin` and `figid` are used to make the auxiliary file name unique.
 function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
                         el_counter::Int, origin::NTuple{2,Float64}, figid::String)
     # temporary buffers to help for the legend
-    lt   = [IOBuffer() for c ∈ 2:size(obj.xy, 2)]
+    lt   = [IOBuffer() for c ∈ eachindex(obj.linestyle)]
     glet = GLE()
 
-    # write data to a temporary CSV file
-    faux = auxpath(el_counter, origin, figid)
-    csv_writer(faux, obj.xy)
+    if isdef(obj.path)
+        # reading directly from existing file
+        faux = obj.path
+    else
+        # write data to a temporary CSV file
+        faux = auxpath(el_counter, origin, figid)
+        csv_writer(faux, obj.xy)
+    end
 
     # >>>>>>>>>>>>>>>>
     # general GLE syntax is:
@@ -77,7 +82,11 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
 
     for c ∈ eachindex(lt)
         # (1) indicate what data to read
-        "\n\tdata \"$faux\" d$(el_counter)=c1,c$(c+1)" |> g
+        if isdef(obj.path)
+            "\n\tdata \"$faux\" d$(el_counter)=$(obj.xsym),$(obj.ysym[c])" |> g
+        else
+            "\n\tdata \"$faux\" d$(el_counter)=c1,c$(c+1)" |> g
+        end
 
         # if no color has been specified, assign one according to the PALETTE
         if !isdef(obj.linestyle[c].color)

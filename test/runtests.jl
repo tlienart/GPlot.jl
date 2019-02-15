@@ -1,4 +1,4 @@
-using GPlot, Colors, Test; include("_test.jl")
+using GPlot; include("_test.jl")
 
 # 13 feb 19
 include("init.jl")

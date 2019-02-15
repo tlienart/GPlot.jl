@@ -27,6 +27,10 @@ Missing values are allowed.
     markerstyle::Vector{MarkerStyle}
     # --- legend and misc
     label::Vector{String} = String[]
+    # --- fields associated with a scatter2d from file
+    xsym::Option{Symbol}         = ∅
+    ysym::Option{Vector{Symbol}} = ∅
+    path::Option{String}         = ∅
 end
 
 """
@@ -40,6 +44,14 @@ function Scatter2D(xy::Matrix{<:CanMiss{Float64}})
     lss = [LineStyle()   for i ∈ 1:n]
     mss = [MarkerStyle() for i ∈ 1:n]
     Scatter2D(xy=xy, linestyle=lss, markerstyle=mss)
+end
+
+function Scatter2D(xsym::Symbol, ysym::Vector{Symbol}, path::String)
+    n = length(ysym)
+    lss = [LineStyle()   for i ∈ 1:n]
+    mss = [MarkerStyle() for i ∈ 1:n]
+    Scatter2D(xy=Matrix{Float64}(undef,0,0), linestyle=lss, markerstyle=mss,
+              xsym=xsym, ysym=ysym, path=path)
 end
 
 """
