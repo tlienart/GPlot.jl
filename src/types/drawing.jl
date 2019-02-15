@@ -5,14 +5,12 @@ Overarching type for objects displayable on `Axes`.
 """
 abstract type Drawing end
 
-
 """
     Drawing
 
 Overarching type for objects displayable on `Axes2D`.
 """
 abstract type Drawing2D <: Drawing end
-
 
 """
     Scatter2D <: Drawing2D
@@ -27,9 +25,8 @@ of line/scatter objects (the first column stores the x-axis points).
     linestyle  ::Vector{LineStyle}
     markerstyle::Vector{MarkerStyle}
     # --- legend and misc
-    label::Option{Union{String, Vector{String}}} = ∅
+    label::Vector{String} = String[]
 end
-
 
 """
     Scatter2D(xy)
@@ -43,7 +40,6 @@ function Scatter2D(xy::Matrix{Float64})
     mss = [MarkerStyle() for i ∈ 1:n]
     Scatter2D(xy=xy, linestyle=lss, markerstyle=mss)
 end
-
 
 """
     Fill2D <: Drawing2D

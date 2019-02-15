@@ -1,33 +1,18 @@
 #### plot with range
 
 using GPlot
+#using ColorBrewer
 
 f = Figure()
-
-x = range(-5, 5, length=100)
-xs = range(-5, 5, length=20)
-
-λ(x) = 1-exp(-sin(x) * cos(x)/x)
-
-plot(x, λ.(x), col="blue")
-scatter!(xs, λ.(xs), col="red")
-
-ylim(0, 0.2)
-yticks(-.5:.25:.75)
-
-xtitle("blah")
-title("hello")
-
-y2axis("off")
-x2axis("off")
-
-grid(color="lightgray", ls="-")
-
-xticks!(-5:2.5:5)
-
-yticks("off")
+x = range(1, 5, length=100)
+y1 = @. exp(-sin(x)/x^2)
+y2 = @. exp(cos(x)/x)
+plot(x, y1, y2; lwidth=0.05)
+scatter!(x, 0.5.+(y1.-y2)./10, msize=0.1)
+legend()
 
 preview()
 
+#savefig(f, format="pdf", path="/Users/tlienart/Desktop/")
 
 GPlot.debug_gle(f)

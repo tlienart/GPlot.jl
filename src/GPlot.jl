@@ -37,13 +37,27 @@ export Figure, gcf, gca, clf!, cla!, clf, cla, erase!,
     # Simple macros for tex strings
     @t_str, @tex_str
 
+const PALETTE_1 = [ # imitated from tableau 10 - 2
+    RGB(0.33, 0.47, 0.64),
+    RGB(0.90, 0.57, 0.26),
+    RGB(0.82, 0.37, 0.36),
+    RGB(0.51, 0.70, 0.69),
+    RGB(0.42, 0.62, 0.35),
+    RGB(0.91, 0.79, 0.37),
+    RGB(0.66, 0.49, 0.62),
+    RGB(0.95, 0.63, 0.66),
+    RGB(0.59, 0.46, 0.38),
+    RGB(0.72, 0.69, 0.67) ]
+const SIZE_PALETTE_1 = length(PALETTE_1)
+
 const GP_ENV = Dict{String, Any}(
-    "VERBOSE"    => true,
-    "TMP_PATH"   => mktempdir(),
-    "DEL_INTERM" => true,
-    "SHOW_GSERR" => false,
-    "WARMUP"     => true,
-    )
+    "VERBOSE"      => true,
+    "TMP_PATH"     => mktempdir(),
+    "DEL_INTERM"   => true,
+    "SHOW_GSERR"   => false,
+    "WARMUP"       => true,
+    "PALETTE"      => PALETTE_1,
+    "SIZE_PALETTE" => length(PALETTE_1))
 
 const ∅   = nothing
 const ARR = AbstractRange{<:Real}
