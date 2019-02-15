@@ -81,9 +81,9 @@ for axs ∈ ("x", "y", "x2", "y2")
     f  = Symbol(axs * "ticks")
     a  = Symbol(axs * "axis")
     ex = quote
-        $f!(a::Axes2D, loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; o...) =
+        $f!(a::Axes2D, loc::AVR, lab::Option{Vector{String}}=∅; o...) =
             _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
-        $f!(loc::Union{ARR,AVR}, lab::Option{Vector{String}}=∅; opts...) =
+        $f!(loc::AVR, lab::Option{Vector{String}}=∅; opts...) =
             _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
         function $f!(s::String; o...)
             s_lc = lowercase(s)
