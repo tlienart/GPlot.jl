@@ -48,16 +48,16 @@ const PALETTE_1 = [ # imitated from tableau 10 - 2
     RGB(0.95, 0.63, 0.66),
     RGB(0.59, 0.46, 0.38),
     RGB(0.72, 0.69, 0.67) ]
-const SIZE_PALETTE_1 = length(PALETTE_1)
 
 const GP_ENV = Dict{String, Any}(
-    "VERBOSE"      => true,
-    "TMP_PATH"     => mktempdir(),
-    "DEL_INTERM"   => true,
-    "SHOW_GSERR"   => false,
-    "WARMUP"       => true,
-    "PALETTE"      => PALETTE_1,
-    "SIZE_PALETTE" => length(PALETTE_1))
+    "VERBOSE"      => true,         # whether to write things in the REPL
+    "TMP_PATH"     => mktempdir(),  # where intermedate files will be stored
+    "DEL_INTERM"   => true,         # delete intermediate files
+    "SHOW_GSERR"   => false,        # GLE related, ghostscript errors
+    "WARMUP"       => true,         # whether to warmup GPlot
+    "PALETTE"      => PALETTE_1,    # default color palette
+    "SIZE_PALETTE" => length(PALETTE_1),
+    )
 
 const ∅   = nothing
 const ARR = AbstractRange{<:Real}
