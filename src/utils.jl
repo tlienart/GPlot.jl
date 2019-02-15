@@ -56,11 +56,11 @@ end
 
 #######################################
 
+fl(::Missing) = missing
 fl(::Nothing) = nothing
 fl(x::Real)   = Float64(x)
-fl(v::Union{AVR, ARR}) = convert(Vector{Float64}, v)
-fl(m::AMR) = convert(Matrix{Float64}, m)
-fl(t::Tuple{<:Real, <:Real}) = Float64.(t)
+fl(t::Tuple)  = fl.(t)
+fl(v::AbstractVecOrMat) = fl.(v)
 
 #######################################
 
@@ -83,6 +83,17 @@ function svec2str(v::Vector{String}, sep=",")
     return prod(vi*sep for vi∈v[1:end-1])*v[end]
 end
 svec2str(v::Base.Generator, sep=",") = svec2str(collect(v), sep)
+
+#######################################
+
+csv_writer(path::String, data::VecOrMat{Float64}) = writedlm(path, data)
+function csv_writer(path::String, data::VecOrMat{Union{Missing, Float64}})
+    tempio = IOBuffer()
+    writedlm(tempio, data)
+    # NOTE assumes it's fine. With huge arrays is probably not ideal
+    temps = String(take!(tempio))
+    write(path, replace(temps, "missing"=>"?"))
+end
 
 #######################################
 
