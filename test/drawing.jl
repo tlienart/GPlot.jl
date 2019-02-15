@@ -20,7 +20,7 @@
     @test f.fillstyle.fill == colorant"cornflowerblue"
 
     # HIST2D
-    h = GPlot.Hist2D(x=G.fl(rand(Int16, 5)))
+    h = G.Hist2D(x=G.fl(rand(Int16, 5)))
     @test h isa GPlot.Drawing2D
     @test h isa GPlot.Hist2D
     @test isnothing(h.barstyle.color)
@@ -29,8 +29,9 @@
     @test isnothing(h.scaling)
 
     # GROUPEDBAR2D
-    b = GPlot.BarStyle()
-    g = GPlot.Bar2D(xy=rand(Float32, 5, 3), barstyle=[b, b])
+    f = Figure()
+    bar(rand(Float32, 5, 3))
+    g = f.axes[1].drawings[1]
     @test g isa GPlot.Drawing2D
     @test g isa GPlot.Bar2D
     @test g.stacked == false
