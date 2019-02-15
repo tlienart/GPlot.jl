@@ -9,7 +9,7 @@
 
 Add one or several line plots on the current axes.
 """
-function plot!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, o...)
+function plot!(a::Axes2D, xy::Matrix{<:CanMiss{Float64}}; overwrite=false, o...)
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create scatter object
@@ -26,12 +26,12 @@ function plot!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, o...)
 end
 plot!(::Nothing, a...; o...) = plot!(add_axes2d!(), a...; o...)
 
-plot!(y::AVR; o...)  = plot!(gca(), hcat(fl(1:length(y)), fl(y)); o...)
-plot!(xy::AMR; o...) = plot!(gca(), fl(xy); o...)
+plot!(y::AbstractVector; o...)  = plot!(gca(), fl(hcat(1:length(y), y)); o...)
+plot!(xy::AbstractMatrix; o...) = plot!(gca(), fl(xy); o...)
 
-plot!(x::Union{ARR, AVR}, y::Real; o...)  = plot!(gca(), fl(hcat(x, fill(y, length(x)))); o...)
-plot!(x::Union{ARR, AVR}, y; o...)        = plot!(gca(), fl(hcat(x, y)); o...)
-plot!(x::Union{ARR, AVR}, y, ys...; o...) = plot!(gca(), fl(hcat(x, y, ys...)); o...)
+plot!(x::AbstractVector, y::Real; o...)   = plot!(gca(), fl(hcat(x, fill(y, length(x)))); o...)
+plot!(x::AbstractVector, y; o...)        = plot!(gca(), fl(hcat(x, y)); o...)
+plot!(x::AbstractVector, y, ys...; o...) = plot!(gca(), fl(hcat(x, y, ys...)); o...)
 
 """
     plot(xy; options...)

@@ -67,7 +67,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
 
     # write data to a temporary CSV file
     faux = auxpath(el_counter, origin, figid)
-    writedlm(faux, obj.xy)
+    csv_writer(faux, obj.xy)
 
     # >>>>>>>>>>>>>>>>
     # general GLE syntax is:

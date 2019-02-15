@@ -19,8 +19,8 @@ Line plot(s) or scatter plot(s). The core object is `xy` a matrix with `n` rows
 and `p` columns where `n` is the number of x-axis points and `p-1` is the number
 of line/scatter objects (the first column stores the x-axis points).
 """
-@with_kw mutable struct Scatter2D <: Drawing2D
-    xy::Matrix{Float64} # [x, y1, y2, ...]
+@with_kw mutable struct Scatter2D{T<:CanMiss{Float64}} <: Drawing2D
+    xy::Matrix{T} # [x, y1, y2, ...]
     # --- style
     linestyle  ::Vector{LineStyle}
     markerstyle::Vector{MarkerStyle}
@@ -34,7 +34,7 @@ end
 Internal constructor for `Scatter2D` object initialising an empty vector of `LineStyle`
 and `MarkerStyle` of the appropriate size.
 """
-function Scatter2D(xy::Matrix{Float64})
+function Scatter2D(xy::Matrix{<:CanMiss{Float64}})
     n   = size(xy, 2) - 1 # first column is x
     lss = [LineStyle()   for i ∈ 1:n]
     mss = [MarkerStyle() for i ∈ 1:n]
