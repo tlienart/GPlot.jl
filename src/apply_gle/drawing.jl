@@ -79,17 +79,23 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
         # (1) indicate what data to read
         "\n\tdata \"$faux\" d$(el_counter)=c1,c$(c+1)" |> g
 
+        # if no color has been specified, assign one according to the PALETTE
+        if !isdef(obj.linestyle[c].color)
+            # assumes 10 colors in color palette
+            cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
+            (cc == 0) && (cc = 10)
+            obj.linestyle[c].color = GP_ENV["PALETTE"][cc]
+        end
         # (2) line description
         "\n\td$el_counter" |> g
         if obj.linestyle[c].lstyle == -1 # no line
-            lsc = obj.linestyle[c].color
-            isdef(lsc) && "color $(col2str(lsc))" |> (g, lt[c])
+            "color $(col2str(obj.linestyle[c].color))" |> (g, lt[c])
         else
             "line" |> (g, lt[c])
             apply_linestyle!(g, obj.linestyle[c])
             apply_linestyle!(glet, obj.linestyle[c], legend=true)
             String(take!(glet)) |> lt[c]
-            # if marker color is specified, overlay a line with the markers
+            # XXX if marker color is specified, overlay a line with the markers
             # NOTE this is not recommended as it doesn't play well with legend!
             if isdef(obj.markerstyle[c].color)
                 "\n\tlet d$(el_counter+1) = d$(el_counter)" |> g
@@ -103,19 +109,17 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
         el_counter += 1
     end
 
-    # (3) build legend
-    if isdef(obj.label)
-        if obj.label isa Vector{String}
-            @assert length(obj.label) == length(lt)
-            for c ∈ eachindex(lt)
-                "\n\ttext \"$(obj.label[c])\"" |> leg_entries
-                String(take!(lt[c]))           |> leg_entries
-            end
-        else # single string
-            @assert length(lt) == 1 "Got several lines but a single label; " *
-                                    "expected as many labels as lines."
-            "\n\ttext \"$(obj.label)\"" |> leg_entries
-            String(take!(lt[1]))        |> leg_entries
+    # (3) build legend entries (will be applied if a legend command is issued)
+    if isempty(obj.label)
+        offset = length(lt)
+        for c ∈ eachindex(lt)
+            "\n\ttext \"plot $(el_counter-offset-1+c)\"" |> leg_entries
+            String(take!(lt[c])) |> leg_entries
+        end
+    else
+        for c ∈ eachindex(lt)
+            "\n\ttext \"$(obj.label[c])\"" |> leg_entries
+            String(take!(lt[c])) |> leg_entries
         end
     end
 

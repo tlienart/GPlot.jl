@@ -3,7 +3,14 @@
 ####
 
 # label of a drawing (cf legend)
-set_label!(o::Scatter2D, v::Union{String, Vector{String}}) = (o.label = v; o)
+function set_labels!(o::Scatter2D, v::Vector{String})
+      if length(v) != length(o.linestyle)
+         throw(OptionValueError("labels // dimensions don't match", v))
+      end
+      o.label = v
+      return o
+end
+set_labels!(o::Scatter2D, s::String) = set_labels!(o, fill(s, length(o.linestyle)))
 
 ####
 #### Legend

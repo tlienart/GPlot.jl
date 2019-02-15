@@ -201,10 +201,10 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 ####
 
 const SCATTER2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :name   => id => set_label!, # set_drawing
-    :key    => id => set_label!, # .
-    :label  => id => set_label!, # .
-    :labels => id => set_label!, # .
+    :name   => id => set_labels!, # set_drawing
+    :key    => id => set_labels!, # .
+    :label  => id => set_labels!, # .
+    :labels => id => set_labels!, # .
     )
 merge!(SCATTER2D_OPTS, GLINESTYLE_OPTS)
 merge!(SCATTER2D_OPTS, GMARKERSTYLE_OPTS)
