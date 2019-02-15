@@ -113,7 +113,7 @@ function bar!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, o...)
 end
 bar!(::Nothing, a...; o...) = bar!(add_axes2d!(), a...; o...)
 
-bar!(y::AV; o...) = bar!(gca(), fl(hcat(1:length(y), y)); o...)
+bar!(y::AVM; o...) = bar!(gca(), fl(hcat(1:size(y, 1), y)); o...)
 bar!(x::AV, y::AVM; o...) = bar!(gca(), fl(hcat(x, y)); o...)
 bar!(x::AV, y::AVM, ys...; o...) = bar!(gca(), fl(hcat(x, y, ys...)); o...)
 

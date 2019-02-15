@@ -20,7 +20,7 @@
     @test f.fillstyle.fill == colorant"cornflowerblue"
 
     # HIST2D
-    h = GPlot.Hist2D(x=rand(Int16, 5))
+    h = GPlot.Hist2D(x=G.fl(rand(Int16, 5)))
     @test h isa GPlot.Drawing2D
     @test h isa GPlot.Hist2D
     @test isnothing(h.barstyle.color)
