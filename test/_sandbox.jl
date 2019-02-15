@@ -12,6 +12,13 @@ plot(x, y)
 
 preview()
 
+x = randn(500)
+xm = convert(Vector{GPlot.CanMiss{Float64}}, x)
+
+hist(xm)
+
+preview()
+
 #savefig(f, format="pdf", path="/Users/tlienart/Desktop/")
 
 GPlot.debug_gle(f)

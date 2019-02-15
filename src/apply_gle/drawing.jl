@@ -135,7 +135,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Fill2D,
 
     # write data to a temporary CSV file
     faux = auxpath(el_counter, origin, figid)
-    writedlm(faux, obj.xy1y2)
+    csv_writer(faux, obj.xy1y2)
 
     # >>>>>>>>>>>>>>>>
     # general GLE syntax is:
@@ -170,7 +170,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Hist2D,
 
     # write data to a temporary CSV file
     faux = auxpath(el_counter, origin, figid)
-    writedlm(faux, obj.x)
+    csv_writer(faux, obj.x)
 
     # >>>>>>>>>>>>>>>>
     # general GLE syntax is:
@@ -190,7 +190,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Hist2D,
     el_counter += 1
 
     # number of bins (TODO: better criterion, see StatsPlots.jl)
-    nobs   = length(obj.x)
+    nobs   = sum(e->1, skipmissing(obj.x))
     nbauto = (nobs<10) * nobs +
              (10<=nobs<30) * 10 +
              (nobs>30) * min(round(Int, sqrt(nobs)), 150)
@@ -223,7 +223,7 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Bar2D,
 
     # write data to a temporary CSV file
     faux = auxpath(el_counter, origin, figid)
-    writedlm(faux, obj.xy)
+    csv_writer(faux, obj.xy)
 
     # >>>>>>>>>>>>>>>>
     # general GLE syntax is:

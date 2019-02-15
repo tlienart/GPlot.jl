@@ -86,10 +86,10 @@ svec2str(v::Base.Generator, sep=",") = svec2str(collect(v), sep)
 
 #######################################
 
-csv_writer(path::String, mat::Matrix{Float64}) = writedlm(path, mat)
-function csv_writer(path::String, mat::Matrix{Union{Missing, Float64}})
+csv_writer(path::String, data::VecOrMat{Float64}) = writedlm(path, data)
+function csv_writer(path::String, data::VecOrMat{Union{Missing, Float64}})
     tempio = IOBuffer()
-    writedlm(tempio, mat)
+    writedlm(tempio, data)
     # NOTE assumes it's fine. With huge arrays is probably not ideal
     temps = String(take!(tempio))
     write(path, replace(temps, "missing"=>"?"))

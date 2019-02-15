@@ -18,6 +18,7 @@ abstract type Drawing2D <: Drawing end
 Line plot(s) or scatter plot(s). The core object is `xy` a matrix with `n` rows
 and `p` columns where `n` is the number of x-axis points and `p-1` is the number
 of line/scatter objects (the first column stores the x-axis points).
+Missing values are allowed.
 """
 @with_kw mutable struct Scatter2D{T<:CanMiss{Float64}} <: Drawing2D
     xy::Matrix{T} # [x, y1, y2, ...]
@@ -48,6 +49,7 @@ Fill-plots between two 2D curves. The core object is `xy1y2` a matrix with `n` r
 and `3` columns where the first column stores the `n` x-axis points, and the next two
 columns store the values describing the two curves vertically delimiting the area to
 draw.
+Missing values are not allowed.
 """
 @with_kw mutable struct Fill2D <: Drawing2D
     xy1y2::Matrix{Float64} # [x, y1, y2], fill between y1 and y2
@@ -62,9 +64,10 @@ end
 
 Histograms. The core object is `x`, a vector with `n` entries which are summarised as
 a histogram.
+Missing values are allowed.
 """
-@with_kw mutable struct Hist2D <: Drawing2D
-    x::Vector{Float64}
+@with_kw mutable struct Hist2D{T<:CanMiss{Float64}} <: Drawing2D
+    x::Vector{T}
     # --- style
     barstyle::BarStyle = BarStyle()
     # ---
@@ -80,9 +83,10 @@ end
 Bar plot(s). The core object is `xy`, a matrix with `n` rows and `p` columns. The
 first column keeps track of where the bars should be, the subsequent `p-1` columns
 describe the group of bars (possibly stacked) to display at each of these x-axis points.
+Missing values are allowed.
 """
-@with_kw mutable struct Bar2D <: Drawing2D
-    xy::Matrix{Float64} # first column x, subsequent columns y1, y2, ...
+@with_kw mutable struct Bar2D{T<:CanMiss{Float64}} <: Drawing2D
+    xy::Matrix{T} # first column x, subsequent columns y1, y2, ...
     barstyle::Vector{BarStyle} # this must be given explicitly see bar!
     # ---
     stacked::Bool = false
@@ -98,7 +102,7 @@ end
 Internal constructor for `Bar2D` object initialising an empty vector of `BarStyle`
 of the appropriate size.
 """
-function Bar2D(xy::Matrix{Float64})
+function Bar2D(xy::Matrix{<:CanMiss{Float64}})
     n   = size(xy, 2) - 1 # first column is x
     bss = [BarStyle() for i ∈ 1:n]
     Bar2D(xy=xy, barstyle=bss)

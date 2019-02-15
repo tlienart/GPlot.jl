@@ -60,9 +60,10 @@ const GP_ENV = Dict{String, Any}(
     )
 
 const ∅   = nothing
-const ARR = AbstractRange{<:Real}
+const AV  = AbstractVector
+const AVM = AbstractVecOrMat
+const AM  = AbstractMatrix
 const AVR = AbstractVector{<:Real}
-const AMR = Matrix{<:Real}
 
 const PT_TO_CM   = 0.0352778         # 1pt in cm
 const Option{T}  = Union{Nothing, T} # a useful type for optional values
