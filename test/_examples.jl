@@ -1,4 +1,4 @@
-using GPlot, Colors; PREVIEW = false; SAVEFIG = true; SAVEPATH = "../GPlotExamples.jl/examples/";
+using GPlot, Colors, Random; PREVIEW = false; SAVEFIG = true; SAVEPATH = "../GPlotExamples.jl/examples/";
 
 ####
 #### Simple line plot, no latex
@@ -256,8 +256,43 @@ t = @elapsed begin
     xticks(-5:2.5:5, tickscol="lightgray", angle=45)
     yticks(-.5:0.25:.75, tickscol="lightgray")
 
-    preview(f)
+    PREVIEW && preview(f)
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end
 
+####
+#### Reading from file
+####
+
+x  = range(-1, 1, length=100)
+y  = @. exp(-x^2*cos(10x))
+y2 = @. exp(-x^2*cos(10x))*sin(x)
+
+datpath = joinpath(@__DIR__, "_filetest.csv")
+writedlm(datpath, hcat(x,y,y2))
+
+t = @elapsed begin
+    f = Figure("simple_fromfile_notex", reset=true)
+    plot(:c1, [:c2, :c3], path=datpath, lwidth=0.05)
+    plot!(x, y.-0.1, y2.-0.1)
+    PREVIEW && preview(f)
+    SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
+end
+
+####
+#### Missing values
+####
+
+x  = range(-1, 1, length=18)
+y  = @. exp(-x^2*cos(10x))
+Random.seed!(0)
+mask = [rand()<0.25 for i ∈ eachindex(y)]
+ym = convert(Vector{GPlot.CanMiss{Float64}}, y)
+ym[mask] .= missing
+
+t = @elapsed begin
+    f = Figure("simple_withmissing_notex", reset=true)
+    plot(x, ym)
     PREVIEW && preview(f)
     SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
 end
