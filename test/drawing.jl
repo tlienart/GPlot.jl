@@ -6,7 +6,7 @@
     @test s isa GPlot.Scatter2D
     @test isnothing(s.linestyle[1].lwidth)
     @test isnothing(s.markerstyle[1].color)
-    @test isnothing(s.label)
+    @test isempty(s.label)
     s = GPlot.Scatter2D(rand(3, 2))
     s.linestyle[1].lwidth = 0.5
     @test s.linestyle[1].lwidth == 0.5
@@ -141,7 +141,7 @@ end
     f = Figure()
     x, y = 1:2, exp.(1:2)
     plot(x, y, label="blah")
-    @test gca().drawings[1].label == "blah"
+    @test gca().drawings[1].label == ["blah"]
     legend(pos="top-left")
     @test gca().legend.position == "tl"
     @test_throws GPlot.OptionValueError legend(pos="blah")
