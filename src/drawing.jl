@@ -33,6 +33,20 @@ plot!(x::AV, y::Real; o...) = plot!(gca(), fl(hcat(x, fill(y, length(x)))); o...
 plot!(x::AV, y::AVM; o...)  = plot!(gca(), fl(hcat(x, y)); o...)
 plot!(x::AV, y::AVM, ys...; o...) = plot!(gca(), fl(hcat(x, y, ys...)); o...)
 
+# plot reading directly from file
+function plot!(a::Axes2D, xsym::Symbol, ysym::Vector{Symbol};
+               path="", overwrite=false, o...)
+    overwrite && erase!(a)
+    isempty(path) && throw(OptionValueError("No file path specified."))
+    isfile(path) || throw(OptionValueError("Couldn't find file path", path))
+    s = Scatter2D(xsym, ysym, path)
+    set_properties!(s; o...)
+    push!(a.drawings, s)
+    return a
+end
+plot!(xs::Symbol, ys::Symbol; o...) = plot!(gca(), xs, [ys]; o...)
+plot!(xs::Symbol, ys::Vector{Symbol}; o...) = plot!(gca(), xs, ys; o...)
+
 """
     plot(xy; options...)
     plot(x, y; options...)

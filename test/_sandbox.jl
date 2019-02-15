@@ -19,6 +19,16 @@ hist(xm)
 
 preview()
 
+# NOTE could not directly read single column file so would only be partial support
+# so folks would have to readdlm and then hist...
+f = Figure()
+plot(:c1, :c2, path=joinpath(@__DIR__, "_filetest.csv"), lwidth=0.05)
+
+preview()
+
 #savefig(f, format="pdf", path="/Users/tlienart/Desktop/")
+
+
+preview()
 
 GPlot.debug_gle(f)
