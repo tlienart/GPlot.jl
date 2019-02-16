@@ -1,3 +1,5 @@
+__precompile__(false) # see also warmup=false
+
 module GPlot
 
 using Parameters
