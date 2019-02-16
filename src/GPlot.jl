@@ -54,7 +54,7 @@ const GP_ENV = Dict{String, Any}(
     "TMP_PATH"     => mktempdir(),  # where intermedate files will be stored
     "DEL_INTERM"   => true,         # delete intermediate files
     "SHOW_GSERR"   => false,        # GLE related, ghostscript errors
-    "WARMUP"       => true,         # whether to warmup GPlot
+    "WARMUP"       => false,         # whether to warmup GPlot
     "PALETTE"      => PALETTE_1,    # default color palette
     "SIZE_PALETTE" => length(PALETTE_1),
     )
@@ -107,33 +107,10 @@ include("layout.jl")
 # Rendering of things (preview/savefig)
 include("render.jl")
 
-GP_ENV["ALLFIGS"] = Dict{String, Figure}()
-GP_ENV["CURFIG"]  = nothing
-GP_ENV["CURAXES"] = nothing
+# Extra few utils now that all types have been defined
+include("utils2.jl")
 
-"""
-    gcf()
-
-Return the current active Figure or a new figure if there isn't one.
-"""
-gcf() = isdef(GP_ENV["CURFIG"]) ? GP_ENV["CURFIG"] : Figure() # no ifelse here
-
-"""
-    gca()
-
-Return the current active Axes and `nothing` if there isn't one.
-"""
-gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
-
-"""
-    get_backend(f)
-
-Return the backend type associated with figure `f`.
-"""
-get_backend(f::Figure{B}=gcf()) where {B} = B
-
-# -------
-
+# warmup script
 include("init.jl")
 
 end # module

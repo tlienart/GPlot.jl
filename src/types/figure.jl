@@ -9,4 +9,6 @@ mutable struct Figure{B<:Backend}
     texscale    ::Option{String}     # scale latex * hei (def=1)
     texpreamble ::Option{String}     # latex preamble
     transparency::Option{Bool}       # if true, use cairo device
+    # ---
+    subroutines::Dict{String,String}
 end

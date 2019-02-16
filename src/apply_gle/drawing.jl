@@ -95,26 +95,29 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
             (cc == 0) && (cc = 10)
             obj.linestyle[c].color = GP_ENV["PALETTE"][cc]
         end
-        # (2) line description
-        "\n\td$el_counter" |> g
-        if obj.linestyle[c].lstyle == -1 # no line
-            "color $(col2str(obj.linestyle[c].color))" |> (g, lt[c])
-        else
-            "line" |> (g, lt[c])
+
+        # (2) line and marker description
+        if obj.linestyle[c].lstyle != -1 # there is a line
+            "\n\td$el_counter line" |> g
             apply_linestyle!(g, obj.linestyle[c])
-            apply_linestyle!(glet, obj.linestyle[c], legend=true)
-            String(take!(glet)) |> lt[c]
-            # XXX if marker color is specified, overlay a line with the markers
-            # NOTE this is not recommended as it doesn't play well with legend!
-            if isdef(obj.markerstyle[c].color)
-                "\n\tlet d$(el_counter+1) = d$(el_counter)" |> g
-                el_counter += 1
-                "\n\td$el_counter" |> g
+            # if a marker color is specified and different than the line
+            # color we need to have a special subroutine for GLE
+            mcol_flag = false
+            if isdef(obj.markerstyle[c].color) &&
+                    (obj.markerstyle[c].color != obj.linestyle[c].color)
+                mcol_flag = true
+                add_sub_marker!(Figure(figid, __sub=true), obj.markerstyle[c])
             end
+            apply_markerstyle!(g, obj.markerstyle[c], mcol_flag=mcol_flag)
+        else
+            # scatter plot; if there's no specified marker color,
+            # take the default line color
+            if !isdef(obj.markerstyle[c].color)
+                obj.markerstyle[c].color = obj.linestyle[c].color
+            end
+            "\n\td$el_counter marker" |> g
+            apply_markerstyle!(g, obj.markerstyle[c])
         end
-        # (2b) marker style
-        apply_markerstyle!(glet, obj.markerstyle[c])
-        String(take!(glet)) |> (g, lt[c])
         el_counter += 1
     end
 

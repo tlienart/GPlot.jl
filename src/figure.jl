@@ -18,7 +18,8 @@ exists already, return that object.
 function Figure(id::String, g::Backend; opts...)
 
     f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (12., 9.), TextStyle(font="texcmss", hei=0.35), ∅, ∅, ∅, ∅)
+               (12., 9.), TextStyle(font="texcmss", hei=0.35),
+               ∅, ∅, ∅, ∅, Dict{String,String}())
 
     set_properties!(f; opts...)
     GP_ENV["ALLFIGS"][id] = f
@@ -27,9 +28,10 @@ function Figure(id::String, g::Backend; opts...)
     return f
 end
 
-function Figure(id::String="_fig_"; reset=false, opts...)
+function Figure(id::String="_fig_"; reset=false, __sub=false, opts...)
 
-    id == "_fig_" && return Figure(id, GP_ENV["BACKEND"](); opts...) # fresh
+    # return a fresh figure when calling Figure() unless for subroutines
+    !__sub && id == "_fig_" && return Figure(id, GP_ENV["BACKEND"](); opts...)
     f = get(GP_ENV["ALLFIGS"], id) do
         Figure(id, GP_ENV["BACKEND"](); opts...)
     end
@@ -82,16 +84,35 @@ clf = clf!
 
 Return a bool indicating whether `fig` has axes or not.
 """
-isempty(fig::Figure) = isempty(fig.axes)
+isempty(f::Figure) = isempty(f.axes)
 
 """
     destroy(fig)
 
 Remove reference to `fig` and set the current figure to nothing.
 """
-function destroy(fig)
-    delete!(GP_ENV["ALLFIGS"], fig.id)
-    GP_ENV["CURFIG"] = nothing
+function destroy(f::Figure)
+    delete!(GP_ENV["ALLFIGS"], f.id)
+    GP_ENV["CURFIG"]  = nothing
     GP_ENV["CURAXES"] = nothing
+    return
+end
+
+####
+#### Subroutines
+####
+
+function add_sub_marker!(f::Figure, m::MarkerStyle)
+    if str(m) ∉ keys(f.subroutines)
+        f.subroutines[str(m)] = """
+        sub _$(str(m)) size mdata
+        	gsave
+            set color $(col2str(m.color))
+            marker $(m.marker) 1
+        	grestore
+        end sub
+        define marker $(str(m)) _$(str(m))
+        """
+    end
     return
 end
