@@ -1,18 +1,42 @@
 # Todo
 
-### Note from plane
-
-* trying to get multiplot working with vector assignments for everything, similar for bar
-* use colorbrewer for default, note that only up to 10 so if more would have to warn and loop, modulo stuff.
-
 ## NOW
 
-* should be able to do `xticks("off")` and not have to do `xticks([], off=true)`, also when it's off you probably should remove any `xplaces` or `xlabels` if there's any.
 * legend called multiple times, will duplicate
-* savefig needs more testing
 * more tests for legends, either via label keyword or via construction
 
-### added features
+### add features
+
+* when reading from file can use `0` to let GLE generate. That's the approach that should be used for like Hist2D from file or Bar from file.
+
+* can use basic Latex without actual tex mode (see appendix A3) for instance sub/super-scripts. This can work fine for a lot of simple things and avoids the overhead of pdflatex. Basically all greek letters, most standard maths ops, should link to extracted page 89 of the manual.
+
+* marker color (proper way) + how to define arbitrary marker
+
+```
+size 8 6
+set font psh hei 0.35
+
+sub mymarker size mdata
+	gsave ! save font and x,y
+	set just left font pszd hei size
+	set color red
+	t$ = "\char{102}"
+	rmove -twidth(t$)/2 -theight(t$)/2 ! centers marker
+	write t$
+	grestore ! restore font and x,y
+end sub
+
+defmarker hand pszd 43 1 0 0 ! scale dx dy
+define marker weird mymarker
+
+begin graph
+	data "dat.dat"
+	d1 line color blue
+	d1 marker weird
+!	d1 marker hand
+end graph
+```
 
 * hline/vline/line
 
