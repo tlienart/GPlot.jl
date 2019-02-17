@@ -48,7 +48,7 @@ function savefig(fig::Figure{GLE}, fn::String="";
     ext ∈ ["eps", "ps", "pdf", "svg", "jpg", "png"] ||
             throw(OptionValueError("output file type", ext))
     # get default parameters, change if required
-    res = 150
+    res = 120
     for optname ∈ opts.itr
         if optname ∈ [:res, :resolution]
             r = posint(Int(opts[optname]), :resolution)

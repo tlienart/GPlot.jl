@@ -56,7 +56,6 @@ const GP_ENV = Dict{String, Any}(
     "TMP_PATH"     => mktempdir(),  # where intermedate files will be stored
     "DEL_INTERM"   => true,         # delete intermediate files
     "SHOW_GSERR"   => false,        # GLE related, ghostscript errors
-    "WARMUP"       => false,         # whether to warmup GPlot
     "PALETTE"      => PALETTE_1,    # default color palette
     "SIZE_PALETTE" => length(PALETTE_1),
     )
