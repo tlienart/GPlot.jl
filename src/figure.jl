@@ -28,10 +28,10 @@ function Figure(id::String, g::Backend; opts...)
     return f
 end
 
-function Figure(id::String="_fig_"; reset=false, __sub=false, opts...)
+function Figure(id::String="_fig_"; reset=false, _sub=false, opts...)
 
     # return a fresh figure when calling Figure() unless for subroutines
-    !__sub && id == "_fig_" && return Figure(id, GP_ENV["BACKEND"](); opts...)
+    !_sub && id == "_fig_" && return Figure(id, GP_ENV["BACKEND"](); opts...)
     f = get(GP_ENV["ALLFIGS"], id) do
         Figure(id, GP_ENV["BACKEND"](); opts...)
     end

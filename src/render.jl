@@ -1,12 +1,12 @@
 """
-    cleanup(fig; exclude)
+    cleanup(fig, exclude)
 
 Internal function to delte all auxiliary files associated with the figure `fig` apart from those
 contained in `exclude`. In particular: any data files supporting `Drawings` object and any `.gle`
 script. This function is called after the `gle` engine is called (after an output image has
 been generated) and only if the flag `GP_ENV["DEL_INTERM"]` is set to `true` (default).
 """
-function cleanup(fig::Figure{GLE}; exclude=Vector{String}())
+function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
     # aux `.gle` folder
     rm(joinpath(GP_ENV["TMP_PATH"], ".gle"), recursive=true, force=true)
     # aux `fig.id...` files
@@ -48,10 +48,10 @@ function savefig(fig::Figure{GLE}, fn::String="";
     ext ∈ ["eps", "ps", "pdf", "svg", "jpg", "png"] ||
             throw(OptionValueError("output file type", ext))
     # get default parameters, change if required
-    res = 200
+    res = 150
     for optname ∈ opts.itr
         if optname ∈ [:res, :resolution]
-            r = posint(Int(opts[optname]))
+            r = posint(Int(opts[optname]), :resolution)
         else
             throw(UnknownOptionError(optname, "gle command"))
         end
