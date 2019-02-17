@@ -34,19 +34,19 @@ supported.
 | texcmtt  | computer modern typewriter | ![](../assets/fonts/texcmtt.png)              |   ✔   |
 | texcmitt | computer modern italic typewriter | ![](../assets/fonts/texcmitt.png)      |   ✔   |
 | texmi |  | ![](../assets/fonts/texmi.png)      |   ✔   |
-| plsr |  | ![](../assets/fonts/plsr.png)      |   ?   |
-| pldr |  | ![](../assets/fonts/pldr.png)      |   ?   |
-| pltr |  | ![](../assets/fonts/pltr.png)      |   ?   |
-| plti |  | ![](../assets/fonts/plti.png)      |   ?   |
-| plcr |  | ![](../assets/fonts/plcr.png)      |   ?   |
-| plci |  | ![](../assets/fonts/plci.png)      |   ?   |
-| plss |  | ![](../assets/fonts/plss.png)      |   ?   |
-| plcs |  | ![](../assets/fonts/plcs.png)      |   ?   |
-| plsa |  | ![](../assets/fonts/plsa.png)      |   ?   |
-| plba |  | ![](../assets/fonts/plba.png)      |   ?   |
-| plge |  | ![](../assets/fonts/plge.png)      |   ?   |
-| plgg |  | ![](../assets/fonts/plgg.png)      |   ?   |
-| plgi |  | ![](../assets/fonts/plgi.png)      |   ?   |
+| plsr |  | ![](../assets/fonts/plsr.png)      |   ✔   |
+| pldr |  | ![](../assets/fonts/pldr.png)      |   ✔   |
+| pltr |  | ![](../assets/fonts/pltr.png)      |   ✔   |
+| plti |  | ![](../assets/fonts/plti.png)      |   ✔   |
+| plcr |  | ![](../assets/fonts/plcr.png)      |   ✔   |
+| plci |  | ![](../assets/fonts/plci.png)      |   ✔   |
+| plss |  | ![](../assets/fonts/plss.png)      |   ✔   |
+| plcs |  | ![](../assets/fonts/plcs.png)      |   ✔   |
+| plsa |  | ![](../assets/fonts/plsa.png)      |   ✔   |
+| plba |  | ![](../assets/fonts/plba.png)      |   ✔   |
+| plge |  | ![](../assets/fonts/plge.png)      |   ✔   |
+| plgg |  | ![](../assets/fonts/plgg.png)      |   ✔   |
+| plgi |  | ![](../assets/fonts/plgi.png)      |   ✔   |
 | pstr | times roman  | ![](../assets/fonts/pstr.png)      |  ✘   |
 | pstb | times bold  | ![](../assets/fonts/pstb.png)      |  ✘   |
 | psti | times italic  | ![](../assets/fonts/psti.png)      |  ✘   |
@@ -104,7 +104,7 @@ supported.
 | :------: | :-----: | :--------: | :---: |
 | pssym |  | ![](../assets/fonts/pssym.png)      |  ✘   |
 | plcg | (greek) | ![](../assets/fonts/plcg.png)      |  ✘   |
-| plsg | (greek) | ![](../assets/fonts/plsg.png)      |   ?   |
+| plsg | (greek) | ![](../assets/fonts/plsg.png)      |   ✘   |
 | plcc | (cyrillic) | ![](../assets/fonts/plcc.png)      |  ✘   |
 | pszd | zapfchancery demi | ![](../assets/fonts/pszd.png)      |  ✘   |
 
