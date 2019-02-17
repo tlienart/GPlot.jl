@@ -12,3 +12,13 @@ mutable struct Figure{B<:Backend}
     # ---
     subroutines::Dict{String,String}
 end
+
+function Base.show(io::IO, ::MIME"text/plain", f::Figure{GLE})
+    s = "GPlot.Figure{GLE}" *
+        "\n\t"*rpad("Name:", 15) * "\"$(f.id)\"" *
+        "\n\t"*rpad("Size:", 15) * "$(round.(f.size, digits=1))" *
+        "\n\t"*rpad("N. axes:", 15) * "$(length(f.axes))" *
+        "\n\t"*rpad("LaTeX:", 15) * (isdef(f.texlabels) ? "$(f.texlabels)" : "false") *
+        "\n\t"*rpad("Transparent:", 15) * (isdef(f.transparency) ? "$(f.transparency)" : "false")
+    write(io, s)
+end

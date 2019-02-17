@@ -1,4 +1,4 @@
-__precompile__(false) # see also warmup=false
+#__precompile__(false) # see also warmup=false
 
 module GPlot
 
