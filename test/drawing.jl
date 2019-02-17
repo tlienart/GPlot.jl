@@ -186,7 +186,7 @@ end
     scatter([1, 2], exp.([1, 2]), color="blue")
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "d1=c1,c2")
-    isin(s, "d1 color rgba(0.0,0.0,1.0,1.0) marker circle")
+    isin(s, "d1 marker circle color rgba(0.0,0.0,1.0,1.0)")
 
     # FILL2D
     clf()

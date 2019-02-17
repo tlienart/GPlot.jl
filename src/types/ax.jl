@@ -36,4 +36,14 @@ abstract type Axes{B <: Backend} end
 end
 
 
+function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})
+    s = "GPlot.Axes2D{GLE}" *
+        "\n\t"*rpad("Title:", 15) * (isdef(a.title) ? "\"$(a.title.text)\"" : "none") *
+        "\n\t"*rpad("N. drawings:", 15) * "$(length(a.drawings))" *
+        "\n\t"*rpad("Math mode:", 15) * (isdef(a.math) ? a.math : "false") *
+        "\n\t"*rpad("Layout origin:", 15) * (isdef(a.origin) ? "$(round.(a.origin, digits=1))" : "auto")
+    write(io, s)
+end
+
+
 mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined

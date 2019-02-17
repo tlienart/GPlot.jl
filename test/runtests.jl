@@ -1,8 +1,5 @@
 using GPlot; include("_test.jl")
 
-# 13 feb 19
-include("init.jl")
-
 # 12 feb 19
 include("utils.jl")
 

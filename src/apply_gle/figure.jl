@@ -25,7 +25,18 @@ function assemble_figure(f::Figure{GLE}; debug=false)
         "\nset texscale"    |> g
         ifelse(isdef(f.texscale), f.texscale, "scale") |> g
     end
-    foreach(a -> apply_axes!(g, a, f.id), f.axes)
+    write(g.io, "\n")
+    # NOTE: this organisation is so that if axes need extra
+    # subroutines, these will be generated after applying axes
+    # but need to be put before in the GLE script
+    gtemp = GLE()
+    foreach(a -> apply_axes!(gtemp, a, f.id), f.axes)
+    if !isempty(f.subroutines)
+        for sub ∈ values(f.subroutines)
+            sub |> g
+        end
+    end
+    gtemp |> g
     # deal with proper dir
     if debug
         return String(take!(g))

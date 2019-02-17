@@ -115,7 +115,7 @@ end
     # markerstyle
     ms = G.MarkerStyle(marker="circle", msize=0.5, color=colorant"red")
     G.apply_markerstyle!(g, ms); s = String(take!(g))
-    isin(s, "marker circle msize 0.5 color rgba(1.0,0.0,0.0,1.0)")
+    isin(s, "circle msize 0.5 color rgba(1.0,0.0,0.0,1.0)")
     ms = G.MarkerStyle()
     G.apply_markerstyle!(g, ms); s = String(take!(g))
     @test s == ""
