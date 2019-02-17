@@ -196,6 +196,14 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Hist2D,
     # (4) bar d2 width width_ fill color_ color color_ pattern pattern_ horiz
     # <<<<<<<<<<<<<<<<
 
+    # if no color has been specified, assign one according to the PALETTE
+    if !isdef(obj.barstyle.fill) && !isdef(obj.barstyle.color)
+        cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
+        (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
+        obj.barstyle.color = GP_ENV["PALETTE"][cc]
+        obj.barstyle.fill  = colorant"white"
+    end
+
     # (1) indicate what data to read
     "\n\tdata \"$faux\" d$(el_counter)" |> g
 
@@ -254,6 +262,20 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Bar2D,
     # bar d1,d2 ...
     # bar d3,d4 from d1,d2 ...
     # <<<<<<<<<<<<<<<<
+
+    # if no color has been specified, assign one according to the PALETTE
+    for c ∈ eachindex(obj.barstyle)
+        if !isdef(obj.barstyle[c].fill)
+            if !isdef(obj.barstyle[c].color)
+                cc = mod(el_counter+c-1, GP_ENV["SIZE_PALETTE"])
+                (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
+                obj.barstyle[c].fill = GP_ENV["PALETTE"][cc]
+                obj.barstyle[c].color = colorant"white"
+            else
+                obj.barstyle[c].fill = colorant"white"
+            end
+        end
+    end
 
     nbars = size(obj.xy, 2) - 1
 
