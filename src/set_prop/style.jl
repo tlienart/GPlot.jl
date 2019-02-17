@@ -163,16 +163,25 @@ end
 """
     set_msize!(obj, msize)
 
-Internal function to set the marker size associated with object `obj`.
+Internal function to set the marker size associated with object `obj`. If no marker has been given,
+set it to a filled circle.
 """
-set_msize!(o::MarkerStyle, v::Float64) = (o.msize = v; o)
+function set_msize!(o::MarkerStyle, v::Float64)
+    isdef(o.marker) || (o.marker = "fcircle")
+    o.msize = v
+    return o
+end
 
 """
     set_mcol!(obj, col)
 
-Internal function to set the marker color.
+Internal function to set the marker color. If no marker has been given, set it to a filled circle.
 """
-set_mcol!(o::MarkerStyle, c::Color) = (o.color = c; o)
+function set_mcol!(o::MarkerStyle, c::Color)
+    isdef(o.marker) || (o.marker = "fcircle")
+    o.color = c
+    return o
+end
 
 
 # generate functions that take vector inputs for linestyle and markerstyle

@@ -11,12 +11,14 @@ end
 Gnuplot() = Gnuplot(IOBuffer())
 
 # write to buffer (or buffer encapsulating object) with form (s |> b)
-|>(s, io::IOBuffer) = write(io, s, " ")
-|>(s, b::Backend) = write(b.io, s, " ")
-|>(s, tio::Tuple) = @. |>(s, tio)
+|>(s::String, io::IOBuffer) = write(io, s, " ")
+|>(s::String, b::Backend)   = write(b.io, s, " ")
+|>(s::String, tio::Tuple)   = @. |>(s, tio)
 
 # read buffer encapsulated by `b`
-take!(b::Backend)   = take!(b.io)
+take!(b::Backend) = take!(b.io)
+
+|>(bin::Backend, bout::Backend) = write(bout.io, take!(bin))
 
 #######################################
 
@@ -72,6 +74,13 @@ function col2str(col::Colorant)
     crgba = convert(RGBA, col)
     r, g, b, α = round3d.([crgba.r, crgba.g, crgba.b, crgba.alpha])
     return "rgba($r,$g,$b,$α)"
+end
+# used by str(markerstyle)
+function col2str2(col::Colorant)
+    crgba = convert(RGBA, col)
+    r, g, b, α = round3d.([crgba.r, crgba.g, crgba.b, crgba.alpha])
+    s = "rgba_$(r)_$(g)_$(b)_$(α)"
+    return replace(s, "."=>"w")
 end
 
 # unroll a vector into a string with the elements separated by a space

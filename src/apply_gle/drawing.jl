@@ -8,7 +8,7 @@ containing the drawing data.
 """
 function apply_drawings!(g::GLE, drawings::Vector{Drawing},
                          axorigin::NTuple{2,Float64}, figid::String)
-    leg_entries = IOBuffer()
+    leg_entries = GLE()
     # element counter to have an index over objects drawn
     el_cntr = 1
     for drawing ∈ drawings
@@ -25,13 +25,13 @@ end
 Internal function to apply a `Legend` object `leg` in a GLE context with entries
 `entries` (constructed through the `apply_drawings` process).
 """
-function apply_legend!(g::GLE, leg::Legend, entries::IOBuffer)
+function apply_legend!(g::GLE, leg::Legend, entries::GLE)
     "\nbegin key"              |> g
     "\n\tcompact"              |> g
     isdef(leg.position) && "\n\tposition $(leg.position)" |> g
     isdef(leg.hei)      && "\n\thei $(leg.hei)"           |> g
 #    "offset 0.2 0.2"   |> g
-    String(take!(entries)) |> g
+    entries                |> g
     "\nend key"            |> g
     return
 end
@@ -59,11 +59,10 @@ Internal function to apply a `Drawing` object `obj` in a GLE context `g` with cu
 legend entries `leg_entries` (possibly empty), current element counter `el_counter`
 and `origin` and `figid` are used to make the auxiliary file name unique.
 """
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, obj::Scatter2D,
                         el_counter::Int, origin::NTuple{2,Float64}, figid::String)
-    # temporary buffers to help for the legend
-    lt   = [IOBuffer() for c ∈ eachindex(obj.linestyle)]
-    glet = GLE()
+    # temporary buffers to help build the legend
+    lt = [GLE() for c ∈ eachindex(obj.linestyle)]
 
     if isdef(obj.path)
         # reading directly from existing file
@@ -90,31 +89,39 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
 
         # if no color has been specified, assign one according to the PALETTE
         if !isdef(obj.linestyle[c].color)
-            # assumes 10 colors in color palette
             cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
-            (cc == 0) && (cc = 10)
+            (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
             obj.linestyle[c].color = GP_ENV["PALETTE"][cc]
         end
-        # (2) line description
-        "\n\td$el_counter" |> g
-        if obj.linestyle[c].lstyle == -1 # no line
-            "color $(col2str(obj.linestyle[c].color))" |> (g, lt[c])
-        else
-            "line" |> (g, lt[c])
-            apply_linestyle!(g, obj.linestyle[c])
-            apply_linestyle!(glet, obj.linestyle[c], legend=true)
-            String(take!(glet)) |> lt[c]
-            # XXX if marker color is specified, overlay a line with the markers
-            # NOTE this is not recommended as it doesn't play well with legend!
-            if isdef(obj.markerstyle[c].color)
-                "\n\tlet d$(el_counter+1) = d$(el_counter)" |> g
-                el_counter += 1
-                "\n\td$el_counter" |> g
+
+        # (2) line and marker description
+        # build a tuple with the current buffer and the legend entry buffer
+        g_ltc = (g, lt[c])
+        if obj.linestyle[c].lstyle != -1
+            # Line plot
+            "\n\td$el_counter" |> g
+            "line" |> g_ltc
+            map(e->apply_linestyle!(e, obj.linestyle[c]), g_ltc)
+            # if a marker color is specified and different than the line
+            # color we need to have a special subroutine for GLE
+            mcol_flag = false
+            if isdef(obj.markerstyle[c].color) &&
+                    (obj.markerstyle[c].color != obj.linestyle[c].color)
+                mcol_flag = true
+                add_sub_marker!(Figure(figid, _sub=true), obj.markerstyle[c])
             end
+            map(e->apply_markerstyle!(e, obj.markerstyle[c], mcol_flag=mcol_flag), g_ltc)
+        else
+            # Scatter plot; if there's no specified marker color,
+            # take the default line color
+            if !isdef(obj.markerstyle[c].color)
+                obj.markerstyle[c].color = obj.linestyle[c].color
+            end
+            # apply markerstyle
+            "\n\td$el_counter" |> g
+            "marker" |> g_ltc
+            map(e->apply_markerstyle!(e, obj.markerstyle[c]), g_ltc)
         end
-        # (2b) marker style
-        apply_markerstyle!(glet, obj.markerstyle[c])
-        String(take!(glet)) |> (g, lt[c])
         el_counter += 1
     end
 
@@ -123,12 +130,12 @@ function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Scatter2D,
         offset = length(lt)
         for c ∈ eachindex(lt)
             "\n\ttext \"plot $(el_counter-offset-1+c)\"" |> leg_entries
-            String(take!(lt[c])) |> leg_entries
+            lt[c] |> leg_entries
         end
     else
         for c ∈ eachindex(lt)
             "\n\ttext \"$(obj.label[c])\"" |> leg_entries
-            String(take!(lt[c])) |> leg_entries
+            lt[c] |> leg_entries
         end
     end
 
@@ -139,7 +146,7 @@ end
 #### Apply a Fill2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Fill2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, obj::Fill2D,
                         el_counter::Int, origin::NTuple{2,Float64}, figid::String)
 
     # write data to a temporary CSV file
@@ -170,7 +177,7 @@ end
 #### Apply a Hist2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Hist2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, obj::Hist2D,
                         el_counter::Int, origin::NTuple{2,Float64}, figid::String)
 
     # # temporary buffers to help for the legend
@@ -227,7 +234,7 @@ end
 #### Apply Bar2D
 ####
 
-function apply_drawing!(g::GLE, leg_entries::IOBuffer, obj::Bar2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, obj::Bar2D,
                         el_counter::Int, origin::NTuple{2,Float64}, figid::String)
 
     # write data to a temporary CSV file
