@@ -23,5 +23,4 @@ Return the backend type associated with figure `f`.
 """
 get_backend(f::Figure{B}=gcf()) where {B} = B
 
-
 str(m::MarkerStyle) = "$(m.marker)_$(col2str2(m.color))"

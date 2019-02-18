@@ -10,6 +10,18 @@
     s = GPlot.Scatter2D(rand(3, 2))
     s.linestyle[1].lwidth = 0.5
     @test s.linestyle[1].lwidth == 0.5
+    @test isnothing(s.xsym)
+    @test isnothing(s.ysym)
+    @test isnothing(s.path)
+
+    # SCATTER2D (from file)
+    s = G.Scatter2D(:c1, [:c2, :c3], "blah")
+    @test isempty(s.xy)
+    @test length(s.linestyle) == 2
+    @test length(s.markerstyle) == 2
+    @test s.xsym == :c1
+    @test s.ysym == [:c2, :c3]
+    @test s.path == "blah"
 
     # FILL2D
     f = GPlot.Fill2D(xy1y2=rand(Float16, 5, 3))

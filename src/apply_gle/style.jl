@@ -18,10 +18,10 @@ Internal function to apply the linestyle `s` in a GLE context.
 """
 function apply_linestyle!(g::GLE, s::LineStyle; legend=false)
     isanydef(s) || return
-    isdef(s.lstyle) && "lstyle $(s.lstyle)"        |> g
-    isdef(s.lwidth) && "lwidth $(s.lwidth)"        |> g
-    isdef(s.color)  && "color $(col2str(s.color))" |> g
-    legend || isdef(s.smooth) && "smooth"          |> g # only for dn lines
+    isdef(s.lstyle) && "lstyle $(s.lstyle)"           |> g
+    isdef(s.lwidth) && "lwidth $(s.lwidth)"           |> g
+    isdef(s.color)  && "color $(col2str(s.color))"    |> g
+    legend || isdef(s.smooth) && s.smooth && "smooth" |> g # only for dn lines
     return
 end
 
