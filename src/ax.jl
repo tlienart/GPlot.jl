@@ -27,8 +27,8 @@ for axs ∈ ("x", "y", "x2", "y2")
     f  = Symbol(axs * "axis")    # :xaxis  ...
     ff = Symbol(axs[1] * "axis") # :x2axis->:xaxis (for grid)
     ex = quote
-        $f!(a::Axis; opts...)   = (set_properties!(a; opts...); a)
-        $f!(a::Axes; opts...)   = (set_properties!(a.$f; opts...); a)
+        $f!(a::Axis; opts...)   = set_properties!(a; opts...)
+        $f!(a::Axes; opts...)   = set_properties!(a.$f; opts...)
         $f!(::Nothing; opts...) = $f!(add_axes2d!(); opts...)
         function $f!(s::String=""; opts...)
             isempty(s) && return $f!(gca(); opts...)

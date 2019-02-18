@@ -33,3 +33,11 @@ color than the line is required. In that case a subroutine has to be written to 
 GLE, see [`add_sub_marker!`](@ref).
 """
 str(m::MarkerStyle) = "$(m.marker)_$(col2str2(m.color))"
+
+
+"""
+    palette(v::Vector{Color})
+
+Set the default palette. To see the current one, write `GPlot.GP_ENV["PALETTE"]` in the REPL.
+"""
+set_palette(v::Vector{<:Color}) = (GP_ENV["PALETTE"] = v; GP_ENV["SIZE_PALETTE"] = length(v); ∅)
