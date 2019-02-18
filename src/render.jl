@@ -37,7 +37,7 @@ the current folder.
 function savefig(fig::Figure{GLE}, fn::String="";
                  format::String="png", path::String="", res::Int=200)
 
-    isnothing(GP_ENV["BACKEND"]) && (@warn "No backend available to render the figure."; return)
+    GP_ENV["HAS_BACKEND"] || (@warn "No backend available to render the figure."; return)
     isempty(fig) && (@warn "The figure is empty, nothing to render."; return)
 
     # by default take the figure id as name

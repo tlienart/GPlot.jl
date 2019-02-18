@@ -1,5 +1,5 @@
 @testset "▶ /render                     " begin
-    if !isnothing(G.GP_ENV["HAS_BACKEND"])
+    if G.GP_ENV["HAS_BACKEND"]
         #
         # SAVEFIG
         #
