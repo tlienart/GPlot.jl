@@ -8,7 +8,7 @@ been generated) and only if the flag `GP_ENV["DEL_INTERM"]` is set to `true` (de
 """
 function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
     # aux `.gle` folder
-    rm(joinpath(GP_ENV["TMP_PATH"], ".gle"), recursive=true, force=true)
+    rm(joinpath(GP_ENV["TMP_PATH"], fig.id * ".gle"), force=true)
     # aux `fig.id...` files
     auxfiles = filter!(f -> startswith(f, fig.id), readdir(GP_ENV["TMP_PATH"]))
     for af ∈ auxfiles
@@ -32,10 +32,10 @@ possible formats are `eps|ps|pdf|svg|jpg|png`.
 * `path`: a string specifying the output path where the output file should be saved. If it doesn't
 exist, an attempt will be made to create it (which may fail). By default the file is saved in
 the current folder.
-* `res` or `resolution`: output file resolution (typical number is 200).
+* `res`: output file resolution (typical number is 200).
 """
 function savefig(fig::Figure{GLE}, fn::String="";
-                 format::String="png", path::String="", res::Int=120)
+                 format::String="png", path::String="", res::Int=200)
 
     isnothing(GP_ENV["BACKEND"]) && (@warn "No backend available to render the figure."; return)
     isempty(fig) && (@warn "The figure is empty, nothing to render."; return)
@@ -103,7 +103,7 @@ function PreviewFigure(fig::Figure)
             (isdefined(Main, :IJulia) && Main.IJulia.inited)
     disp || error("Preview is only available in Juno and IJulia.")
     # trigger a draft build
-    fname = savefig(fig, res=100)
+    fname = savefig(fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
     isdef(fname) || return
     return PreviewFigure(fig, fname)
 end
