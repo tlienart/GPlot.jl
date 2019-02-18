@@ -12,6 +12,25 @@
     @test isnothing(a.log)
     @test isnothing(a.min)
     @test isnothing(a.max)
+
+    a = GPlot.Axes2D{GPlot.GLE}()
+    @test a.x2axis.prefix == "x2"
+    @test isempty(a.drawings)
+    @test isnothing(a.title)
+    @test isnothing(a.size)
+    @test isnothing(a.legend)
+    @test isnothing(a.math)
+    @test isnothing(a.origin)
+
+    # show
+    io = IOBuffer()
+    show(io, MIME("text/plain"), a)
+    s = String(take!(io))
+    isin(s, "GPlot.Axes2D{GLE}")
+    isin(s, rpad("Title:", 15) * "none")
+    isin(s, rpad("N. drawings:", 15) * "0")
+    isin(s, rpad("Math mode:", 15) * "false")
+    isin(s, rpad("Layout origin:", 15) * "auto")
 end
 
 @testset "▶ /ax                         " begin

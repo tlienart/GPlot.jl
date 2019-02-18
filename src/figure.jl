@@ -14,6 +14,11 @@ exists already, return that object.
 * `texscale`: either `fixed`, `none` or `scale` to match the size of LaTeX expressions to the ambient fontsize (`fixed` and `scale` match, `none` doesn't)
 * `preamble`, `texpreamble`: the LaTeX preamble, where you can change the font that is used and also make sure that the symbols you want to use are available.
 * `alpha`, `transparent`, `transparency`: a bool indicating whether there may be transparent fillings in which case cairo is used
+
+# Other options (internal use mostly):
+
+* `reset`: a bool, if true will erase the figure if it exists (instead of just returning it).
+
 """
 function Figure(id::String, g::Backend; opts...)
 

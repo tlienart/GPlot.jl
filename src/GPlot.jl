@@ -52,11 +52,12 @@ const PALETTE_1 = [ # imitated from tableau 10 - 2
     RGB(0.72, 0.69, 0.67) ]
 
 const GP_ENV = Dict{String, Any}(
-    "VERBOSE"      => true,         # whether to write things in the REPL
-    "TMP_PATH"     => mktempdir(),  # where intermedate files will be stored
-    "DEL_INTERM"   => true,         # delete intermediate files
-    "SHOW_GSERR"   => false,        # GLE related, ghostscript errors
-    "PALETTE"      => PALETTE_1,    # default color palette
+    "BACKEND"      => nothing,           # set in __init__ (hopefully to true)
+    "VERBOSE"      => true,              # whether to write things in the REPL
+    "TMP_PATH"     => mktempdir(),       # where intermedate files will be stored
+    "DEL_INTERM"   => true,              # delete intermediate files
+    "SHOW_GSERR"   => false,             # GLE related, ghostscript errors
+    "PALETTE"      => PALETTE_1,         # default color palette
     "SIZE_PALETTE" => length(PALETTE_1),
     )
 
