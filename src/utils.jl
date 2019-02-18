@@ -39,7 +39,7 @@ function clear!(obj::T; exclude=Vector{Symbol}()) where T
         fn ∈ exclude && continue
         (Nothing <: fieldtype(T, fn)) && setfield!(obj, fn, nothing)
     end
-    return
+    return obj
 end
 
 # see cla! (clear axes)
@@ -99,9 +99,12 @@ csv_writer(path::String, data::VecOrMat{Float64}) = writedlm(path, data)
 function csv_writer(path::String, data::VecOrMat{Union{Missing, Float64}})
     tempio = IOBuffer()
     writedlm(tempio, data)
-    # NOTE assumes it's fine. With huge arrays is probably not ideal
+    # NOTE assumes it's fine to materialize the buffer with huge arrays
+    # it's probably not ideal but in general should be fine, huge arrays are more
+    # likely to happen with 3D objects (mesh) which are somewhat less likely to have missings
     temps = String(take!(tempio))
     write(path, replace(temps, "missing"=>"?"))
+    return nothing
 end
 
 #######################################

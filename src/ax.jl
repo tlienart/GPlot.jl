@@ -43,7 +43,7 @@ for axs ∈ ("x", "y", "x2", "y2")
     eval(ex)
 end
 
-math!(a::Axes2D) = (a.math = true; a)
+math!(a::Axes2D) = (a.math = true; nothing)
 math!(::Nothing) = (add_axes2d!(); math!(gca()))
 math!() = math!(gca())
 math = math!
@@ -70,7 +70,7 @@ function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)
             end
         end
     end
-    return a
+    return nothing
 end
 grid!(::Nothing; opts...) = grid!(add_axes2d!(); opts...)
 grid!(; opts...) = grid!(gca(); opts...)
@@ -89,7 +89,7 @@ function _lim!(a::Axes2D, el::Symbol, min::Option{Float64}, max::Option{Float64}
     axis = getfield(a, el)
     setfield!(axis, :min, min)
     setfield!(axis, :max, max)
-    return a
+    return nothing
 end
 _lim!(::Nothing, el, min, max) = _lim!(add_axes2d!(), el, fl(min), fl(max))
 
@@ -123,7 +123,7 @@ function _scale!(a::Axis, v::String)
     a.log = get(AXSCALE, v) do
         throw(OptionValueError("axis scale", v))
     end
-    return a
+    return nothing
 end
 
 # Generate xscale!, xscale, and associated for each axis

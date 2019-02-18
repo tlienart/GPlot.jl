@@ -21,4 +21,5 @@ function Base.show(io::IO, ::MIME"text/plain", f::Figure{GLE})
         "\n\t"*rpad("LaTeX:", 15) * (isdef(f.texlabels) ? "$(f.texlabels)" : "false") *
         "\n\t"*rpad("Transparent:", 15) * (isdef(f.transparency) ? "$(f.transparency)" : "false")
     write(io, s)
+    return nothing
 end

@@ -100,7 +100,7 @@ function destroy(f::Figure)
     delete!(GP_ENV["ALLFIGS"], f.id)
     GP_ENV["CURFIG"]  = nothing
     GP_ENV["CURAXES"] = nothing
-    return
+    return nothing
 end
 
 ####
@@ -119,5 +119,5 @@ function add_sub_marker!(f::Figure, m::MarkerStyle)
         define marker $(str(m)) _$(str(m))
         """
     end
-    return
+    return nothing
 end

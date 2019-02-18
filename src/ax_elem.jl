@@ -18,7 +18,7 @@ function _title!(a::Axes2D, text::String, el::Symbol;
         obj.title = Title(text=text)
     end
     set_properties!(obj.title; opts...)
-    return a
+    return nothing
 end
 _title!(::Nothing, a...; o...) = _title!(add_axes2d!(), a...; o...)
 
@@ -71,7 +71,7 @@ function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64},
         axis.ticks.labels = TicksLabels(names=lab)
     end
     set_properties!(axis.ticks; opts...)
-    return a
+    return nothing
 end
 _ticks!(::Nothing, a...; o...) = _ticks!(add_axes2d!(), a...; o...)
 
@@ -95,7 +95,7 @@ for axs ∈ ("x", "y", "x2", "y2")
             else
                 throw(OptionValueError("Unrecognised shorthand for $f:", s))
             end
-            return gca()
+            return nothing
         end
         # overwrite
         $f(a...; o...) = $f!(a...; overwrite=true, o...)
@@ -118,7 +118,7 @@ function legend!(a::Axes2D; overwrite=false, opts...)
     # if there exists a legend object but overwrite, then reset it
     (!isdef(a.legend) || overwrite) && (a.legend = Legend())
     set_properties!(a.legend; opts...)
-    return a
+    return nothing
 end
 legend!(::Nothing; opts...) = legend!(add_axes2d!(); opts...)
 legend!(; opts...) = legend!(gca(); opts...)

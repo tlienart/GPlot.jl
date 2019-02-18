@@ -15,7 +15,6 @@
 end
 Axis(p::String) = Axis(prefix=p)
 
-
 abstract type Axes{B <: Backend} end
 
 @with_kw mutable struct Axes2D{B} <: Axes{B}
@@ -43,6 +42,7 @@ function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})
         "\n\t"*rpad("Math mode:", 15) * (isdef(a.math) ? a.math : "false") *
         "\n\t"*rpad("Layout origin:", 15) * (isdef(a.origin) ? "$(round.(a.origin, digits=1))" : "auto")
     write(io, s)
+    return nothing
 end
 
 

@@ -18,7 +18,7 @@ function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj; opts..
         end
         setprop!(obj, argcheck(opts[optname], optname))
     end
-    return obj
+    return nothing
 end
 
 ####
@@ -26,22 +26,21 @@ end
 ####
 
 id(x, ::Symbol) = x
-
 fl(x, ::Symbol) = fl(x)
 
 function posfl(x, optname::Symbol)
     all(0 .< x) || throw(OptionValueError(String(optname), x))
-    fl(x)
+    return fl(x)
 end
 
 function posint(x::Int, optname::Symbol)
     0 < x || throw(OptionValueError(String(optname), x))
-    x
+    return x
 end
 
-col(c::Color, ::Symbol)     = c
-col(s::String, ::Symbol)    = parse(Color, s)
-col(v::Vector, s::Symbol)   = col.(v, s)
+col(c::Color, ::Symbol)   = c
+col(s::String, ::Symbol)  = parse(Color, s)
+col(v::Vector, s::Symbol) = col.(v, s)
 
 function alpha(α::Real, optname::Symbol)
     if !gcf().transparency

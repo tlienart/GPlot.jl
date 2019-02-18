@@ -22,7 +22,7 @@ function plot!(a::Axes2D, xy::Matrix{<:CanMiss{Float64}}; overwrite=false, o...)
     end
     # push to the drawing stack
     push!(a.drawings, s)
-    return a
+    return nothing
 end
 plot!(::Nothing, a...; o...) = plot!(add_axes2d!(), a...; o...)
 
@@ -33,7 +33,19 @@ plot!(x::AV, y::Real; o...) = plot!(gca(), fl(hcat(x, fill(y, length(x)))); o...
 plot!(x::AV, y::AVM; o...)  = plot!(gca(), fl(hcat(x, y)); o...)
 plot!(x::AV, y::AVM, ys...; o...) = plot!(gca(), fl(hcat(x, y, ys...)); o...)
 
-# plot reading directly from file
+"""
+    plot[!](xsym, ysym, path="...")
+
+Constructs a `Scatter2D` object reading directly from file. The symbols `xsym` and `ysym` (`ysym`
+can be a vector of symbols) indicate which columns should be read. They must have the format
+`:ck` where `k` is the column to be read.
+
+## Example
+
+```julia
+plot(:c1, [:c2, :c3], path="foo.csv") # will plot (c1,c2) and (c1,c3)
+```
+"""
 function plot!(a::Axes2D, xsym::Symbol, ysym::Vector{Symbol};
                path="", overwrite=false, o...)
     overwrite && erase!(a)
@@ -42,7 +54,7 @@ function plot!(a::Axes2D, xsym::Symbol, ysym::Vector{Symbol};
     s = Scatter2D(xsym, ysym, path)
     set_properties!(s; o...)
     push!(a.drawings, s)
-    return a
+    return nothing
 end
 plot!(xs::Symbol, ys::Symbol; o...) = plot!(gca(), xs, [ys]; o...)
 plot!(xs::Symbol, ys::Vector{Symbol}; o...) = plot!(gca(), xs, ys; o...)
@@ -72,7 +84,7 @@ function fill_between!(a::Axes2D, xy1y2::Matrix{Float64}; overwrite=false, o...)
     fill = Fill2D(xy1y2 = xy1y2)
     set_properties!(fill; o...)
     push!(a.drawings, fill)
-    return a
+    return nothing
 end
 fill_between!(::Nothing, a...; o...) = fill_between!(add_axes2d!(), a...; o...)
 
@@ -104,7 +116,7 @@ function hist!(a::Axes2D, x::Vector{<:CanMiss{Float64}}; overwrite=false, o...)
     hist = Hist2D(x = x)
     set_properties!(hist; o...)
     push!(a.drawings, hist)
-    return a
+    return nothing
 end
 hist!(::Nothing, a...; o...) = hist!(add_axes2d!(), a...; o...)
 
@@ -123,7 +135,7 @@ function bar!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, o...)
     bar = Bar2D(xy)
     set_properties!(bar; o...)
     push!(a.drawings, bar)
-    return a
+    return nothing
 end
 bar!(::Nothing, a...; o...) = bar!(add_axes2d!(), a...; o...)
 
