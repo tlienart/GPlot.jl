@@ -21,6 +21,9 @@ function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj; opts..
     return nothing
 end
 
+set!(obj; opts...) = set_properties!(obj; opts...)
+set = set!
+
 ####
 #### Value checkers for set_properties functions
 ####
