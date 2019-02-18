@@ -14,7 +14,7 @@ function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
     for af ∈ auxfiles
         (af ∈ exclude) || rm(joinpath(GP_ENV["TMP_PATH"], af), force=true)
     end
-    return
+    return nothing
 end
 
 """
@@ -104,7 +104,7 @@ function PreviewFigure(fig::Figure)
     disp || error("Preview is only available in Juno and IJulia.")
     # trigger a draft build
     fname = savefig(fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
-    isdef(fname) || return
+    isempty(fname) && return
     return PreviewFigure(fig, fname)
 end
 
@@ -116,4 +116,5 @@ render() = render(gcf())
 function Base.show(io::IO, ::MIME"image/png", pfig::PreviewFigure)
     write(io, read(pfig.fname))
     GP_ENV["DEL_INTERM"] && rm(pfig.fname)
+    return nothing
 end

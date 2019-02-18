@@ -9,6 +9,8 @@ using DelimitedFiles: writedlm
 import Base: |>, take!, isempty
 
 export Figure, gcf, gca, clf!, cla!, clf, cla, erase!,
+    # General set function
+    set, set_palette,
     # Layout
     layout!, layout, subplot,
     # Drawings

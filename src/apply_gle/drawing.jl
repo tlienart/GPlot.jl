@@ -33,7 +33,7 @@ function apply_legend!(g::GLE, leg::Legend, entries::GLE)
 #    "offset 0.2 0.2"   |> g
     entries                |> g
     "\nend key"            |> g
-    return
+    return nothing
 end
 
 ####

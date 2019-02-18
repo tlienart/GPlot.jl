@@ -10,6 +10,7 @@ function add_dict_vals!(d::Dict{String,String})
             d[v] = v
         end
     end
+    return nothing
 end
 
 const GLE_MARKERS = Dict{String,String}(

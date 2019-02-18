@@ -9,9 +9,9 @@
 Internal functions to set the color value `col` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c; o)
-set_color!(o::Ticks, c::Color) = (o.labels.textstyle.color = c; o)
-set_color!(o::Union{Title, Axis}, c::Color) = (o.textstyle.color = c; o)
+set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c)
+set_color!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
+set_color!(o::Union{Title, Axis}, c::Color) = (o.textstyle.color = c)
 
 """
     set_fill!(obj, col)
@@ -19,8 +19,8 @@ set_color!(o::Union{Title, Axis}, c::Color) = (o.textstyle.color = c; o)
 Internal functions to set the fill color value `v` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_fill!(o::Fill2D, c::Colorant) = (o.fillstyle.fill = c; o)
-set_fill!(o::Hist2D, c::Colorant) = (o.barstyle.fill = c; o)
+set_fill!(o::Fill2D, c::Colorant) = (o.fillstyle.fill = c)
+set_fill!(o::Hist2D, c::Colorant) = (o.barstyle.fill = c)
 
 """
     set_colors!(obj, cols, parent, field)
@@ -41,7 +41,7 @@ function set_colors!(o::Union{Bar2D, Scatter2D}, c::Vector{<:Color}, parent::Sym
         end
     end
     eval(ex)
-    return o
+    return nothing
 end
 set_colors!(o::Bar2D, c::Vector{<:Color}) = set_colors!(o, c, :barstyle, :color)
 set_colors!(o::Scatter2D, c::Vector{<:Color}) = set_colors!(o, c, :linestyle, :color)
@@ -69,7 +69,7 @@ function set_alpha!(o::Union{Fill2D, Hist2D}, α::Float64, parent::Symbol)
         $o.$parent.fill = RGBA(c.r, c.g, c.b, $α)
     end
     eval(ex)
-    return o
+    return nothing
 end
 set_alpha!(o::Fill2D, α::Float64) = set_alpha!(o, α, :fillstyle)
 set_alpha!(o::Hist2D, α::Float64) = set_alpha!(o, α, :barstyle)
@@ -90,7 +90,7 @@ function set_font!(obj, font::String)
     obj.textstyle.font = get(GLE_FONTS, font_lc) do
         throw(OptionValueError("font", font_lc))
     end
-    return obj
+    return nothing
 end
 
 """
@@ -98,8 +98,8 @@ end
 
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
-set_hei!(o::Legend, v::Float64) = (o.hei = v * PT_TO_CM; o)
-set_hei!(o, v::Float64) = (o.textstyle.hei = v * PT_TO_CM; o)
+set_hei!(o::Legend, v::Float64) = (o.hei = v * PT_TO_CM)
+set_hei!(o, v::Float64) = (o.textstyle.hei = v * PT_TO_CM)
 
 ####
 #### Line related
@@ -114,7 +114,7 @@ can be described by `lstyle` being a number or a String representing the pattern
 function set_lstyle!(o::LineStyle, v::Int)
     0 < v || throw(OptionValueError("lstyle", v))
     o.lstyle = v
-    return o
+    return nothing
 end
 function set_lstyle!(o::LineStyle, v::String)
     @assert get_backend() == GLE "lstyle // only GLE backend supported"
@@ -122,7 +122,7 @@ function set_lstyle!(o::LineStyle, v::String)
     o.lstyle = get(GLE_LSTYLES, v_lc) do
         throw(OptionValueError("lstyle", v_lc))
     end
-    return o
+    return nothing
 end
 set_lstyle!(o::Ticks, v::String) = set_lstyle!(o.linestyle, v)
 
@@ -131,7 +131,7 @@ set_lstyle!(o::Ticks, v::String) = set_lstyle!(o.linestyle, v)
 
 Internal function to set the line width associated with the relevant field of `obj`.
 """
-set_lwidth!(o::Union{LineStyle, Axis}, v::Float64) = (o.lwidth = v; o)
+set_lwidth!(o::Union{LineStyle, Axis}, v::Float64) = (o.lwidth = v)
 set_lwidth!(o::Ticks, v::Float64) = set_lwidth!(o.linestyle, v)
 
 """
@@ -139,7 +139,7 @@ set_lwidth!(o::Ticks, v::Float64) = set_lwidth!(o.linestyle, v)
 
 Internal function to determine whether to use splines for a field of `obj`.
 """
-set_smooth!(o::LineStyle, v::Bool) = (o.smooth = v; o)
+set_smooth!(o::LineStyle, v::Bool) = (o.smooth = v)
 
 ####
 #### Marker related
@@ -157,7 +157,7 @@ function set_marker!(o::MarkerStyle, v::String)
     o.marker = get(GLE_MARKERS, v_lc) do
         throw(OptionValueError("marker", v_lc))
     end
-    return o
+    return nothing
 end
 
 """
@@ -169,7 +169,7 @@ set it to a filled circle.
 function set_msize!(o::MarkerStyle, v::Float64)
     isdef(o.marker) || (o.marker = "fcircle")
     o.msize = v
-    return o
+    return nothing
 end
 
 """
@@ -180,7 +180,7 @@ Internal function to set the marker color. If no marker has been given, set it t
 function set_mcol!(o::MarkerStyle, c::Color)
     isdef(o.marker) || (o.marker = "fcircle")
     o.color = c
-    return o
+    return nothing
 end
 
 
@@ -200,7 +200,7 @@ for case ∈ (:linestyle   => ("lstyle", "lwidth", "smooth"),
                 for i ∈ 1:length(o.$field)
                     $f_scalar!(o.$field[i], v[i]) # call the scalar function
                 end
-                return o
+                return nothing
             end
             # if expects a vector but a scalar is given, a vector of
             # the appropriate size is filled with the scalar value
@@ -219,4 +219,4 @@ end
 
 Internal function to set the bin width to value `v`.
 """
-set_width!(o::Bar2D, v::Float64) = (o.width = v; o)
+set_width!(o::Bar2D, v::Float64) = (o.width = v)
