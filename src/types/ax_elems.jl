@@ -39,4 +39,3 @@ end
     off      ::Option{Bool}    = ∅ # whether to suppress them
     grid     ::Option{Bool}    = ∅ # ticks increased to mirrorred axis
 end
-Ticks(p::String) = Ticks(prefix=p)
