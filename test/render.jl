@@ -1,15 +1,17 @@
 @testset "▶ /render                     " begin
-    #
-    # SAVEFIG
-    #
-    tmpdir = mktempdir()
-    # - empty figure
-    f = Figure("fig1", reset=true)
-    @test_logs (:warn, "The figure is empty, nothing to render.") savefig()
-    # - base call
-    plot(randn(10))
-    @test savefig("figsave1", path=tmpdir) == joinpath(tmpdir, "figsave1.png")
-    @test isfile(joinpath(tmpdir, "figsave1.png"))
+    if G.GP_ENV["HAS_BACKEND"]
+        #
+        # SAVEFIG
+        #
+        tmpdir = mktempdir()
+        # - empty figure
+        f = Figure("fig1", reset=true)
+        @test_logs (:warn, "The figure is empty, nothing to render.") savefig()
+        # - base call
+        plot(randn(10))
+        @test savefig("figsave1", path=tmpdir) == joinpath(tmpdir, "figsave1.png")
+        @test isfile(joinpath(tmpdir, "figsave1.png"))
+    end
     #
     # PREVIEWFIG (NOTE, in a test environment this will error because not Juno/IJulia)
     #
