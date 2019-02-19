@@ -42,7 +42,7 @@ function assemble_figure(f::Figure{GLE}; debug=false)
         return String(take!(g))
     else
         write(joinpath(GP_ENV["TMP_PATH"], f.id * ".gle"), take!(g))
-        return
+        return ""
     end
 end
 
@@ -53,6 +53,4 @@ Print the GLE script associated with figure `f` for debugging.
 """
 debug_gle(f::Figure{GLE}) = println(assemble_figure(f; debug=true))
 
-function assemble_figure(f::Figure{Gnuplot})
-    throw(NotImplementedError("assemble_figure:Gnuplot"))
-end
+assemble_figure(f::Figure{Gnuplot}) = throw(NotImplementedError("assemble_figure:Gnuplot"))

@@ -8,7 +8,7 @@ function set_labels!(o::Scatter2D, v::Vector{String})
          throw(OptionValueError("labels // dimensions don't match", v))
       end
       o.label = v
-      return o
+      return nothing
 end
 set_labels!(o::Scatter2D, s::String) = set_labels!(o, fill(s, length(o.linestyle)))
 
@@ -22,33 +22,33 @@ function set_position!(o::Legend, v::String)
    o.position = get(GLE_LEGEND_POS, v) do
       throw(OptionValueError("position", v))
    end
-   return o
+   return nothing
 end
 
 ####
 #### Hist2D / Bar
 ####
 
-set_bins!(o::Hist2D, v::Int) = (o.bins = v; o)
+set_bins!(o::Hist2D, v::Int) = (o.bins = v)
 
 function set_scaling!(o::Hist2D, v::String)
    o.scaling = get(HIST2D_SCALING, v) do
          throw(OptionValueError("lstyle", v))
    end
-   return o
+   return nothing
 end
 
-set_horiz!(o::Union{Hist2D, Bar2D}, v::Bool) = (o.horiz = v; o)
+set_horiz!(o::Union{Hist2D, Bar2D}, v::Bool) = (o.horiz = v)
 
 ####
 #### Fill2D
 ####
 
-set_xmin!(o::Fill2D, v::Float64) = (o.xmin = v; o)
-set_xmax!(o::Fill2D, v::Float64) = (o.xmax = v; o)
+set_xmin!(o::Fill2D, v::Float64) = (o.xmin = v)
+set_xmax!(o::Fill2D, v::Float64) = (o.xmax = v)
 
 ####
 #### Bar2D
 ####
 
-set_stacked!(o::Bar2D, v::Bool) = (o.stacked = v; o)
+set_stacked!(o::Bar2D, v::Bool) = (o.stacked = v)

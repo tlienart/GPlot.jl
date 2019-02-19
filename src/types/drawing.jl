@@ -43,15 +43,24 @@ function Scatter2D(xy::Matrix{<:CanMiss{Float64}})
     n   = size(xy, 2) - 1 # first column is x
     lss = [LineStyle()   for i ∈ 1:n]
     mss = [MarkerStyle() for i ∈ 1:n]
-    Scatter2D(xy=xy, linestyle=lss, markerstyle=mss)
+    return Scatter2D(xy=xy, linestyle=lss, markerstyle=mss)
 end
 
+"""
+    Scatter2D(xsym, ysym, path)
+
+Internal constructor for `Scatter2D` object when reading directly from a file at the given
+`path`, `xsym` and `ysym` are symbols indicating which columns should be read and are of
+the format `:ck` where `k` is the column index.
+As the base `Standard2D`, it initialises an empty vector of `LineStyle` and `MarkerStyle`
+of the appropriate size.
+"""
 function Scatter2D(xsym::Symbol, ysym::Vector{Symbol}, path::String)
     n = length(ysym)
     lss = [LineStyle()   for i ∈ 1:n]
     mss = [MarkerStyle() for i ∈ 1:n]
-    Scatter2D(xy=Matrix{Float64}(undef,0,0), linestyle=lss, markerstyle=mss,
-              xsym=xsym, ysym=ysym, path=path)
+    return Scatter2D(xy=Matrix{Float64}(undef,0,0), linestyle=lss, markerstyle=mss,
+                     xsym=xsym, ysym=ysym, path=path)
 end
 
 """
@@ -117,12 +126,5 @@ of the appropriate size.
 function Bar2D(xy::Matrix{<:CanMiss{Float64}})
     n   = size(xy, 2) - 1 # first column is x
     bss = [BarStyle() for i ∈ 1:n]
-    Bar2D(xy=xy, barstyle=bss)
+    return Bar2D(xy=xy, barstyle=bss)
 end
-
-#=
-NOTE
- - if one of the bar is horiz, all are horiz (but shouldn't happen bc shouldnt
- have to assemble stuff
- -
-=#
