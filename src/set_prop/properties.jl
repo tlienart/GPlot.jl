@@ -41,11 +41,26 @@ function posint(x::Int, optname::Symbol)
     return x
 end
 
-col(c::Color, ::Symbol)   = c
-col(s::String, ::Symbol)  = parse(Color, s)
-col(v::Vector, s::Symbol) = col.(v, s)
+col(c::Color, ::Symbol)     = c
+col(s::String, ::Symbol)    = parse(Color, s)
+col(v::Vector, s::Symbol)   = col.(v, s)
+
+function opcol(s::String, n::Symbol)
+    if lowercase(s) == "none"
+        isdef(gcf().transparency) || (gcf().transparency=true)
+        if !gcf().transparency
+            @warn "Transparent background is only supported when the figure " *
+                  "has its transparency property set to 'true'."
+            return col("white", n) # fully opaque
+        end
+        nothing
+    else
+        col(s, n)
+    end
+end
 
 function alpha(α::Real, optname::Symbol)
+    isdef(gcf().transparency) || (gcf().transparency=true)
     if !gcf().transparency
         @warn "Transparent colors are only supported when the figure " *
               "has its transparency property set to 'true'. Ignoring α."
@@ -60,10 +75,12 @@ end
 ####
 
 const TEXTSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :font     => id    => set_font!,  # set_style
-    :fontsize => posfl => set_hei!,   # .
-    :col      => col   => set_color!, # .
-    :color    => col   => set_color!  # .
+    :font      => id    => set_font!,      # set_style
+    :fontsize  => posfl => set_hei!,       # .
+    :col       => col   => set_textcolor!, # .
+    :color     => col   => set_textcolor!, # .
+    :textcol   => col   => set_textcolor!, # .
+    :textcolor => col   => set_textcolor!, # .
     )
 
 const LINESTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
@@ -143,8 +160,8 @@ const GBARSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :fcolors    => col   => set_fills!,  # .
     :facecolors => col   => set_fills!,  # .
     :fills      => col   => set_fills!,  # .
-    :width      => posfl => set_width!, # .
-    :binwidth   => posfl => set_width!, # .
+    :width      => posfl => set_width!,  # .
+    :binwidth   => posfl => set_width!,  # .
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
@@ -184,8 +201,8 @@ const TICKS_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :length     => posfl => set_length!,     # .
     :sym        => id    => set_symticks!,   # .
     :symticks   => id    => set_symticks!,   # .
-    :tickscol   => col   => set_tickscolor!, # .
-    :tickscolor => col   => set_tickscolor!, # .
+    :tickscol   => col   => set_color!,      # .
+    :tickscolor => col   => set_color!,      # .
     :grid       => id    => set_grid!,       # .
     # labels related
     :hidelabels => id => set_labels_off!, # set_ax_elems
@@ -276,6 +293,12 @@ const FIGURE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :transparency => id    => set_transparency!, # .
     :preamble     => id    => set_texpreamble!,  # .
     :texpreamble  => id    => set_texpreamble!,  # .
+    :col          => opcol => set_color!,        # set_style
+    :color        => opcol => set_color!,        # .
+    :bgcol        => opcol => set_color!,        # .
+    :bgcolor      => opcol => set_color!,        # .
+    :background   => opcol => set_color!,        # .
+    :bgalpha      => alpha => set_alpha!,        # .
     )
 merge!(FIGURE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(f::Figure; opts...) = set_properties!(FIGURE_OPTS, f; opts...)

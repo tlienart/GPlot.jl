@@ -9,9 +9,12 @@
 Internal functions to set the color value `col` (after parsing) to the appropriate
 field of object `obj`.
 """
+set_color!(o::Figure, c::Option{Color}) = (o.bgcolor = c)
 set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c)
-set_color!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
-set_color!(o::Union{Title, Axis}, c::Color) = (o.textstyle.color = c)
+set_color!(o::Ticks, c::Color) = (o.linestyle.color = c)
+
+set_textcolor!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
+set_textcolor!(o::Union{Figure, Axis, Title}, c::Color) = (o.textstyle.color = c)
 
 """
     set_fill!(obj, col)
@@ -63,16 +66,12 @@ Internal function to set the alpha value of `obj.field` to `α`. There must be a
 value available, it will be reinterpreted with the given alpha value.
 """
 function set_alpha!(o::Union{Fill2D, Hist2D}, α::Float64, parent::Symbol)
-    α == 1.0 && return o
-    ex = quote
-        c = convert(RGB, $o.$parent.fill)
-        $o.$parent.fill = RGBA(c.r, c.g, c.b, $α)
-    end
-    eval(ex)
+    eval(:($o.$parent.fill = coloralpha($o.$parent.fill, $α)))
     return nothing
 end
 set_alpha!(o::Fill2D, α::Float64) = set_alpha!(o, α, :fillstyle)
 set_alpha!(o::Hist2D, α::Float64) = set_alpha!(o, α, :barstyle)
+set_alpha!(o::Figure, α::Float64) = (o.bgcolor = coloralpha(o.bgcolor, α); ∅)
 
 ####
 #### TEXT

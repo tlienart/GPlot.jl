@@ -6,7 +6,7 @@ function __init__()
         hasbackend = success(`gle -v`)
         GP_ENV["VERBOSE"] && println(".found GLE ✅")
         GP_ENV["BACKEND"] = GLE
-        GP_ENV["HAS_BACKEND"] = GLE
+        GP_ENV["HAS_BACKEND"] = true
     catch
         @warn "GLE could not be loaded. Make sure you have installed " *
                             "it and that it is accessible via the shell." *

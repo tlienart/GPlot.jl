@@ -6,6 +6,8 @@ Pages = ["styling.md"]
 
 ## Figure
 
+- transparency should not be used unless you really need to as it restricts the device you can use to only PNG as well as the fonts you can use. Effectively transparency should only be used for fillbetween and possibly overlapping histograms.
+
 ## Axes and Axis
 
 TBD:
@@ -28,7 +30,7 @@ In non-LaTeX mode, different fonts can be selected for sub-elements (e.g. axis l
 
 In non-tex mode, a number of fonts and font-variants are supported, see [the appendix](/appendix/fonts/) for the full list.
 
-The table below is a subset of the supported fonts that are likely to be among the most useful. Note that not all fonts are supported for the SVG output.
+The table below is a subset of the supported fonts that are likely to be among the most useful. Note that not all fonts are supported for the SVG/Cairo output (cairo being required when transparency is desired).
 
 You can specify the font you want using its ID or its name (replacing spaces by dashes) for instance:
 
@@ -42,7 +44,7 @@ are both valid way of defining the parent font.
 **Note 1**: most fonts only have basic symbol support (typically Greek letters are fine) but will fail for more "exotic" symbols like ∫ or ∞. Use the  LaTeX mode for those.
 **Note 2**: the fonts that start with `tex` are tex-like fonts but do not switch on the LaTeX mode.
 
-| ID       | Name | Looks like | SVG   |
+| ID       | Name | Looks like | SVG/Cairo   |
 | :------: | :-----: | :--------: | :---: |
 | psh  | helvetica | ![](../assets/fonts/psh.png)              |   ✘   |
 | pspr  | palatino roman | ![](../assets/fonts/pspr.png)              |   ✘   |

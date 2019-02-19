@@ -3,8 +3,7 @@ using GPlot; include("_test.jl")
 # 12 feb 19
 include("utils.jl")
 
-# 13 feb 19
-# 🚫 apply-gle
+# 19 feb 19
 include("figure.jl")
 
 # 14 feb 19

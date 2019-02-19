@@ -69,11 +69,13 @@ function savefig(fig::Figure{GLE}, fn::String="";
         mkpath(dir) # this may error
     end
     fout = fpo * ".$ext"
+    # check what to do given the background
+    transparent = ifelse(isnothing(fig.bgcolor) || Colors.alpha(fig.bgcolor) < 1,
+                         `-transparent`, ``)
     # Assemble the figure and compile the lot note that assemble_figure writes to `fin`
     # (see also apply_gle/figure)
     assemble_figure(fig)
-    glecom = pipeline(`gle -d $ext -r $res $cairo $texlabels -vb 0 -o $fout $fin`,
-                       stdout=flog, stderr=flog)
+    glecom = pipeline(`gle -d $ext -r $res $cairo $texlabels $transparent -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
     # in case of failure...
     if !success(glecom)
         log = read(flog, String)
@@ -104,7 +106,7 @@ function PreviewFigure(fig::Figure)
     disp || error("Preview is only available in Juno and IJulia.")
     # trigger a draft build
     fname = savefig(fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
-    isempty(fname) && return
+    isnothing(fname) && return nothing
     return PreviewFigure(fig, fname)
 end
 

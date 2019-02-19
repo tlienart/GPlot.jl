@@ -12,7 +12,7 @@ Pages = ["fonts.md"]
 The list below shows what these fonts look like and whether SVG output is
 supported.
 
-| ID       | Aliases | Looks like | SVG   |
+| ID       | Aliases | Looks like | SVG/Cairo   |
 | :------: | :-----: | :--------: | :---: |
 | rm       | roman   | ![](../assets/fonts/rm.png)                         |   ✘   |
 | rmb      | roman bold | ![](../assets/fonts/rmb.png)                     |   ✘   |

@@ -20,25 +20,19 @@ exists already, return that object.
 * `reset`: a bool, if true will erase the figure if it exists (instead of just returning it).
 
 """
-function Figure(id::String, g::Backend; opts...)
-
-    f = Figure(id, g, Vector{Axes{typeof(g)}}(),
-               (12., 9.), TextStyle(font="texcmss", hei=0.35),
-               ∅, ∅, ∅, ∅, Dict{String,String}())
-
-    set_properties!(f; opts...)
-    GP_ENV["ALLFIGS"][id] = f
-    GP_ENV["CURFIG"]      = f
-    GP_ENV["CURAXES"]     = nothing
-    return f
-end
-
-function Figure(id::String="_fig_"; reset=false, _sub=false, opts...)
-
+function Figure(id::String="_fig_"; backend=GP_ENV["BACKEND"](), reset=false, _sub=false, opts...)
     # return a fresh figure when calling Figure() unless for subroutines
-    !_sub && id == "_fig_" && return Figure(id, GP_ENV["BACKEND"](); opts...)
+    if !_sub && id == "_fig_"
+        f = Figure(backend, id)
+        set_properties!(f; opts...)
+        GP_ENV["ALLFIGS"][id] = f
+        GP_ENV["CURFIG"]  = f
+        GP_ENV["CURAXES"] = nothing
+        return f
+    end
+    # otherwise try to find an existing figure, if nothing found, return a new one as well
     f = get(GP_ENV["ALLFIGS"], id) do
-        Figure(id, GP_ENV["BACKEND"](); opts...)
+        GP_ENV["ALLFIGS"][id] = Figure(backend, id)
     end
     reset && erase!(f)
     GP_ENV["CURFIG"]  = f
@@ -65,7 +59,6 @@ Add empty `Axes2D` to the current figure.
 """
 add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
 
-
 """
     erase!(fig)
 
@@ -78,10 +71,19 @@ function erase!(f::Figure)
     take!(f.g)
     # give `f` a fresh set of axes
     f.axes = Vector{Axes{typeof(f.g)}}()
+    GP_ENV["CURFIG"]  = f
     GP_ENV["CURAXES"] = nothing
     return f
 end
-clf!() = erase!(gcf())
+
+"""
+    clf!() or clf()
+
+Reset the current figure keeping only its current name and size, everything else is
+set to the default parameters.
+See also [`erase!`](@ref) and [`reset!`](@ref)
+"""
+clf!() = (reset!(gcf()))
 clf = clf!
 
 """

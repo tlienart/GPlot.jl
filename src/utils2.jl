@@ -32,7 +32,7 @@ Internal function to help in the specific case where a line with markers of diff
 color than the line is required. In that case a subroutine has to be written to help
 GLE, see [`add_sub_marker!`](@ref).
 """
-str(m::MarkerStyle) = "$(m.marker)_$(col2str2(m.color))"
+str(m::MarkerStyle) = "$(m.marker)_$(col2str(m.color; str=true))"
 
 
 """
