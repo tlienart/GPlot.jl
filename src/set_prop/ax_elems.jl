@@ -32,13 +32,6 @@ Internal function to set the ticks to be symetric on both side of axis.
 set_symticks!(o::Ticks, v::Bool) = throw(NotImplementedError("set_symticks!"))
 
 """
-    set_tickscolor!(obj, v)
-
-Internal function to set the color of ticks.
-"""
-set_tickscolor!(o::Ticks, c::Color) = (o.linestyle.color = c)
-
-"""
     set_grid!(obj, b)
 
 Internal function to toggle the grid option of the `ticks` object.

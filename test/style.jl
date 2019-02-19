@@ -66,7 +66,7 @@ end
 
     f = Figure(transparency=true)
     hist(y, fcol="indianred", alpha=0.5)
-    @test gca().drawings[1].barstyle.fill.alpha == 0.5
+    @test gca().drawings[1].barstyle.fill.alpha == 0.502Colors.N0f8
 
     title("blah", font="roman", fontsize=0.3)
     @test gca().title.textstyle.font == "rm"

@@ -70,17 +70,13 @@ fl(v::AbstractVecOrMat) = fl.(v)
 round3d(x::Real) = round(x, digits=3)
 
 # takes a colorant and transform it to a standard string rgba(...)
-function col2str(col::Colorant)
+function col2str(col::Colorant; str=false)
     crgba = convert(RGBA, col)
     r, g, b, α = round3d.([crgba.r, crgba.g, crgba.b, crgba.alpha])
-    return "rgba($r,$g,$b,$α)"
-end
-# used by str(markerstyle)
-function col2str2(col::Colorant)
-    crgba = convert(RGBA, col)
-    r, g, b, α = round3d.([crgba.r, crgba.g, crgba.b, crgba.alpha])
-    s = "rgba_$(r)_$(g)_$(b)_$(α)"
-    return replace(s, "."=>"w")
+    s  = "rgba($r,$g,$b,$α)"
+    # used by str(markerstyle), remove things that confuse gle
+    sr = replace(s, r"[\(\),\.]"=>"_")
+    return ifelse(str, sr, s)
 end
 
 # unroll a vector into a string with the elements separated by a space

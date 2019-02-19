@@ -7,6 +7,13 @@ figure object `f`.
 function assemble_figure(f::Figure{GLE}; debug=false)
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
+    # background color if different than nothing or white
+    if isdef(f.bgcolor) && f.bgcolor != colorant"white"
+        # add a box that is slightly larger than the size
+        "\namove -0.05 -0.05" |> g
+        "\nbox $(f.size[1]+0.1) $(f.size[2]+0.1)" |> g
+        "fill $(col2str(f.bgcolor)) nobox" |> g
+    end
     # check if has latex
     haslatex = false
     any(isdef, (f.texscale, f.texpreamble)) && (haslatex = true)

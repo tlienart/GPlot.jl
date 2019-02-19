@@ -122,7 +122,7 @@ end
     el2 = gca().drawings[2]
     el3 = gca().drawings[3]
     @test el1.xy1y2 == hcat(x, y1, y2)
-    @test el2.fillstyle.fill == RGBA{Float64}(1.0,0.0,0.0,0.5)
+    @test el2.fillstyle.fill == RGBA{Colors.N0f8}(1.0,0.0,0.0,0.502)
     @test el2.xy1y2 == hcat(x, 0*y2, y2)
     @test el3.xy1y2 == hcat(x, y1, 0*y1)
 
