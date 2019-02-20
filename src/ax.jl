@@ -72,7 +72,7 @@ Set the (current) axes to math mode (where the axes go through (0,0)). It is rec
 adjust the axis limits via [`xlim!`](@ref) and [`ylim!`](@ref) to make sure that the origin is
 somewhere in the drawn area (otherwise the results will be rather ugly).
 """
-math!(a::Axes2D) = (a.math = true; nothing)
+math!(a::Axes2D) = (a.math = true; _preview())
 math!(::Nothing) = (add_axes2d!(); math!(gca()))
 math!() = math!(gca())
 

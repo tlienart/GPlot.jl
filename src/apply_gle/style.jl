@@ -22,7 +22,9 @@ function apply_linestyle!(g::GLE, s::LineStyle; legend=false)
     isdef(s.lstyle) && "lstyle $(s.lstyle)"           |> g
     isdef(s.lwidth) && "lwidth $(s.lwidth)"           |> g
     isdef(s.color)  && "color $(col2str(s.color))"    |> g
-    legend || isdef(s.smooth) && s.smooth && "smooth" |> g # only for dn lines
+    if !legend
+        isdef(s.smooth) && s.smooth && "smooth"       |> g
+    end
     return
 end
 
@@ -34,7 +36,7 @@ Internal function to apply the markerstyle `s` in a GLE context.
 function apply_markerstyle!(g::GLE, s::MarkerStyle; mcol_flag=false)
     isanydef(s) || return
     if !mcol_flag
-        isdef(s.marker) && "$(s.marker)" |> g
+        isdef(s.marker) && "marker $(s.marker)" |> g
         isdef(s.msize)  && "msize $(s.msize)"   |> g
         isdef(s.color)  && "color $(col2str(s.color))" |> g
     else
