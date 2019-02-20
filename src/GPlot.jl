@@ -9,14 +9,14 @@ using DelimitedFiles: writedlm
 import Base: |>, take!, isempty
 
 export Figure, gcf, gca, clf!, cla!, clf, cla, erase!,
-        continuous_preview, 
+        continuous_preview,
     # General set function
     set, set_palette,
     # Layout
     layout!, layout, subplot,
     # Drawings
-    plot!, scatter!, fill_between!, hist!, bar!,
-    plot, scatter, fill_between, hist, bar,
+    line!, plot!, scatter!, fill_between!, hist!, bar!,
+    line, plot, scatter, fill_between, hist, bar,
     # Axis / Axes
     # -- titles
     title!, xtitle!, x2title!, ytitle!, y2title!,
