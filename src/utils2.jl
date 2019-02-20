@@ -34,10 +34,16 @@ GLE, see [`add_sub_marker!`](@ref).
 """
 str(m::MarkerStyle) = "$(m.marker)_$(col2str(m.color; str=true))"
 
-
 """
     palette(v::Vector{Color})
 
 Set the default palette. To see the current one, write `GPlot.GP_ENV["PALETTE"]` in the REPL.
 """
 set_palette(v::Vector{<:Color}) = (GP_ENV["PALETTE"] = v; GP_ENV["SIZE_PALETTE"] = length(v); ∅)
+
+"""
+    continuous_preview(b)
+
+Set the continuous preview on (`b=true`, default value) or off.
+"""
+continuous_preview(b::Bool) = (GP_ENV["CONT_PREVIEW"] = b)

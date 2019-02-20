@@ -1,16 +1,20 @@
 """
    set_size!(o, t)
 
-Sets a tuple indicating (width, height) size of the figure.
+Internal function to set a tuple indicating (width, height) size of the figure.
 """
 set_size!(o::Figure, t::NTuple{2,Float64}) = (o.size = t)
 
 """
    set_texlabels!(o, v)
 
-Sets a bool variable indicating whether the figure has LaTex labels or not.
+Internal function to set a bool variable indicating whether the figure has LaTex labels or not.
+If there is no texpreamble defined, a simple one is instantiated with `amssymb`.
 """
-set_texlabels!(o::Figure, v::Bool) = (o.texlabels = ifelse(v, v, ∅))
+function set_texlabels!(o::Figure, v::Bool)
+   o.texlabels = ifelse(v, v, ∅)
+   isnothing(o.texpreamble) && set_texpreamble!(o, t"\usepackage{amssymb}")
+end
 
 """
    set_texscale!(o, v)

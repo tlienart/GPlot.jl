@@ -9,6 +9,7 @@ using DelimitedFiles: writedlm
 import Base: |>, take!, isempty
 
 export Figure, gcf, gca, clf!, cla!, clf, cla, erase!,
+        continuous_preview, 
     # General set function
     set, set_palette,
     # Layout
@@ -62,6 +63,7 @@ const GP_ENV = Dict{String, Any}(
     "SHOW_GSERR"   => false,             # GLE related, ghostscript errors
     "PALETTE"      => PALETTE_1,         # default color palette
     "SIZE_PALETTE" => length(PALETTE_1),
+    "CONT_PREVIEW" => true,              # whether to continuously preview or not
     )
 
 const ∅   = nothing

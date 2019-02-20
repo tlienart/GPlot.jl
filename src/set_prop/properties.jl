@@ -1,51 +1,75 @@
-# NOTE: the type of the backend needs to be sent forward only in cases where
-# the value the property can take are limited by the backend. For instance
-# the name of the font will be limited by the backend.
-# In most cases though, it is not the case and therefore a generic
-# ::Type{Backend} (TBK) is all that is needed. See `set_prop/set_*.jl`.
-
 """
-    set_properties(dict, obj; opts...)
+    set_properties!(dict, obj; defer_preview, opts...)
 
-Set properties of an object `obj` given options (`opts`) of the form
-`optname=value` an applying it through appropriate application function
-stored in the dictionary `dict`.
+Internal function to set properties of an object `obj` given options (`opts`) of the form
+`optname=value` an applying it through appropriate application function stored in the dictionary
+`dict`. The keyword `defer_preview` is passed by functions that will apply a preview themselves
+so that it's not repeated unnecessarily.
+Note that the dictionary of property-setting-functions also contains "pre-conditioners" which
+are functions that check that the values passed to properties are sensible and convert them
+to sensible types if relevant. This reduces code duplication and allows to reduce specialization.
 """
-function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj; opts...)
+function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
+                         defer_preview=false, opts...)::Option{PreviewFigure}
     for optname ∈ opts.itr
         argcheck, setprop! = get(dict, optname) do
             throw(UnknownOptionError(optname, obj))
         end
         setprop!(obj, argcheck(opts[optname], optname))
     end
-    return nothing
+    return (!defer_preview && GP_ENV["CONT_PREVIEW"]) ? preview() : nothing
 end
 
 set!(obj; opts...) = set_properties!(obj; opts...)
 set = set!
 
 ####
-#### Value checkers for set_properties functions
+#### Value checkers for set_properties functions the symbol corresponds to the name
+#### of the option that is being modified
 ####
 
 id(x, ::Symbol) = x
-fl(x, ::Symbol) = fl(x)
+fl(x, ::Symbol) = fl(x) # float conversion, see /utils.jl
 
+"""
+    posfl(x, s)
+
+Internal function to check that all `x` are positive and then cast to Float64.
+"""
 function posfl(x, optname::Symbol)
     all(0 .< x) || throw(OptionValueError(String(optname), x))
     return fl(x)
 end
 
+"""
+    posint(x, s)
+
+Internal function to check that `x` is a positive integer.
+"""
 function posint(x::Int, optname::Symbol)
     0 < x || throw(OptionValueError(String(optname), x))
     return x
 end
 
+"""
+    col(x, s)
+
+Internal function to process a color, if a string is passed, it is parsed by the `Colors` package.
+"""
 col(c::Color, ::Symbol)     = c
 col(s::String, ::Symbol)    = parse(Color, s)
 col(v::Vector, s::Symbol)   = col.(v, s)
 
-function opcol(s::String, n::Symbol)
+"""
+    opcol(x, s)
+
+Internal function to process an optional color, i.e. `"none"` can be passed resulting in `nothing`
+being passed. This is relevant for instance when setting the background color of a figure to "none"
+(transparent figure). If `"none"` is passed, the current figure is checked for transparency
+properties, if set to false, a warning will be raised and the color will be defaulted to `"white"`
+if the transparency setting is unset, it will be set to `true`.
+"""
+function opcol(s::String, n::Symbol)::Option{Color}
     if lowercase(s) == "none"
         isdef(gcf().transparency) || (gcf().transparency=true)
         if !gcf().transparency
@@ -53,12 +77,20 @@ function opcol(s::String, n::Symbol)
                   "has its transparency property set to 'true'."
             return col("white", n) # fully opaque
         end
-        nothing
-    else
-        col(s, n)
+        return nothing
     end
+    return col(s, n)
 end
 
+"""
+    alpha(α, s)
+
+Internal function to process an alpha parameter (transparency). The current figure is checked for
+transparency properties, if set to false, a warning will be raised and the `α` will be ignored
+(fully opaque). If the transparency setting is unset, it will be set to `true`.
+Accepted values are strictly between `0` and `1`. For completely transparent, see using `"none"` in
+the color description (for instance `Figure(bgcol="none")`).
+"""
 function alpha(α::Real, optname::Symbol)
     isdef(gcf().transparency) || (gcf().transparency=true)
     if !gcf().transparency
@@ -165,13 +197,13 @@ const GBARSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
-    :col       => col   => set_fill!, # set_style
-    :color     => col   => set_fill!, # .
-    :fcol      => col   => set_fill!, # .
-    :ffill     => col   => set_fill!, # .
-    :facecol   => col   => set_fill!, # .
-    :facefill  => col   => set_fill!, # .
-    :fill      => col   => set_fill!, # .
+    :col       => col   => set_fill!,  # set_style
+    :color     => col   => set_fill!,  # .
+    :fcol      => col   => set_fill!,  # .
+    :ffill     => col   => set_fill!,  # .
+    :facecol   => col   => set_fill!,  # .
+    :facefill  => col   => set_fill!,  # .
+    :fill      => col   => set_fill!,  # .
     :alpha     => alpha => set_alpha!, # .
     )
 
