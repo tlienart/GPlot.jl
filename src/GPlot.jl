@@ -8,8 +8,8 @@ using DelimitedFiles: writedlm
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, clf!, cla!, clf, cla, erase!,
-        continuous_preview,
+export Figure, gcf, gca, clf!, cla!, clo!, clf, cla, clo, erase!,
+    continuous_preview,
     # General set function
     set, set_palette,
     # Layout
@@ -17,6 +17,8 @@ export Figure, gcf, gca, clf!, cla!, clf, cla, erase!,
     # Drawings
     line!, plot!, scatter!, fill_between!, hist!, bar!,
     line, plot, scatter, fill_between, hist, bar,
+    # Objects
+    text!, text,
     # Axis / Axes
     # -- titles
     title!, xtitle!, x2title!, ytitle!, y2title!,
@@ -66,11 +68,14 @@ const GP_ENV = Dict{String, Any}(
     "CONT_PREVIEW" => true,              # whether to continuously preview or not
     )
 
+# ain't nobody got time to write long type names
 const ∅   = nothing
 const AV  = AbstractVector
 const AVM = AbstractVecOrMat
 const AM  = AbstractMatrix
 const AVR = AbstractVector{<:Real}
+const T2F = NTuple{2,Float64}
+const T2R = NTuple{2,Real}
 
 const PT_TO_CM   = 0.0352778         # 1pt in cm
 const Option{T}  = Union{Nothing, T} # a useful type for optional values
@@ -81,6 +86,7 @@ include("utils.jl")
 # Type of objects
 include("types/style.jl")
 include("types/drawing.jl")
+include("types/object.jl")
 include("types/ax_elems.jl")
 include("types/ax.jl")
 include("types/figure.jl")
@@ -92,6 +98,7 @@ include("set_prop/dicts_shared.jl")
 # Set properties of objects
 include("set_prop/style.jl")
 include("set_prop/drawing.jl")
+include("set_prop/object.jl")
 include("set_prop/ax_elems.jl")
 include("set_prop/ax.jl")
 include("set_prop/figure.jl")
@@ -100,12 +107,14 @@ include("set_prop/properties.jl")
 # Write objects to GLE buffer
 include("apply_gle/style.jl")
 include("apply_gle/drawing.jl")
+include("apply_gle/object.jl")
 include("apply_gle/ax_elems.jl")
 include("apply_gle/ax.jl")
 include("apply_gle/figure.jl")
 
 # Main call for elements
 include("drawing.jl")
+include("object.jl")
 include("ax.jl")
 include("ax_elem.jl")
 include("figure.jl")

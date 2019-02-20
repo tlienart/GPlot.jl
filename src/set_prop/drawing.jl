@@ -19,7 +19,7 @@ set_labels!(o::Scatter2D, s::String) = set_labels!(o, fill(s, length(o.linestyle
 # position of the legend (for GLE backend)
 function set_position!(o::Legend, v::String)
    @assert get_backend() == GLE "position/only GLE backend supported"
-   o.position = get(GLE_LEGEND_POS, v) do
+   o.position = get(GLE_POSITION, v) do
       throw(OptionValueError("position", v))
    end
    return nothing
