@@ -305,6 +305,5 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Bar2D,
             apply_barstyle!(g, obj.barstyle[i])
         end
     end
-
     return el_counter + nbars
 end

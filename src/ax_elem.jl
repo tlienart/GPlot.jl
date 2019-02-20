@@ -7,13 +7,13 @@
 
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
-function _title!(a::Axes2D, text::String, el::Symbol;
+function _title!(a::Axes2D, el::Symbol, text::String="";
                  overwrite=false, opts...)::Option{PreviewFigure}
     obj = (el == :axis) ? a : getfield(a, el)
     if isdef(obj.title)
         # if overwrite, clear the current title
         overwrite && clear!(obj.title)
-        obj.title.text = text
+        obj.title.text = ifelse(isempty(text), obj.title.text, text)
     else # title doesn't exist, create one
         obj.title = Title(text=text)
     end
@@ -30,8 +30,9 @@ for axs ∈ ("", "x", "y", "x2", "y2")
     f2  = Symbol(axs * "label")
     ex = quote
         # mutate
-        $f!(a::Axes2D, t::String; o...) = _title!(a, t, Symbol($axs * "axis"); o...)
-        $f!(t::String; o...) = _title!(gca(), t, Symbol($axs * "axis"); o...)
+        $f!(a::Axes2D, t::String; o...) = _title!(a, Symbol($axs * "axis"), t; o...)
+        $f!(t::String; o...) = _title!(gca(), Symbol($axs * "axis"), t; o...)
+        $f!(; o...) = _title!(gca(), Symbol($axs * "axis"); o...)
         # overwrite
         $f(a...; o...) = $f!(a...; overwrite=true, o...)
         # more synonyms xlabel...

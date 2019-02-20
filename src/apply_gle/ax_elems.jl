@@ -20,8 +20,8 @@ prefixed by `p`.
 """
 function apply_ticks!(g::GLE, t::Ticks, prefix::String)
     # [x]ticks ...
-    (isdef(t.off) || isanydef(t.linestyle)) && begin
-        "\n\t$(prefix)ticks" |> g
+    if (isdef(t.off) || isanydef(t.linestyle))
+        "\n\t$(prefix)ticks"                        |> g
         isdef(t.off)    && ifelse(t.off, "off", "") |> g
         isdef(t.length) && "length $(t.length)"     |> g
         apply_linestyle!(g, t.linestyle)
@@ -31,7 +31,7 @@ function apply_ticks!(g::GLE, t::Ticks, prefix::String)
     # [x]xaxis symticks
     isdef(t.symticks) && "\n\t$(prefix)axis symticks" |> g
     apply_tickslabels!(g, t.labels, prefix)
-    return
+    return nothing
 end
 
 """
@@ -44,18 +44,18 @@ function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
     # [x]names "names1" ...
     isdef(t.names) && "\n\t$(prefix)names $(vec2str(t.names))" |> g
     # [x]labels ...
-    (any(isdef, (t.off, t.dist)) || isanydef(t.textstyle)) && begin
-        "\n\t$(prefix)labels" |> g
+    if (any(isdef, (t.off, t.dist)) || isanydef(t.textstyle))
+        "\n\t$(prefix)labels"                     |> g
         isdef(t.off)  && ifelse(t.off, "off", "") |> g
         isdef(t.dist) && "dist $(t.dist)"         |> g
         apply_textstyle!(g, t.textstyle)
     end
     # [x]axis ...
-    any(isdef, (t.angle, t.format)) && begin
+    if any(isdef, (t.angle, t.format))
         "\n\t$(prefix)axis" |> g
         isdef(t.angle)  && "angle $(t.angle)"   |> g
         isdef(t.format) && "format $(t.format)" |> g
         isdef(t.shift)  && "shift $(t.shift)"   |> g
     end
-    return
+    return nothing
 end

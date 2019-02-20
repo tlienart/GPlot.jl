@@ -29,7 +29,7 @@ Internal function to apply an `Axes2D` object `a` in a GLE context.
 The `figid` is useful to keep track of the figure the axes belong to
 which is required in the `apply_drawings` subroutine that is called.
 """
-function apply_axes!(g, a::Axes2D, figid)
+function apply_axes!(g::GLE, a::Axes2D, figid::String)
     isdef(a.origin) && "\namove $(a.origin[1]) $(a.origin[2])" |> g
     scale = ifelse(isdef(a.origin), "fullsize", "scale auto")
     "\nbegin graph\n\t$scale"   |> g
@@ -45,4 +45,5 @@ function apply_axes!(g, a::Axes2D, figid)
     return nothing
 end
 
-apply_axes!(g, a::Axes3D, figid) = throw(NotImplementedError("apply_axes:GLE/3D"))
+apply_axes!(g::GLE, a::Axes3D, figid::String) =
+    throw(NotImplementedError("apply_axes:GLE/3D"))
