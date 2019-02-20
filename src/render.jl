@@ -115,6 +115,15 @@ preview() = preview(gcf())
 render(fig::Figure) = PreviewFigure(fig)
 render() = render(gcf())
 
+"""
+    _preview()
+
+Internal function that checks if the continuous preview mode is on and if so does a preview.
+"""
+_preview(::Val{true})  = preview()
+_preview(::Val{false}) = nothing
+_preview() = _preview(Val(GP_ENV["CONT_PREVIEW"]))
+
 function Base.show(io::IO, ::MIME"image/png", pfig::PreviewFigure)
     write(io, read(pfig.fname))
     GP_ENV["DEL_INTERM"] && rm(pfig.fname)

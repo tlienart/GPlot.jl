@@ -18,7 +18,7 @@ function _title!(a::Axes2D, text::String, el::Symbol;
         obj.title = Title(text=text)
     end
     set_properties!(obj.title; defer_preview=true, opts...)
-    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
+    return _preview()
 end
 _title!(::Nothing, a...; o...) = _title!(add_axes2d!(), a...; o...)
 
@@ -71,7 +71,7 @@ function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64}, lab::Option{Vecto
         axis.ticks.labels = TicksLabels(names=lab)
     end
     set_properties!(axis.ticks; defer_preview=true, opts...)
-    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
+    return _preview()
 end
 _ticks!(::Nothing, a...; o...) = _ticks!(add_axes2d!(), a...; o...)
 
@@ -118,7 +118,7 @@ function legend!(a::Axes2D; overwrite=false, opts...)::Option{PreviewFigure}
     # if there exists a legend object but overwrite, then reset it
     (!isdef(a.legend) || overwrite) && (a.legend = Legend())
     set_properties!(a.legend; defer_preview=true, opts...)
-    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
+    return _preview()
 end
 legend!(::Nothing; opts...) = legend!(add_axes2d!(); opts...)
 legend!(; opts...) = legend!(gca(); opts...)

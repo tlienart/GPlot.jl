@@ -17,7 +17,8 @@ function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
         end
         setprop!(obj, argcheck(opts[optname], optname))
     end
-    return (!defer_preview && GP_ENV["CONT_PREVIEW"]) ? preview() : nothing
+    defer_preview && return nothing
+    return _preview()
 end
 
 set!(obj; opts...) = set_properties!(obj; opts...)
@@ -250,6 +251,7 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 ####
 #### Options for DRAWINGS
 ####
+
 const SCATTER2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :name   => id => set_labels!, # set_drawing
     :key    => id => set_labels!, # .
@@ -289,11 +291,21 @@ const BAR2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :horizontal => id => set_horiz!,   # .
     )
 merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
-set_properties!(gb::Bar2D; opts...) =
-    set_properties!(BAR2D_OPTS, gb; opts...)
+set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
 
 ####
-#### Options for FIGURE
+#### Options for OBJECTS
+####
+
+const TEXT2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
+    :pos      => id    => set_position!, # set_drawing
+    :position => id    => set_position!, # .
+    )
+merge!(TEXT2D_OPTS, TEXTSTYLE_OPTS)
+set_properties!(t::Text2D; opts...) = set_properties!(TEXT2D_OPTS, t; opts...)
+
+####
+#### Options for AX*
 ####
 
 const AXIS_OPTS = Dict{Symbol,Pair{Function, Function}}(

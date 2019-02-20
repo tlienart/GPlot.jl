@@ -3,8 +3,9 @@
 
 Internal function to apply the textstyle `s` in a GLE context.
 """
-function apply_textstyle!(g::GLE, s::TextStyle)
+function apply_textstyle!(g::GLE, s::TextStyle; addset=false)
     isanydef(s) || return
+    addset         && "\nset"                     |> g
     isdef(s.font)  && "font $(s.font)"            |> g
     isdef(s.hei)   && "hei $(s.hei)"              |> g
     isdef(s.color) && "color $(col2str(s.color))" |> g

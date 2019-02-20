@@ -23,22 +23,23 @@ abstract type Axes{B <: Backend} end
     yaxis ::Axis = Axis("y")
     y2axis::Axis = Axis("y2")
     # ---
-    drawings::Vector{Drawing} = Vector{Drawing}()
+    drawings::Vector{Drawing2D} = Vector{Drawing2D}()
+    objects ::Vector{Object2D}  = Vector{Object2D}()
     # ---
-    title ::Option{Title}             = ∅
-    size  ::Option{NTuple{2,Float64}} = ∅ # (width cm, height cm)
-    legend::Option{Legend}            = ∅
+    title ::Option{Title}  = ∅
+    size  ::Option{T2F}    = ∅ # (width cm, height cm)
+    legend::Option{Legend} = ∅
     # -- toggle-able
-    math  ::Option{Bool}              = ∅ # axis crossing (0, 0)
+    math  ::Option{Bool}   = ∅ # axis crossing (0, 0)
     # ---
-    origin::Option{NTuple{2,Float64}} = ∅ # related to layout
+    origin::Option{T2F}    = ∅ # related to layout
 end
-
 
 function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})
     s = "GPlot.Axes2D{GLE}" *
         "\n\t"*rpad("Title:", 15) * (isdef(a.title) ? "\"$(a.title.text)\"" : "none") *
         "\n\t"*rpad("N. drawings:", 15) * "$(length(a.drawings))" *
+        "\n\t"*rpad("N. objects:", 15) * "$(length(a.objects))" *
         "\n\t"*rpad("Math mode:", 15) * (isdef(a.math) ? a.math : "false") *
         "\n\t"*rpad("Layout origin:", 15) * (isdef(a.origin) ? "$(round.(a.origin, digits=1))" : "auto")
     write(io, s)

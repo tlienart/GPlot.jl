@@ -29,7 +29,7 @@ function layout!(f::Figure{B}, anchors::Matrix{Float64})::Option{PreviewFigure} 
         add_axes!(f, Axes2D{B}(origin=(anchors[i, 1]*W, anchors[i, 2]*H),
                                  size=(anchors[i, 3]*W, anchors[i, 4]*H)))
     end
-    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
+    return _preview()
 end
 
 """
