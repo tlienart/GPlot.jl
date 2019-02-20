@@ -49,6 +49,8 @@ function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64}, lab::Option{Vecto
     axis = getfield(a, axs)
     # if overwrite, clear the current ticks object
     overwrite && clear!(axis.ticks)
+    # if locs are empty, just pass options and return
+    isempty(loc) && (set_properties!(axis.ticks; defer_preview=true, opts...); return _preview())
     # if locations have changed, remove the labels, rewrite locs
     if isdef(axis.ticks.places) && axis.ticks.places != loc
         clear!(axis.ticks.labels)
@@ -81,10 +83,13 @@ for axs ∈ ("x", "y", "x2", "y2")
     f  = Symbol(axs * "ticks")
     a  = Symbol(axs * "axis")
     ex = quote
-        $f!(a::Axes2D, loc::AVR, lab::Option{Vector{String}}=∅; o...) =
+        # xticks!(a, [1, 2], ["a", "b"]; o...)
+        $f!(a::Axes2D, loc::AVR=Float64[], lab::Option{Vector{String}}=∅; o...) =
             _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
-        $f!(loc::AVR, lab::Option{Vector{String}}=∅; opts...) =
+        # xticks!([1, 2], ["a", "b"]; o...)
+        $f!(loc::AVR=Float64[], lab::Option{Vector{String}}=∅; opts...) =
             _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
+        # xticks!("off"; o...)
         function $f!(s::String; o...)
             s_lc = lowercase(s)
             if s_lc == "off"
