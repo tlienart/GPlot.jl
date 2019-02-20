@@ -103,7 +103,7 @@ end
 function PreviewFigure(fig::Figure)
     disp  = (isdefined(Main, :Atom)   && Main.Atom.PlotPaneEnabled.x) ||
             (isdefined(Main, :IJulia) && Main.IJulia.inited)
-    disp || error("Preview is only available in Juno and IJulia.")
+    disp || (@warn("Preview is only available in Juno and IJulia."); return nothing)
     # trigger a draft build
     fname = savefig(fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
     isnothing(fname) && return nothing

@@ -26,7 +26,6 @@ function plot!(a::Axes2D, xy::Matrix{<:CanMiss{Float64}};
     return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
 end
 plot!(::Nothing, a...; o...) = plot!(add_axes2d!(), a...; o...)
-
 plot!(y::AV; o...)  = plot!(gca(), fl(hcat(1:length(y), y)); o...)
 plot!(xy::AM; o...) = plot!(gca(), fl(xy); o...)
 
@@ -50,8 +49,8 @@ plot(:c1, [:c2, :c3], path="foo.csv") # will plot (c1,c2) and (c1,c3)
 function plot!(a::Axes2D, xsym::Symbol, ysym::Vector{Symbol};
                path="", overwrite=false, o...)::Option{PreviewFigure}
     overwrite && erase!(a)
-    isempty(path) && throw(OptionValueError("No file path specified."))
-    isfile(path) || throw(OptionValueError("Couldn't find file path", path))
+    isempty(path) && throw(OptionValueError("No file path specified.", path))
+    isfile(path) || throw(OptionValueError("Couldn't find file path.", path))
     s = Scatter2D(xsym, ysym, path)
     set_properties!(s; defer_preview=true, o...)
     push!(a.drawings, s)
@@ -125,7 +124,20 @@ hist!(::Nothing, a...; o...) = hist!(add_axes2d!(), a...; o...)
 
 hist!(x::AV; o...) = hist!(gca(), fl(x); o...)
 
-hist(x::AV; o...)  = hist!(fl(x); overwrite=true, o...)
+# XXX (#73) disallow this for now as we do some data processing in apply_gle/ which requires having
+# access to the data. We could rewrite everything in GLE but it would be a bit annoying
+# function hist!(a::Axes2D, ysym::Symbol; path="", overwrite=false, o...)::Option{PreviewFigure}
+#     overwrite && erase!(a)
+#     isempty(path) && throw(OptionValueError("No file path specified.", path))
+#     isfile(path) || throw(OptionValueError("Couldn't find file path.", path))
+#     hist = Hist2D(ysym, path)
+#     set_properties!(hist; defer_preview=true, o...)
+#     push!(a.drawings, hist)
+#     return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
+# end
+# hist!(ys::Symbol; o...) = hist!(gca(), ys; o...)
+
+hist(a...; o...)  = hist!(a...; overwrite=true, o...)
 
 ####
 #### bar!, bar
