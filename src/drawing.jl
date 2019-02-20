@@ -9,20 +9,21 @@
 
 Add one or several line plots on the current axes.
 """
-function plot!(a::Axes2D, xy::Matrix{<:CanMiss{Float64}}; overwrite=false, o...)
+function plot!(a::Axes2D, xy::Matrix{<:CanMiss{Float64}};
+               overwrite=false, o...)::Option{PreviewFigure}
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create scatter object
     s = Scatter2D(xy)
     # if there's more than 20 points, default to smooth
     if size(xy, 1) ≥ 20
-        set_properties!(s; smooth=true, o...)
+        set_properties!(s; defer_preview=true, smooth=true, o...)
     else
-        set_properties!(s; o...)
+        set_properties!(s; defer_preview=true, o...)
     end
     # push to the drawing stack
     push!(a.drawings, s)
-    return nothing
+    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
 end
 plot!(::Nothing, a...; o...) = plot!(add_axes2d!(), a...; o...)
 
@@ -47,14 +48,14 @@ plot(:c1, [:c2, :c3], path="foo.csv") # will plot (c1,c2) and (c1,c3)
 ```
 """
 function plot!(a::Axes2D, xsym::Symbol, ysym::Vector{Symbol};
-               path="", overwrite=false, o...)
+               path="", overwrite=false, o...)::Option{PreviewFigure}
     overwrite && erase!(a)
     isempty(path) && throw(OptionValueError("No file path specified."))
     isfile(path) || throw(OptionValueError("Couldn't find file path", path))
     s = Scatter2D(xsym, ysym, path)
-    set_properties!(s; o...)
+    set_properties!(s; defer_preview=true, o...)
     push!(a.drawings, s)
-    return nothing
+    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
 end
 plot!(xs::Symbol, ys::Symbol; o...) = plot!(gca(), xs, [ys]; o...)
 plot!(xs::Symbol, ys::Vector{Symbol}; o...) = plot!(gca(), xs, ys; o...)
@@ -77,14 +78,15 @@ scatter(a...; o...)  = plot!(a...; ls="none", marker="o", overwrite=true, o...)
 #### fill_between!, fill_between
 ####
 
-function fill_between!(a::Axes2D, xy1y2::Matrix{Float64}; overwrite=false, o...)
+function fill_between!(a::Axes2D, xy1y2::Matrix{Float64};
+                       overwrite=false, o...)::Option{PreviewFigure}
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create fill object, set properties and push to drawing stack
     fill = Fill2D(xy1y2 = xy1y2)
-    set_properties!(fill; o...)
+    set_properties!(fill; defer_preview=true, o...)
     push!(a.drawings, fill)
-    return nothing
+    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
 end
 fill_between!(::Nothing, a...; o...) = fill_between!(add_axes2d!(), a...; o...)
 
@@ -109,14 +111,15 @@ fill_between(a...; o...) = fill_between!(a...; overwrite=true, o...)
 
 Add a histogram of `x` on the current axes.
 """
-function hist!(a::Axes2D, x::Vector{<:CanMiss{Float64}}; overwrite=false, o...)
+function hist!(a::Axes2D, x::Vector{<:CanMiss{Float64}};
+               overwrite=false, o...)::Option{PreviewFigure}
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create hist2d object assign properties and push to drawing stack
     hist = Hist2D(x = x)
-    set_properties!(hist; o...)
+    set_properties!(hist; defer_preview=true, o...)
     push!(a.drawings, hist)
-    return nothing
+    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
 end
 hist!(::Nothing, a...; o...) = hist!(add_axes2d!(), a...; o...)
 
@@ -128,14 +131,15 @@ hist(x::AV; o...)  = hist!(fl(x); overwrite=true, o...)
 #### bar!, bar
 ####
 
-function bar!(a::Axes2D, xy::Matrix{Float64}; overwrite=false, o...)
+function bar!(a::Axes2D, xy::Matrix{Float64};
+              overwrite=false, o...)::Option{PreviewFigure}
     # if overwrite, destroy axes and start afresh
     overwrite && erase!(a)
     # create Bar2D object, assign properties and push to drawing stack
     bar = Bar2D(xy)
-    set_properties!(bar; o...)
+    set_properties!(bar; defer_preview=true, o...)
     push!(a.drawings, bar)
-    return nothing
+    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
 end
 bar!(::Nothing, a...; o...) = bar!(add_axes2d!(), a...; o...)
 

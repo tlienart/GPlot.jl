@@ -24,7 +24,7 @@ function Figure(id::String="_fig_"; backend=GP_ENV["BACKEND"](), reset=false, _s
     # return a fresh figure when calling Figure() unless for subroutines
     if !_sub && id == "_fig_"
         f = Figure(backend, id)
-        set_properties!(f; opts...)
+        set_properties!(f; defer_preview=true, opts...)
         GP_ENV["ALLFIGS"][id] = f
         GP_ENV["CURFIG"]  = f
         GP_ENV["CURAXES"] = nothing
@@ -37,14 +37,14 @@ function Figure(id::String="_fig_"; backend=GP_ENV["BACKEND"](), reset=false, _s
     reset && erase!(f)
     GP_ENV["CURFIG"]  = f
     GP_ENV["CURAXES"] = isempty(f.axes) ? nothing : f.axes[1]
-    set_properties!(f; opts...) # f exists but properties have been given
+    set_properties!(f; defer_preview=true, opts...) # f exists but properties have been given
     return f
 end
 
 """
     add_axes!(fig, ax)
 
-Add axes `ax` to figure `fig`.
+Internal function to add axes `ax` to figure `fig`.
 """
 function add_axes!(f::Figure, ax::Axes)
     push!(f.axes, ax)
@@ -55,7 +55,7 @@ end
 """
     add_axes2d!()
 
-Add empty `Axes2D` to the current figure.
+Internal function to add empty `Axes2D` to the current figure.
 """
 add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
 
@@ -64,7 +64,7 @@ add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
 
 Replaces `fig`'s current axes by a fresh, empty axes container. Note that
 other properties of the figure are preserved (such as its size, latex
-properties etc).
+properties etc). See also [`clf!`](@ref) and [`reset!`](@ref).
 """
 function erase!(f::Figure)
     # empty associated buffer
@@ -77,13 +77,19 @@ function erase!(f::Figure)
 end
 
 """
-    clf!() or clf()
+    clf!()
 
 Reset the current figure keeping only its current name and size, everything else is
 set to the default parameters.
 See also [`erase!`](@ref) and [`reset!`](@ref)
 """
 clf!() = (reset!(gcf()))
+
+"""
+    clf()
+
+See [`clf!`](@ref).
+"""
 clf = clf!
 
 """
@@ -96,7 +102,7 @@ isempty(f::Figure) = isempty(f.axes)
 """
     destroy(fig)
 
-Remove reference to `fig` and set the current figure to nothing.
+Internal function to remove all references to `fig` and set the current figure to nothing.
 """
 function destroy(f::Figure)
     delete!(GP_ENV["ALLFIGS"], f.id)
@@ -109,6 +115,14 @@ end
 #### Subroutines
 ####
 
+"""
+    add_sub_marker!(f, m)
+
+Internal function to add an appropriate subroutine to the GLE script to deal with markers that
+must have a different color than the line they are associated with. For instance if you want a
+blue line with red markers, you need to define a specfici subroutine for red-markers otherwise both
+line and markers are going to be of the same color.
+"""
 function add_sub_marker!(f::Figure, m::MarkerStyle)
     if str(m) ∉ keys(f.subroutines)
         f.subroutines[str(m)] = """
