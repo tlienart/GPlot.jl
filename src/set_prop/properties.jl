@@ -106,7 +106,7 @@ end
 #### Options for STYLE
 ####
 
-const TEXTSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const TEXTSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :font      => id    => set_font!,      # set_style
     :fontsize  => posfl => set_hei!,       # .
     :col       => col   => set_textcolor!, # .
@@ -115,7 +115,7 @@ const TEXTSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :textcolor => col   => set_textcolor!, # .
     )
 
-const LINESTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const LINESTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :ls        => id    => set_lstyle!, # set_style
     :lstyle    => id    => set_lstyle!, # .
     :linestyle => id    => set_lstyle!, # .
@@ -127,7 +127,7 @@ const LINESTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :color     => col   => set_color!,  # .
     )
 
-const GLINESTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :ls         => id    => set_lstyles!, # set_style
     :lstyle     => id    => set_lstyles!, # .
     :linestyle  => id    => set_lstyles!, # .
@@ -146,7 +146,7 @@ const GLINESTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :colors     => col   => set_colors!,  # .
     )
 
-const GMARKERSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const GMARKERSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :marker           => id    => set_markers!, # set_style
     :markers          => id    => set_markers!, # .
     :msize            => posfl => set_msizes!,  # .
@@ -167,13 +167,13 @@ const GMARKERSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :markerfacecolors => col   => set_mcols!,   # .
     )
 
-const BARSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const BARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :ecol      => col => set_color!, # .
     :edgecol   => col => set_color!, # .
     :edgecolor => col => set_color!, # .
     )
 
-const GBARSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const GBARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :col        => col   => set_colors!, # set_style
     :color      => col   => set_colors!, # .
     :ecol       => col   => set_colors!, # .
@@ -196,7 +196,7 @@ const GBARSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
     :binwidth   => posfl => set_width!,  # .
     )
 
-const FILLSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const FILLSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :col       => col   => set_fill!,  # set_style
     :color     => col   => set_fill!,  # .
     :fcol      => col   => set_fill!,  # .
@@ -211,13 +211,13 @@ const FILLSTYLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
 #### Options for AX_ELEMS
 ####
 
-const TITLE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const TITLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :dist => posfl => set_dist!
     )
 merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
 
-const LEGEND_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const LEGEND_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :pos      => id    => set_position!, # set_drawing
     :position => id    => set_position!, # .
     :fontsize => posfl => set_hei!,
@@ -225,7 +225,7 @@ const LEGEND_OPTS = Dict{Symbol, Pair{Function, Function}}(
 #XXX merge!(LEGEND_OPTS, TEXTSTYLE_OPTS)
 set_properties!(l::Legend; opts...) = set_properties!(LEGEND_OPTS, l; opts...)
 
-const TICKS_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     # ticks related
     :off        => id    => set_off!,        # set_ax_elems
     :hideticks  => id    => set_off!,        # .
@@ -250,8 +250,7 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 ####
 #### Options for DRAWINGS
 ####
-
-const SCATTER2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const SCATTER2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :name   => id => set_labels!, # set_drawing
     :key    => id => set_labels!, # .
     :label  => id => set_labels!, # .
@@ -261,7 +260,7 @@ merge!(SCATTER2D_OPTS, GLINESTYLE_OPTS)
 merge!(SCATTER2D_OPTS, GMARKERSTYLE_OPTS)
 set_properties!(s::Scatter2D; opts...) = set_properties!(SCATTER2D_OPTS, s; opts...)
 
-const FILL2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const FILL2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :from => fl => set_xmin!,
     :min  => fl => set_xmin!,
     :xmin => fl => set_xmin!,
@@ -272,7 +271,7 @@ const FILL2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
 merge!(FILL2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(f::Fill2D; opts...) = set_properties!(FILL2D_OPTS, f; opts...)
 
-const HIST2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const HIST2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :bins       => posint => set_bins!,    # set_drawing
     :nbins      => posint => set_bins!,    # .
     :scaling    => id     => set_scaling!, # .
@@ -284,7 +283,7 @@ merge!(HIST2D_OPTS, BARSTYLE_OPTS)
 merge!(HIST2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(h::Hist2D; opts...) = set_properties!(HIST2D_OPTS, h; opts...)
 
-const BAR2D_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const BAR2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :stacked    => id => set_stacked!, # set_drawing
     :horiz      => id => set_horiz!,   # .
     :horizontal => id => set_horiz!,   # .
@@ -297,7 +296,7 @@ set_properties!(gb::Bar2D; opts...) =
 #### Options for FIGURE
 ####
 
-const AXIS_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const AXIS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :title  => id    => set_title!,  # set_ax
     :base   => posfl => set_base!,   # .
     :min    => fl    => set_min!,    # .
@@ -313,7 +312,7 @@ set_properties!(a::Axis; opts...) = set_properties!(AXIS_OPTS, a; opts...)
 #### Options for FIGURE
 ####
 
-const FIGURE_OPTS = Dict{Symbol, Pair{Function, Function}}(
+const FIGURE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :size         => posfl => set_size!,         # set_figure
     :tex          => id    => set_texlabels!,    # .
     :hastex       => id    => set_texlabels!,    # .

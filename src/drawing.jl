@@ -1,4 +1,23 @@
 ####
+#### line, hline, vline and line!, hline!, vline!
+####
+function line!(ax::Axes2D, a::NTuple{2, Float64}, b::NTuple{2, Float64};
+               overwrite=false, o...)::Option{PreviewFigure}
+    # if overwrite, erase axes and start afresh
+    overwrite && erase!(ax)
+    # create line object, set properties and push to drawing stack
+    l = Scatter2D([a[1] a[2]; b[1] b[2]])
+    set_properties!(l; defer_preview=true, o...)
+    push!(ax.drawings, l)
+    return GP_ENV["CONT_PREVIEW"] ? preview() : nothing
+end
+line!(::Nothing, a...; o...) = line!(add_axes2d!(), a...; o...)
+line!(a::NTuple{2, Real}, b::NTuple{2, Real}; o...) = line!(gca(), fl(a), fl(b); o...)
+line!(a::AVR, b::AVR; o...) = line!(gca(), tuple(fl(a)...), tuple(fl(b)...); o...)
+
+line(a...; o...)  = line!(a...; overwrite=true, o...)
+
+####
 #### plot, plot!
 ####
 
@@ -11,7 +30,7 @@ Add one or several line plots on the current axes.
 """
 function plot!(a::Axes2D, xy::Matrix{<:CanMiss{Float64}};
                overwrite=false, o...)::Option{PreviewFigure}
-    # if overwrite, destroy axes and start afresh
+    # if overwrite, erase axes and start afresh
     overwrite && erase!(a)
     # create scatter object
     s = Scatter2D(xy)
@@ -79,7 +98,7 @@ scatter(a...; o...)  = plot!(a...; ls="none", marker="o", overwrite=true, o...)
 
 function fill_between!(a::Axes2D, xy1y2::Matrix{Float64};
                        overwrite=false, o...)::Option{PreviewFigure}
-    # if overwrite, destroy axes and start afresh
+    # if overwrite, erase axes and start afresh
     overwrite && erase!(a)
     # create fill object, set properties and push to drawing stack
     fill = Fill2D(xy1y2 = xy1y2)
@@ -112,7 +131,7 @@ Add a histogram of `x` on the current axes.
 """
 function hist!(a::Axes2D, x::Vector{<:CanMiss{Float64}};
                overwrite=false, o...)::Option{PreviewFigure}
-    # if overwrite, destroy axes and start afresh
+    # if overwrite, erase axes and start afresh
     overwrite && erase!(a)
     # create hist2d object assign properties and push to drawing stack
     hist = Hist2D(x = x)
@@ -145,7 +164,7 @@ hist(a...; o...)  = hist!(a...; overwrite=true, o...)
 
 function bar!(a::Axes2D, xy::Matrix{Float64};
               overwrite=false, o...)::Option{PreviewFigure}
-    # if overwrite, destroy axes and start afresh
+    # if overwrite, erase axes and start afresh
     overwrite && erase!(a)
     # create Bar2D object, assign properties and push to drawing stack
     bar = Bar2D(xy)
