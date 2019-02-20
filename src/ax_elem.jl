@@ -7,18 +7,18 @@
 
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
-function _title!(a::Axes2D, text::String, el::Symbol;
-                 overwrite=false, opts...)
+function _title!(a::Axes2D, el::Symbol, text::String="";
+                 overwrite=false, opts...)::Option{PreviewFigure}
     obj = (el == :axis) ? a : getfield(a, el)
     if isdef(obj.title)
         # if overwrite, clear the current title
         overwrite && clear!(obj.title)
-        obj.title.text = text
+        obj.title.text = ifelse(isempty(text), obj.title.text, text)
     else # title doesn't exist, create one
         obj.title = Title(text=text)
     end
-    set_properties!(obj.title; opts...)
-    return nothing
+    set_properties!(obj.title; defer_preview=true, opts...)
+    return _preview()
 end
 _title!(::Nothing, a...; o...) = _title!(add_axes2d!(), a...; o...)
 
@@ -30,8 +30,9 @@ for axs ∈ ("", "x", "y", "x2", "y2")
     f2  = Symbol(axs * "label")
     ex = quote
         # mutate
-        $f!(a::Axes2D, t::String; o...) = _title!(a, t, Symbol($axs * "axis"); o...)
-        $f!(t::String; o...) = _title!(gca(), t, Symbol($axs * "axis"); o...)
+        $f!(a::Axes2D, t::String; o...) = _title!(a, Symbol($axs * "axis"), t; o...)
+        $f!(t::String; o...) = _title!(gca(), Symbol($axs * "axis"), t; o...)
+        $f!(; o...) = _title!(gca(), Symbol($axs * "axis"); o...)
         # overwrite
         $f(a...; o...) = $f!(a...; overwrite=true, o...)
         # more synonyms xlabel...
@@ -44,11 +45,13 @@ end
 #### [x|y|x2|y2]ticks
 ####
 
-function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64},
-                 lab::Option{Vector{String}}; overwrite=false, opts...)
+function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64}, lab::Option{Vector{String}};
+                 overwrite=false, opts...)::Option{PreviewFigure}
     axis = getfield(a, axs)
     # if overwrite, clear the current ticks object
     overwrite && clear!(axis.ticks)
+    # if locs are empty, just pass options and return
+    isempty(loc) && (set_properties!(axis.ticks; defer_preview=true, opts...); return _preview())
     # if locations have changed, remove the labels, rewrite locs
     if isdef(axis.ticks.places) && axis.ticks.places != loc
         clear!(axis.ticks.labels)
@@ -70,8 +73,8 @@ function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64},
         end
         axis.ticks.labels = TicksLabels(names=lab)
     end
-    set_properties!(axis.ticks; opts...)
-    return nothing
+    set_properties!(axis.ticks; defer_preview=true, opts...)
+    return _preview()
 end
 _ticks!(::Nothing, a...; o...) = _ticks!(add_axes2d!(), a...; o...)
 
@@ -81,10 +84,13 @@ for axs ∈ ("x", "y", "x2", "y2")
     f  = Symbol(axs * "ticks")
     a  = Symbol(axs * "axis")
     ex = quote
-        $f!(a::Axes2D, loc::AVR, lab::Option{Vector{String}}=∅; o...) =
+        # xticks!(a, [1, 2], ["a", "b"]; o...)
+        $f!(a::Axes2D, loc::AVR=Float64[], lab::Option{Vector{String}}=∅; o...) =
             _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
-        $f!(loc::AVR, lab::Option{Vector{String}}=∅; opts...) =
+        # xticks!([1, 2], ["a", "b"]; o...)
+        $f!(loc::AVR=Float64[], lab::Option{Vector{String}}=∅; opts...) =
             _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
+        # xticks!("off"; o...)
         function $f!(s::String; o...)
             s_lc = lowercase(s)
             if s_lc == "off"
@@ -113,12 +119,12 @@ end
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.
 """
-function legend!(a::Axes2D; overwrite=false, opts...)
+function legend!(a::Axes2D; overwrite=false, opts...)::Option{PreviewFigure}
     isdef(a) || (a = add_axes2d!())
     # if there exists a legend object but overwrite, then reset it
     (!isdef(a.legend) || overwrite) && (a.legend = Legend())
-    set_properties!(a.legend; opts...)
-    return nothing
+    set_properties!(a.legend; defer_preview=true, opts...)
+    return _preview()
 end
 legend!(::Nothing; opts...) = legend!(add_axes2d!(); opts...)
 legend!(; opts...) = legend!(gca(); opts...)

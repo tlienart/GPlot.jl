@@ -164,7 +164,7 @@ const GLE_FONTS = Dict{String,String}(
     )
 add_dict_vals!(GLE_FONTS)
 
-const GLE_LEGEND_POS = Dict{String,String}(
+const GLE_POSITION = Dict{String,String}(
     "top-left"      => "tl",
     "bottom-left"   => "bl",
     "top-right"     => "tr",
@@ -175,4 +175,4 @@ const GLE_LEGEND_POS = Dict{String,String}(
     "right-center"  => "rc",
     "center"        => "cc",
     )
-add_dict_vals!(GLE_LEGEND_POS)
+add_dict_vals!(GLE_POSITION)

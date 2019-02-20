@@ -51,7 +51,7 @@ end
 
 Internal constructor for `Scatter2D` object when reading directly from a file at the given
 `path`, `xsym` and `ysym` are symbols indicating which columns should be read and are of
-the format `:ck` where `k` is the column index.
+the format `:ck` where `k` is the column index starting at 1 for the first column.
 As the base `Standard2D`, it initialises an empty vector of `LineStyle` and `MarkerStyle`
 of the appropriate size.
 """
@@ -96,7 +96,21 @@ Missing values are allowed.
     bins   ::Option{Int}     = ∅
     scaling::Option{String}  = ∅
 #    label::Option{String} = ∅ # 🚫
+    # XXX disallow this for now, see #73
+    # # --- fields associated with a hist2d from file
+    # ysym::Option{Symbol} = ∅
+    # path::Option{String} = ∅
 end
+
+# XXX disallow this for now, see #73
+# """
+#     Hist2D(ysym, path)
+#
+# Internal constructor for `Hist2D` object when reading directly from a file at the given `path`
+# taking column `ysym` for a histogram, `ysym` must have the format `:ck` where `k` is the column
+# index starting at 1 for the first column.
+# """
+# Hist2D(ysym::Symbol, path::String) = Hist2D(x=Vector{Float64}(undef,0), ysym=ysym, path=path)
 
 """
     Bar2D <: Drawing2D

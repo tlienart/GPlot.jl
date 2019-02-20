@@ -35,32 +35,18 @@ end; println(".............done in $(round(t, digits=1))s ✅")
 #############################################################
 #############################################################
 
-f = Figure()
+plot(randn(10))
 
-x = [1, 2, 3, 4, 5, 6, 7]
-y = [1, 4, missing, 16, 25, missing, 10]
+text!("hello", (3, -2))
 
-plot(x, y)
+text!("goodbye", (5, 0), font="tt")
 
-preview()
+text!("another-one", (5, -1), fontsize=0.8)
 
-x = randn(500)
-xm = convert(Vector{GPlot.CanMiss{Float64}}, x)
+text!("blah", (3, 0))
 
-hist(xm)
+clo!()
 
-preview()
+# so it's preserved, not good
 
-# NOTE could not directly read single column file so would only be partial support
-# so folks would have to readdlm and then hist...
-f = Figure()
-plot(:c1, :c2, path=joinpath(@__DIR__, "_filetest.csv"), lwidth=0.05)
-
-preview()
-
-#savefig(f, format="pdf", path="/Users/tlienart/Desktop/")
-
-
-preview()
-
-GPlot.debug_gle(f)
+debug_gle(gcf())

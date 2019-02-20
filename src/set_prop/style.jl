@@ -91,6 +91,7 @@ function set_font!(obj, font::String)
     end
     return nothing
 end
+set_font!(o::Ticks, font::String) = set_font!(o.labels, font)
 
 """
     set_hei!(obj, fontsize)
@@ -98,7 +99,8 @@ end
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
 set_hei!(o::Legend, v::Float64) = (o.hei = v * PT_TO_CM)
-set_hei!(o, v::Float64) = (o.textstyle.hei = v * PT_TO_CM)
+set_hei!(o::Ticks, v::Float64)  = (o.labels.textstyle.hei = v * PT_TO_CM)
+set_hei!(o, v::Float64)         = (o.textstyle.hei = v * PT_TO_CM)
 
 ####
 #### Line related

@@ -4,7 +4,7 @@ mutable struct Figure{B<:Backend}
     id::String # id of the figure
     # ---
     axes     ::Vector{Axes{B}}   # subplots
-    size     ::NTuple{2,Float64} # (width, heigth)
+    size     ::T2F               # (width, heigth)
     textstyle::TextStyle         # parent font etc
     bgcolor  ::Option{Colorant}  # background col, nothing=transparent
     # ---

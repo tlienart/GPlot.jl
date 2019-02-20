@@ -6,14 +6,13 @@ container in a GLE context. The `axorigin` and `figid` help keep track of
 where individual drawings belong to which is useful when writing auxiliary files
 containing the drawing data.
 """
-function apply_drawings!(g::GLE, drawings::Vector{Drawing},
-                         axorigin::NTuple{2,Float64}, figid::String)
+function apply_drawings!(g::GLE, drawings::Vector{<:Drawing},
+                         axorigin::T2F, figid::String)
     leg_entries = GLE()
     # element counter to have an index over objects drawn
     el_cntr = 1
     for drawing ∈ drawings
-        el_cntr  = apply_drawing!(g, leg_entries, drawing, el_cntr, axorigin, figid)
-        el_cntr += 1
+        el_cntr = apply_drawing!(g, leg_entries, drawing, el_cntr, axorigin, figid)
     end
     # this is recuperated in apply_axes for further processing by apply_legend!
     return leg_entries
@@ -46,7 +45,7 @@ end
 Internal function to generate a path to an auxiliary file storing drawing data for the current
 axes of the current figure.
 """
-function auxpath(n::Int, origin::NTuple{2,Float64}, figid::String)
+function auxpath(n::Int, origin::T2F, figid::String)
     path = GP_ENV["TMP_PATH"]
     axid = isdef(origin) ? "$(origin[1])_$(origin[2])" : ""
     return joinpath(path, "$(figid)_$(axid)_d$n.csv")
@@ -60,7 +59,7 @@ legend entries `leg_entries` (possibly empty), current element counter `el_count
 and `origin` and `figid` are used to make the auxiliary file name unique.
 """
 function apply_drawing!(g::GLE, leg_entries::GLE, obj::Scatter2D,
-                        el_counter::Int, origin::NTuple{2,Float64}, figid::String)
+                        el_counter::Int, origin::T2F, figid::String)
     # temporary buffers to help build the legend
     lt = [GLE() for c ∈ eachindex(obj.linestyle)]
 
@@ -96,12 +95,11 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Scatter2D,
 
         # (2) line and marker description
         # build a tuple with the current buffer and the legend entry buffer
-        g_ltc = (g, lt[c])
         if obj.linestyle[c].lstyle != -1
             # Line plot
             "\n\td$el_counter" |> g
-            "line" |> g_ltc
-            map(e->apply_linestyle!(e, obj.linestyle[c]), g_ltc)
+            "line" |> g;     apply_linestyle!(g, obj.linestyle[c])
+            "line" |> lt[c]; apply_linestyle!(lt[c], obj.linestyle[c], legend=true)
             # if a marker color is specified and different than the line
             # color we need to have a special subroutine for GLE
             mcol_flag = false
@@ -110,7 +108,8 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Scatter2D,
                 mcol_flag = true
                 add_sub_marker!(Figure(figid, _sub=true), obj.markerstyle[c])
             end
-            map(e->apply_markerstyle!(e, obj.markerstyle[c], mcol_flag=mcol_flag), g_ltc)
+            apply_markerstyle!(g, obj.markerstyle[c], mcol_flag=mcol_flag)
+            apply_markerstyle!(lt[c], obj.markerstyle[c], mcol_flag=mcol_flag)
         else
             # Scatter plot; if there's no specified marker color,
             # take the default line color
@@ -119,8 +118,8 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Scatter2D,
             end
             # apply markerstyle
             "\n\td$el_counter" |> g
-            "marker" |> g_ltc
-            map(e->apply_markerstyle!(e, obj.markerstyle[c]), g_ltc)
+            apply_markerstyle!(g, obj.markerstyle[c])
+            apply_markerstyle!(lt[c], obj.markerstyle[c])
         end
         el_counter += 1
     end
@@ -147,7 +146,7 @@ end
 ####
 
 function apply_drawing!(g::GLE, leg_entries::GLE, obj::Fill2D,
-                        el_counter::Int, origin::NTuple{2,Float64}, figid::String)
+                        el_counter::Int, origin::T2F, figid::String)
 
     # write data to a temporary CSV file
     faux = auxpath(el_counter, origin, figid)
@@ -178,7 +177,7 @@ end
 ####
 
 function apply_drawing!(g::GLE, leg_entries::GLE, obj::Hist2D,
-                        el_counter::Int, origin::NTuple{2,Float64}, figid::String)
+                        el_counter::Int, origin::T2F, figid::String)
 
     # # temporary buffers to help for the legend
     # lt   = IOBuffer()
@@ -235,7 +234,7 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Hist2D,
     apply_barstyle!(g, obj.barstyle)
     obj.horiz && "horiz" |> g
 
-    return el_counter
+    return el_counter+1
 end
 
 ####
@@ -243,7 +242,7 @@ end
 ####
 
 function apply_drawing!(g::GLE, leg_entries::GLE, obj::Bar2D,
-                        el_counter::Int, origin::NTuple{2,Float64}, figid::String)
+                        el_counter::Int, origin::T2F, figid::String)
 
     # write data to a temporary CSV file
     faux = auxpath(el_counter, origin, figid)
@@ -305,6 +304,5 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Bar2D,
             apply_barstyle!(g, obj.barstyle[i])
         end
     end
-
     return el_counter + nbars
 end

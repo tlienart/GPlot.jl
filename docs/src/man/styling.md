@@ -22,6 +22,8 @@ TBD:
 - default to smooth if more than 20 points.
 
 ## Fonts
+TBD:
+- if things look weird (e.g. the font does not look like the one you thought you had picked), it may be that the effective font size is too low, try increasing the size of the figure.
 
 The parent font of the figure can be defined by passing it as argument to the constructor `Figure(font=...)`.
 In non-LaTeX mode, different fonts can be selected for sub-elements (e.g. axis label); otherwise the parent font is used throughout.

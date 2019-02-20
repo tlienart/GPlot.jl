@@ -3,11 +3,12 @@
 
 Cleans up `axes` for a new drawing, keeps all other properties the same (ticks, ...).
 """
-function erase!(a::Axes2D)
-    a.drawings = Vector{Drawing}()
+function erase!(a::Axes2D)::Option{PreviewFigure}
+    a.drawings = Vector{Drawing2D}()
+    a.objects  = Vector{Object2D}()
     a.legend   = ∅
     GP_ENV["CURAXES"] = a
-    return a
+    return _preview()
 end
 
 """
@@ -15,8 +16,28 @@ end
 
 Clears the current axes, removing all drawings and resetting all options.
 """
-cla!() = reset!(gca()) # erase! removes drawings, clear! removes options
+cla!()::Option{PreviewFigure} = (reset!(gca()); _preview())
+
+"""
+    cla()
+
+See [`cla!`](@ref).
+"""
 cla = cla!
+
+"""
+    clo!()
+
+Clears all objects (annotations, arrows, ...) from the current axes, leaves everything else.
+"""
+clo!() = (gca().objects = Vector{Object2D}(); _preview())
+
+"""
+    clo()
+
+See [`clo!`](@ref).
+"""
+clo = clo!
 
 ####
 #### [x|y|...]axis(...)
@@ -43,12 +64,33 @@ for axs ∈ ("x", "y", "x2", "y2")
     eval(ex)
 end
 
-math!(a::Axes2D) = (a.math = true; nothing)
+"""
+    math!()
+    math!(a)
+
+Set the (current) axes to math mode (where the axes go through (0,0)). It is recommended to also
+adjust the axis limits via [`xlim!`](@ref) and [`ylim!`](@ref) to make sure that the origin is
+somewhere in the drawn area (otherwise the results will be rather ugly).
+"""
+math!(a::Axes2D) = (a.math = true; _preview())
 math!(::Nothing) = (add_axes2d!(); math!(gca()))
 math!() = math!(gca())
+
+"""
+    math()
+
+See [`math!`](@ref).
+"""
 math = math!
 
-function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)
+"""
+    grid!()
+
+Set grid mode on. By default the grid will be associated with both `xticks` and `yticks` but you
+can also specify one axis to only have horizontal or vertical lines by using `which=["x"]`.
+Options can be passed to specify the color of the grid, the style of the lines or their width.
+"""
+function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)::Option{PreviewFigure}
     for ax ∈ which
         ax_lc = lowercase(ax)
         if ax_lc ∉ ("x", "x2", "y", "y2")
@@ -70,17 +112,24 @@ function grid!(a::Axes2D; which::Vector{String}=["x", "y"], opts...)
             end
         end
     end
-    return nothing
+    return _preview()
 end
 grid!(::Nothing; opts...) = grid!(add_axes2d!(); opts...)
 grid!(; opts...) = grid!(gca(); opts...)
+
+"""
+    grid()
+
+See [`grid!`](@ref).
+"""
 grid = grid!
 
 ####
 #### [x|y]lim, [x|y]lim! (synonyms though with ! is preferred)
 ####
 
-function _lim!(a::Axes2D, el::Symbol, min::Option{Float64}, max::Option{Float64})
+function _lim!(a::Axes2D, el::Symbol, min::Option{Float64},
+               max::Option{Float64})::Option{PreviewFigure}
     if min !== nothing && max !== nothing
         if min > max
             throw(OptionValueError("min must be strictly smaller than max", (min, max)))
@@ -89,7 +138,7 @@ function _lim!(a::Axes2D, el::Symbol, min::Option{Float64}, max::Option{Float64}
     axis = getfield(a, el)
     setfield!(axis, :min, min)
     setfield!(axis, :max, max)
-    return nothing
+    return _preview()
 end
 _lim!(::Nothing, el, min, max) = _lim!(add_axes2d!(), el, fl(min), fl(max))
 
@@ -119,11 +168,11 @@ end
 #### [x|y]scale, [x|y]scale! (synonyms though with ! is preferred)
 ####
 
-function _scale!(a::Axis, v::String)
+function _scale!(a::Axis, v::String)::Option{PreviewFigure}
     a.log = get(AXSCALE, v) do
         throw(OptionValueError("axis scale", v))
     end
-    return nothing
+    return _preview()
 end
 
 # Generate xscale!, xscale, and associated for each axis
