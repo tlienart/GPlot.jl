@@ -72,12 +72,7 @@ end
     @test el4.xy == el3.xy
     @test isnothing(el4.linestyle[1].lstyle) # XXX default will be "-"
     @test el4.markerstyle[1].marker == "circle"
-
-    # -- if there's more than 20 points go to smooth
     @test isnothing(el.linestyle[1].smooth) # only 5 points
-    z = randn(25)
-    plot(z, z)
-    @test gca().drawings[1].linestyle[1].smooth
 
     erase!(gcf())
     plot!(1:5, 2)

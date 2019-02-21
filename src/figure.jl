@@ -83,7 +83,7 @@ Reset the current figure keeping only its current name and size, everything else
 set to the default parameters.
 See also [`erase!`](@ref) and [`reset!`](@ref)
 """
-clf!() = (reset!(gcf()))
+clf!() = (reset!(gcf()); _preview())
 
 """
     clf()
@@ -91,13 +91,6 @@ clf!() = (reset!(gcf()))
 See [`clf!`](@ref).
 """
 clf = clf!
-
-"""
-    isempty(fig)
-
-Return a bool indicating whether `fig` has axes or not.
-"""
-isempty(f::Figure) = isempty(f.axes)
 
 """
     destroy(fig)

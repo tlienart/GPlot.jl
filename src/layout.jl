@@ -61,7 +61,7 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
 
     f = gcf()
     # 1. if there are no axes in the current figure, add them
-    if isempty(f)
+    if isempty(f.axes)
         # default layout is a grid
         #  ______________________
         # |                      |
