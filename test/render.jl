@@ -6,7 +6,6 @@
         tmpdir = mktempdir()
         # - empty figure
         f = Figure("fig1", reset=true)
-        @test_logs (:warn, "The figure is empty, nothing to render.") savefig()
         # - base call
         plot(randn(10))
         @test savefig("figsave1", path=tmpdir) == joinpath(tmpdir, "figsave1.png")

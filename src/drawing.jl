@@ -42,12 +42,7 @@ function plot!(a::Axes2D, xy::Matrix{<:CanMiss{Float64}};
     overwrite && erase!(a)
     # create scatter object
     s = Scatter2D(xy)
-    # if there's more than 20 points, default to smooth
-    if size(xy, 1) ≥ 20
-        set_properties!(s; defer_preview=true, smooth=true, o...)
-    else
-        set_properties!(s; defer_preview=true, o...)
-    end
+    set_properties!(s; defer_preview=true, o...)
     # push to the drawing stack
     push!(a.drawings, s)
     return _preview()

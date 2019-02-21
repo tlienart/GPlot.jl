@@ -16,6 +16,15 @@ TBD:
 - if xticks happens after grid it will disable, should use xticks! if want to change position
 - ticks angle are in degrees, rotation is clockwise (e.g. 45)
 
+## Misc
+
+TBD
+- pass styles around using splatting, don't forget the `;` otherwise it will fail.
+```julia
+style = (smooth=true, lw=0.05, ls="--")
+plot(randn(50); style...)
+```
+
 ## LineStyle
 
 TBD:
