@@ -1,17 +1,11 @@
 function __init__()
-    # default backend = GLE for now
-    print("Looking for a backend...")
-    hasbackend = false
-    try
-        hasbackend = success(`gle -v`)
-        GP_ENV["VERBOSE"] && println(".found GLE ✅")
-        GP_ENV["BACKEND"] = GLE
-        GP_ENV["HAS_BACKEND"] = true
-    catch
-        @warn "GLE could not be loaded. Make sure you have installed " *
-                            "it and that it is accessible via the shell." *
-                            "You will not be able to preview or save figures."
-        GP_ENV["BACKEND"] = GLE # still setting a default backend (only for type purposes + tests)
+    # very simple warmup
+    t = @elapsed begin
+        f = Figure("_")
+        if GP_ENV["HAS_BACKEND"]
+            savefig(f, "_", res=100, format="png", path=GP_ENV["TMP_PATH"],_noout=true)
+        end
+        destroy(f)
     end
     return nothing
 end
