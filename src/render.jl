@@ -35,7 +35,7 @@ the current folder.
 * `res`: output file resolution (typical number is 200).
 """
 function savefig(fig::Figure{GLE}, fn::String="";
-                 format::String="png", path::String="", res::Int=200)
+                 format::String="png", path::String="", res::Int=200, _noout=false)
 
     GP_ENV["HAS_BACKEND"] || (@warn "No backend available to render the figure."; return)
 
@@ -75,8 +75,10 @@ function savefig(fig::Figure{GLE}, fn::String="";
     # (see also apply_gle/figure)
     assemble_figure(fig)
     glecom = pipeline(`gle -d $ext -r $res $cairo $texlabels $transparent -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
-    # in case of failure...
-    if !success(glecom)
+    # only for warmup: finish early (don't call gle)
+    _noout && return
+    # spwan the gle command, and check if it failed
+    if _noout || !success(glecom)
         log = read(flog, String)
         GP_ENV["DEL_INTERM"] && cleanup(fig)
         error("GLE error: ... \n$log")

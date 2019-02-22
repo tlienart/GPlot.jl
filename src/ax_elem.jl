@@ -3,7 +3,7 @@
 ####
 
 """
-    _title!(a, text, el)
+    $SIGNATURES
 
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
@@ -114,7 +114,7 @@ end
 ####
 
 """
-    legend!(axes; options...)
+    $SIGNATURES
 
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.

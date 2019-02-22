@@ -4,7 +4,7 @@
 Internal function to generate and write the GLE script associated with the
 figure object `f`.
 """
-function assemble_figure(f::Figure{GLE}; debug=false)
+function assemble_figure(f::Figure{GLE}; debug=false)::String
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
     # background color if different than nothing or white
