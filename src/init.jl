@@ -3,6 +3,7 @@ function __init__()
     t = @elapsed begin
         f = Figure("_")
         plot([1, 2], [1, 2], ls="--", color="blue")
+        plot!(randn(3), lw=0.05, label="blah")
         legend()
         xlabel("hello"); ylabel("hello"); xlim(0,1); ylim(0,1)
         if GP_ENV["HAS_BACKEND"]

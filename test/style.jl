@@ -45,8 +45,8 @@ end
     # color
     x, y = 1:2, exp.(1:2)
     plot(x, y, col="indianred", mcol="blue")
-    @test gca().drawings[1].linestyle[1].color == colorant"indianred"
-    @test gca().drawings[1].markerstyle[1].color == colorant"blue"
+    @test gca().drawings[1].linestyles[1].color == colorant"indianred"
+    @test gca().drawings[1].markerstyles[1].color == colorant"blue"
     hist(y, fcol="indianred", ecol="blue")
     @test gca().drawings[1].barstyle.color == colorant"blue"
     @test gca().drawings[1].barstyle.fill == colorant"indianred"
@@ -58,10 +58,10 @@ end
     title("blah", col="red")
     @test gca().title.textstyle.color == colorant"red"
     bar(x, y, 2y, colors=["red", "blue"], fcol=["blue", "red"])
-    @test gca().drawings[1].barstyle[1].color == colorant"red"
-    @test gca().drawings[1].barstyle[2].color == colorant"blue"
-    @test gca().drawings[1].barstyle[1].fill == colorant"blue"
-    @test gca().drawings[1].barstyle[2].fill == colorant"red"
+    @test gca().drawings[1].barstyles[1].color == colorant"red"
+    @test gca().drawings[1].barstyles[2].color == colorant"blue"
+    @test gca().drawings[1].barstyles[1].fill == colorant"blue"
+    @test gca().drawings[1].barstyles[2].fill == colorant"red"
     @test_throws G.OptionValueError bar(x, y, 2y, colors=["red"])
 
     f = Figure(transparency=true)
@@ -76,16 +76,16 @@ end
     @test_throws G.OptionValueError title("blih", fontsize=-1)
 
     plot(x, y, ls="--", lw=0.3)
-    @test gca().drawings[1].linestyle[1].lstyle == 9
-    @test gca().drawings[1].linestyle[1].lwidth == 0.3
+    @test gca().drawings[1].linestyles[1].lstyle == 9
+    @test gca().drawings[1].linestyles[1].lwidth == 0.3
     @test_throws G.OptionValueError plot(x, y, ls="blah")
     plot(x, y, ls=1)
-    @test gca().drawings[1].linestyle[1].lstyle == 1
+    @test gca().drawings[1].linestyles[1].lstyle == 1
     @test_throws G.OptionValueError plot(x,y,lw=-1)
     plot(x, y, smooth=true)
-    @test gca().drawings[1].linestyle[1].smooth = true
+    @test gca().drawings[1].linestyles[1].smooth = true
     plot(x, y, marker="o")
-    @test gca().drawings[1].markerstyle[1].marker == "circle"
+    @test gca().drawings[1].markerstyles[1].marker == "circle"
     @test_throws G.OptionValueError plot(x, y, marker="asidf")
     #XXX plot(x, y, marker="o", mcol="blue", msize=1.5)
     #XXX @test gca().drawings[1].markerstyle[1].color == colorant"blue"

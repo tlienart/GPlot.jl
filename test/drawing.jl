@@ -1,30 +1,21 @@
 @testset "▶ types/drawing               " begin
     # SCATTER2D
-    s = GPlot.Scatter2D(rand(Float64, 3, 2))
+    f = Figure()
+    plot(rand(Float64, 3, 2))
+    s = f.axes[1].drawings[1]
     @test s isa GPlot.Drawing2D
     @test s isa GPlot.Drawing
     @test s isa GPlot.Scatter2D
-    @test isnothing(s.linestyle[1].lwidth)
-    @test isnothing(s.markerstyle[1].color)
-    @test isempty(s.label)
-    s = GPlot.Scatter2D(rand(3, 2))
-    s.linestyle[1].lwidth = 0.5
-    @test s.linestyle[1].lwidth == 0.5
-    @test isnothing(s.xsym)
-    @test isnothing(s.ysym)
-    @test isnothing(s.path)
-
-    # SCATTER2D (from file)
-    s = G.Scatter2D(:c1, [:c2, :c3], "blah")
-    @test isempty(s.xy)
-    @test length(s.linestyle) == 2
-    @test length(s.markerstyle) == 2
-    @test s.xsym == :c1
-    @test s.ysym == [:c2, :c3]
-    @test s.path == "blah"
+    @test isnothing(s.linestyles[1].lwidth)
+    @test isnothing(s.markerstyles[1].color)
+    @test isempty(s.labels)
+    s.linestyles[1].lwidth = 0.5
+    @test s.linestyles[1].lwidth == 0.5
 
     # FILL2D
-    f = GPlot.Fill2D(xy1y2=rand(Float16, 5, 3))
+    clf()
+    fill_between!(1:5, rand(Float16, 5), 0.5)
+    f = gcf().axes[1].drawings[1]
     @test f isa GPlot.Drawing2D
     @test f isa GPlot.Fill2D
     @test isnothing(f.xmin)
@@ -32,7 +23,9 @@
     @test f.fillstyle.fill == colorant"cornflowerblue"
 
     # HIST2D
-    h = G.Hist2D(x=G.fl(rand(Int16, 5)))
+    clf()
+    hist(rand(Int16, 5))
+    h = gcf().axes[1].drawings[1]
     @test h isa GPlot.Drawing2D
     @test h isa GPlot.Hist2D
     @test isnothing(h.barstyle.color)
@@ -58,38 +51,32 @@ end
     plot(x, y)
     el = gca().drawings[1]
     @test el isa GPlot.Scatter2D
-    @test el.xy == hcat(x, y)
+    @test checkzip(el.z, hcat(x, y))
     plot!(2x, 2y)
     el2 = gca().drawings[2]
-    @test el2.xy == hcat(2x, 2y)
     plot!(1:3, exp.(1:3), lw=2, ls="--") # "--" is 9 in GLE
     el3 = gca().drawings[3]
-    @test el3.xy == hcat(1:3, exp.(1:3))
-    @test el3.linestyle[1].lstyle == 9
-    @test el3.linestyle[1].lwidth == 2.0
+    @test checkzip(el3.z, hcat(1:3, exp.(1:3)))
+    @test el3.linestyles[1].lstyle == 9
+    @test el3.linestyles[1].lwidth == 2.0
     plot!(exp.(1:3), marker="o")
     el4 = gca().drawings[4]
-    @test el4.xy == el3.xy
-    @test isnothing(el4.linestyle[1].lstyle) # XXX default will be "-"
-    @test el4.markerstyle[1].marker == "circle"
-    @test isnothing(el.linestyle[1].smooth) # only 5 points
+    @test isnothing(el4.linestyles[1].lstyle)
+    @test el4.markerstyles[1].marker == "circle"
+    @test isnothing(el.linestyles[1].smooth) # only 5 points
 
-    erase!(gcf())
-    plot!(1:5, 2)
-    el = gca().drawings[1]
-    @test el.xy == hcat(1:5, collect(1:5)*0 .+ 2)
-    plot!(1:5, exp.(1:5), sin.(1:5))
-    el2 = gca().drawings[2]
-    @test el2.xy == hcat(1:5, exp.(1:5), sin.(1:5))
+    plot(1:5, hcat(exp.(1:5), sin.(1:5)))
+    el2 = gca().drawings[1]
+    @test checkzip(el2.z, hcat(1:5, exp.(1:5), sin.(1:5)))
     xy = rand(Float32, 5, 3)
     plot(xy)
-    @test gca().drawings[1].xy == xy
+    @test checkzip(gca().drawings[1].z, hcat(1:size(xy,1), xy))
 
     erase!(gcf())
     # -- multiplot
     plot(x, y, 2y, 3y)
     el = gca().drawings[1]
-    @test el.xy == hcat(x, y, 2y, 3y)
+    @test checkzip(el.z, hcat(x, y, 2y, 3y))
 
     erase!(gcf())
     # -- scatterplot
@@ -97,12 +84,12 @@ end
     scatter!(2x, 2y, 3y)
     el1 = gca().drawings[1]
     el2 = gca().drawings[2]
-    @test el1.linestyle[1].lstyle == -1
-    @test el1.markerstyle[1].marker == "circle"
-    @test el2.linestyle[1].lstyle == -1
-    @test el2.linestyle[2].lstyle == -1
-    @test el2.markerstyle[1].marker == "circle"
-    @test el2.markerstyle[2].marker == "circle"
+    @test el1.linestyles[1].lstyle == -1
+    @test el1.markerstyles[1].marker == "circle"
+    @test el2.linestyles[1].lstyle == -1
+    @test el2.linestyles[2].lstyle == -1
+    @test el2.markerstyles[1].marker == "circle"
+    @test el2.markerstyles[2].marker == "circle"
 
     # FILL2D
     erase!(gcf())
@@ -116,40 +103,40 @@ end
     el1 = gca().drawings[1]
     el2 = gca().drawings[2]
     el3 = gca().drawings[3]
-    @test el1.xy1y2 == hcat(x, y1, y2)
+    @test checkzip(el1.z, hcat(x, y1, y2))
     @test el2.fillstyle.fill == RGBA{Colors.N0f8}(1.0,0.0,0.0,0.502)
-    @test el2.xy1y2 == hcat(x, 0*y2, y2)
-    @test el3.xy1y2 == hcat(x, y1, 0*y1)
+    @test checkzip(el2.z, hcat(x, 0*y2, y2))
+    @test checkzip(el3.z, hcat(x, y1, 0*y1))
 
     cla()
     fill_between(x, 1, 2)
     el = gca().drawings[1]
-    @test el.xy1y2 == G.fl(hcat(x, zero(x).+1, zero(x).+2))
+    @test checkzip(el.z, hcat(x, zero(x).+1, zero(x).+2))
 
     # HIST2D
     erase!(gcf())
     x = rand(Float32, 10)
     hist(x)
-    @test gca().drawings[1].x == x
+    @test checkzip(gca().drawings[1].z, x)
 
     # BAR
     cla()
     bar(x)
     y = rand(Float32, 10, 3)
-    @test gca().drawings[1].xy == hcat(1:length(x), x)
+    @test checkzip(gca().drawings[1].z, hcat(1:length(x), x))
     bar(x, x, x)
-    @test gca().drawings[1].xy == hcat(x, x, x)
+    @test checkzip(gca().drawings[1].z, hcat(x, x, x))
     bar(x, y)
-    @test gca().drawings[1].xy == hcat(x, y)
+    @test checkzip(gca().drawings[1].z, hcat(x, y))
     bar!(x, x, x)
-    @test gca().drawings[2].xy == hcat(x, x, x)
+    @test checkzip(gca().drawings[2].z, hcat(x, x, x))
 end
 
 @testset "▶ set_prop/drawing            " begin
     f = Figure()
     x, y = 1:2, exp.(1:2)
     plot(x, y, label="blah")
-    @test gca().drawings[1].label == ["blah"]
+    @test gca().drawings[1].labels == ["blah"]
     legend(pos="top-left")
     @test gca().legend.position == "tl"
     @test_throws GPlot.OptionValueError legend(pos="blah")
@@ -207,7 +194,6 @@ end
     x = [0.1, 0.1, 0.2, 0.1, 0.3, 0.5, 0.7, 0.2, 0.1]
     hist(x, norm="pdf", fcol="blue", ecol="red")
     s = G.assemble_figure(gcf(), debug=true)
-    isin(s, "_0.0_0.0_d1.csv")
     isin(s, "let d2 = hist d1 from $(minimum(x)) to $(maximum(x)) bins 9")
     isin(s, "let d2 = d2*1.666")
     isin(s, "bar d2 width 0.066")
