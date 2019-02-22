@@ -62,7 +62,7 @@ Add a line from `from` (in `[x, y]` format) to `to` (same format). For instance
 line!([0, 0], [1, 1]; ls="--")
 ```
 """
-line!(a::AVR, b::AVR; o...) = plot!(hcat(a, b)'; o...)
+line!(a::AVR, b::AVR; o...) = plot!([a[1],b[1]], [a[2],b[2]]; o...)
 
 """
     line(from, to; options)
