@@ -18,6 +18,9 @@ export Figure, gcf, gca, clf!, cla!, clo!, clf, cla, clo, erase!,
     # Drawings
     line!, plot!, scatter!, fill_between!, hist!, bar!,
     line, plot, scatter, fill_between, hist, bar,
+    # XXX
+    plot2!, plot2,
+    # XXX
     # Objects
     text!, text,
     # Axis / Axes
@@ -74,7 +77,7 @@ const ∅   = nothing
 const AV  = AbstractVector
 const AVM = AbstractVecOrMat
 const AM  = AbstractMatrix
-const AVR = AbstractVector{<:Real}
+const AVR = AV{<:Real}
 const T2F = NTuple{2,Float64}
 const T2R = NTuple{2,Real}
 

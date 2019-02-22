@@ -13,6 +13,23 @@ function apply_title!(g::GLE, t::Title, p::String="")
 end
 
 """
+    apply_legend!(g, leg, entries)
+
+Internal function to apply a `Legend` object `leg` in a GLE context with entries
+`entries` (constructed through the `apply_drawings` process).
+"""
+function apply_legend!(g::GLE, leg::Legend, entries::GLE)
+    "\nbegin key"  |> g
+    "\n\tcompact"  |> g
+    isdef(leg.position) && "\n\tposition $(leg.position)" |> g
+    isdef(leg.hei)      && "\n\thei $(leg.hei)"           |> g
+#    "offset 0.2 0.2"   |> g
+    entries        |> g
+    "\nend key"    |> g
+    return nothing
+end
+
+"""
     apply_ticks!(g, t, p)
 
 Internal function to apply a `Ticks` object `t` in a GLE context for an axis
@@ -29,7 +46,7 @@ function apply_ticks!(g::GLE, t::Ticks, prefix::String)
     # [x]places pos1 pos2 ...
     isdef(t.places) && "\n\t$(prefix)places $(vec2str(t.places))" |> g
     # [x]xaxis symticks
-    isdef(t.symticks) && "\n\t$(prefix)axis symticks" |> g
+    isdef(t.symticks) && "\n\t$(prefix)axis symticks"             |> g
     apply_tickslabels!(g, t.labels, prefix)
     return nothing
 end
