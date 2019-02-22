@@ -22,9 +22,10 @@ take!(b::Backend) = take!(b.io)
 
 #######################################
 
-if !isdefined(Base, :isnothing)
+if VERSION < v"1.1"
     isnothing(o) = (o === nothing)
     export isnothing
+    eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
 end
 
 isdef(el) = (el !== nothing)
