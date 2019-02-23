@@ -66,7 +66,8 @@ y = @. exp(-abs(x)+sin(x))
 plot(x, y, color="blue", lstyle="--", marker="o", lwidth=0.05, label="First plot")
 ```
 """
-function plot!(x, ys...; axes=gca(), overwrite=false, o...)::Option{PreviewFigure}
+function plot!(x, ys...; axes=nothing, overwrite=false, o...)::Option{PreviewFigure}
+    isdef(axes) || (axes = gca())
     isdef(axes) || (axes = add_axes2d!())
     overwrite && erase!(axes)
     pd = plotdata(x, ys...)

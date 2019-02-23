@@ -44,7 +44,7 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
     isdef(a.size) && "\n\tsize $(a.size[1]) $(a.size[2])" |> g
 
     # graph >> apply axis (ticks, ...), passing the figure font as parent font (see issue #76)
-    parent_font = Figure(figid).textstyle.font
+    parent_font = Figure(figid; _noreset=true).textstyle.font
     for axis in (a.xaxis, a.x2axis, a.yaxis, a.y2axis)
         apply_axis!(g, axis, parent_font)
     end

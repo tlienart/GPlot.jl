@@ -18,9 +18,6 @@ export Figure, gcf, gca, clf!, cla!, clo!, clf, cla, clo, erase!,
     # Drawings
     line!, plot!, scatter!, fill_between!, hist!, bar!,
     line, plot, scatter, fill_between, hist, bar,
-    # XXX
-    plot2!, plot2,
-    # XXX
     # Objects
     text!, text,
     # Axis / Axes
@@ -44,7 +41,7 @@ export Figure, gcf, gca, clf!, cla!, clo!, clf, cla, clo, erase!,
     grid!, math!,
     grid, math,
     # Preview / rendering / saving
-    preview, render, savefig, isempty, debug_gle,
+    preview, savefig, isempty, debug_gle,
     # Simple macros for tex strings
     @t_str, @tex_str
 
