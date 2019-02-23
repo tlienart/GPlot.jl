@@ -18,7 +18,7 @@ exists already, return that object.
 # Other options (internal use mostly):
 
 * `reset`: a bool, if true will erase the figure if it exists (instead of just returning it).
-
+* `_sub`: internal to indicate whether it's called from a subroutine or not
 """
 function Figure(id::String="_fig_"; backend=GP_ENV["BACKEND"](), reset=false, _sub=false, opts...)
     # return a fresh figure when calling Figure() unless for subroutines

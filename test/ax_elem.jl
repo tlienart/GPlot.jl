@@ -156,10 +156,10 @@ end
     # ticks (see also apply_linestyle, apply_tickslabels)
     erase!(f)
     y2ticks([1, 2])
-    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
-    isin(s, "y2places 1.0 2.0")
     xticks([1, 2], off=true)
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    isin(s, "y2places 1.0 2.0")
+    isin(s, "xplaces 1.0 2.0")
     isin(s, "xticks off")
     # XXX test symticks, length
 

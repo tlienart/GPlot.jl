@@ -7,13 +7,16 @@ figure object `f`.
 function assemble_figure(f::Figure{GLE}; debug=false)::String
     g = f.g
     "size $(f.size[1]) $(f.size[2])" |> g
-    # background color if different than nothing or white
+
+    # >> apply background color if different than nothing or white
     if isdef(f.bgcolor) && f.bgcolor != colorant"white"
         # add a box that is slightly larger than the size
         "\namove -0.05 -0.05" |> g
         "\nbox $(f.size[1]+0.1) $(f.size[2]+0.1)" |> g
         "fill $(col2str(f.bgcolor)) nobox" |> g
     end
+
+    # >> apply latex
     # check if has latex
     haslatex = false
     any(isdef, (f.texscale, f.texpreamble)) && (haslatex = true)
@@ -32,6 +35,8 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
         ifelse(isdef(f.texscale), f.texscale, "scale") |> g
     end
     write(g.io, "\n")
+
+    # >> apply axes
     # NOTE: this organisation is so that if axes need extra
     # subroutines, these will be generated after applying axes
     # but need to be put before in the GLE script
@@ -43,7 +48,8 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
         end
     end
     gtemp |> g
-    # deal with proper dir
+
+    # >> either return as string or write to file
     if debug
         return String(take!(g))
     else
