@@ -3,7 +3,7 @@
 
 Internal function to apply an `Axis` object `a` in a GLE context.
 """
-function apply_axis!(g::GLE, a::Axis)
+@inline function apply_axis!(g::GLE, a::Axis)
     apply_ticks!(g, a.ticks, a.prefix)
     isdef(a.title) && apply_title!(g, a.title, a.prefix)
     P1 = any(isdef, (a.off, a.base, a.lwidth, a.log, a.min, a.max, a.ticks.grid))

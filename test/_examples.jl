@@ -154,7 +154,7 @@ begin
     t = @elapsed begin
         f = Figure("simple_fill_transp_notex", alpha=true, reset=true)
         GPlot.add_axes2d!()
-        fill_between!(gca(), [x y1 y2], alpha=0.5)
+        fill_between!(x, y1, y2, alpha=0.5)
         fill_between!(x, 0, y3, color="red", alpha=0.5)
         # -----
         PREVIEW && preview(f)
@@ -274,27 +274,6 @@ begin
         xticks(-5:2.5:5, tickscol="lightgray", angle=45)
         yticks(-.5:0.25:.75, tickscol="lightgray")
 
-        PREVIEW && preview(f)
-        SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
-    end; println("$(f.id)...done in $(round(t, digits=2))s")
-end
-
-####
-#### Reading from file
-####
-
-begin
-    x  = range(-1, 1, length=100)
-    y  = @. exp(-x^2*cos(10x))
-    y2 = @. exp(-x^2*cos(10x))*sin(x)
-
-    datpath = joinpath(@__DIR__, "_filetest.csv")
-    writedlm(datpath, hcat(x,y,y2))
-
-    t = @elapsed begin
-        f = Figure("simple_fromfile_notex", reset=true)
-        plot(:c1, [:c2, :c3], path=datpath, lwidth=0.05)
-        plot!(x, y.-0.1, y2.-0.1)
         PREVIEW && preview(f)
         SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
     end; println("$(f.id)...done in $(round(t, digits=2))s")
