@@ -20,8 +20,8 @@ abstract type Drawing2D <: Drawing end
 2D Line plot(s) or scatter plot(s). See also [`plot!`](@ref), [`line!`](@ref) and
 [`scatter!`](@ref).
 """
-mutable struct Scatter2D <: Drawing2D
-    data        ::Base.Iterators.Zip  # data container
+mutable struct Scatter2D{T} <: Drawing2D
+    data        ::T                   # data container (zip iterator trick to avoid failure on 1.0)
     hasmissing  ::Bool                # whether there are missing|inf|nan data
     nobj        ::Int                 # number of objects
     linestyles  ::Vector{LineStyle}   # line style (color, width, ...)
@@ -42,8 +42,8 @@ Scatter2D(d, m, n) = Scatter2D(d, m, n, nvec(n, LineStyle), nvec(n, MarkerStyle)
 
 Fill-plot between two 2D curves. Missing values are not allowed. See [`fill_between!`](@ref).
 """
-@with_kw mutable struct Fill2D <: Drawing2D
-    data     ::Base.Iterators.Zip            # data iterator
+@with_kw mutable struct Fill2D{T} <: Drawing2D
+    data     ::T  # data iterator
     #
     xmin     ::Option{Float64} = ∅           # left most anchor
     xmax     ::Option{Float64} = ∅           # right most anchor
@@ -56,11 +56,11 @@ end
 
 Histogram.
 """
-@with_kw mutable struct Hist2D <: Drawing2D
-    data      ::Base.Iterators.Zip # data container
-    hasmissing::Bool               # whether has missing|inf|nan data
-    nobs      ::Int                # number of non-missing entries
-    range     ::T2F                # (minvalue, maxvalue)
+@with_kw mutable struct Hist2D{T} <: Drawing2D
+    data      ::T     # data container
+    hasmissing::Bool  # whether has missing|inf|nan data
+    nobs      ::Int   # number of non-missing entries
+    range     ::T2F   # (minvalue, maxvalue)
     #
     barstyle  ::BarStyle       = BarStyle() #
     horiz     ::Bool           = false      # horizontal histogram?
@@ -74,9 +74,9 @@ end
 
 Bar plot(s).
 """
-@with_kw mutable struct Bar2D <: Drawing2D
-    data      ::Base.Iterators.Zip  # data container
-    hasmissing::Bool                # whether has missing|inf|nan
+@with_kw mutable struct Bar2D{T} <: Drawing2D
+    data      ::T               # data container
+    hasmissing::Bool            # whether has missing|inf|nan
     nobj      ::Int
     barstyles ::Vector{BarStyle}
     #
