@@ -51,12 +51,12 @@ end
     plot(x, y)
     el = gca().drawings[1]
     @test el isa GPlot.Scatter2D
-    @test checkzip(el.z, hcat(x, y))
+    @test checkzip(el.data, hcat(x, y))
     plot!(2x, 2y)
     el2 = gca().drawings[2]
     plot!(1:3, exp.(1:3), lw=2, ls="--") # "--" is 9 in GLE
     el3 = gca().drawings[3]
-    @test checkzip(el3.z, hcat(1:3, exp.(1:3)))
+    @test checkzip(el3.data, hcat(1:3, exp.(1:3)))
     @test el3.linestyles[1].lstyle == 9
     @test el3.linestyles[1].lwidth == 2.0
     plot!(exp.(1:3), marker="o")
@@ -67,16 +67,16 @@ end
 
     plot(1:5, hcat(exp.(1:5), sin.(1:5)))
     el2 = gca().drawings[1]
-    @test checkzip(el2.z, hcat(1:5, exp.(1:5), sin.(1:5)))
+    @test checkzip(el2.data, hcat(1:5, exp.(1:5), sin.(1:5)))
     xy = rand(Float32, 5, 3)
     plot(xy)
-    @test checkzip(gca().drawings[1].z, hcat(1:size(xy,1), xy))
+    @test checkzip(gca().drawings[1].data, hcat(1:size(xy, 1), xy))
 
     erase!(gcf())
     # -- multiplot
     plot(x, y, 2y, 3y)
     el = gca().drawings[1]
-    @test checkzip(el.z, hcat(x, y, 2y, 3y))
+    @test checkzip(el.data, hcat(x, y, 2y, 3y))
 
     erase!(gcf())
     # -- scatterplot
@@ -103,33 +103,33 @@ end
     el1 = gca().drawings[1]
     el2 = gca().drawings[2]
     el3 = gca().drawings[3]
-    @test checkzip(el1.z, hcat(x, y1, y2))
+    @test checkzip(el1.data, hcat(x, y1, y2))
     @test el2.fillstyle.fill == RGBA{Colors.N0f8}(1.0,0.0,0.0,0.502)
-    @test checkzip(el2.z, hcat(x, 0*y2, y2))
-    @test checkzip(el3.z, hcat(x, y1, 0*y1))
+    @test checkzip(el2.data, hcat(x, 0*y2, y2))
+    @test checkzip(el3.data, hcat(x, y1, 0*y1))
 
     cla()
     fill_between(x, 1, 2)
     el = gca().drawings[1]
-    @test checkzip(el.z, hcat(x, zero(x).+1, zero(x).+2))
+    @test checkzip(el.data, hcat(x, zero(x).+1, zero(x).+2))
 
     # HIST2D
     erase!(gcf())
     x = rand(Float32, 10)
     hist(x)
-    @test checkzip(gca().drawings[1].z, x)
+    @test checkzip(gca().drawings[1].data, x)
 
     # BAR
     cla()
     bar(x)
     y = rand(Float32, 10, 3)
-    @test checkzip(gca().drawings[1].z, hcat(1:length(x), x))
+    @test checkzip(gca().drawings[1].data, hcat(1:length(x), x))
     bar(x, x, x)
-    @test checkzip(gca().drawings[1].z, hcat(x, x, x))
+    @test checkzip(gca().drawings[1].data, hcat(x, x, x))
     bar(x, y)
-    @test checkzip(gca().drawings[1].z, hcat(x, y))
+    @test checkzip(gca().drawings[1].data, hcat(x, y))
     bar!(x, x, x)
-    @test checkzip(gca().drawings[2].z, hcat(x, x, x))
+    @test checkzip(gca().drawings[2].data, hcat(x, x, x))
 end
 
 @testset "▶ set_prop/drawing            " begin

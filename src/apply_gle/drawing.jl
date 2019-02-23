@@ -49,9 +49,9 @@ function apply_drawing!(g::GLE, leg_entries::GLE, scatter::Scatter2D,
     # temporary buffers to help build the legend
     lt = [GLE() for c ∈ 1:scatter.nobj]
 
-    faux = auxpath(hash(scatter.z), origin, figid)
+    faux = auxpath(hash(scatter.data), origin, figid)
     # don't rewrite if it's the exact same zipper
-    isfile(faux) || csv_writer(faux, scatter.z, scatter.hasmissing)
+    isfile(faux) || csv_writer(faux, scatter.data, scatter.hasmissing)
 
     #
     # GLE syntax is:
@@ -123,8 +123,8 @@ end
 function apply_drawing!(g::GLE, leg_entries::GLE, fill::Fill2D,
                         el_counter::Int, origin::T2F, figid::String)
 
-    faux = auxpath(hash(fill.z), origin, figid)
-    isfile(faux) || csv_writer(faux, fill.z, false)
+    faux = auxpath(hash(fill.data), origin, figid)
+    isfile(faux) || csv_writer(faux, fill.data, false)
 
     #
     # GLE syntax is:
@@ -151,8 +151,8 @@ function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
                         el_counter::Int, origin::T2F, figid::String)
 
     # write data to a temporary CSV file
-    faux = auxpath(hash(hist.z), origin, figid)
-    isfile(faux) || csv_writer(faux, hist.z, hist.hasmissing)
+    faux = auxpath(hash(hist.data), origin, figid)
+    isfile(faux) || csv_writer(faux, hist.data, hist.hasmissing)
 
     #
     # GLE syntax is:
@@ -183,7 +183,7 @@ function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
     nobs = hist.nobs
     nbauto = (nobs < 10) * nobs +
              (10 <= nobs < 30) * 10 +
-             (nobs > 30) * min(Int(sqrt(nobs)), 150)
+             (nobs > 30) * min(round(Int, sqrt(nobs)), 150)
     bins = isdef(hist.bins) ? hist.bins : nbauto
     "bins $bins" |> g
 
@@ -212,8 +212,8 @@ function apply_drawing!(g::GLE, leg_entries::GLE, bar::Bar2D,
                         el_counter::Int, origin::T2F, figid::String)
 
     # write data to a temporary CSV file
-    faux = auxpath(hash(bar.z), origin, figid)
-    isfile(faux) || csv_writer(faux, bar.z, bar.hasmissing)
+    faux = auxpath(hash(bar.data), origin, figid)
+    isfile(faux) || csv_writer(faux, bar.data, bar.hasmissing)
 
     # >>>>>>>>>>>>>>>>
     # general GLE syntax is:
