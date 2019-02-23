@@ -21,7 +21,7 @@ abstract type Drawing2D <: Drawing end
 [`scatter!`](@ref).
 """
 mutable struct Scatter2D{T} <: Drawing2D
-    data        ::T                   # data container (zip iterator trick to avoid failure on 1.0)
+    data        ::T                   # data container (zip; T = trick to avoid failure on 1.0)
     hasmissing  ::Bool                # whether there are missing|inf|nan data
     nobj        ::Int                 # number of objects
     linestyles  ::Vector{LineStyle}   # line style (color, width, ...)
