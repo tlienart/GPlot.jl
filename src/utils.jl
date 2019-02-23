@@ -103,7 +103,7 @@ function csv_writer(path::String, z, hasmissing::Bool)
         # it's probably not ideal but in general should be fine, huge arrays are more
         # likely to happen with 3D objects (mesh) which are somewhat less likely to have missings
         temps = String(take!(tempio))
-        write(path, replace(temps, "missing"=>"?"))
+        write(path, replace(temps, r"missing|NaN|Inf"=>"?"))
     else
         writedlm(path, z)
     end

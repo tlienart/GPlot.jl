@@ -22,7 +22,7 @@ abstract type Drawing2D <: Drawing end
 """
 mutable struct Scatter2D <: Drawing2D
     data        ::Base.Iterators.Zip  # data container
-    hasmissing  ::Bool                # whether there are missing data
+    hasmissing  ::Bool                # whether there are missing|inf|nan data
     nobj        ::Int                 # number of objects
     linestyles  ::Vector{LineStyle}   # line style (color, width, ...)
     markerstyles::Vector{MarkerStyle} # marker style (color, size, ...)
@@ -58,7 +58,7 @@ Histogram.
 """
 @with_kw mutable struct Hist2D <: Drawing2D
     data      ::Base.Iterators.Zip # data container
-    hasmissing::Bool               # whether has missings
+    hasmissing::Bool               # whether has missing|inf|nan data
     nobs      ::Int                # number of non-missing entries
     range     ::T2F                # (minvalue, maxvalue)
     #
@@ -75,8 +75,8 @@ end
 Bar plot(s).
 """
 @with_kw mutable struct Bar2D <: Drawing2D
-    data      ::Base.Iterators.Zip
-    hasmissing::Bool
+    data      ::Base.Iterators.Zip  # data container
+    hasmissing::Bool                # whether has missing|inf|nan
     nobj      ::Int
     barstyles ::Vector{BarStyle}
     #

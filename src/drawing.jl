@@ -4,19 +4,26 @@
 
 function plotdata(x)
     x isa AVM{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
+    hasmissing = Missing <: eltype(x)
+    hasmissing = hasmissing || any(isinf, x)
+    hasmissing = hasmissing || any(isnan, x)
     return (data=zip(1:size(x, 1), eachcol(x)...),
-            hasmissing=(Missing <: eltype(x)),
+            hasmissing=hasmissing,
             nobj=size(x, 2))
 end
 function plotdata(x, ys...)
     x isa AV{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
     nobj = 0
     hasmissing = Missing <: eltype(x)
+    hasmissing = hasmissing || any(isinf, x)
+    hasmissing = hasmissing || any(isnan, x)
     for y ∈ ys
         y isa AVM{<:CanMiss{<:Real}} || throw(ArgumentError("y has un-handled type $(typeof(y))"))
         size(y, 1) == length(x) || throw(DimensionMismatch("y data must match x"))
         nobj += size(y, 2)
-        hasmissing || (hasmissing = Missing <: eltype(y))
+        hasmissing = hasmissing || Missing <: eltype(y)
+        hasmissing = hasmissing || any(isinf, y)
+        hasmissing = hasmissing || any(isnan, y)
     end
     return (data=zip(x, (view(y, :, j) for y ∈ ys for j ∈ axes(y, 2))...),
             hasmissing=hasmissing, nobj=nobj)

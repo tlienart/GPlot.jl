@@ -23,4 +23,6 @@ x[1] = 0.0
 xlabel("blah") # here the first point will be (0.0, y[1])
 ```
 
+- Inf, NaN and Missings are all considered in the same way (as missings).
+
 ## Bar plot
