@@ -4,12 +4,12 @@
 Internal function to apply a `Title` object `t` in a GLE context.
 The argument `p` specifies the prefix.
 """
-function apply_title!(g::GLE, t::Title, p::String="")
+@inline function apply_title!(g::GLE, t::Title, p::String="")
     # [x]title ...
     "\n\t$(p)title \"$(t.text)\""     |> g
     isdef(t.dist) && "dist $(t.dist)" |> g
     apply_textstyle!(g, t.textstyle)
-    return
+    return nothing
 end
 
 """
@@ -18,7 +18,7 @@ end
 Internal function to apply a `Legend` object `leg` in a GLE context with entries
 `entries` (constructed through the `apply_drawings` process).
 """
-function apply_legend!(g::GLE, leg::Legend, entries::GLE)
+@inline function apply_legend!(g::GLE, leg::Legend, entries::GLE)
     "\nbegin key"  |> g
     "\n\tcompact"  |> g
     isdef(leg.position) && "\n\tposition $(leg.position)" |> g
@@ -35,7 +35,7 @@ end
 Internal function to apply a `Ticks` object `t` in a GLE context for an axis
 prefixed by `p`.
 """
-function apply_ticks!(g::GLE, t::Ticks, prefix::String)
+@inline function apply_ticks!(g::GLE, t::Ticks, prefix::String)
     # [x]ticks ...
     if (isdef(t.off) || isanydef(t.linestyle))
         "\n\t$(prefix)ticks"                        |> g
@@ -57,7 +57,7 @@ end
 Internal function to apply a `TicksLabels` object `t` in a GLE context.
 The prefix `p` indicates which axis we're on.
 """
-function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
+@inline function apply_tickslabels!(g::GLE, t::TicksLabels, prefix::String)
     # [x]names "names1" ...
     isdef(t.names) && "\n\t$(prefix)names $(vec2str(t.names))" |> g
     # [x]labels ...

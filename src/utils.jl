@@ -25,7 +25,6 @@ take!(b::Backend) = take!(b.io)
 if VERSION < v"1.1"
     isnothing(o) = (o === nothing)
     export isnothing
-    eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
 end
 
 isdef(el) = (el !== nothing)
@@ -65,39 +64,6 @@ fl(x::Real)   = Float64(x)
 fl(t::Tuple)  = fl.(t)
 fl(v::AbstractVecOrMat) = fl.(v)
 
-"""
-    pzip(y)
-    pzip(x, y)
-
-Internal function to zip data checking the dimensions match and returning whether there are missing
-values, how many data points there are, and how many objects (columns) there are. The possibilities
-are:
-* `y` - vector only, it will be paired with 1:length(y)
-* `y` - matrix only, it will be paired with 1:size(y, 1)
-* `x, y` - vector | matrix, it will check the number of rows match then [x y1 y2 ...]
-"""
-function pzip(x::AV{<:CanMiss{<:Real}}, y::AVM{<:CanMiss{<:Real}})
-    length(x) == size(y, 1)  || throw(DimensionMismatch("x and y must have matching dimensions."))
-    return (zip(x, eachcol(y)...),                 # the zip iterator
-            Missing <: Union{eltype(x),eltype(y)}, # whether there are missing values
-            size(y, 2))                            # number of objects (e.g. line/scatters)
-end
-pzip(y::AVM{<:CanMiss{<:Real}}) = pzip(1:size(y, 1), y)
-
-function fzip(x::AVR, y::Union{Real,AVR}, z::Union{Real,AVR})
-    y isa AV || (y = fill(y, length(x)))
-    z isa AV || (z = fill(z, length(x)))
-    length(x) == length(y) == length(z) || throw(DimensionMismatch("vectors must have = lengths"))
-    return zip(x, y, z)
-end
-
-function hzip(x::AV{<:CanMiss{<:Real}})
-    return (zip(x),                       #
-            Missing <: eltype(x),         # whether there are missing values
-            sum(e->1, skipmissing(x)),    # how many non-missing
-            fl((minimum(x), maximum(x)))) # the range of the values
-end
-
 #######################################
 
 # return a number with 3 digits accuracy, useful in col2str
@@ -122,6 +88,10 @@ function svec2str(v::Vector{String}, sep=",")
     return prod(vi*sep for vi∈v[1:end-1])*v[end]
 end
 svec2str(v::Base.Generator, sep=",") = svec2str(collect(v), sep)
+
+#######################################
+
+nvec(n::Int, T) = [T() for _ ∈ 1:n]
 
 #######################################
 

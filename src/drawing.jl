@@ -1,4 +1,47 @@
 ####
+#### Data assembling
+####
+
+function plotdata(x)
+    x isa AVM{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
+    return (data=zip(1:size(x, 1), eachcol(x)...),
+            hasmissing=(Missing <: eltype(x)),
+            nobj=size(x, 2))
+end
+function plotdata(x, ys...)
+    x isa AV{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
+    nobj = 0
+    hasmissing = Missing <: eltype(x)
+    for y ∈ ys
+        y isa AVM{<:CanMiss{<:Real}} || throw(ArgumentError("y has un-handled type $(typeof(y))"))
+        size(y, 1) == length(x) || throw(DimensionMismatch("y data must match x"))
+        nobj += size(y, 2)
+        hasmissing || (hasmissing = Missing <: eltype(y))
+    end
+    return (data=zip(x, (view(y, :, j) for y ∈ ys for j ∈ axes(y, 2))...),
+            hasmissing=hasmissing, nobj=nobj)
+end
+
+function filldata(x::AVR, y1::Union{Real,AVR}, y2::Union{Real,AVR})
+    y1 isa AV || (y1 = fill(y1, length(x)))
+    y2 isa AV || (y2 = fill(y2, length(x)))
+    length(x) == length(y1) == length(y2) ||throw(DimensionMismatch("vectors must have " *
+                                                                    "matching lengths"))
+    return (data=zip(x, y1, y2))
+end
+
+function histdata(x::AV{<:CanMiss{<:Real}})
+    return (data=zip(x),
+            hasmissing=(Missing <: eltype(x)),
+            nobs=sum(e->1, skipmissing(x)),
+            range=fl((minimum(x), maximum(x))))
+end
+
+
+#################################################################################
+#################################################################################
+
+####
 #### plot, plot!
 ####
 
@@ -16,18 +59,15 @@ y = @. exp(-abs(x)+sin(x))
 plot(x, y, color="blue", lstyle="--", marker="o", lwidth=0.05, label="First plot")
 ```
 """
-function plot!(a::Axes2D, z::Base.Iterators.Zip, hasmissing::Bool, nobj::Int;
-                overwrite=false, o...)::Option{PreviewFigure}
-    overwrite && erase!(a)
-    s = Scatter2D(z, hasmissing, nobj)
-    set_properties!(s; defer_preview=true, o...)
-    push!(a.drawings, s)
+function plot!(x, ys...; axes=gca(), overwrite=false, o...)::Option{PreviewFigure}
+    isdef(axes) || (axes = add_axes2d!())
+    overwrite && erase!(axes)
+    pd = plotdata(x, ys...)
+    scatter = Scatter2D(pd.data, pd.hasmissing, pd.nobj)
+    set_properties!(scatter; defer_preview=true, o...)
+    push!(axes.drawings, scatter)
     return _preview()
 end
-plot!(::Nothing, a...; o...) = plot!(add_axes2d!(), a...; o...)
-plot!(x::AV{<:CanMiss{<:Real}}, y::AVM{<:CanMiss{<:Real}}, ys...; o...) =
-    plot!(gca(), pzip(x, hcat(y, ys...))...; o...)
-plot!(y::AVM{<:CanMiss{<:Real}}; o...) = plot!(gca(), pzip(y)...; o...)
 
 """
     plot(...)
@@ -75,20 +115,26 @@ line(a...; o...)  = line!(a...; overwrite=true, o...)
 #### fill_between!, fill_between
 ####
 
-function fill_between!(a::Axes2D, z::Base.Iterators.Zip;
-                       overwrite=false, o...)::Option{PreviewFigure}
-    overwrite && erase!(a)
-    fill = Fill2D(z)
+"""
+    fill_between!(...)
+
+Add a fill plot between two lines. The arguments must not have missings but `y1` and/or `y2` can
+be specified as single numbers (= horizontal line).
+"""
+function fill_between!(x, y1, y2; axes=gca(), overwrite=false, o...)::Option{PreviewFigure}
+    isdef(axes) || (axes = add_axes2d!())
+    overwrite && erase!(axes)
+    fill = Fill2D(data=filldata(x, y1, y2))
     set_properties!(fill; defer_preview=true, o...)
-    push!(a.drawings, fill)
+    push!(axes.drawings, fill)
     return _preview()
 end
-fill_between!(::Nothing, a...; o...) = fill_between!(add_axes2d!(), a...; o...)
 
-# Note these are type as AVR because we don't allow missings here
-fill_between!(x::AVR, y1::Union{Real,AVR}, y2::Union{Real,AVR}; o...) =
-    fill_between!(gca(), fzip(x, y1, y2); o...)
+"""
+    fill_between(...)
 
+Erase previous drawings and add a fill plot. See also [`fill_between!`](@ref).
+"""
 fill_between(a...; o...) = fill_between!(a...; overwrite=true, o...)
 
 ####
@@ -96,39 +142,49 @@ fill_between(a...; o...) = fill_between!(a...; overwrite=true, o...)
 ####
 
 """
-    hist!([axes], x; options...)
+    hist!(...)
 
 Add a histogram of `x` on the current axes.
 """
-function hist!(a::Axes2D, z::Base.Iterators.Zip, hasmissing::Bool, nobs::Int, range::T2F;
-               overwrite=false, o...)::Option{PreviewFigure}
-    overwrite && erase!(a)
-    hist = Hist2D(z, hasmissing, nobs, range)
+function hist!(x; axes=gca(), overwrite=false, o...)::Option{PreviewFigure}
+    isdef(axes) || (axes = add_axes2d!())
+    overwrite && erase!(axes)
+    hd = histdata(x)
+    hist = Hist2D(data=hd.data, hasmissing=hd.hasmissing, nobs=hd.nobs, range=hd.range)
     set_properties!(hist; defer_preview=true, o...)
-    push!(a.drawings, hist)
+    push!(axes.drawings, hist)
     return _preview()
 end
-hist!(::Nothing, a...; o...) = hist!(add_axes2d!(), a...; o...)
 
-hist!(x::AV{<:CanMiss{<:Real}}; o...) = hist!(gca(), hzip(x)...; o...)
+"""
+    hist(...)
 
+Erase previous drawings and add a histogram. See also [`hist!`](@ref).
+"""
 hist(a...; o...)  = hist!(a...; overwrite=true, o...)
 
 ####
 #### bar!, bar
 ####
 
-function bar!(a::Axes2D, z::Base.Iterators.Zip, hasmissing::Bool, nobj::Int;
-              overwrite=false, o...)::Option{PreviewFigure}
-    overwrite && erase!(a)
-    bar = Bar2D(z, hasmissing, nobj)
+"""
+    bar!(...)
+
+Add a bar plot.
+"""
+function bar!(x, ys...; axes=gca(), overwrite=false, o...)::Option{PreviewFigure}
+    isdef(axes) || (axes = add_axes2d!())
+    overwrite && erase!(axes)
+    bd = plotdata(x, ys...)
+    bar = Bar2D(bd.data, bd.hasmissing, bd.nobj)
     set_properties!(bar; defer_preview=true, o...)
-    push!(a.drawings, bar)
+    push!(axes.drawings, bar)
     return _preview()
 end
-bar!(::Nothing, a...; o...) = bar!(add_axes2d!(), a...; o...)
 
-bar!(y::AVM; o...) = bar!(gca(), pzip(y)...; o...)
-bar!(x::AV, y::AVM, ys...; o...) = bar!(gca(), pzip(x, hcat(y, ys...))...; o...)
+"""
+    bar(...)
 
+Erase previous drawings and add a bar plot. See also [`bar!`](@ref).
+"""
 bar(a...; o...) =  bar!(a...; overwrite=true, o...)
