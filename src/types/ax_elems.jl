@@ -8,10 +8,14 @@ end
 
 @with_kw mutable struct Legend
     # ---
-    position::Option{String}  = ∅
-    hei     ::Option{Float64} = ∅
+    position::String           = "tl"
+    hei     ::Option{Float64}  = ∅
+    offset  ::T2F              = (0.0, 0.0)
+    bgcolor ::Option{Colorant} = ∅
+    margins ::Option{T2F}      = ∅
+    nobox   ::Bool             = false
+    off     ::Bool             = false
     # TODO: can this take a textstyle?
-    # offset     ::Option{Tuple{Float, Float}} = ∅
     # entries *not* contained in the struct, they're generated elsewhere
     # nobox      ::Option{Bool}                = ∅
 end
@@ -21,11 +25,12 @@ end
     # ---
     textstyle::TextStyle = TextStyle()
     # ---
-    off   ::Bool            = false # whether to suppress the labels
-    angle ::Option{Float64} = ∅     # rotation of labels
-    format::Option{String}  = ∅     # format of the ticks labels
-    shift ::Option{Float64} = ∅     # move labels to left/right
-    dist  ::Option{Float64} = ∅     # ⟂ distance to spine
+    angle ::Option{Float64} = ∅ # rotation of labels
+    format::Option{String}  = ∅ # format of the ticks labels
+    shift ::Option{Float64} = ∅ # move labels to left/right
+    dist  ::Option{Float64} = ∅ # ⟂ distance to spine
+    # --- toggle-able
+    off   ::Bool = false # whether to suppress the labels
 end
 
 @with_kw mutable struct Ticks
