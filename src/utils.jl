@@ -22,7 +22,7 @@ take!(b::Backend) = take!(b.io)
 
 #######################################
 
-if !isdefined(Base, :isnothing)
+if VERSION < v"1.1"
     isnothing(o) = (o === nothing)
     export isnothing
 end
@@ -32,15 +32,6 @@ isdef(el) = (el !== nothing)
 # check if object `obj` has at least one field that is not "Nothing"
 # this is useful when dealing with objects with lots of "Optional" fields
 isanydef(obj) = any(isdef, (getfield(obj, f) for f ∈ fieldnames(typeof(obj))))
-
-# take an object and for any field that is optional, set the field to nothing
-function clear!(obj::T; exclude=Vector{Symbol}()) where T
-    for fn ∈ fieldnames(T)
-        fn ∈ exclude && continue
-        (Nothing <: fieldtype(T, fn)) && setfield!(obj, fn, nothing)
-    end
-    return obj
-end
 
 # see cla! (clear axes)
 function reset!(obj::T; exclude=Vector{Symbol}()) where T
@@ -91,15 +82,22 @@ svec2str(v::Base.Generator, sep=",") = svec2str(collect(v), sep)
 
 #######################################
 
-csv_writer(path::String, data::VecOrMat{Float64}) = writedlm(path, data)
-function csv_writer(path::String, data::VecOrMat{Union{Missing, Float64}})
-    tempio = IOBuffer()
-    writedlm(tempio, data)
-    # NOTE assumes it's fine to materialize the buffer with huge arrays
-    # it's probably not ideal but in general should be fine, huge arrays are more
-    # likely to happen with 3D objects (mesh) which are somewhat less likely to have missings
-    temps = String(take!(tempio))
-    write(path, replace(temps, "missing"=>"?"))
+nvec(n::Int, T) = [T() for _ ∈ 1:n]
+
+#######################################
+
+function csv_writer(path::String, z, hasmissing::Bool)
+    if hasmissing
+        tempio = IOBuffer()
+        writedlm(tempio, z)
+        # NOTE assumes it's fine to materialize the buffer with huge arrays
+        # it's probably not ideal but in general should be fine, huge arrays are more
+        # likely to happen with 3D objects (mesh) which are somewhat less likely to have missings
+        temps = String(take!(tempio))
+        write(path, replace(temps, r"missing|NaN|Inf"=>"?"))
+    else
+        writedlm(path, z)
+    end
     return nothing
 end
 

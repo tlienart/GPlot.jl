@@ -6,10 +6,10 @@
     @test isnothing(a.textstyle.font)
     @test isnothing(a.textstyle.color)
     @test isnothing(a.title)
-    @test isnothing(a.off)
+    @test a.off == false
     @test isnothing(a.base)
     @test isnothing(a.lwidth)
-    @test isnothing(a.log)
+    @test a.log == false
     @test isnothing(a.min)
     @test isnothing(a.max)
 
@@ -19,7 +19,7 @@
     @test isnothing(a.title)
     @test isnothing(a.size)
     @test isnothing(a.legend)
-    @test isnothing(a.math)
+    @test a.math == false
     @test isnothing(a.origin)
 
     # show
@@ -62,12 +62,12 @@ end
     erase!(f)
     xscale("log");
     @test f.axes[1].xaxis.log == true
-    @test isnothing(f.axes[1].x2axis.log)
+    @test f.axes[1].x2axis.log == false
     x2scale("log"); yscale("log"); y2scale("log")
     @test f.axes[1].x2axis.log == true
     erase!(f)
     yscale("log")
-    @test isnothing(f.axes[1].xaxis.log)
+    @test f.axes[1].xaxis.log == false
     @test f.axes[1].yaxis.log == true
     erase!(f); x2scale("log"); erase!(f); y2scale("log")
     @test f.axes[1].y2axis.log == true
@@ -77,75 +77,18 @@ end
     xlim!(min=0, max=2)
     @test f.axes[1].xaxis.min == 0.0
     @test f.axes[1].xaxis.max == 2.0
-    xlim(f.axes[1], 0, 2)
-    @test f.axes[1].xaxis.min == 0.0
-    @test f.axes[1].xaxis.max == 2.0
     xlim(0, 2)
     @test f.axes[1].xaxis.min == 0.0
     @test f.axes[1].xaxis.max == 2.0
-
-    x2lim!(min=0, max=2)
-    @test f.axes[1].x2axis.min == 0.0
-    @test f.axes[1].x2axis.max == 2.0
-    x2lim(f.axes[1], 0, 2)
-    @test f.axes[1].x2axis.min == 0.0
-    @test f.axes[1].x2axis.max == 2.0
-    x2lim(0, 2)
-    @test f.axes[1].x2axis.min == 0.0
-    @test f.axes[1].x2axis.max == 2.0
-
-    ylim!(min=0, max=2)
-    @test f.axes[1].yaxis.min == 0.0
-    @test f.axes[1].yaxis.max == 2.0
-    ylim(f.axes[1], 0, 2)
-    @test f.axes[1].yaxis.min == 0.0
-    @test f.axes[1].yaxis.max == 2.0
-    ylim(0, 2)
-    @test f.axes[1].yaxis.min == 0.0
-    @test f.axes[1].yaxis.max == 2.0
-
-    y2lim!(min=0, max=2)
-    @test f.axes[1].y2axis.min == 0.0
-    @test f.axes[1].y2axis.max == 2.0
-    y2lim(f.axes[1], 0, 2)
-    @test f.axes[1].y2axis.min == 0.0
-    @test f.axes[1].y2axis.max == 2.0
-    y2lim(0, 2)
-    @test f.axes[1].y2axis.min == 0.0
-    @test f.axes[1].y2axis.max == 2.0
 
     erase!(gcf())
     xscale!("log")
     @test f.axes[1].xaxis.log
     @test_throws G.OptionValueError yscale!("las")
-    xscale!(f.axes[1], "lin")
+    xscale!("lin")
     @test f.axes[1].xaxis.log == false
-    xscale(f.axes[1], "log")
+    xscale("log")
     @test f.axes[1].xaxis.log
-
-    erase!(gcf())
-    x2scale!("log")
-    @test f.axes[1].x2axis.log
-    x2scale!(f.axes[1], "lin")
-    @test f.axes[1].x2axis.log == false
-    x2scale(f.axes[1], "log")
-    @test f.axes[1].x2axis.log
-
-    erase!(gcf())
-    yscale!("log")
-    @test f.axes[1].yaxis.log
-    yscale!(f.axes[1], "lin")
-    @test f.axes[1].yaxis.log == false
-    yscale(f.axes[1], "log")
-    @test f.axes[1].yaxis.log
-
-    erase!(gcf())
-    y2scale!("log")
-    @test f.axes[1].y2axis.log
-    y2scale!(f.axes[1], "lin")
-    @test f.axes[1].y2axis.log == false
-    y2scale(f.axes[1], "log")
-    @test f.axes[1].y2axis.log
 
     # xaxis, yaxis, ... with shorthands
     erase!(gcf())
@@ -158,7 +101,7 @@ end
     @test f.axes[1].yaxis.log
     @test f.axes[1].yaxis.title.text == "blah"
     @test_throws G.OptionValueError x2axis("somethingweird")
-    @test_throws G.OptionValueError grid(which=["akdjf"])
+    @test_throws G.OptionValueError grid(axis=["akdjf"])
 
     clf()
     grid(lw=0.5)
@@ -171,7 +114,7 @@ end
     @test f.axes[1].math
 
     # more misc
-    @test_throws G.OptionValueError xlim(5, 2)
+    @test_throws ArgumentError xlim(5, 2)
 end
 
 @testset "▶ set_prop/ax                 " begin
@@ -227,7 +170,7 @@ end
     f.axes[1].xaxis.min = 0.0
     f.axes[1].yaxis.max = 2.0
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
-    isin(s, "xaxis  base 0.1 min 0.0") # NOTE extra space due to 'off'
+    isin(s, "xaxis base 0.1 min 0.0")
     isin(s, "x2axis grid")
     isin(s, "yaxis lwidth 2.0 max 2.0")
     isin(s, "y2axis log")

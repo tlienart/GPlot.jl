@@ -5,6 +5,7 @@ Overarching type for objects displayable on `Axes`.
 """
 abstract type Drawing end
 
+
 """
     Drawing
 
@@ -12,133 +13,81 @@ Overarching type for objects displayable on `Axes2D`.
 """
 abstract type Drawing2D <: Drawing end
 
+
 """
     Scatter2D <: Drawing2D
 
-Line plot(s) or scatter plot(s). The core object is `xy` a matrix with `n` rows
-and `p` columns where `n` is the number of x-axis points and `p-1` is the number
-of line/scatter objects (the first column stores the x-axis points).
-Missing values are allowed.
+2D Line plot(s) or scatter plot(s). See also [`plot!`](@ref), [`line!`](@ref) and
+[`scatter!`](@ref).
 """
-@with_kw mutable struct Scatter2D{T<:CanMiss{Float64}} <: Drawing2D
-    xy::Matrix{T} # [x, y1, y2, ...]
-    # --- style
-    linestyle  ::Vector{LineStyle}
-    markerstyle::Vector{MarkerStyle}
-    # --- legend and misc
-    label::Vector{String} = String[]
-    # --- fields associated with a scatter2d from file
-    xsym::Option{Symbol}         = ∅
-    ysym::Option{Vector{Symbol}} = ∅
-    path::Option{String}         = ∅
+mutable struct Scatter2D{T} <: Drawing2D
+    data        ::T                   # data container (zip; T = trick to avoid failure on 1.0)
+    hasmissing  ::Bool                # whether there are missing|inf|nan data
+    nobj        ::Int                 # number of objects
+    linestyles  ::Vector{LineStyle}   # line style (color, width, ...)
+    markerstyles::Vector{MarkerStyle} # marker style (color, size, ...)
+    labels      ::Vector{String}      # plot labels (to go in the legend)
 end
 
 """
-    Scatter2D(xy)
+    $SIGNATURES
 
-Internal constructor for `Scatter2D` object initialising an empty vector of `LineStyle`
-and `MarkerStyle` of the appropriate size.
+Internal constructor for Scatter2D object adding linestyles, markerstyles and labels.
 """
-function Scatter2D(xy::Matrix{<:CanMiss{Float64}})
-    n   = size(xy, 2) - 1 # first column is x
-    lss = [LineStyle()   for i ∈ 1:n]
-    mss = [MarkerStyle() for i ∈ 1:n]
-    return Scatter2D(xy=xy, linestyle=lss, markerstyle=mss)
-end
+Scatter2D(d, m, n) = Scatter2D(d, m, n, nvec(n, LineStyle), nvec(n, MarkerStyle), String[])
 
-"""
-    Scatter2D(xsym, ysym, path)
-
-Internal constructor for `Scatter2D` object when reading directly from a file at the given
-`path`, `xsym` and `ysym` are symbols indicating which columns should be read and are of
-the format `:ck` where `k` is the column index starting at 1 for the first column.
-As the base `Standard2D`, it initialises an empty vector of `LineStyle` and `MarkerStyle`
-of the appropriate size.
-"""
-function Scatter2D(xsym::Symbol, ysym::Vector{Symbol}, path::String)
-    n = length(ysym)
-    lss = [LineStyle()   for i ∈ 1:n]
-    mss = [MarkerStyle() for i ∈ 1:n]
-    return Scatter2D(xy=Matrix{Float64}(undef,0,0), linestyle=lss, markerstyle=mss,
-                     xsym=xsym, ysym=ysym, path=path)
-end
 
 """
     Fill2D <: Drawing2D
 
-Fill-plots between two 2D curves. The core object is `xy1y2` a matrix with `n` rows
-and `3` columns where the first column stores the `n` x-axis points, and the next two
-columns store the values describing the two curves vertically delimiting the area to
-draw.
-Missing values are not allowed.
+Fill-plot between two 2D curves. Missing values are not allowed. See [`fill_between!`](@ref).
 """
-@with_kw mutable struct Fill2D <: Drawing2D
-    xy1y2::Matrix{Float64} # [x, y1, y2], fill between y1 and y2
-    xmin::Option{Float64} = ∅
-    xmax::Option{Float64} = ∅
-    # --- style
-    fillstyle::FillStyle = FillStyle()
+@with_kw mutable struct Fill2D{T} <: Drawing2D
+    data     ::T  # data iterator
+    #
+    xmin     ::Option{Float64} = ∅           # left most anchor
+    xmax     ::Option{Float64} = ∅           # right most anchor
+    fillstyle::FillStyle       = FillStyle() # describes the area between the curves
 end
+
 
 """
     Hist2D <: Drawing2D
 
-Histograms. The core object is `x`, a vector with `n` entries which are summarised as
-a histogram.
-Missing values are allowed.
+Histogram.
 """
-@with_kw mutable struct Hist2D{T<:CanMiss{Float64}} <: Drawing2D
-    x::Vector{T}
-    # --- style
-    barstyle::BarStyle = BarStyle()
-    # ---
-    horiz  ::Bool            = false
-    bins   ::Option{Int}     = ∅
-    scaling::Option{String}  = ∅
-#    label::Option{String} = ∅ # 🚫
-    # XXX disallow this for now, see #73
-    # # --- fields associated with a hist2d from file
-    # ysym::Option{Symbol} = ∅
-    # path::Option{String} = ∅
+@with_kw mutable struct Hist2D{T} <: Drawing2D
+    data      ::T     # data container
+    hasmissing::Bool  # whether has missing|inf|nan data
+    nobs      ::Int   # number of non-missing entries
+    range     ::T2F   # (minvalue, maxvalue)
+    #
+    barstyle  ::BarStyle       = BarStyle() #
+    horiz     ::Bool           = false      # horizontal histogram?
+    bins      ::Option{Int}    = ∅          # number of bins
+    scaling   ::Option{String} = ∅          # scaling (pdf, ...)
 end
 
-# XXX disallow this for now, see #73
-# """
-#     Hist2D(ysym, path)
-#
-# Internal constructor for `Hist2D` object when reading directly from a file at the given `path`
-# taking column `ysym` for a histogram, `ysym` must have the format `:ck` where `k` is the column
-# index starting at 1 for the first column.
-# """
-# Hist2D(ysym::Symbol, path::String) = Hist2D(x=Vector{Float64}(undef,0), ysym=ysym, path=path)
 
 """
     Bar2D <: Drawing2D
 
-Bar plot(s). The core object is `xy`, a matrix with `n` rows and `p` columns. The
-first column keeps track of where the bars should be, the subsequent `p-1` columns
-describe the group of bars (possibly stacked) to display at each of these x-axis points.
-Missing values are allowed.
+Bar plot(s).
 """
-@with_kw mutable struct Bar2D{T<:CanMiss{Float64}} <: Drawing2D
-    xy::Matrix{T} # first column x, subsequent columns y1, y2, ...
-    barstyle::Vector{BarStyle} # this must be given explicitly see bar!
-    # ---
-    stacked::Bool = false
-    horiz  ::Bool = false
-    # ---
+@with_kw mutable struct Bar2D{T} <: Drawing2D
+    data      ::T               # data container
+    hasmissing::Bool            # whether has missing|inf|nan
+    nobj      ::Int
+    barstyles ::Vector{BarStyle}
+    #
+    stacked::Bool            = false
+    horiz  ::Bool            = false
     width  ::Option{Float64} = ∅
-    # label
 end
 
 """
-    Bar2D(xy)
+    Bar2D(data, hasmissing, nobj)
 
-Internal constructor for `Bar2D` object initialising an empty vector of `BarStyle`
-of the appropriate size.
+Internal constructor for Bar2D object adding barstyles.
 """
-function Bar2D(xy::Matrix{<:CanMiss{Float64}})
-    n   = size(xy, 2) - 1 # first column is x
-    bss = [BarStyle() for i ∈ 1:n]
-    return Bar2D(xy=xy, barstyle=bss)
-end
+Bar2D(d, m, n) = Bar2D(data=d, hasmissing=m, nobj=n, barstyles=nvec(n, BarStyle))

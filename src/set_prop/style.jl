@@ -32,11 +32,11 @@ Internal function to set the color values `cols` (after parsing) to `obj.parent[
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 If a single value is passed, all fields will be assigned to that value.
 """
-function set_colors!(o::Union{Bar2D, Scatter2D}, c::Vector{<:Color}, parent::Symbol, field::Symbol)
+function set_colors!(o::Union{Scatter2D, Bar2D}, c::Union{Color, Vector{<:Color}},
+                     parent::Symbol, field::Symbol)
+    c isa Vector || (c = fill(c, o.nobj))
     # check dimensions match
-    if length(c) != size(o.xy, 2)-1
-        throw(OptionValueError("colors // dimensions don't match", c))
-    end
+    length(c) == o.nobj || throw(OptionValueError("colors // dimensions don't match", c))
     # assign
     ex = quote
         for (i, col) ∈ enumerate($c)
@@ -46,9 +46,8 @@ function set_colors!(o::Union{Bar2D, Scatter2D}, c::Vector{<:Color}, parent::Sym
     eval(ex)
     return nothing
 end
-set_colors!(o::Bar2D, c::Vector{<:Color}) = set_colors!(o, c, :barstyle, :color)
-set_colors!(o::Scatter2D, c::Vector{<:Color}) = set_colors!(o, c, :linestyle, :color)
-set_colors!(o::Union{Bar2D, Scatter2D}, c::Color) = set_colors!(o, fill(c, size(o.xy, 2)-1))
+set_colors!(o::Bar2D, c)     = set_colors!(o, c, :barstyles,  :color)
+set_colors!(o::Scatter2D, c) = set_colors!(o, c, :linestyles, :color)
 
 """
     set_fills!(obj, cols)
@@ -56,8 +55,8 @@ set_colors!(o::Union{Bar2D, Scatter2D}, c::Color) = set_colors!(o, fill(c, size(
 Internal functions to set the fill color values `cols` (after parsing) to the appropriate
 fields of object `o`. If a single value is passed, all fields will be assigned to that value.
 """
-set_fills!(o::Bar2D, c::Vector{<:Color}) = set_colors!(o, c, :barstyle, :fill)
-set_fills!(o::Bar2D, c::Color) = set_colors!(o, fill(c, size(o.xy, 2)-1), :barstyle, :fill)
+set_fills!(o::Bar2D, c) = set_colors!(o, c, :barstyles, :fill)
+
 
 """
     set_alpha!(obj, α)
@@ -186,8 +185,8 @@ end
 
 
 # generate functions that take vector inputs for linestyle and markerstyle
-for case ∈ (:linestyle   => ("lstyle", "lwidth", "smooth"),
-            :markerstyle => ("marker", "msize", "mcol"))
+for case ∈ (:linestyles   => ("lstyle", "lwidth", "smooth"),
+            :markerstyles => ("marker", "msize", "mcol"))
     field = case.first
     for opt ∈ case.second
         f_scalar! = Symbol("set_" * opt * "!")  # function with scalar input
@@ -195,10 +194,8 @@ for case ∈ (:linestyle   => ("lstyle", "lwidth", "smooth"),
         ex = quote
             # set function for a group of objects
             function $f_vector!(o::Scatter2D, v::Vector)
-                if length(v) != length(o.$field)
-                    throw(OptionValueError($opt * "s // dimensions don't match", v))
-                end
-                for i ∈ 1:length(o.$field)
+                length(v) == o.nobj || throw(DimensionMismatch($opt*"s // dimensions don't match"))
+                for i ∈ 1:o.nobj
                     $f_scalar!(o.$field[i], v[i]) # call the scalar function
                 end
                 return nothing
