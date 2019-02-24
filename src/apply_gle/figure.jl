@@ -63,6 +63,6 @@ end
 
 Print the GLE script associated with figure `f` for debugging.
 """
-debug_gle(f::Figure{GLE}) = println(assemble_figure(f; debug=true))
+debug_gle(f::Figure{GLE}=gcf()) = println(assemble_figure(f; debug=true))
 
 assemble_figure(f::Figure{Gnuplot}) = throw(NotImplementedError("assemble_figure:Gnuplot"))

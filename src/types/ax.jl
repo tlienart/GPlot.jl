@@ -35,6 +35,10 @@ abstract type Axes{B <: Backend} end
     origin::Option{T2F}    = ∅ # related to layout
 end
 
+
+mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined
+
+
 function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})
     s = "GPlot.Axes2D{GLE}" *
         "\n\t"*rpad("Title:", 15) * (isdef(a.title) ? "\"$(a.title.text)\"" : "none") *
@@ -45,6 +49,3 @@ function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})
     write(io, s)
     return nothing
 end
-
-
-mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined
