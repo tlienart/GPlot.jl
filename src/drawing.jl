@@ -76,6 +76,11 @@ function plot!(x, ys...; axes=nothing, overwrite=false, o...)::Option{PreviewFig
     return _preview()
 end
 
+function plot!(f::Function, from, to; length=100, o...)
+    x = range(from, to, length=length)
+    plot!(x, f.(x); o...)
+end
+
 """
     plot(...)
 

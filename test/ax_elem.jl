@@ -22,18 +22,18 @@
 
     # TICKS AND TICKSLABELS
     t = GPlot.Ticks()
-    @test isnothing(t.labels.names)
-    @test isnothing(t.labels.off)
+    @test t.labels.names == String[]
+    @test t.labels.off == false
     @test isnothing(t.labels.angle)
     @test isnothing(t.labels.format)
     @test isnothing(t.labels.shift)
     @test isnothing(t.labels.dist)
     @test isnothing(t.linestyle.color)
-    @test isnothing(t.places)
-    @test isnothing(t.off)
+    @test t.places == Float64[]
+    @test t.off == false
     @test isnothing(t.length)
-    @test isnothing(t.symticks)
-    @test isnothing(t.grid)
+    @test t.symticks == false
+    @test t.grid == false
 end
 
 @testset "▶ /ax_elem                    " begin
@@ -75,13 +75,13 @@ end
     @test f.axes[1].y2axis.ticks.places == [3., 4.]
     @test f.axes[1].xaxis.ticks.labels.names == ["A", "B"]
     @test f.axes[1].yaxis.ticks.labels.names == ["A", "B"]
-    @test isnothing(f.axes[1].x2axis.ticks.labels.names)
-    @test isnothing(f.axes[1].y2axis.ticks.labels.names)
+    @test isempty(f.axes[1].x2axis.ticks.labels.names)
+    @test isempty(f.axes[1].y2axis.ticks.labels.names)
     xticks!([1.0, 2.3])
     @test f.axes[1].xaxis.ticks.places == [1.0, 2.3]
-    @test isnothing(f.axes[1].xaxis.ticks.labels.names)
+    @test isempty(f.axes[1].xaxis.ticks.labels.names)
 
-    @test_throws G.OptionValueError xticks([1, 2], ["A", "B", "C"])
+    @test_throws ArgumentError xticks([1, 2], ["A", "B", "C"])
 
     x2ticks!([3, 5])
     @test f.axes[1].x2axis.ticks.places == [3., 5.]
@@ -92,7 +92,7 @@ end
 
     # grid
     cla()
-    grid(which=["x", "y"], lstyle="--", color="lightgray")
+    grid(axis=["x", "y"], lstyle="--", color="lightgray")
     @test gca().xaxis.ticks.linestyle.lstyle == 9
     @test gca().yaxis.ticks.linestyle.lstyle == 9
     @test gca().xaxis.ticks.linestyle.color == colorant"lightgray"
@@ -105,12 +105,6 @@ end
     legend!(position="bottom-right")
     @test f.axes[1].legend.position == "br"
 
-    # limits for ticks
-    erase!(f)
-    x2lim(-2, 3)
-    x2ticks([-5, -3, 4])
-    @test gca().x2axis.min == -5 - (0.1 * 5)
-    @test gca().x2axis.max ==  4 + (0.1 * 4)
     x2ticks("off")
     @test gca().x2axis.ticks.off
     @test gca().x2axis.ticks.labels.off
@@ -159,7 +153,6 @@ end
     xticks([1, 2], off=true)
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "y2places 1.0 2.0")
-    isin(s, "xplaces 1.0 2.0")
     isin(s, "xticks off")
     # XXX test symticks, length
 
@@ -169,6 +162,6 @@ end
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "x2places 1.0 2.0")
     isin(s, "x2names \"a\" \"b\"")
-    isin(s, "x2labels dist 0.5")
+    isin(s, "x2labels  dist 0.5")
     isin(s, "x2axis angle 45.0 shift 1.0")
 end

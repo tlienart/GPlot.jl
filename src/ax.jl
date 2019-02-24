@@ -103,11 +103,22 @@ grid!(linestyle="-.")
 grid!(axis=["y"], linestyle="--", color="lightgray")
 ```
 """
-function grid!(; axes=nothing, axis::Vector{String}=["x", "y"], opts...)::Option{PreviewFigure}
+function grid!(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
+               opts...)::Option{PreviewFigure}
     axes = check_axes(axes)
+    if !isempty(short)
+        s_lc = lowercase(short)
+        if s_lc == "off"
+            axes.xaxis.ticks.grid = false
+            axes.yaxis.ticks.grid = false
+            return _preview()
+        else
+            throw(OptionValueError("Unrecognised shorthand toggle for grid.", short))
+        end
+    end
     for ax ∈ axis
         ax_lc = lowercase(ax)
-        ax_lc ∈ ("x", "x2", "y", "y2") ||  throw(ArgumentError("Unrecognized ax symbol $ax."))
+        ax_lc ∈ ("x","x2","y","y2") || throw(OptionValueError("Unrecognized axis symbol(s).", axis))
         # all options affect the ticks (in particular: color and width)
         axsym = Symbol(ax_lc * "axis")
         ticks = eval(:($axes.$axsym.ticks))
@@ -120,7 +131,7 @@ function grid!(; axes=nothing, axis::Vector{String}=["x", "y"], opts...)::Option
             elseif optname ∈ (:lw, :lwidth, :linewidth)
                 set_lwidth!(ticks, posfl(opts[optname], optname))
             else
-                throw(UnknownOptionError(optname, a))
+                throw(UnknownOptionError(optname, ax))
             end
         end
     end

@@ -9,18 +9,18 @@ Internal function to apply an `Axis` object `a` in a GLE context.
     if isdef(a.title)
         apply_title!(g, a.title, a.prefix, parent_font)
     end
-    if any(isdef, (a.off, a.base, a.lwidth, a.log, a.min, a.max, a.ticks.grid))
-        "\n\t$(a.prefix)axis" |> g
-        isdef(a.off)    && ifelse(a.off, "off", "")  |> g
-        isdef(a.base)   && "base $(a.base)"          |> g
-        isdef(a.lwidth) && "lwidth $(a.lwidth)"      |> g
-        isdef(a.log)    && ifelse(a.log,  "log", "") |> g
-        isdef(a.min)    && "min $(a.min)"            |> g
-        isdef(a.max)    && "max $(a.max)"            |> g
-        isdef(a.ticks.grid) && ifelse(a.ticks.grid, "grid", "") |> g
-        apply_textstyle!(g, a.textstyle, parent_font)
-    end
+    # XXX subticks disabled for now
     "\n\t$(a.prefix)subticks off" |> g
+    #
+    "\n\t$(a.prefix)axis" |> g
+    a.off && ("off" |> g; return nothing)
+    a.log && "log"  |> g
+    isdef(a.base)   && "base $(a.base)"     |> g
+    isdef(a.lwidth) && "lwidth $(a.lwidth)" |> g
+    isdef(a.min)    && "min $(a.min)"       |> g
+    isdef(a.max)    && "max $(a.max)"       |> g
+    a.ticks.grid    && "grid"               |> g
+    apply_textstyle!(g, a.textstyle, parent_font)
     return nothing
 end
 
@@ -39,7 +39,7 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
     "\nbegin graph\n\t$scale"   |> g
 
     # graph >> math mode (crossing axis)
-    isdef(a.math) && "\n\tmath" |> g
+    a.math && "\n\tmath" |> g
     # -- size of the axes, see also layout
     isdef(a.size) && "\n\tsize $(a.size[1]) $(a.size[2])" |> g
 

@@ -14,7 +14,7 @@ function _title!(el::Symbol, text::String="";
     obj = (el == :axis) ? axes : getfield(axes, el)
     if isdef(obj.title)
         # if overwrite, clear the current title
-        overwrite && clear!(obj.title)
+        overwrite && (obj.title = Title())
         obj.title.text = ifelse(isempty(text), obj.title.text, text)
     else # title doesn't exist, create one
         obj.title = Title(text=text)
@@ -50,7 +50,7 @@ function _ticks!(axis_sym::Symbol, loc::Vector{Float64}=Float64[], lab::Vector{S
     # retrieve the appropriate axis
     axis = getfield(axes, axis_sym)
     # if overwrite, clear the current ticks object
-    overwrite && clear!(axis.ticks)
+    overwrite && (axis.ticks = Ticks())
     # if locs are empty, just pass options and return
     if isempty(loc)
         isempty(lab) || throw(ArgumentError("Cannot pass ticks labels without specifying " *
@@ -59,8 +59,8 @@ function _ticks!(axis_sym::Symbol, loc::Vector{Float64}=Float64[], lab::Vector{S
         return _preview()
     end
     # if locations exist but are different than the ones passed, remove the labels + rewrite locs
-    if isdef(axis.ticks.places) && axis.ticks.places != loc
-        clear!(axis.ticks.labels)
+    if !isempty(axis.ticks.places) && axis.ticks.places != loc
+        axis.ticks.labels = TicksLabels()
     end
     axis.ticks.places = loc
     # process labels if any are passed

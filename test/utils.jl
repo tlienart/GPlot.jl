@@ -30,10 +30,6 @@ end
     @test GPlot.isanydef(Foo(1, nothing))
     @test !GPlot.isanydef(Foo(nothing, nothing))
 
-    b = Bar(1, 2, true)
-    GPlot.clear!(b)
-    @test isnothing(b.x) && isnothing(b.y) && b.z
-
     @test GPlot.round3d(pi) == 3.142
     @test GPlot.col2str(colorant"red") == "rgba(1.0,0.0,0.0,1.0)"
 
