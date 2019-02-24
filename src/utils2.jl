@@ -19,6 +19,18 @@ See also [`gcf`](@ref).
 gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 
 """
+    check_axes(a)
+
+Internal function to check if `a` is defined, if not it calls `gca` if `gca` also
+returns `nothing`, it adds axes. Used in `plot!` etc.
+"""
+function check_axes(a::Option{Axes2D})
+    isdef(a) || (a = gca())
+    isdef(a) || (a = add_axes2d!())
+    return a
+end
+
+"""
     get_backend(f)
 
 Return the backend type associated with figure `f`.

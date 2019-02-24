@@ -41,7 +41,6 @@ function savefig(fig::Figure{GLE}, fn::String="";
 
     # by default take the figure id as name
     isempty(fn) && (fn = fig.id)
-
     # extract device from file name (if any)
     fn, ext = splitext(fn)
     isempty(ext) && (ext = ifelse(isempty(format), "png", format))
@@ -102,8 +101,6 @@ end
 
 preview(fig::Figure) = PreviewFigure(fig)
 preview() = preview(gcf())
-render(fig::Figure) = PreviewFigure(fig)
-render() = render(gcf())
 
 """
     _preview()

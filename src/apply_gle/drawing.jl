@@ -82,7 +82,7 @@ function apply_drawing!(g::GLE, leg_entries::GLE, scatter::Scatter2D,
             if isdef(scatter.markerstyles[c].color) &&
                     (scatter.markerstyles[c].color != scatter.linestyles[c].color)
                 mcol_flag = true
-                add_sub_marker!(Figure(figid, _sub=true), scatter.markerstyles[c])
+                add_sub_marker!(Figure(figid; _noreset=true), scatter.markerstyles[c])
             end
             # apply markerstyle to the axes & the legend
             apply_markerstyle!(g, scatter.markerstyles[c], mcol_flag=mcol_flag)

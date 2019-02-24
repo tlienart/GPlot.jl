@@ -161,7 +161,7 @@ end
 
 @testset "▶ apply_gle/drawing           " begin
     g = G.GLE()
-    f = G.Figure();
+    f = G.Figure("blah", reset=true);
     G.add_axes2d!()
 
     # Scatter2D (see also apply_linestyle)
