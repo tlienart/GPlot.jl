@@ -239,10 +239,10 @@ const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :grid       => id    => set_grid!,       # .
     # labels related
     :hidelabels => id => set_labels_off!, # set_ax_elems
-    :angle      => fl => set_angle!,      # .
     :format     => id => set_format!,     # .
     :shift      => fl => set_shift!,      # .
     :dist       => id => set_dist!,       # .
+    :angle      => fl => ((t, v) -> setfield!(t.labels, :angle, v)),
     )
 merge!(TICKS_OPTS, LINESTYLE_OPTS) # ticks line
 merge!(TICKS_OPTS, TEXTSTYLE_OPTS) # labels
