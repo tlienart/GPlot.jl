@@ -42,13 +42,6 @@ set_grid!(o::Ticks, b::Bool) = (o.grid = b)
 #### TicksLabels
 ####
 
-"""
-    set_angle!(obj, v)
-
-Internal function to set the angle of display of ticks labels (in degrees).
-"""
-set_angle!(o::Ticks, v::Float64) = (o.labels.angle = v)
-
 # a number format for tick labels
 set_format!(o::Ticks, v::String) = throw(NotImplementedError("set_format!"))
 
