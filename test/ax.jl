@@ -94,8 +94,12 @@ end
     erase!(gcf())
     xaxis("log")
     @test f.axes[1].xaxis.log
+    xaxis("lin")
+    @test !f.axes[1].xaxis.log
     y2axis("off")
     @test f.axes[1].y2axis.off
+    y2axis("on")
+    @test !f.axes[1].y2axis.off
     cla()
     yaxis(title="blah", log=true)
     @test f.axes[1].yaxis.log
@@ -115,6 +119,21 @@ end
 
     # more misc
     @test_throws ArgumentError xlim(5, 2)
+
+    # test of clo
+    cla()
+    text!("blah", (0.5,0.5))
+    clo()
+    @test isempty(gca().objects)
+
+    # grid
+    cla()
+    grid()
+    @test gca().xaxis.ticks.grid && gca().yaxis.ticks.grid
+    grid("off")
+    @test !gca().xaxis.ticks.grid && !gca().yaxis.ticks.grid
+    grid("on")
+    @test gca().xaxis.ticks.grid && gca().yaxis.ticks.grid
 end
 
 @testset "▶ set_prop/ax                 " begin
