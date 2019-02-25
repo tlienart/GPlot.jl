@@ -44,6 +44,32 @@
 end
 
 @testset "▶ /drawing                    " begin
+    # DATA AGGREGATORS
+    x = [5.0, missing, missing, 3.0, 2.0]
+    z,h,n = G.plotdata(x)
+    @test h == true
+    @test n == 1
+    @test checkzip(z, hcat(1:length(x), x))
+
+    y = hcat([2.0, missing, 3.0, Inf, 2.0], [1.0, 2.0, NaN, 0, 1.0])
+    z,h,n = G.plotdata(x, y)
+    @test h == true
+    @test n == 2
+    @test checkzip(z, hcat(x, y))
+
+    x = 1:1:10
+    y1 = @. exp(x)
+    y2 = @. sin(x)
+    d = G.filldata(x,y1,y2)
+    @test checkzip(d, hcat(x,y1,y2))
+
+    x = [1, 2, missing, 5]
+    d,h,n,r = G.histdata(x)
+    @test checkzip(d, x)
+    @test h == true
+    @test n == 3
+    @test r == (1.0, 5.0)
+
     # SCATTER2D
     # -- basic plot
     x = randn(5)
@@ -71,6 +97,18 @@ end
     xy = rand(Float32, 5, 3)
     plot(xy)
     @test checkzip(gca().drawings[1].data, hcat(1:size(xy, 1), xy))
+
+    # -- "implicit"
+    cla()
+    plot(sin, 0, 1)
+    x = range(0, 1, length=100)
+    y = @. sin(x)
+    @test checkzip(gca().drawings[1].data, hcat(x, y))
+
+    # -- line
+    cla()
+    line([0,0],[1,1])
+    @test checkzip(gca().drawings[1].data, [0 0; 1 1])
 
     erase!(gcf())
     # -- multiplot
