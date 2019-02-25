@@ -38,6 +38,20 @@
 
     GPlot.destroy(f3)
     @test "test" ∉ keys(GPlot.GP_ENV["ALLFIGS"])
+
+    # Subroutine
+    f = Figure()
+    m = G.MarkerStyle("circle", 0.5, colorant"blue")
+    G.add_sub_marker!(f, m)
+    f.subroutines["circle_rgba_0_0_0_0_1_0_1_0_"] == raw"""
+    sub _circle_rgba_0_0_0_0_1_0_1_0_ size mdata
+        gsave
+        set color rgba(0.0,0.0,1.0,1.0)
+        marker circle 1
+        grestore
+    end sub
+    define marker circle_rgba_0_0_0_0_1_0_1_0_ _circle_rgba_0_0_0_0_1_0_1_0_
+    """
 end
 
 
