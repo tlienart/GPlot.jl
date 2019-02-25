@@ -3,7 +3,7 @@
 
 Cleans up `axes` for a new drawing, keeps all other properties the same (ticks, ...).
 """
-function erase!(a::Axes2D)::Option{PreviewFigure}
+function erase!(a::Axes2D)
     a.drawings = Vector{Drawing2D}()
     a.objects  = Vector{Object2D}()
     a.legend   = ∅
@@ -16,7 +16,7 @@ end
 
 Clears the current axes, removing all drawings and resetting all options.
 """
-cla!()::Option{PreviewFigure} = (reset!(gca()); _preview())
+cla!() = (reset!(gca()); _preview())
 
 """
     cla()
@@ -104,7 +104,7 @@ grid!(axis=["y"], linestyle="--", color="lightgray")
 ```
 """
 function grid!(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
-               opts...)::Option{PreviewFigure}
+               opts...)
     axes = check_axes(axes)
     if !isempty(short)
         s_lc = lowercase(short)
@@ -154,7 +154,7 @@ grid = grid!
 ####
 
 function _lim!(axis_sym::Symbol, min::Option{Float64}, max::Option{Float64};
-               axes=nothing)::Option{PreviewFigure}
+               axes=nothing)
     axes = check_axes(axes)
     if min !== nothing && max !== nothing
         min < max || throw(ArgumentError("min must be smaller than max (got ($min, $max))"))
@@ -182,7 +182,7 @@ end
 #### [x|y]scale, [x|y]scale! (synonyms though with ! is preferred)
 ####
 
-function _scale!(axis_sym::Symbol, v::String; axes=nothing)::Option{PreviewFigure}
+function _scale!(axis_sym::Symbol, v::String; axes=nothing)
     axes = check_axes(axes)
     axis = getfield(axes, axis_sym)
     axis.log = get(AXSCALE, v) do

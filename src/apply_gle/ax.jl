@@ -53,14 +53,14 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
     isdef(a.title) && apply_title!(g, a.title, "", parent_font)
 
     # graph >> apply drawings
-    origid      = ifelse(isdef(a.origin), a.origin, (0.,0.))
-    leg_entries = apply_drawings!(g, a.drawings, origid, figid)
+    origid = ifelse(isdef(a.origin), a.origin, (0.,0.))
+    apply_drawings!(g, a.drawings, origid, figid)
 
     "\nend graph" |> g
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     # apply  legend and other floating objects
-    isdef(a.legend)    && apply_legend!(g, a.legend, leg_entries, parent_font)
+    isdef(a.legend)    && apply_legend!(g, a.legend, parent_font, figid)
     isempty(a.objects) || apply_objects!(g, a.objects)
     return nothing
 end

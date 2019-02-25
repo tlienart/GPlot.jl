@@ -14,6 +14,11 @@ Overarching type for objects displayable on `Axes2D`.
 abstract type Drawing2D <: Drawing end
 
 
+struct DrawingHandle{D<:Drawing}
+    drawing::D
+end
+
+
 """
     Scatter2D <: Drawing2D
 
