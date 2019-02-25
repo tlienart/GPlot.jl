@@ -23,3 +23,9 @@ include("layout.jl")
 
 # 18 feb 19
 include("render.jl")
+
+# 25 feb 19
+include("properties.jl")
+
+# 25 feb 19
+include("object.jl")

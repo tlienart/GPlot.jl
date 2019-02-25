@@ -2,6 +2,11 @@
 #### Scatter2D
 ####
 
+"""
+   set_label!(obj, v)
+
+Internal function to set the label associated with an object `obj` to string `v`.
+"""
 set_label!(o::Union{Hist2D,Fill2D}, v::String) = (o.label = v)
 
 # label of a drawing (cf legend)
