@@ -193,8 +193,13 @@ end
     @test gca().drawings[1].xmin == 0.0
     @test gca().drawings[1].xmax == 6.0
 
-    bar(x1, y1, y1+y2, stacked=true)
+    bar(x1, y1, y1+y2, stacked=true, labels=["blah", "blih"])
     @test gca().drawings[1].stacked
+    @test gca().drawings[1].labels == ["blah", "blih"]
+
+    cla()
+    fill_between(1:1:5, 1, 2, label="fill")
+    @test gca().drawings[1].label == "fill"
 end
 
 @testset "▶ apply_gle/drawing           " begin
