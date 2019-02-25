@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Basic 2D plots",
     "title": "Line and scatter plot",
     "category": "section",
-    "text": ""
+    "text": "TBDplot is tied to data, if data changes, the plot will change too, so should be careful. Note that this is ONLY if the data is modified in place. So for instancex = randn(5)\ny = randn(5)\nplot(x, y)\nx = zeros(5)\nxlabel(\"blah\") # the graph will not have changedhoweverx = randn(5)\ny = randn(5)\nplot(x, y)\nx[1] = 0.0\nxlabel(\"blah\") # here the first point will be (0.0, y[1])Inf, NaN and Missings are all considered in the same way (as missings)."
 },
 
 {
@@ -110,6 +110,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Axes and Axis",
     "category": "section",
     "text": "TBD:note that x2axis/y2axis revert to xaxis/yaxis (GLE restriction)\ncannot have xaxis off and x2axis on, same for y\nif xticks happens after grid it will disable, should use xticks! if want to change position\nticks angle are in degrees, rotation is clockwise (e.g. 45)"
+},
+
+{
+    "location": "man/styling/#Misc-1",
+    "page": "Styling",
+    "title": "Misc",
+    "category": "section",
+    "text": "TBDpass styles around using splatting, don\'t forget the ; otherwise it will fail.style = (smooth=true, lw=0.05, ls=\"--\")\nplot(randn(50); style...)"
 },
 
 {
@@ -229,7 +237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public",
     "title": "GPlot.Figure",
     "category": "type",
-    "text": "Figure(id; opts...)\n\nReturn a new Figure object with name id, if a figure with that name exists already, return that object.\n\nNamed options:\n\nsize: a tuple (width, height) (for rendering prefer sizes ≥ (8, 8) see also fontsize recommendations)\nfont: a valid font name (note that if you use latex, this is irrelevant)\nfontsize: the master font size of the figure in pt (for rendering, prefer fontsizes ≥ 10pt)\ncol, color: the master font color of the figure (any Colors.Colorant can be used)\ntex, hastex, latex, haslatex: a boolean indicating whether there is LaTeX to be compiled in the figure\ntexscale: either fixed, none or scale to match the size of LaTeX expressions to the ambient fontsize (fixed and scale match, none doesn\'t)\npreamble, texpreamble: the LaTeX preamble, where you can change the font that is used and also make sure that the symbols you want to use are available.\nalpha, transparent, transparency: a bool indicating whether there may be transparent fillings in which case cairo is used\n\nOther options (internal use mostly):\n\nreset: a bool, if true will erase the figure if it exists (instead of just returning it).\n\n\n\n\n\n"
+    "text": "Figure(id; opts...)\n\nReturn a new Figure object with name id, if a figure with that name exists already, return that object.\n\nNamed options:\n\nsize: a tuple (width, height) (for rendering prefer sizes ≥ (8, 8) see also fontsize recommendations)\nfont: a valid font name (note that if you use latex, this is irrelevant)\nfontsize: the master font size of the figure in pt (for rendering, prefer fontsizes ≥ 10pt)\ncol, color: the master font color of the figure (any Colors.Colorant can be used)\ntex, hastex, latex, haslatex: a boolean indicating whether there is LaTeX to be compiled in the figure\ntexscale: either fixed, none or scale to match the size of LaTeX expressions to the ambient fontsize (fixed and scale match, none doesn\'t)\npreamble, texpreamble: the LaTeX preamble, where you can change the font that is used and also make sure that the symbols you want to use are available.\nalpha, transparent, transparency: a bool indicating whether there may be transparent fillings in which case cairo is used\n\nOther options (internal use mostly):\n\nreset: a bool, if true will erase the figure if it exists (instead of just returning it).\n_noreset: internal to indicate that if the figure has no name and is called whether a new one\n\nshould be sent or not (for the user: yes, internally: sometimes not as we want to retrieve properties)\n\n\n\n\n\n"
 },
 
 {
