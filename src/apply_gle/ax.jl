@@ -3,7 +3,7 @@
 
 Internal function to apply an `Axis` object `a` in a GLE context.
 """
-@inline function apply_axis!(g::GLE, a::Axis, parent_font::String)
+function apply_axis!(g::GLE, a::Axis, parent_font::String)
     parent_font = ifelse(isdef(a.textstyle.font), a.textstyle.font, parent_font)
     apply_ticks!(g, a.ticks, a.prefix, parent_font)
     if isdef(a.title)
@@ -60,7 +60,7 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     # apply  legend and other floating objects
-    isdef(a.legend)    && apply_legend!(g, a.legend, leg_entries)
+    isdef(a.legend)    && apply_legend!(g, a.legend, leg_entries, parent_font)
     isempty(a.objects) || apply_objects!(g, a.objects)
     return nothing
 end

@@ -25,6 +25,7 @@ take!(b::Backend) = take!(b.io)
 if VERSION < v"1.1"
     isnothing(o) = (o === nothing)
     export isnothing
+    eachcol(A::AbstractArray) = (view(A, :, j) for j ∈ axes(A, 2))
 end
 
 isdef(el) = (el !== nothing)

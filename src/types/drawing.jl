@@ -48,6 +48,7 @@ Fill-plot between two 2D curves. Missing values are not allowed. See [`fill_betw
     xmin     ::Option{Float64} = ∅           # left most anchor
     xmax     ::Option{Float64} = ∅           # right most anchor
     fillstyle::FillStyle       = FillStyle() # describes the area between the curves
+    label    ::String          = ""
 end
 
 
@@ -62,10 +63,11 @@ Histogram.
     nobs      ::Int   # number of non-missing entries
     range     ::T2F   # (minvalue, maxvalue)
     #
-    barstyle  ::BarStyle       = BarStyle() #
-    horiz     ::Bool           = false      # horizontal histogram?
-    bins      ::Option{Int}    = ∅          # number of bins
-    scaling   ::Option{String} = ∅          # scaling (pdf, ...)
+    barstyle::BarStyle    = BarStyle() #
+    horiz   ::Bool        = false      # horizontal histogram?
+    bins    ::Option{Int} = ∅          # number of bins
+    scaling ::String      = "none"     # scaling (pdf, count=none, probability)
+    label   ::String      = ""
 end
 
 
@@ -83,6 +85,8 @@ Bar plot(s).
     stacked::Bool            = false
     horiz  ::Bool            = false
     width  ::Option{Float64} = ∅
+    #
+    labels ::Vector{String}  = String[]
 end
 
 """

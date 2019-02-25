@@ -317,3 +317,20 @@ begin
         SAVEFIG && savefig(f, format="pdf", path=SAVEPATH)
     end; println("$(f.id)...done in $(round(t, digits=2))s")
 end
+
+####
+#### Legend styling (and implicit)
+####
+
+begin
+    t = @elapsed begin
+        f = Figure("legend_styling_notex", reset=true)
+
+        plot(tan, 0, pi/2)
+        scatter!(sin, 0, pi/2)
+        plot!(cos, 0, pi/2)
+        ylim(0, 2)
+
+        legend(font="tt", fontsize=12, offset=(1,1), nobox=false, bgcol="blue")
+    end; println("$(f.id)...done in $(round(t, digits=2))s")
+end

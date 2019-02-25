@@ -9,12 +9,12 @@
 Internal functions to set the color value `col` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_color!(o::Figure, c::Option{Color}) = (o.bgcolor = c)
+set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
 set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c)
 set_color!(o::Ticks, c::Color) = (o.linestyle.color = c)
 
 set_textcolor!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
-set_textcolor!(o::Union{Figure, Axis, Title}, c::Color) = (o.textstyle.color = c)
+set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
 
 """
     set_fill!(obj, col)
@@ -32,7 +32,7 @@ Internal function to set the color values `cols` (after parsing) to `obj.parent[
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 If a single value is passed, all fields will be assigned to that value.
 """
-function set_colors!(o::Union{Scatter2D, Bar2D}, c::Union{Color, Vector{<:Color}},
+function set_colors!(o::Union{Scatter2D,Bar2D}, c::Union{Color, Vector{<:Color}},
                      parent::Symbol, field::Symbol)
     c isa Vector || (c = fill(c, o.nobj))
     # check dimensions match
@@ -70,7 +70,7 @@ function set_alpha!(o::Union{Fill2D, Hist2D}, α::Float64, parent::Symbol)
 end
 set_alpha!(o::Fill2D, α::Float64) = set_alpha!(o, α, :fillstyle)
 set_alpha!(o::Hist2D, α::Float64) = set_alpha!(o, α, :barstyle)
-set_alpha!(o::Figure, α::Float64) = (o.bgcolor = coloralpha(o.bgcolor, α); ∅)
+set_alpha!(o::Union{Figure,Legend}, α::Float64) = (o.bgcolor = coloralpha(o.bgcolor, α); ∅)
 
 ####
 #### TEXT
@@ -84,9 +84,8 @@ Internal function to set the font associated with an object `obj` to the value `
 """
 function set_font!(obj, font::String)
     @assert get_backend() == GLE "font // only GLE backend supported"
-    font_lc = lowercase(font)
-    obj.textstyle.font = get(GLE_FONTS, font_lc) do
-        throw(OptionValueError("font", font_lc))
+    obj.textstyle.font = get(GLE_FONTS, font) do
+        throw(OptionValueError("font", font))
     end
     return nothing
 end
@@ -97,9 +96,8 @@ set_font!(o::Ticks, font::String) = set_font!(o.labels, font)
 
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
-set_hei!(o::Legend, v::Float64) = (o.hei = v * PT_TO_CM)
-set_hei!(o::Ticks, v::Float64)  = (o.labels.textstyle.hei = v * PT_TO_CM)
-set_hei!(o, v::Float64)         = (o.textstyle.hei = v * PT_TO_CM)
+set_hei!(o::Ticks, v::Float64) = (o.labels.textstyle.hei = v * PT_TO_CM)
+set_hei!(o, v::Float64)        = (o.textstyle.hei = v * PT_TO_CM)
 
 ####
 #### Line related
@@ -118,9 +116,8 @@ function set_lstyle!(o::LineStyle, v::Int)
 end
 function set_lstyle!(o::LineStyle, v::String)
     @assert get_backend() == GLE "lstyle // only GLE backend supported"
-    v_lc = lowercase(v)
-    o.lstyle = get(GLE_LSTYLES, v_lc) do
-        throw(OptionValueError("lstyle", v_lc))
+    o.lstyle = get(GLE_LSTYLES, v) do
+        throw(OptionValueError("lstyle", v))
     end
     return nothing
 end
@@ -153,9 +150,8 @@ can be described by `marker` being a String describing the pattern.
 """
 function set_marker!(o::MarkerStyle, v::String)
     @assert get_backend() == GLE "marker // only GLE backend supported"
-    v_lc = lowercase(v)
-    o.marker = get(GLE_MARKERS, v_lc) do
-        throw(OptionValueError("marker", v_lc))
+    o.marker = get(GLE_MARKERS, v) do
+        throw(OptionValueError("marker", v))
     end
     return nothing
 end

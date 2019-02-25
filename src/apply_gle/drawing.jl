@@ -98,13 +98,11 @@ function apply_drawing!(g::GLE, leg_entries::GLE, scatter::Scatter2D,
             apply_markerstyle!(g, scatter.markerstyles[c])
             apply_markerstyle!(lt[c], scatter.markerstyles[c])
         end
-        el_counter += 1
     end
     # (3) build legend entries (will be applied if a legend command is issued)
     if isempty(scatter.labels)
-        offset = length(lt)
         for c ∈ eachindex(lt)
-            "\n\ttext \"plot $(el_counter-offset-1+c)\"" |> leg_entries
+            "\n\ttext \"plot $(el_counter-1+c)\"" |> leg_entries
             lt[c] |> leg_entries
         end
     else
@@ -113,7 +111,7 @@ function apply_drawing!(g::GLE, leg_entries::GLE, scatter::Scatter2D,
             lt[c] |> leg_entries
         end
     end
-    return el_counter
+    return el_counter + scatter.nobj
 end
 
 ####
@@ -139,6 +137,16 @@ function apply_drawing!(g::GLE, leg_entries::GLE, fill::Fill2D,
     isdef(fill.xmin) && "xmin $(fill.xmin)"    |> g
     isdef(fill.xmax) && "xmax $(fill.xmax)"    |> g
 
+    #
+    # Legend
+    #
+    if isempty(fill.label)
+        "\n\ttext \"fill $(el_counter)\"" |> leg_entries
+    else
+        "\n\ttext \"$(fill.label)\""      |> leg_entries
+    end
+    "fill $(col2str(fill.fillstyle.fill))" |> leg_entries
+
     el_counter += 2
     return el_counter
 end
@@ -163,11 +171,14 @@ function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
     #
 
     # if no color has been specified, assign one according to the PALETTE
-    if !isdef(hist.barstyle.fill) && !isdef(hist.barstyle.color)
-        cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
-        (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
-        hist.barstyle.color = GP_ENV["PALETTE"][cc]
-        hist.barstyle.fill  = colorant"white"
+    if !isdef(hist.barstyle.color)
+        if hist.barstyle.fill == colorant"white"
+            cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
+            (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
+            hist.barstyle.color = GP_ENV["PALETTE"][cc]
+        else
+            hist.barstyle.color = colorant"white" # looks nicer than black
+        end
     end
 
     # (1) indicate what data to read
@@ -201,6 +212,21 @@ function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
     apply_barstyle!(g, hist.barstyle)
     hist.horiz && "horiz" |> g
 
+    #
+    # Legend
+    #
+    if isempty(hist.label)
+        "\n\ttext \"hist $(el_counter)\"" |> leg_entries
+    else
+        "\n\ttext \"$(hist.label)\""      |> leg_entries
+    end
+    # precedence of fill over color
+    if hist.barstyle.fill != colorant"white"
+        "fill $(col2str(hist.barstyle.fill))" |> leg_entries
+    else
+        "marker square color $(col2str(hist.barstyle.color))" |> leg_entries
+    end
+
     return el_counter+1
 end
 
@@ -210,7 +236,6 @@ end
 
 function apply_drawing!(g::GLE, leg_entries::GLE, bar::Bar2D,
                         el_counter::Int, origin::T2F, figid::String)
-
     # write data to a temporary CSV file
     faux = auxpath(hash(bar.data), origin, figid)
     isfile(faux) || csv_writer(faux, bar.data, bar.hasmissing)
@@ -231,14 +256,13 @@ function apply_drawing!(g::GLE, leg_entries::GLE, bar::Bar2D,
 
     # if no color has been specified, assign one according to the PALETTE
     for c ∈ eachindex(bar.barstyles)
-        if !isdef(bar.barstyles[c].fill)
-            if !isdef(bar.barstyles[c].color)
+        if !isdef(bar.barstyles[c].color)
+            if bar.barstyles[c].fill == colorant"white"
                 cc = mod(el_counter+c-1, GP_ENV["SIZE_PALETTE"])
                 (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
-                bar.barstyles[c].fill = GP_ENV["PALETTE"][cc]
-                bar.barstyles[c].color = colorant"white"
+                bar.barstyles[c].color = GP_ENV["PALETTE"][cc]
             else
-                bar.barstyles[c].fill = colorant"white"
+                bar.barstyles[c].color = colorant"white"
             end
         end
     end
@@ -271,5 +295,33 @@ function apply_drawing!(g::GLE, leg_entries::GLE, bar::Bar2D,
             apply_barstyle!(g, bar.barstyles[i])
         end
     end
+
+    #
+    # Legend
+    #
+    if isempty(bar.labels)
+        c = 0
+        for barstyle ∈ bar.barstyles
+            "\n\ttext \"bar $(el_counter+c)\"" |> leg_entries
+            c += 1
+            # fill takes precedence
+            if barstyle.fill != colorant"white"
+                "fill $(col2str(barstyle.fill))" |> leg_entries
+            else
+                "marker square color $(col2str(barstyle.color))" |> leg_entries
+            end
+        end
+    else
+        for (lab, barstyle) ∈ zip(bar.labels, bar.barstyles)
+            "\n\ttext \"$(lab)\"" |> leg_entries
+            # fill takes precedence
+            if barstyle.fill != colorant"white"
+                "fill $(col2str(barstyle.fill))" |> leg_entries
+            else
+                "marker square color $(col2str(barstyle.color))" |> leg_entries
+            end
+        end
+    end
+
     return el_counter + nbars
 end

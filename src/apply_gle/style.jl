@@ -55,7 +55,7 @@ Internal function to apply the barstyle `s` in a GLE context.
 @inline function apply_barstyle!(g::GLE, s::BarStyle)
     isanydef(s) || return nothing
     isdef(s.color) && "color $(col2str(s.color))" |> g
-    isdef(s.fill)  && "fill $(col2str(s.fill))"   |> g
+    "fill $(col2str(s.fill))" |> g
     return nothing
 end
 

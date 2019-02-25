@@ -31,7 +31,7 @@
     @test isnothing(h.barstyle.color)
     @test h.horiz == false
     @test isnothing(h.bins)
-    @test isnothing(h.scaling)
+    @test h.scaling == "none"
 
     # GROUPEDBAR2D
     f = Figure()
