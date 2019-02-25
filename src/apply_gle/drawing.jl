@@ -139,6 +139,13 @@ function apply_drawing!(g::GLE, leg_entries::GLE, fill::Fill2D,
     isdef(fill.xmin) && "xmin $(fill.xmin)"    |> g
     isdef(fill.xmax) && "xmax $(fill.xmax)"    |> g
 
+    if isempty(fill.label)
+        "\n\ttext \"fill $(el_counter)\"" |> leg_entries
+    else
+        "\n\ttext \"$(fill.label)\""      |> leg_entries
+    end
+    "fill $(col2str(fill.fillstyle.fill))" |> leg_entries
+
     el_counter += 2
     return el_counter
 end

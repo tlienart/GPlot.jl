@@ -48,6 +48,7 @@ Fill-plot between two 2D curves. Missing values are not allowed. See [`fill_betw
     xmin     ::Option{Float64} = ∅           # left most anchor
     xmax     ::Option{Float64} = ∅           # right most anchor
     fillstyle::FillStyle       = FillStyle() # describes the area between the curves
+    label    ::String          = ""
 end
 
 

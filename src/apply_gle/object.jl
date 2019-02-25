@@ -5,7 +5,7 @@ Internal function to apply a vector of `Object` contained in an `Axes` container
 """
 apply_objects!(g::GLE, objects::Vector{<:Object}) = (foreach(o -> apply_object!(g, o), objects); ∅)
 
-@inline function apply_object!(g::GLE, obj::Text2D)
+function apply_object!(g::GLE, obj::Text2D)
     "\ngsave"                                           |> g
     "\nset just $(obj.position)"                        |> g
     apply_textstyle!(g, obj.textstyle, addset=true)
