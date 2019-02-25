@@ -18,11 +18,13 @@ exists already, return that object.
 # Other options (internal use mostly):
 
 * `reset`: a bool, if true will erase the figure if it exists (instead of just returning it).
-
+* `_noreset`: internal to indicate that if the figure has no name and is called whether a new one
+should be sent or not (for the user: yes, internally: sometimes not as we want to retrieve
+properties)
 """
-function Figure(id::String="_fig_"; backend=GP_ENV["BACKEND"](), reset=false, _sub=false, opts...)
-    # return a fresh figure when calling Figure() unless for subroutines
-    if !_sub && id == "_fig_"
+function Figure(id::String="_fig_"; backend=GP_ENV["BACKEND"](), reset=false, _noreset=false, opts...)
+    # return a fresh figure when calling Figure() unless _noreset
+    if id == "_fig_" && !_noreset
         f = Figure(backend, id)
         set_properties!(f; defer_preview=true, opts...)
         GP_ENV["ALLFIGS"][id] = f
@@ -83,7 +85,7 @@ Reset the current figure keeping only its current name and size, everything else
 set to the default parameters.
 See also [`erase!`](@ref) and [`reset!`](@ref)
 """
-clf!() = (reset!(gcf()))
+clf!() = (reset!(gcf()); _preview())
 
 """
     clf()
@@ -91,13 +93,6 @@ clf!() = (reset!(gcf()))
 See [`clf!`](@ref).
 """
 clf = clf!
-
-"""
-    isempty(fig)
-
-Return a bool indicating whether `fig` has axes or not.
-"""
-isempty(f::Figure) = isempty(f.axes)
 
 """
     destroy(fig)

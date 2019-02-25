@@ -1,5 +1,5 @@
 """
-    apply_drawings!(g, drawings, axorigin, figid)
+    $SIGNATURES
 
 Internal function to apply a vector of `Drawing` objects contained in an `Axes`
 container in a GLE context. The `axorigin` and `figid` help keep track of
@@ -12,27 +12,25 @@ function apply_drawings!(g::GLE, drawings::Vector{<:Drawing},
     # element counter to have an index over objects drawn
     el_cntr = 1
     for drawing ∈ drawings
-        el_cntr = apply_drawing!(g, leg_entries, drawing, el_cntr, axorigin, figid)
+        el_cntr = apply_drawing!(g, leg_entries, drawing,
+                                 el_cntr, axorigin, figid)
     end
-    # this is recuperated in apply_axes for further processing by apply_legend!
+    # this is recuperated in `apply_axes!` and further processed by `apply_legend!`
     return leg_entries
 end
 
 """
-    apply_legend!(g, leg, entries)
+    $SIGNATURES
 
-Internal function to apply a `Legend` object `leg` in a GLE context with entries
-`entries` (constructed through the `apply_drawings` process).
+Internal function to generate a path to an auxiliary file storing drawing data for the current
+axes of the current figure. `h` is the hash of what has to be written (so that if the exact
+same command is issued, the file is not re-written). The `origin` and `figid` are there to make
+the auxiliary file unique and easy to delete after use.
 """
-function apply_legend!(g::GLE, leg::Legend, entries::GLE)
-    "\nbegin key"              |> g
-    "\n\tcompact"              |> g
-    isdef(leg.position) && "\n\tposition $(leg.position)" |> g
-    isdef(leg.hei)      && "\n\thei $(leg.hei)"           |> g
-#    "offset 0.2 0.2"   |> g
-    entries                |> g
-    "\nend key"            |> g
-    return nothing
+function auxpath(h::UInt, origin::T2F, figid::String)
+    path = GP_ENV["TMP_PATH"]
+    axid = isdef(origin) ? "$(origin[1])_$(origin[2])" : ""
+    return joinpath(path, "$(figid)_$(axid)_$h.csv")
 end
 
 ####
@@ -40,135 +38,116 @@ end
 ####
 
 """
-    auxpath(number)
-
-Internal function to generate a path to an auxiliary file storing drawing data for the current
-axes of the current figure.
-"""
-function auxpath(n::Int, origin::T2F, figid::String)
-    path = GP_ENV["TMP_PATH"]
-    axid = isdef(origin) ? "$(origin[1])_$(origin[2])" : ""
-    return joinpath(path, "$(figid)_$(axid)_d$n.csv")
-end
-
-"""
-    apply_drawing!(g, leg_entries, obj, el_counter, origin, figid)
+    $SIGNATURES
 
 Internal function to apply a `Drawing` object `obj` in a GLE context `g` with current
 legend entries `leg_entries` (possibly empty), current element counter `el_counter`
 and `origin` and `figid` are used to make the auxiliary file name unique.
 """
-function apply_drawing!(g::GLE, leg_entries::GLE, obj::Scatter2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, scatter::Scatter2D,
                         el_counter::Int, origin::T2F, figid::String)
     # temporary buffers to help build the legend
-    lt = [GLE() for c ∈ eachindex(obj.linestyle)]
+    lt = [GLE() for c ∈ 1:scatter.nobj]
 
-    if isdef(obj.path)
-        # reading directly from existing file
-        faux = obj.path
-    else
-        # write data to a temporary CSV file
-        faux = auxpath(el_counter, origin, figid)
-        csv_writer(faux, obj.xy)
-    end
+    faux = auxpath(hash(scatter.data), origin, figid)
+    # don't rewrite if it's the exact same zipper
+    isfile(faux) || csv_writer(faux, scatter.data, scatter.hasmissing)
 
-    # >>>>>>>>>>>>>>>>
-    # general GLE syntax is:
-    # (1) data datafile.dat d1=c1,c2  ! dataset out of the first two columns
-    # (2) d1 line blue
-    # <<<<<<<<<<<<<<<<
+    #
+    # GLE syntax is:
+    #
+    #   data datafile.dat d1=c1,c2
+    #   d1 line blue
+    #
 
     for c ∈ eachindex(lt)
         # (1) indicate what data to read
-        if isdef(obj.path)
-            "\n\tdata \"$faux\" d$(el_counter)=$(obj.xsym),$(obj.ysym[c])" |> g
-        else
-            "\n\tdata \"$faux\" d$(el_counter)=c1,c$(c+1)" |> g
-        end
-
+        "\n\tdata \"$faux\" d$(el_counter)=c1,c$(c+1)" |> g
         # if no color has been specified, assign one according to the PALETTE
-        if !isdef(obj.linestyle[c].color)
+        if !isdef(scatter.linestyles[c].color)
             cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
             (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
-            obj.linestyle[c].color = GP_ENV["PALETTE"][cc]
+            scatter.linestyles[c].color = GP_ENV["PALETTE"][cc]
         end
-
         # (2) line and marker description
         # build a tuple with the current buffer and the legend entry buffer
-        if obj.linestyle[c].lstyle != -1
+        if scatter.linestyles[c].lstyle != -1
             # Line plot
             "\n\td$el_counter" |> g
-            "line" |> g;     apply_linestyle!(g, obj.linestyle[c])
-            "line" |> lt[c]; apply_linestyle!(lt[c], obj.linestyle[c], legend=true)
+            "line" |> g;     apply_linestyle!(g, scatter.linestyles[c])
+            "line" |> lt[c]; apply_linestyle!(lt[c], scatter.linestyles[c], legend=true)
             # if a marker color is specified and different than the line
             # color we need to have a special subroutine for GLE
             mcol_flag = false
-            if isdef(obj.markerstyle[c].color) &&
-                    (obj.markerstyle[c].color != obj.linestyle[c].color)
+            if isdef(scatter.markerstyles[c].color) &&
+                    (scatter.markerstyles[c].color != scatter.linestyles[c].color)
                 mcol_flag = true
-                add_sub_marker!(Figure(figid, _sub=true), obj.markerstyle[c])
+                add_sub_marker!(Figure(figid; _noreset=true), scatter.markerstyles[c])
             end
-            apply_markerstyle!(g, obj.markerstyle[c], mcol_flag=mcol_flag)
-            apply_markerstyle!(lt[c], obj.markerstyle[c], mcol_flag=mcol_flag)
+            # apply markerstyle to the axes & the legend
+            apply_markerstyle!(g, scatter.markerstyles[c], mcol_flag=mcol_flag)
+            apply_markerstyle!(lt[c], scatter.markerstyles[c], mcol_flag=mcol_flag)
         else
             # Scatter plot; if there's no specified marker color,
             # take the default line color
-            if !isdef(obj.markerstyle[c].color)
-                obj.markerstyle[c].color = obj.linestyle[c].color
+            if !isdef(scatter.markerstyles[c].color)
+                scatter.markerstyles[c].color = scatter.linestyles[c].color
             end
-            # apply markerstyle
+            # apply markerstyle to the axes & legend
             "\n\td$el_counter" |> g
-            apply_markerstyle!(g, obj.markerstyle[c])
-            apply_markerstyle!(lt[c], obj.markerstyle[c])
+            apply_markerstyle!(g, scatter.markerstyles[c])
+            apply_markerstyle!(lt[c], scatter.markerstyles[c])
         end
-        el_counter += 1
     end
-
     # (3) build legend entries (will be applied if a legend command is issued)
-    if isempty(obj.label)
-        offset = length(lt)
+    if isempty(scatter.labels)
         for c ∈ eachindex(lt)
-            "\n\ttext \"plot $(el_counter-offset-1+c)\"" |> leg_entries
+            "\n\ttext \"plot $(el_counter-1+c)\"" |> leg_entries
             lt[c] |> leg_entries
         end
     else
         for c ∈ eachindex(lt)
-            "\n\ttext \"$(obj.label[c])\"" |> leg_entries
+            "\n\ttext \"$(scatter.labels[c])\"" |> leg_entries
             lt[c] |> leg_entries
         end
     end
-
-    return el_counter
+    return el_counter + scatter.nobj
 end
 
 ####
 #### Apply a Fill2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::GLE, obj::Fill2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, fill::Fill2D,
                         el_counter::Int, origin::T2F, figid::String)
 
-    # write data to a temporary CSV file
-    faux = auxpath(el_counter, origin, figid)
-    csv_writer(faux, obj.xy1y2)
+    faux = auxpath(hash(fill.data), origin, figid)
+    isfile(faux) || csv_writer(faux, fill.data, false)
 
-    # >>>>>>>>>>>>>>>>
-    # general GLE syntax is:
-    # (1) data datafile.dat d1=c1,c2 d2=c1,c3
-    # (2) fill d1,d2 color color_ xmin val xmax val
-    # <<<<<<<<<<<<<<<<
+    #
+    # GLE syntax is:
+    #
+    #   data datafile.dat d1=c1,c2 d2=c1,c3
+    #   fill d1,d2 color rgb(1,1,1) xmin 0 xmax 1
+    #
 
     "\n\tdata \"$faux\" d$(el_counter)=c1,c2 d$(el_counter+1)=c1,c3" |> g
     "\n\tfill d$(el_counter),d$(el_counter+1)" |> g
+    "color $(col2str(fill.fillstyle.fill))"    |> g
+    isdef(fill.xmin) && "xmin $(fill.xmin)"    |> g
+    isdef(fill.xmax) && "xmax $(fill.xmax)"    |> g
 
-    # color is not optional
-    "color $(col2str(obj.fillstyle.fill))" |> g
-
-    isdef(obj.xmin) && "xmin $(obj.xmin)" |> g
-    isdef(obj.xmax) && "xmax $(obj.xmax)" |> g
+    #
+    # Legend
+    #
+    if isempty(fill.label)
+        "\n\ttext \"fill $(el_counter)\"" |> leg_entries
+    else
+        "\n\ttext \"$(fill.label)\""      |> leg_entries
+    end
+    "fill $(col2str(fill.fillstyle.fill))" |> leg_entries
 
     el_counter += 2
-
     return el_counter
 end
 
@@ -176,63 +155,77 @@ end
 #### Apply a Hist2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::GLE, obj::Hist2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
                         el_counter::Int, origin::T2F, figid::String)
 
-    # # temporary buffers to help for the legend
-    # lt   = IOBuffer()
-    # glet = GLE()
-
     # write data to a temporary CSV file
-    faux = auxpath(el_counter, origin, figid)
-    csv_writer(faux, obj.x)
+    faux = auxpath(hash(hist.data), origin, figid)
+    isfile(faux) || csv_writer(faux, hist.data, hist.hasmissing)
 
-    # >>>>>>>>>>>>>>>>
-    # general GLE syntax is:
-    # (1) data datafile.dat d1
-    # (2) let d2 = hist d1 from xmin to xmax bins nbins
-    # (3) let d2 = d2 * scaling
-    # (4) bar d2 width width_ fill color_ color color_ pattern pattern_ horiz
-    # <<<<<<<<<<<<<<<<
+    #
+    # GLE syntax is:
+    #
+    #   data datafile.dat d1
+    #   let d2 = hist d1 from xmin to xmax bins nbins
+    #   bar d2 width width$ fill col$ color col2$ pattern pat$ horiz
+    #
 
     # if no color has been specified, assign one according to the PALETTE
-    if !isdef(obj.barstyle.fill) && !isdef(obj.barstyle.color)
-        cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
-        (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
-        obj.barstyle.color = GP_ENV["PALETTE"][cc]
-        obj.barstyle.fill  = colorant"white"
+    if !isdef(hist.barstyle.color)
+        if hist.barstyle.fill == colorant"white"
+            cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
+            (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
+            hist.barstyle.color = GP_ENV["PALETTE"][cc]
+        else
+            hist.barstyle.color = colorant"white" # looks nicer than black
+        end
     end
 
     # (1) indicate what data to read
     "\n\tdata \"$faux\" d$(el_counter)" |> g
 
     # (2) hist description
-    minx, maxx = minimum(obj.x), maximum(obj.x)
+    minx, maxx = hist.range
     "\n\tlet d$(el_counter+1) = hist d$(el_counter)" |> g
     "from $minx to $maxx" |> g
     el_counter += 1
 
     # number of bins (TODO: better criterion, see StatsPlots.jl)
-    nobs   = sum(e->1, skipmissing(obj.x))
-    nbauto = (nobs<10) * nobs +
-             (10<=nobs<30) * 10 +
-             (nobs>30) * min(round(Int, sqrt(nobs)), 150)
-    bins   = isdef(obj.bins) ? obj.bins : nbauto
+    nobs = hist.nobs
+    nbauto = (nobs < 10) * nobs +
+             (10 <= nobs < 30) * 10 +
+             (nobs > 30) * min(round(Int, sqrt(nobs)), 150)
+    bins = isdef(hist.bins) ? hist.bins : nbauto
     "bins $bins" |> g
 
     # (3) compute appropriate scaling
     width   = (maxx - minx) / bins
     scaling = 1.0
-    obj.scaling == "probability" && (scaling /= nobs)
-    obj.scaling == "pdf"         && (scaling /= (nobs * width))
+    hist.scaling == "probability" && (scaling /= nobs)
+    hist.scaling == "pdf"         && (scaling /= (nobs * width))
     "\n\tlet d$(el_counter) = d$(el_counter)*$scaling" |> g
 
     # (4) apply histogram
     "\n\tbar d$(el_counter) width $width" |> g
 
     # apply styling
-    apply_barstyle!(g, obj.barstyle)
-    obj.horiz && "horiz" |> g
+    apply_barstyle!(g, hist.barstyle)
+    hist.horiz && "horiz" |> g
+
+    #
+    # Legend
+    #
+    if isempty(hist.label)
+        "\n\ttext \"hist $(el_counter)\"" |> leg_entries
+    else
+        "\n\ttext \"$(hist.label)\""      |> leg_entries
+    end
+    # precedence of fill over color
+    if hist.barstyle.fill != colorant"white"
+        "fill $(col2str(hist.barstyle.fill))" |> leg_entries
+    else
+        "marker square color $(col2str(hist.barstyle.color))" |> leg_entries
+    end
 
     return el_counter+1
 end
@@ -241,12 +234,11 @@ end
 #### Apply Bar2D
 ####
 
-function apply_drawing!(g::GLE, leg_entries::GLE, obj::Bar2D,
+function apply_drawing!(g::GLE, leg_entries::GLE, bar::Bar2D,
                         el_counter::Int, origin::T2F, figid::String)
-
     # write data to a temporary CSV file
-    faux = auxpath(el_counter, origin, figid)
-    csv_writer(faux, obj.xy)
+    faux = auxpath(hash(bar.data), origin, figid)
+    isfile(faux) || csv_writer(faux, bar.data, bar.hasmissing)
 
     # >>>>>>>>>>>>>>>>
     # general GLE syntax is:
@@ -263,46 +255,73 @@ function apply_drawing!(g::GLE, leg_entries::GLE, obj::Bar2D,
     # <<<<<<<<<<<<<<<<
 
     # if no color has been specified, assign one according to the PALETTE
-    for c ∈ eachindex(obj.barstyle)
-        if !isdef(obj.barstyle[c].fill)
-            if !isdef(obj.barstyle[c].color)
+    for c ∈ eachindex(bar.barstyles)
+        if !isdef(bar.barstyles[c].color)
+            if bar.barstyles[c].fill == colorant"white"
                 cc = mod(el_counter+c-1, GP_ENV["SIZE_PALETTE"])
                 (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
-                obj.barstyle[c].fill = GP_ENV["PALETTE"][cc]
-                obj.barstyle[c].color = colorant"white"
+                bar.barstyles[c].color = GP_ENV["PALETTE"][cc]
             else
-                obj.barstyle[c].fill = colorant"white"
+                bar.barstyles[c].color = colorant"white"
             end
         end
     end
 
-    nbars = size(obj.xy, 2) - 1
+    nbars = bar.nobj
 
     # (1) indicate what data to read "data file d1 d2 d3..."
     "\n\tdata \"$faux\"" |> g
     prod("d$(el_counter+i-1) " for i ∈ (1:nbars)) |> g
 
     # (2) non stacked (or single barset)
-    if nbars==1 || !obj.stacked
+    if nbars==1 || !bar.stacked
         # bar d1,d2,d3
         "\n\tbar $(svec2str(("d$(el_counter+i-1)" for i ∈ 1:nbars)))" |> g
-        isdef(obj.width) && "width $(obj.width)" |> g
+        isdef(bar.width) && "width $(bar.width)" |> g
         # apply bar styles
-        apply_barstyles_nostack!(g, obj.barstyle)
-        obj.horiz && "horiz" |> g
+        apply_barstyles_nostack!(g, bar.barstyles)
+        bar.horiz && "horiz" |> g
 
     # (2) stacked
     else
         # first base bar
         "\n\tbar d$(el_counter)" |> g
-        isdef(obj.width) && "width $(obj.width)" |> g
-        apply_barstyle!(g, obj.barstyle[1])
-        obj.horiz && "horiz" |> g
+        isdef(bar.width) && "width $(bar.width)" |> g
+        apply_barstyle!(g, bar.barstyles[1])
+        bar.horiz && "horiz" |> g
         # bars stacked on top
         for i ∈ 2:nbars
             "\n\tbar d$(el_counter+i-1) from d$(el_counter+i-2)" |> g
-            apply_barstyle!(g, obj.barstyle[i])
+            apply_barstyle!(g, bar.barstyles[i])
         end
     end
+
+    #
+    # Legend
+    #
+    if isempty(bar.labels)
+        c = 0
+        for barstyle ∈ bar.barstyles
+            "\n\ttext \"bar $(el_counter+c)\"" |> leg_entries
+            c += 1
+            # fill takes precedence
+            if barstyle.fill != colorant"white"
+                "fill $(col2str(barstyle.fill))" |> leg_entries
+            else
+                "marker square color $(col2str(barstyle.color))" |> leg_entries
+            end
+        end
+    else
+        for (lab, barstyle) ∈ zip(bar.labels, bar.barstyles)
+            "\n\ttext \"$(lab)\"" |> leg_entries
+            # fill takes precedence
+            if barstyle.fill != colorant"white"
+                "fill $(col2str(barstyle.fill))" |> leg_entries
+            else
+                "marker square color $(col2str(barstyle.color))" |> leg_entries
+            end
+        end
+    end
+
     return el_counter + nbars
 end

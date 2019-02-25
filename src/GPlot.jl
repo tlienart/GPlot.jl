@@ -5,6 +5,7 @@ module GPlot
 using Parameters
 using Colors
 using DelimitedFiles: writedlm
+using DocStringExtensions: SIGNATURES
 
 import Base: |>, take!, isempty
 
@@ -40,7 +41,7 @@ export Figure, gcf, gca, clf!, cla!, clo!, clf, cla, clo, erase!,
     grid!, math!,
     grid, math,
     # Preview / rendering / saving
-    preview, render, savefig, isempty, debug_gle,
+    preview, savefig, isempty, debug_gle,
     # Simple macros for tex strings
     @t_str, @tex_str
 
@@ -73,7 +74,7 @@ const ∅   = nothing
 const AV  = AbstractVector
 const AVM = AbstractVecOrMat
 const AM  = AbstractMatrix
-const AVR = AbstractVector{<:Real}
+const AVR = AV{<:Real}
 const T2F = NTuple{2,Float64}
 const T2R = NTuple{2,Real}
 
@@ -125,6 +126,8 @@ include("render.jl")
 
 # Extra few utils now that all types have been defined
 include("utils2.jl")
+
+include("build.jl")
 
 # warmup script
 include("init.jl")

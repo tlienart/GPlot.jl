@@ -3,16 +3,18 @@
 ####
 
 """
-    _title!(a, text, el)
+    $SIGNATURES
 
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
-function _title!(a::Axes2D, el::Symbol, text::String="";
-                 overwrite=false, opts...)::Option{PreviewFigure}
-    obj = (el == :axis) ? a : getfield(a, el)
+function _title!(el::Symbol, text::String="";
+                 axes=nothing, overwrite=false, opts...)::Option{PreviewFigure}
+    axes = check_axes(axes)
+    # retrieve on what object to apply the title either the current axes or a sub-axis
+    obj = (el == :axis) ? axes : getfield(axes, el)
     if isdef(obj.title)
         # if overwrite, clear the current title
-        overwrite && clear!(obj.title)
+        overwrite && (obj.title = Title())
         obj.title.text = ifelse(isempty(text), obj.title.text, text)
     else # title doesn't exist, create one
         obj.title = Title(text=text)
@@ -20,7 +22,6 @@ function _title!(a::Axes2D, el::Symbol, text::String="";
     set_properties!(obj.title; defer_preview=true, opts...)
     return _preview()
 end
-_title!(::Nothing, a...; o...) = _title!(add_axes2d!(), a...; o...)
 
 # Generate xlim!, xlim, and associated for each axis
 for axs ∈ ("", "x", "y", "x2", "y2")
@@ -30,12 +31,10 @@ for axs ∈ ("", "x", "y", "x2", "y2")
     f2  = Symbol(axs * "label")
     ex = quote
         # mutate
-        $f!(a::Axes2D, t::String; o...) = _title!(a, Symbol($axs * "axis"), t; o...)
-        $f!(t::String; o...) = _title!(gca(), Symbol($axs * "axis"), t; o...)
-        $f!(; o...) = _title!(gca(), Symbol($axs * "axis"); o...)
+        $f!(t::String=""; o...) = _title!(Symbol($axs * "axis"), t; axes=gca(), o...)
         # overwrite
         $f(a...; o...) = $f!(a...; overwrite=true, o...)
-        # more synonyms xlabel...
+        # more synonyms xlabel, ylabel, etc
         !isempty($axs) && ($f2! = $f!; $f2 = $f)
     end
     eval(ex)
@@ -45,38 +44,35 @@ end
 #### [x|y|x2|y2]ticks
 ####
 
-function _ticks!(a::Axes2D, axs::Symbol, loc::Vector{Float64}, lab::Option{Vector{String}};
-                 overwrite=false, opts...)::Option{PreviewFigure}
-    axis = getfield(a, axs)
+function _ticks!(axis_sym::Symbol, loc::Vector{Float64}=Float64[], lab::Vector{String}=String[];
+                 axes=nothing, overwrite=false, opts...)::Option{PreviewFigure}
+    axes = check_axes(axes)
+    # retrieve the appropriate axis
+    axis = getfield(axes, axis_sym)
     # if overwrite, clear the current ticks object
-    overwrite && clear!(axis.ticks)
+    overwrite && (axis.ticks = Ticks())
     # if locs are empty, just pass options and return
-    isempty(loc) && (set_properties!(axis.ticks; defer_preview=true, opts...); return _preview())
-    # if locations have changed, remove the labels, rewrite locs
-    if isdef(axis.ticks.places) && axis.ticks.places != loc
-        clear!(axis.ticks.labels)
+    if isempty(loc)
+        isempty(lab) || throw(ArgumentError("Cannot pass ticks labels without specifying " *
+                                            "ticks locations"))
+        set_properties!(axis.ticks; defer_preview=true, opts...)
+        return _preview()
+    end
+    # if locations exist but are different than the ones passed, remove the labels + rewrite locs
+    if !isempty(axis.ticks.places) && axis.ticks.places != loc
+        axis.ticks.labels = TicksLabels()
     end
     axis.ticks.places = loc
-    # check if axis limits are ok with the locations and adjust
-    # as necessary
-    minloc, maxloc = minimum(loc), maximum(loc)
-    if isnothing(axis.min) || axis.min > minloc
-        axis.min = minloc - 0.1abs(minloc)
-    end
-    if isnothing(axis.max) || axis.max < maxloc
-        axis.max = maxloc + 0.1abs(maxloc)
-    end
-    # check if the labels match
-    if isdef(lab)
-        if length(lab) != length(loc)
-            throw(OptionValueError("Ticks locations and labels must have the same length.", lab))
-        end
+    # process labels if any are passed
+    if !isempty(lab)
+        length(lab) == length(loc) || throw(ArgumentError("Ticks locations and labels must " *
+                                                          "have the same length."))
         axis.ticks.labels = TicksLabels(names=lab)
     end
+    # set remaining properties and return
     set_properties!(axis.ticks; defer_preview=true, opts...)
     return _preview()
 end
-_ticks!(::Nothing, a...; o...) = _ticks!(add_axes2d!(), a...; o...)
 
 # Generate xticks!, xticks, and associated for each axis
 for axs ∈ ("x", "y", "x2", "y2")
@@ -84,24 +80,25 @@ for axs ∈ ("x", "y", "x2", "y2")
     f  = Symbol(axs * "ticks")
     a  = Symbol(axs * "axis")
     ex = quote
-        # xticks!(a, [1, 2], ["a", "b"]; o...)
-        $f!(a::Axes2D, loc::AVR=Float64[], lab::Option{Vector{String}}=∅; o...) =
-            _ticks!(a, Symbol($axs * "axis"), fl(loc), lab; opts...)
         # xticks!([1, 2], ["a", "b"]; o...)
-        $f!(loc::AVR=Float64[], lab::Option{Vector{String}}=∅; opts...) =
-            _ticks!(gca(), Symbol($axs * "axis"), fl(loc), lab; opts...)
+        $f!(loc::AVR, lab=String[]; o...) = _ticks!(Symbol($axs * "axis"), fl(loc), lab; o...)
         # xticks!("off"; o...)
-        function $f!(s::String; o...)
+        function $f!(s::String=""; o...)
             s_lc = lowercase(s)
             if s_lc == "off"
                 ax = getfield(gca(), Symbol($axs * "axis"))
                 reset!(ax.ticks)
                 ax.ticks.off = true
                 ax.ticks.labels.off = true
+            elseif s_lc == "on"
+                ax = getfield(gca(), Symbol($axs * "axis"))
+                ax.ticks.off = false
+                ax.ticks.labels.off = false
+                set_properties!(ax.ticks; defer_preview=true, o...)
             else
-                throw(OptionValueError("Unrecognised shorthand for $f:", s))
+                throw(ArgumentError("Unrecognised shorthand for " * $f * ": $s"))
             end
-            return nothing
+            return _preview()
         end
         # overwrite
         $f(a...; o...) = $f!(a...; overwrite=true, o...)
@@ -114,7 +111,7 @@ end
 ####
 
 """
-    legend!(axes; options...)
+    $SIGNATURES
 
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.

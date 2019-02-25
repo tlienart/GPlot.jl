@@ -30,7 +30,10 @@ set = set!
 ####
 
 id(x, ::Symbol) = x
-fl(x, ::Symbol) = fl(x) # float conversion, see /utils.jl
+fl(x, ::Symbol) = fl(x)     # float conversion, see /utils.jl
+not(x::Bool, ::Symbol) = !x # see for instance legend:nobox
+lc(x::String, ::Symbol) = lowercase(x)
+lc(x::Vector{String}, ::Symbol) = lowercase.(x)
 
 """
     posfl(x, s)
@@ -108,7 +111,7 @@ end
 ####
 
 const TEXTSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :font      => id    => set_font!,      # set_style
+    :font      => lc    => set_font!,      # set_style
     :fontsize  => posfl => set_hei!,       # .
     :col       => col   => set_textcolor!, # .
     :color     => col   => set_textcolor!, # .
@@ -148,8 +151,8 @@ const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     )
 
 const GMARKERSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :marker           => id    => set_markers!, # set_style
-    :markers          => id    => set_markers!, # .
+    :marker           => lc    => set_markers!, # set_style
+    :markers          => lc    => set_markers!, # .
     :msize            => posfl => set_msizes!,  # .
     :msizes           => posfl => set_msizes!,  # .
     :markersize       => posfl => set_msizes!,  # .
@@ -175,8 +178,8 @@ const BARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     )
 
 const GBARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :col        => col   => set_colors!, # set_style
-    :color      => col   => set_colors!, # .
+    :col        => col   => set_fills!,  # set_style
+    :color      => col   => set_fills!,  # .
     :ecol       => col   => set_colors!, # .
     :edgecol    => col   => set_colors!, # .
     :edgecolor  => col   => set_colors!, # .
@@ -219,11 +222,19 @@ merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
 
 const LEGEND_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :pos      => id    => set_position!, # set_drawing
-    :position => id    => set_position!, # .
-    :fontsize => posfl => set_hei!,
+    :pos        => lc    => set_position!, # set_ax_elems
+    :position   => lc    => set_position!, # .
+    :off        => id    => set_off!,      # .
+    :nobox      => id    => set_nobox!,    # .
+    :box        => not   => set_nobox!,    # .
+    :margins    => fl    => set_margins!,  # .
+    :offset     => fl    => set_offset!,   # .
+    :bgcol      => opcol => set_color!,    # set_style
+    :bgcolor    => opcol => set_color!,    # .
+    :background => opcol => set_color!,    # .
+    :bgalpha    => alpha => set_alpha!,    # .
     )
-#XXX merge!(LEGEND_OPTS, TEXTSTYLE_OPTS)
+merge!(LEGEND_OPTS, TEXTSTYLE_OPTS)
 set_properties!(l::Legend; opts...) = set_properties!(LEGEND_OPTS, l; opts...)
 
 const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
@@ -240,7 +251,7 @@ const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     # labels related
     :hidelabels => id => set_labels_off!, # set_ax_elems
     :angle      => fl => set_angle!,      # .
-    :format     => id => set_format!,     # .
+    :format     => lc => set_format!,     # .
     :shift      => fl => set_shift!,      # .
     :dist       => id => set_dist!,       # .
     )
@@ -255,6 +266,7 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 const SCATTER2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :name   => id => set_labels!, # set_drawing
     :key    => id => set_labels!, # .
+    :keys   => id => set_labels!, # .
     :label  => id => set_labels!, # .
     :labels => id => set_labels!, # .
     )
@@ -263,12 +275,14 @@ merge!(SCATTER2D_OPTS, GMARKERSTYLE_OPTS)
 set_properties!(s::Scatter2D; opts...) = set_properties!(SCATTER2D_OPTS, s; opts...)
 
 const FILL2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :from => fl => set_xmin!,
-    :min  => fl => set_xmin!,
-    :xmin => fl => set_xmin!,
-    :to   => fl => set_xmax!,
-    :max  => fl => set_xmax!,
-    :xmax => fl => set_xmax!,
+    :from  => fl => set_xmin!,
+    :min   => fl => set_xmin!,
+    :xmin  => fl => set_xmin!,
+    :to    => fl => set_xmax!,
+    :max   => fl => set_xmax!,
+    :xmax  => fl => set_xmax!,
+    :key   => id => set_label!, # set_drawing
+    :label => id => set_label!, # .
     )
 merge!(FILL2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(f::Fill2D; opts...) = set_properties!(FILL2D_OPTS, f; opts...)
@@ -276,10 +290,12 @@ set_properties!(f::Fill2D; opts...) = set_properties!(FILL2D_OPTS, f; opts...)
 const HIST2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :bins       => posint => set_bins!,    # set_drawing
     :nbins      => posint => set_bins!,    # .
-    :scaling    => id     => set_scaling!, # .
-    :norm       => id     => set_scaling!, # .
+    :scaling    => lc     => set_scaling!, # .
+    :norm       => lc     => set_scaling!, # .
     :horiz      => id     => set_horiz!,   # .
     :horizontal => id     => set_horiz!,   # .
+    :key        => id     => set_label!,   # set_drawing
+    :label      => id     => set_label!,   # .
     )
 merge!(HIST2D_OPTS, BARSTYLE_OPTS)
 merge!(HIST2D_OPTS, FILLSTYLE_OPTS)
@@ -289,6 +305,10 @@ const BAR2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :stacked    => id => set_stacked!, # set_drawing
     :horiz      => id => set_horiz!,   # .
     :horizontal => id => set_horiz!,   # .
+    :key        => id => set_labels!,  # set_drawing
+    :label      => id => set_labels!,  # .
+    :keys       => id => set_labels!,  # .
+    :labels     => id => set_labels!,  # .
     )
 merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
 set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
@@ -330,7 +350,7 @@ const FIGURE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :hastex       => id    => set_texlabels!,    # .
     :latex        => id    => set_texlabels!,    # .
     :haslatex     => id    => set_texlabels!,    # .
-    :texscale     => id    => set_texscale!,     # .
+    :texscale     => lc    => set_texscale!,     # .
     :alpha        => id    => set_transparency!, # .
     :transparent  => id    => set_transparency!, # .
     :transparency => id    => set_transparency!, # .

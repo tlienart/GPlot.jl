@@ -14,7 +14,6 @@
     @test isnothing(f.texscale)
     @test isnothing(f.texpreamble)
     @test isnothing(f.transparency)
-    @test isempty(f)
     @test gcf() == f
     @test gca() === nothing
 
@@ -30,12 +29,12 @@
     @test f2 === f3
 
     # add axes and check isempty
-    @test isempty(f3)
+    @test isempty(f3.axes)
     GPlot.add_axes2d!()
-    @test !isempty(f3)
+    @test !isempty(f3.axes)
 
     GPlot.erase!(f3)
-    @test isempty(f3)
+    @test isempty(f3.axes)
 
     GPlot.destroy(f3)
     @test "test" ∉ keys(GPlot.GP_ENV["ALLFIGS"])

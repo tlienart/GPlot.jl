@@ -35,14 +35,12 @@ the current folder.
 * `res`: output file resolution (typical number is 200).
 """
 function savefig(fig::Figure{GLE}, fn::String="";
-                 format::String="png", path::String="", res::Int=200)
+                 format::String="png", path::String="", res::Int=200, _noout=false)
 
     GP_ENV["HAS_BACKEND"] || (@warn "No backend available to render the figure."; return)
-    isempty(fig) && (@warn "The figure is empty, nothing to render."; return)
 
     # by default take the figure id as name
     isempty(fn) && (fn = fig.id)
-
     # extract device from file name (if any)
     fn, ext = splitext(fn)
     isempty(ext) && (ext = ifelse(isempty(format), "png", format))
@@ -76,8 +74,10 @@ function savefig(fig::Figure{GLE}, fn::String="";
     # (see also apply_gle/figure)
     assemble_figure(fig)
     glecom = pipeline(`gle -d $ext -r $res $cairo $texlabels $transparent -vb 0 -o $fout $fin`, stdout=flog, stderr=flog)
-    # in case of failure...
-    if !success(glecom)
+    # only for warmup: finish early (don't call gle)
+    _noout && return
+    # spwan the gle command, and check if it failed
+    if _noout || !success(glecom)
         log = read(flog, String)
         GP_ENV["DEL_INTERM"] && cleanup(fig)
         error("GLE error: ... \n$log")
@@ -97,23 +97,10 @@ for quick preview in IJulia or Atom.
 """
 struct PreviewFigure
     fig::Figure
-    fname::String
-end
-
-function PreviewFigure(fig::Figure)
-    disp  = (isdefined(Main, :Atom)   && Main.Atom.PlotPaneEnabled.x) ||
-            (isdefined(Main, :IJulia) && Main.IJulia.inited)
-    disp || (@warn("Preview is only available in Juno and IJulia."); return nothing)
-    # trigger a draft build
-    fname = savefig(fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
-    isnothing(fname) && return nothing
-    return PreviewFigure(fig, fname)
 end
 
 preview(fig::Figure) = PreviewFigure(fig)
 preview() = preview(gcf())
-render(fig::Figure) = PreviewFigure(fig)
-render() = render(gcf())
 
 """
     _preview()
@@ -125,7 +112,16 @@ _preview(::Val{false}) = nothing
 _preview() = _preview(Val(GP_ENV["CONT_PREVIEW"]))
 
 function Base.show(io::IO, ::MIME"image/png", pfig::PreviewFigure)
-    write(io, read(pfig.fname))
-    GP_ENV["DEL_INTERM"] && rm(pfig.fname)
+    disp  = (isdefined(Main, :Atom)   && Main.Atom.PlotPaneEnabled.x) ||
+                (isdefined(Main, :IJulia) && Main.IJulia.inited)
+    disp || (@warn("Preview is only available in Juno and IJulia."); return nothing)
+
+    # trigger a draft build
+    fname = savefig(pfig.fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
+    isnothing(fname) && return nothing
+
+    # write to IO
+    write(io, read(fname))
+    GP_ENV["DEL_INTERM"] && rm(fname)
     return nothing
 end
