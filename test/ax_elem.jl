@@ -150,6 +150,14 @@ end
     @test f.axes[1].yaxis.ticks.off == true
     yticks([1, 2], ["a", "b"], hidelabels=true)
     @test f.axes[1].yaxis.ticks.labels.off == true
+
+    # Legend
+    cla()
+    line([0,0],[1,1],label="line")
+    legend(nobox=true, margins=(1.0,1.0), offset=(.5,.5))
+    @test gca().legend.nobox
+    @test gca().legend.margins == (1.0,1.0)
+    @test gca().legend.offset == (0.5,0.5)
 end
 
 @testset "▶ apply_gle/ax_elem           " begin
