@@ -8,7 +8,7 @@ end
 
 @with_kw mutable struct Legend
     # ---
-    position::String           = "tl"
+    position::Option{String}   = ∅
     textstyle::TextStyle       = TextStyle()
     offset  ::T2F              = (0.0, 0.0)
     bgcolor ::Option{Colorant} = ∅

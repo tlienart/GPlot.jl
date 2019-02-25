@@ -30,7 +30,7 @@
 
     b = G.BarStyle()
     @test isnothing(b.color)
-    @test isnothing(b.fill)
+    @test b.fill == colorant"white"
     b = G.BarStyle(color=colorant"red", fill=colorant"blue")
     @test b.color == colorant"red"
     @test b.fill == colorant"blue"
@@ -126,7 +126,7 @@ end
     isin(s, "color rgba(1.0,0.0,0.0,1.0) fill rgba(0.0,0.0,1.0,1.0)")
     bs = G.BarStyle()
     G.apply_barstyle!(g, bs); s = String(take!(g))
-    @test s == ""
+    isin(s, "fill rgba(1.0,1.0,1.0,1.0)")
 
     bs1 = G.BarStyle(color=colorant"red", fill=colorant"blue")
     bs2 = G.BarStyle(color=colorant"blue", fill=colorant"red")
@@ -134,5 +134,5 @@ end
     isin(s, "color rgba(1.0,0.0,0.0,1.0),rgba(0.0,0.0,1.0,1.0) fill rgba(0.0,0.0,1.0,1.0),rgba(1.0,0.0,0.0,1.0)")
     bs0 = G.BarStyle()
     G.apply_barstyles_nostack!(g, [bs0]); s = String(take!(g))
-    @test s == ""
+    isin(s, "fill rgba(1.0,1.0,1.0,1.0)")
 end

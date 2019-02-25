@@ -84,9 +84,8 @@ Internal function to set the font associated with an object `obj` to the value `
 """
 function set_font!(obj, font::String)
     @assert get_backend() == GLE "font // only GLE backend supported"
-    font_lc = lowercase(font)
-    obj.textstyle.font = get(GLE_FONTS, font_lc) do
-        throw(OptionValueError("font", font_lc))
+    obj.textstyle.font = get(GLE_FONTS, font) do
+        throw(OptionValueError("font", font))
     end
     return nothing
 end
@@ -117,9 +116,8 @@ function set_lstyle!(o::LineStyle, v::Int)
 end
 function set_lstyle!(o::LineStyle, v::String)
     @assert get_backend() == GLE "lstyle // only GLE backend supported"
-    v_lc = lowercase(v)
-    o.lstyle = get(GLE_LSTYLES, v_lc) do
-        throw(OptionValueError("lstyle", v_lc))
+    o.lstyle = get(GLE_LSTYLES, v) do
+        throw(OptionValueError("lstyle", v))
     end
     return nothing
 end
@@ -152,9 +150,8 @@ can be described by `marker` being a String describing the pattern.
 """
 function set_marker!(o::MarkerStyle, v::String)
     @assert get_backend() == GLE "marker // only GLE backend supported"
-    v_lc = lowercase(v)
-    o.marker = get(GLE_MARKERS, v_lc) do
-        throw(OptionValueError("marker", v_lc))
+    o.marker = get(GLE_MARKERS, v) do
+        throw(OptionValueError("marker", v))
     end
     return nothing
 end

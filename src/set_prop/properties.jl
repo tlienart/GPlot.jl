@@ -32,6 +32,8 @@ set = set!
 id(x, ::Symbol) = x
 fl(x, ::Symbol) = fl(x)     # float conversion, see /utils.jl
 not(x::Bool, ::Symbol) = !x # see for instance legend:nobox
+lc(x::String, ::Symbol) = lowercase(x)
+lc(x::Vector{String}, ::Symbol) = lowercase.(x)
 
 """
     posfl(x, s)
@@ -109,7 +111,7 @@ end
 ####
 
 const TEXTSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :font      => id    => set_font!,      # set_style
+    :font      => lc    => set_font!,      # set_style
     :fontsize  => posfl => set_hei!,       # .
     :col       => col   => set_textcolor!, # .
     :color     => col   => set_textcolor!, # .
@@ -149,8 +151,8 @@ const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     )
 
 const GMARKERSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :marker           => id    => set_markers!, # set_style
-    :markers          => id    => set_markers!, # .
+    :marker           => lc    => set_markers!, # set_style
+    :markers          => lc    => set_markers!, # .
     :msize            => posfl => set_msizes!,  # .
     :msizes           => posfl => set_msizes!,  # .
     :markersize       => posfl => set_msizes!,  # .
@@ -220,8 +222,8 @@ merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
 
 const LEGEND_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :pos        => id    => set_position!, # set_ax_elems
-    :position   => id    => set_position!, # .
+    :pos        => lc    => set_position!, # set_ax_elems
+    :position   => lc    => set_position!, # .
     :off        => id    => set_off!,      # .
     :nobox      => id    => set_nobox!,    # .
     :box        => not   => set_nobox!,    # .
@@ -249,7 +251,7 @@ const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     # labels related
     :hidelabels => id => set_labels_off!, # set_ax_elems
     :angle      => fl => set_angle!,      # .
-    :format     => id => set_format!,     # .
+    :format     => lc => set_format!,     # .
     :shift      => fl => set_shift!,      # .
     :dist       => id => set_dist!,       # .
     )
@@ -288,8 +290,8 @@ set_properties!(f::Fill2D; opts...) = set_properties!(FILL2D_OPTS, f; opts...)
 const HIST2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :bins       => posint => set_bins!,    # set_drawing
     :nbins      => posint => set_bins!,    # .
-    :scaling    => id     => set_scaling!, # .
-    :norm       => id     => set_scaling!, # .
+    :scaling    => lc     => set_scaling!, # .
+    :norm       => lc     => set_scaling!, # .
     :horiz      => id     => set_horiz!,   # .
     :horizontal => id     => set_horiz!,   # .
     :key        => id     => set_label!,   # set_drawing
@@ -348,7 +350,7 @@ const FIGURE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :hastex       => id    => set_texlabels!,    # .
     :latex        => id    => set_texlabels!,    # .
     :haslatex     => id    => set_texlabels!,    # .
-    :texscale     => id    => set_texscale!,     # .
+    :texscale     => lc    => set_texscale!,     # .
     :alpha        => id    => set_transparency!, # .
     :transparent  => id    => set_transparency!, # .
     :transparency => id    => set_transparency!, # .

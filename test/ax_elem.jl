@@ -14,11 +14,12 @@
     # LEGEND
     l = GPlot.Legend()
     @test isnothing(l.position)
-    @test isnothing(l.hei)
-    l.position = "tl"
-    l.hei = 0.3
-    @test l.position == "tl"
-    @test l.hei == 0.3
+    @test l.textstyle isa G.TextStyle
+    @test l.offset == (0.0,0.0)
+    @test isnothing(l.bgcolor)
+    @test isnothing(l.margins)
+    @test !l.nobox
+    @test !l.off
 
     # TICKS AND TICKSLABELS
     t = GPlot.Ticks()
