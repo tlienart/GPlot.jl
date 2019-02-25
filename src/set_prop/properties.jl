@@ -176,8 +176,8 @@ const BARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     )
 
 const GBARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :col        => col   => set_colors!, # set_style
-    :color      => col   => set_colors!, # .
+    :col        => col   => set_fills!,  # set_style
+    :color      => col   => set_fills!,  # .
     :ecol       => col   => set_colors!, # .
     :edgecol    => col   => set_colors!, # .
     :edgecolor  => col   => set_colors!, # .
