@@ -38,10 +38,11 @@ function filldata(x::AVR, y1::Union{Real,AVR}, y2::Union{Real,AVR})
 end
 
 function histdata(x::AV{<:CanMiss{<:Real}})
+    sx = skipmissing(x)
     return (data=zip(x),
             hasmissing=(Missing <: eltype(x)),
-            nobs=sum(e->1, skipmissing(x)),
-            range=fl((minimum(x), maximum(x))))
+            nobs=sum(e->1, sx),
+            range=fl((minimum(sx), maximum(sx))))
 end
 
 
@@ -77,7 +78,7 @@ function plot!(x, ys...; axes=nothing, overwrite=false, o...)::Option{PreviewFig
 end
 
 function plot!(f::Function, from, to; length=100, o...)
-    x = range(from, to, length=length)
+    x = range(from, stop=to, length=length)
     plot!(x, f.(x); o...)
 end
 

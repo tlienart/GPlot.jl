@@ -84,19 +84,19 @@ for axs ∈ ("x", "y", "x2", "y2")
         $f!(loc::AVR, lab=String[]; o...) = _ticks!(Symbol($axs * "axis"), fl(loc), lab; o...)
         # xticks!("off"; o...)
         function $f!(s::String=""; o...)
+            isempty(s) && return _ticks!(Symbol($axs * "axis"); o...)
+            ax = getfield(gca(), Symbol($axs * "axis"))
             s_lc = lowercase(s)
             if s_lc == "off"
-                ax = getfield(gca(), Symbol($axs * "axis"))
                 reset!(ax.ticks)
                 ax.ticks.off = true
                 ax.ticks.labels.off = true
             elseif s_lc == "on"
-                ax = getfield(gca(), Symbol($axs * "axis"))
                 ax.ticks.off = false
                 ax.ticks.labels.off = false
                 set_properties!(ax.ticks; defer_preview=true, o...)
             else
-                throw(ArgumentError("Unrecognised shorthand for " * $f * ": $s"))
+                throw(ArgumentError("Unrecognised shorthand: $s"))
             end
             return _preview()
         end

@@ -91,6 +91,24 @@ end
     #XXX @test gca().drawings[1].markerstyle[1].color == colorant"blue"
     #XXX @test gca().drawings[1].markerstyle[1].msize == 1.5
     @test_throws G.OptionValueError plot(x, y, marker="square", msize=-2)
+
+    f = Figure(bgcol="blue")
+    @test f.bgcolor == colorant"blue"
+    set(f, bgalpha=0.2)
+    @test f.bgcolor == RGBA(0.0,0.0,1.0,0.2)
+
+    cla()
+    xticks([1, 2, 3], font="psh", fontsize=12)
+    @test gca().xaxis.ticks.labels.textstyle.font == "psh"
+    @test gca().xaxis.ticks.labels.textstyle.hei == 12 * G.PT_TO_CM
+
+    cla()
+    scatter(x, y, msize=0.5)
+    @test gca().drawings[1].markerstyles[1].msize==0.5
+
+    cla()
+    bar([1, 2, 3], width=1.2)
+    @test gca().drawings[1].width==1.2
 end
 
 @testset "▶ apply_gle/style             " begin
@@ -119,6 +137,9 @@ end
     ms = G.MarkerStyle()
     G.apply_markerstyle!(g, ms); s = String(take!(g))
     @test s == ""
+    ms = G.MarkerStyle(marker="circle", msize=0.5, color=colorant"red")
+    G.apply_markerstyle!(g, ms, mcol_flag=true); s = String(take!(g))
+    @test s == "marker circle_rgba_1_0_0_0_0_0_1_0_ 0.5 "
 
     # barstyle
     bs = G.BarStyle(color=colorant"red", fill=colorant"blue")

@@ -91,6 +91,15 @@ end
     y2ticks!([3, 5])
     @test f.axes[1].y2axis.ticks.places == [3., 5.]
 
+    # -- empty
+    cla()
+    xticks(color="blue")
+    @test gca().xaxis.ticks.places == Float64[]
+    @test gca().xaxis.ticks.labels.names == String[]
+    @test gca().xaxis.ticks.labels.textstyle.color == colorant"blue"
+
+    @test_throws ArgumentError xticks(Float64[], ["blah", "blah"])
+
     # grid
     cla()
     grid(axis=["x", "y"], lstyle="--", color="lightgray")
@@ -109,6 +118,14 @@ end
     x2ticks("off")
     @test gca().x2axis.ticks.off
     @test gca().x2axis.ticks.labels.off
+
+    # more ax elem
+    cla()
+    xaxis("off")
+    @test gca().xaxis.off
+    xaxis("on")
+    @test !gca().xaxis.off
+
 end
 
 @testset "▶ set_prop/ax_elem            " begin
@@ -133,6 +150,14 @@ end
     @test f.axes[1].yaxis.ticks.off == true
     yticks([1, 2], ["a", "b"], hidelabels=true)
     @test f.axes[1].yaxis.ticks.labels.off == true
+
+    # Legend
+    cla()
+    line([0,0],[1,1],label="line")
+    legend(nobox=true, margins=(1.0,1.0), offset=(.5,.5))
+    @test gca().legend.nobox
+    @test gca().legend.margins == (1.0,1.0)
+    @test gca().legend.offset == (0.5,0.5)
 end
 
 @testset "▶ apply_gle/ax_elem           " begin

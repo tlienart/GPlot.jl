@@ -112,6 +112,10 @@ function grid!(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
             axes.xaxis.ticks.grid = false
             axes.yaxis.ticks.grid = false
             return _preview()
+        elseif s_lc == "on"
+            axes.xaxis.ticks.grid = true
+            axes.yaxis.ticks.grid = true
+            return _preview()
         else
             throw(OptionValueError("Unrecognised shorthand toggle for grid.", short))
         end

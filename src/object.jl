@@ -1,8 +1,8 @@
-function text!(text::String, anchor::T2F; axes=nothing, o...)::Option{PreviewFigure}
+function text!(text::String, anchor::Tuple; axes=nothing, o...)::Option{PreviewFigure}
     axes = check_axes(axes)
-    t = Text2D(text=text, anchor=anchor)
+    t = Text2D(text=text, anchor=fl(anchor))
     set_properties!(t; defer_preview=true, o...)
-    push!(a.objects, t)
+    push!(axes.objects, t)
     return _preview()
 end
 

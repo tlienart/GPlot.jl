@@ -11,7 +11,6 @@ end
 Gnuplot() = Gnuplot(IOBuffer())
 
 # write to buffer (or buffer encapsulating object) with form (s |> b)
-|>(s::String, io::IOBuffer) = write(io, s, " ")
 |>(s::String, b::Backend)   = write(b.io, s, " ")
 |>(s::String, tio::Tuple)   = @. |>(s, tio)
 
