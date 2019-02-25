@@ -101,7 +101,7 @@ end
     # -- "implicit"
     cla()
     plot(sin, 0, 1)
-    x = range(0, 1, length=100)
+    x = range(0, stop=1, length=100)
     y = @. sin(x)
     @test checkzip(gca().drawings[1].data, hcat(x, y))
 

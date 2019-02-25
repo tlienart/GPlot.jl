@@ -1,3 +1,18 @@
+@testset "▶ types/figure                " begin
+    f = Figure()
+    io = IOBuffer()
+    Base.show(io, MIME("text/plain"), f)
+    s = String(take!(io))
+    s == raw"""
+    GPlot.Figure{GLE}
+        Name:          default ("_fig_")
+        Size:          (12.0, 9.0)
+        Bg. color:     white
+        N. axes:       0
+        LaTeX:         false
+        Transparent:   false"""
+end
+
 @testset "▶ /figure                     " begin
     # CONSTRUCTORS
     # --> nothing
