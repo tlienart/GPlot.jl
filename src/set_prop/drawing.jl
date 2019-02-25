@@ -11,19 +11,6 @@ end
 set_labels!(o::Scatter2D, s::String) = set_labels!(o, fill(s, length(o.linestyles)))
 
 ####
-#### Legend
-####
-
-# position of the legend (for GLE backend)
-function set_position!(o::Legend, v::String)
-   @assert get_backend() == GLE "position/only GLE backend supported"
-   o.position = get(GLE_POSITION, v) do
-      throw(OptionValueError("position", v))
-   end
-   return nothing
-end
-
-####
 #### Hist2D / Bar
 ####
 

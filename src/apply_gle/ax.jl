@@ -60,7 +60,7 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     # apply  legend and other floating objects
-    isdef(a.legend)    && apply_legend!(g, a.legend, leg_entries)
+    isdef(a.legend)    && apply_legend!(g, a.legend, leg_entries, parent_font)
     isempty(a.objects) || apply_objects!(g, a.objects)
     return nothing
 end

@@ -1,5 +1,5 @@
 """
-    apply_title!(g, t, p)
+    apply_title!(g, t, p, parent_font)
 
 Internal function to apply a `Title` object `t` in a GLE context.
 The argument `p` specifies the prefix.
@@ -13,19 +13,34 @@ The argument `p` specifies the prefix.
 end
 
 """
-    apply_legend!(g, leg, entries)
+    apply_legend!(g, leg, entries, parent_font)
 
 Internal function to apply a `Legend` object `leg` in a GLE context with entries
 `entries` (constructed through the `apply_drawings` process).
 """
-@inline function apply_legend!(g::GLE, leg::Legend, entries::GLE)
+function apply_legend!(g::GLE, l::Legend, entries::GLE, parent_font::String)
+    l.off && return nothing
+    "\ngsave" |> g
+    apply_textstyle!(g, l.textstyle, parent_font; addset=true)
+
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     "\nbegin key"  |> g
-    "\n\tcompact"  |> g
-    isdef(leg.position) && "\n\tposition $(leg.position)" |> g
-    isdef(leg.hei)      && "\n\thei $(leg.hei)"           |> g
-#    "offset 0.2 0.2"   |> g
+
+    # global commands
+    "\n\tcompact"      |> g
+    l.nobox && "nobox" |> g
+    isdef(l.bgcolor)  && "background $(col2str(l.bgcolor))"        |> g
+    isdef(l.margins)  && "margins $(l.margins[1]) $(l.margins[2])" |> g
+    sum(l.offset)>0   && "offset $(l.offset[1]) $(l.offset[2])"    |> g
+    isdef(l.position) && "\n\tposition $(l.position)"              |> g
+
+    # entries is the key part, it's generated via apply_drawings.
     entries        |> g
+    #
     "\nend key"    |> g
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    "\ngrestore" |> g
     return nothing
 end
 

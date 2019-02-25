@@ -30,7 +30,8 @@ set = set!
 ####
 
 id(x, ::Symbol) = x
-fl(x, ::Symbol) = fl(x) # float conversion, see /utils.jl
+fl(x, ::Symbol) = fl(x)     # float conversion, see /utils.jl
+not(x::Bool, ::Symbol) = !x # see for instance legend:nobox
 
 """
     posfl(x, s)
@@ -219,11 +220,19 @@ merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
 
 const LEGEND_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :pos      => id    => set_position!, # set_drawing
-    :position => id    => set_position!, # .
-    :fontsize => posfl => set_hei!,
+    :pos        => id    => set_position!, # set_ax_elems
+    :position   => id    => set_position!, # .
+    :off        => id    => set_off!,      # .
+    :nobox      => id    => set_nobox!,    # .
+    :box        => not   => set_nobox!,    # .
+    :margins    => fl    => set_margins!,  # .
+    :offset     => fl    => set_offset!,   # .
+    :bgcol      => opcol => set_color!,    # set_style
+    :bgcolor    => opcol => set_color!,    # .
+    :background => opcol => set_color!,    # .
+    :bgalpha    => alpha => set_alpha!,    # .
     )
-#XXX merge!(LEGEND_OPTS, TEXTSTYLE_OPTS)
+merge!(LEGEND_OPTS, TEXTSTYLE_OPTS)
 set_properties!(l::Legend; opts...) = set_properties!(LEGEND_OPTS, l; opts...)
 
 const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
@@ -239,10 +248,10 @@ const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :grid       => id    => set_grid!,       # .
     # labels related
     :hidelabels => id => set_labels_off!, # set_ax_elems
+    :angle      => fl => set_angle!,      # .
     :format     => id => set_format!,     # .
     :shift      => fl => set_shift!,      # .
     :dist       => id => set_dist!,       # .
-    :angle      => fl => ((t, v) -> setfield!(t.labels, :angle, v)),
     )
 merge!(TICKS_OPTS, LINESTYLE_OPTS) # ticks line
 merge!(TICKS_OPTS, TEXTSTYLE_OPTS) # labels
