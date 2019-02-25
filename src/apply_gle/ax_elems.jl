@@ -12,9 +12,11 @@ function apply_title!(g::GLE, t::Title, p::String, parent_font::String)
     return nothing
 end
 
-function apply_legend_spec!(g::GLE, h::DrawingHandle{Scatter2D{T}}, figid::String) where T
+function apply_legend_spec!(g::GLE, h::DrawingHandle{Scatter2D{T}},
+                            labels::Union{String,Vector{String}}, figid::String) where T
     scatter = h.drawing
     for k ∈ 1:scatter.nobj
+        "\n\ttext \"$(labels[k])\"" |> g
         if scatter.linestyles[k].lstyle != 1
             # line plot
             "line" |> g; apply_linestyle!(g, scatter.linestyles[k], legend=true)
@@ -37,14 +39,17 @@ function apply_legend_spec!(g::GLE, h::DrawingHandle{Scatter2D{T}}, figid::Strin
     return nothing
 end
 
-function apply_legend_spec!(g::GLE, h::DrawingHandle{Fill2D{T}}, ::String) where T
+function apply_legend_spec!(g::GLE, h::DrawingHandle{Fill2D{T}},
+                            label::String, ::String) where T
     fill = h.drawing
-    "fill $(col2str(fill.fillstyle.fill))" |> g
+    "\n\ttext \"$label\" fill $(col2str(fill.fillstyle.fill))" |> g
     return nothing
 end
 
-function apply_legend_spec!(g::GLE, h::DrawingHandle{Hist2D{T}}, ::String) where T
+function apply_legend_spec!(g::GLE, h::DrawingHandle{Hist2D{T}},
+                            label::String, ::String) where T
     hist = h.drawing
+    "\n\ttext \"$label\"" |> g
     # precedence of fill over color
     if hist.barstyle.fill != colorant"white"
         "fill $(col2str(hist.barstyle.fill))" |> g
@@ -54,9 +59,11 @@ function apply_legend_spec!(g::GLE, h::DrawingHandle{Hist2D{T}}, ::String) where
     return nothing
 end
 
-function apply_legend_spec!(g::GLE, h::DrawingHandle{Bar2D{T}}, ::String) where T
+function apply_legend_spec!(g::GLE, h::DrawingHandle{Bar2D{T}},
+                            labels::Union{String,Vector{String}}, ::String) where T
     bar = h.drawing
     for barstyle ∈ bar.barstyles
+        "\n\ttext \"$(labels[k])\"" |> g
         if barstyle.fill != colorant"white"
             "fill $(col2str(barstyle.fill))" |> g
         else
@@ -93,8 +100,7 @@ function apply_legend!(g::GLE, l::Legend, parent_font::String, figid::String)
         entries |> g
     else
         for (handle, label) ∈ zip(l.handles, l.labels)
-            "\n\ttext $label" |> g
-            apply_legend_spec!(g, handle, figid)
+            apply_legend_spec!(g, handle, label, figid)
         end
     end
     #

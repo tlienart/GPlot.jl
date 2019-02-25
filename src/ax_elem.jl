@@ -116,35 +116,53 @@ end
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.
 """
-function legend!(vd::Option{Vector{DrawingHandle{T}}}=nothing, labels::Vector{String}=String[];
+function legend!(vd::Option{Vector{DrawingHandle{T}}}=nothing,
+                 labels::Option{Vector{Union{String,Vector{String}}}}=nothing;
                  axes=nothing, overwrite=false, opts...) where T
     axes=check_axes(axes)
     # if there exists a legend object but overwrite, then reset it
     (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
     if isnothing(vd)
-        isempty(labels) || throw(ArgumentError("Cannot pass labels without handles."))
+        isnothing(labels) || throw(ArgumentError("Cannot pass labels without handles."))
         axes.legend.handles = [DrawingHandle(d) for d ∈ axes.drawings]
         axes.legend.labels = fill("", length(axes.drawings))
         s_ctr = 1
         f_ctr = 1
         h_ctr = 1
         b_ctr = 1
-        for k ∈ 1:length(axes.drawings)
-            if axes.drawings[k] isa Scatter2D
-                axes.legend.labels[k] = "\"plot $s_ctr\""
-                s_ctr += 1
-            elseif axes.drawings[k] isa Fill2D
-                axes.legend.labels[k] = "\"fill $f_ctr\""
+        for (k,d) ∈ enumerate(axes.drawings)
+            if d isa Scatter2D
+                if isempty(d.labels)
+                    axes.legend.labels[k] = ["plot $(s_ctr+e-1)" for e ∈ 1:d.nobj]
+                else
+                    axes.legend.labels[k] = d.labels
+                end
+                s_ctr += d.nobj
+            elseif d isa Fill2D
+                if isempty(d.label)
+                    axes.legend.labels[k] = "fill $f_ctr"
+                else
+                    axes.legend.labels[k] = d.label
+                end
                 f_ctr += 1
-            elseif axes.drawings[k] isa Hist2D
-                axes.legend.labels[k] = "\"hist $h_ctr\""
+            elseif d isa Hist2D
+                if isempty(d.label)
+                    axes.legend.labels[k] = "hist $h_ctr"
+                else
+                    axes.legend.labels[k] = d.label
+                end
                 h_ctr += 1
-            elseif axes.drawings[k] isa Bar2D
-                axes.legend.labels[k] = "\"bar $b_ctr\""
-                b_ctr += 1
+            elseif d isa Bar2D
+                if isempty(d.label)
+                    axes.legend.labels[k] = ["bar $(b_ctr+e-1)" for e ∈ 1:d.nobj]
+                else
+                    axes.legend.labels[k] = d.labels
+                end
+                b_ctr += d.nobj
             end
         end
     else
+        isnothing(labels) && throw(ArgumentError("Labels must be provided along with handles"))
         length(vd) == length(labels) || throw(ArgumentError("There must be as many labels given "*
                                                             "as drawing handles"))
         axes.legend.handles = vd

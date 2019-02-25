@@ -8,7 +8,7 @@ end
 
 @with_kw mutable struct Legend
     handles::Vector{DrawingHandle} = DrawingHandle[]
-    labels::Vector{String} = String[]
+    labels::Vector{Union{String,Vector{String}}} = String[]
     # ---
     position::Option{String}   = ∅
     textstyle::TextStyle       = TextStyle()
