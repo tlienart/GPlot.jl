@@ -24,7 +24,7 @@
 
     # show
     io = IOBuffer()
-    show(io, MIME("text/plain"), a)
+    Base.show(io, MIME("text/plain"), a)
     s = String(take!(io))
     isin(s, "GPlot.Axes2D{GLE}")
     isin(s, rpad("Title:", 15) * "none")
