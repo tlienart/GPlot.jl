@@ -113,6 +113,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "man/styling/#Legend-1",
+    "page": "Styling",
+    "title": "Legend",
+    "category": "section",
+    "text": "can be constructed but watchout for grouped objects, it will currently fail, would need some thinking"
+},
+
+{
     "location": "man/styling/#Misc-1",
     "page": "Styling",
     "title": "Misc",
