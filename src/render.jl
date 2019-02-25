@@ -107,9 +107,7 @@ preview() = preview(gcf())
 
 Internal function that checks if the continuous preview mode is on and if so does a preview.
 """
-_preview(::Val{true})  = preview()
-_preview(::Val{false}) = nothing
-_preview() = _preview(Val(GP_ENV["CONT_PREVIEW"]))
+_preview() = GP_ENV["CONT_PREVIEW"] ? preview() : nothing
 
 function Base.show(io::IO, ::MIME"image/png", pfig::PreviewFigure)
     disp  = (isdefined(Main, :Atom)   && Main.Atom.PlotPaneEnabled.x) ||
@@ -120,6 +118,17 @@ function Base.show(io::IO, ::MIME"image/png", pfig::PreviewFigure)
     fname = savefig(pfig.fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
     isnothing(fname) && return nothing
 
+    # write to IO
+    write(io, read(fname))
+    GP_ENV["DEL_INTERM"] && rm(fname)
+    return nothing
+end
+
+function Base.show(io::IO, ::MIME"image/png", dh::DrawingHandle)
+    GP_ENV["CONT_PREVIEW"] || return nothing
+    # trigger a draft build
+    fname = savefig(gcf(), "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
+    isnothing(fname) && return nothing
     # write to IO
     write(io, read(fname))
     GP_ENV["DEL_INTERM"] && rm(fname)

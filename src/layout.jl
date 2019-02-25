@@ -14,7 +14,7 @@ julia> layout!(f, [0.1 0.1 0.3 0.3;  # origin = (0.1W,0.1H)
                    0.1 0.5 0.3 0.3]) # size = (0.3W, 0.3H)
 ```
 """
-function layout!(f::Figure{B}, anchors::Matrix{Float64})::Option{PreviewFigure} where B<:Backend
+function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     #  ______________________
     # |                      |
     # |  X    Y    W    H    |
