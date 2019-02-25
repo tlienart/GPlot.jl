@@ -78,7 +78,7 @@ function plot!(x, ys...; axes=nothing, overwrite=false, o...)::Option{PreviewFig
 end
 
 function plot!(f::Function, from, to; length=100, o...)
-    x = range(from, to, length=length)
+    x = range(from, stop=to, length=length)
     plot!(x, f.(x); o...)
 end
 
