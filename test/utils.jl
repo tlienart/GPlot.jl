@@ -43,6 +43,15 @@ end
     _α = 5
     @test t"\sin(##_α x)" == "\\sin(5 x)"
 
+    # FL
     @test G.fl(nothing) === nothing
+    @test G.fl(missing) === missing
     @test G.fl(2) == 2.0
+
+    # CSV_writer
+    f, _ = mktemp()
+    z = zip([missing, 1, Inf, 3, missing, NaN])
+    G.csv_writer(f, z, true)
+    ff = read(f, String)
+    ff == "?\n1\n?\n3\n?\n?\n"
 end
