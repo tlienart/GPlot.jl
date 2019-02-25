@@ -16,6 +16,10 @@ TBD:
 - if xticks happens after grid it will disable, should use xticks! if want to change position
 - ticks angle are in degrees, rotation is clockwise (e.g. 45)
 
+## Legend
+
+- can be constructed but watchout for grouped objects, it will currently fail, would need some thinking
+
 ## Misc
 
 TBD

@@ -8,7 +8,7 @@
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
 function _title!(el::Symbol, text::String="";
-                 axes=nothing, overwrite=false, opts...)::Option{PreviewFigure}
+                 axes=nothing, overwrite=false, opts...)
     axes = check_axes(axes)
     # retrieve on what object to apply the title either the current axes or a sub-axis
     obj = (el == :axis) ? axes : getfield(axes, el)
@@ -45,7 +45,7 @@ end
 ####
 
 function _ticks!(axis_sym::Symbol, loc::Vector{Float64}=Float64[], lab::Vector{String}=String[];
-                 axes=nothing, overwrite=false, opts...)::Option{PreviewFigure}
+                 axes=nothing, overwrite=false, opts...)
     axes = check_axes(axes)
     # retrieve the appropriate axis
     axis = getfield(axes, axis_sym)
@@ -116,15 +116,61 @@ end
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.
 """
-function legend!(a::Axes2D; overwrite=false, opts...)::Option{PreviewFigure}
-    isdef(a) || (a = add_axes2d!())
+function legend!(vd::Option{Vector{DrawingHandle{T}}}=nothing,
+                 labels::Option{Vector{Union{String,Vector{String}}}}=nothing;
+                 axes=nothing, overwrite=false, opts...) where T
+    axes=check_axes(axes)
     # if there exists a legend object but overwrite, then reset it
-    (!isdef(a.legend) || overwrite) && (a.legend = Legend())
-    set_properties!(a.legend; defer_preview=true, opts...)
+    (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
+    if isnothing(vd)
+        isnothing(labels) || throw(ArgumentError("Cannot pass labels without handles."))
+        axes.legend.handles = [DrawingHandle(d) for d ∈ axes.drawings]
+        axes.legend.labels = fill("", length(axes.drawings))
+        s_ctr = 1
+        f_ctr = 1
+        h_ctr = 1
+        b_ctr = 1
+        for (k,d) ∈ enumerate(axes.drawings)
+            if d isa Scatter2D
+                if isempty(d.labels)
+                    axes.legend.labels[k] = ["plot $(s_ctr+e-1)" for e ∈ 1:d.nobj]
+                else
+                    axes.legend.labels[k] = d.labels
+                end
+                s_ctr += d.nobj
+            elseif d isa Fill2D
+                if isempty(d.label)
+                    axes.legend.labels[k] = "fill $f_ctr"
+                else
+                    axes.legend.labels[k] = d.label
+                end
+                f_ctr += 1
+            elseif d isa Hist2D
+                if isempty(d.label)
+                    axes.legend.labels[k] = "hist $h_ctr"
+                else
+                    axes.legend.labels[k] = d.label
+                end
+                h_ctr += 1
+            elseif d isa Bar2D
+                if isempty(d.label)
+                    axes.legend.labels[k] = ["bar $(b_ctr+e-1)" for e ∈ 1:d.nobj]
+                else
+                    axes.legend.labels[k] = d.labels
+                end
+                b_ctr += d.nobj
+            end
+        end
+    else
+        isnothing(labels) && throw(ArgumentError("Labels must be provided along with handles"))
+        length(vd) == length(labels) || throw(ArgumentError("There must be as many labels given "*
+                                                            "as drawing handles"))
+        axes.legend.handles = vd
+        axes.legend.labels  = labels
+    end
+    set_properties!(axes.legend; defer_preview=true, opts...)
     return _preview()
 end
-legend!(::Nothing; opts...) = legend!(add_axes2d!(); opts...)
-legend!(; opts...) = legend!(gca(); opts...)
 
 """
     legend(; options...)
@@ -132,4 +178,4 @@ legend!(; opts...) = legend!(gca(); opts...)
 Creates a new legend object on the current axes with the given options.
 If one already exist, it will be destroyed and replaced by this one.
 """
-legend(; opts...) = legend!(gca(); overwrite=true, opts...)
+legend(a...; o...) = legend!(a...; overwrite=true, o...)

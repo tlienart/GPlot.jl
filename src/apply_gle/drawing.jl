@@ -8,15 +8,13 @@ containing the drawing data.
 """
 function apply_drawings!(g::GLE, drawings::Vector{<:Drawing},
                          axorigin::T2F, figid::String)
-    leg_entries = GLE()
     # element counter to have an index over objects drawn
     el_cntr = 1
     for drawing ∈ drawings
-        el_cntr = apply_drawing!(g, leg_entries, drawing,
-                                 el_cntr, axorigin, figid)
+        el_cntr = apply_drawing!(g, drawing, el_cntr, axorigin, figid)
     end
     # this is recuperated in `apply_axes!` and further processed by `apply_legend!`
-    return leg_entries
+    return nothing
 end
 
 """
@@ -44,11 +42,9 @@ Internal function to apply a `Drawing` object `obj` in a GLE context `g` with cu
 legend entries `leg_entries` (possibly empty), current element counter `el_counter`
 and `origin` and `figid` are used to make the auxiliary file name unique.
 """
-function apply_drawing!(g::GLE, leg_entries::GLE, scatter::Scatter2D,
+function apply_drawing!(g::GLE, scatter::Scatter2D,
                         el_counter::Int, origin::T2F, figid::String)
-    # temporary buffers to help build the legend
-    lt = [GLE() for c ∈ 1:scatter.nobj]
-
+    # write data to a temporary CSV file
     faux = auxpath(hash(scatter.data), origin, figid)
     # don't rewrite if it's the exact same zipper
     isfile(faux) || csv_writer(faux, scatter.data, scatter.hasmissing)
@@ -60,67 +56,53 @@ function apply_drawing!(g::GLE, leg_entries::GLE, scatter::Scatter2D,
     #   d1 line blue
     #
 
-    for c ∈ eachindex(lt)
+    for k ∈ 1:scatter.nobj
         # (1) indicate what data to read
-        "\n\tdata \"$faux\" d$(el_counter)=c1,c$(c+1)" |> g
+        "\n\tdata \"$faux\" d$(el_counter)=c1,c$(k+1)" |> g
         # if no color has been specified, assign one according to the PALETTE
-        if !isdef(scatter.linestyles[c].color)
+        if !isdef(scatter.linestyles[k].color)
             cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
             (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
-            scatter.linestyles[c].color = GP_ENV["PALETTE"][cc]
+            scatter.linestyles[k].color = GP_ENV["PALETTE"][cc]
         end
         # (2) line and marker description
         # build a tuple with the current buffer and the legend entry buffer
-        if scatter.linestyles[c].lstyle != -1
+        if scatter.linestyles[k].lstyle != -1
             # Line plot
             "\n\td$el_counter" |> g
-            "line" |> g;     apply_linestyle!(g, scatter.linestyles[c])
-            "line" |> lt[c]; apply_linestyle!(lt[c], scatter.linestyles[c], legend=true)
+            "line" |> g; apply_linestyle!(g, scatter.linestyles[k])
             # if a marker color is specified and different than the line
             # color we need to have a special subroutine for GLE
             mcol_flag = false
-            if isdef(scatter.markerstyles[c].color) &&
-                    (scatter.markerstyles[c].color != scatter.linestyles[c].color)
+            if isdef(scatter.markerstyles[k].color) &&
+                    (scatter.markerstyles[k].color != scatter.linestyles[k].color)
                 mcol_flag = true
-                add_sub_marker!(Figure(figid; _noreset=true), scatter.markerstyles[c])
+                add_sub_marker!(Figure(figid; _noreset=true), scatter.markerstyles[k])
             end
             # apply markerstyle to the axes & the legend
-            apply_markerstyle!(g, scatter.markerstyles[c], mcol_flag=mcol_flag)
-            apply_markerstyle!(lt[c], scatter.markerstyles[c], mcol_flag=mcol_flag)
+            apply_markerstyle!(g, scatter.markerstyles[k], mcol_flag=mcol_flag)
         else
             # Scatter plot; if there's no specified marker color,
             # take the default line color
-            if !isdef(scatter.markerstyles[c].color)
-                scatter.markerstyles[c].color = scatter.linestyles[c].color
+            if !isdef(scatter.markerstyles[k].color)
+                scatter.markerstyles[k].color = scatter.linestyles[k].color
             end
             # apply markerstyle to the axes & legend
             "\n\td$el_counter" |> g
-            apply_markerstyle!(g, scatter.markerstyles[c])
-            apply_markerstyle!(lt[c], scatter.markerstyles[c])
+            apply_markerstyle!(g, scatter.markerstyles[k])
         end
+        el_counter += 1
     end
-    # (3) build legend entries (will be applied if a legend command is issued)
-    if isempty(scatter.labels)
-        for c ∈ eachindex(lt)
-            "\n\ttext \"plot $(el_counter-1+c)\"" |> leg_entries
-            lt[c] |> leg_entries
-        end
-    else
-        for c ∈ eachindex(lt)
-            "\n\ttext \"$(scatter.labels[c])\"" |> leg_entries
-            lt[c] |> leg_entries
-        end
-    end
-    return el_counter + scatter.nobj
+    return el_counter
 end
 
 ####
 #### Apply a Fill2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::GLE, fill::Fill2D,
+function apply_drawing!(g::GLE, fill::Fill2D,
                         el_counter::Int, origin::T2F, figid::String)
-
+    # write data to a temporary CSV file
     faux = auxpath(hash(fill.data), origin, figid)
     isfile(faux) || csv_writer(faux, fill.data, false)
 
@@ -137,16 +119,6 @@ function apply_drawing!(g::GLE, leg_entries::GLE, fill::Fill2D,
     isdef(fill.xmin) && "xmin $(fill.xmin)"    |> g
     isdef(fill.xmax) && "xmax $(fill.xmax)"    |> g
 
-    #
-    # Legend
-    #
-    if isempty(fill.label)
-        "\n\ttext \"fill $(el_counter)\"" |> leg_entries
-    else
-        "\n\ttext \"$(fill.label)\""      |> leg_entries
-    end
-    "fill $(col2str(fill.fillstyle.fill))" |> leg_entries
-
     el_counter += 2
     return el_counter
 end
@@ -155,9 +127,8 @@ end
 #### Apply a Hist2D object
 ####
 
-function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
+function apply_drawing!(g::GLE, hist::Hist2D,
                         el_counter::Int, origin::T2F, figid::String)
-
     # write data to a temporary CSV file
     faux = auxpath(hash(hist.data), origin, figid)
     isfile(faux) || csv_writer(faux, hist.data, hist.hasmissing)
@@ -212,21 +183,6 @@ function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
     apply_barstyle!(g, hist.barstyle)
     hist.horiz && "horiz" |> g
 
-    #
-    # Legend
-    #
-    if isempty(hist.label)
-        "\n\ttext \"hist $(el_counter)\"" |> leg_entries
-    else
-        "\n\ttext \"$(hist.label)\""      |> leg_entries
-    end
-    # precedence of fill over color
-    if hist.barstyle.fill != colorant"white"
-        "fill $(col2str(hist.barstyle.fill))" |> leg_entries
-    else
-        "marker square color $(col2str(hist.barstyle.color))" |> leg_entries
-    end
-
     return el_counter+1
 end
 
@@ -234,7 +190,7 @@ end
 #### Apply Bar2D
 ####
 
-function apply_drawing!(g::GLE, leg_entries::GLE, bar::Bar2D,
+function apply_drawing!(g::GLE, bar::Bar2D,
                         el_counter::Int, origin::T2F, figid::String)
     # write data to a temporary CSV file
     faux = auxpath(hash(bar.data), origin, figid)
@@ -293,33 +249,6 @@ function apply_drawing!(g::GLE, leg_entries::GLE, bar::Bar2D,
         for i ∈ 2:nbars
             "\n\tbar d$(el_counter+i-1) from d$(el_counter+i-2)" |> g
             apply_barstyle!(g, bar.barstyles[i])
-        end
-    end
-
-    #
-    # Legend
-    #
-    if isempty(bar.labels)
-        c = 0
-        for barstyle ∈ bar.barstyles
-            "\n\ttext \"bar $(el_counter+c)\"" |> leg_entries
-            c += 1
-            # fill takes precedence
-            if barstyle.fill != colorant"white"
-                "fill $(col2str(barstyle.fill))" |> leg_entries
-            else
-                "marker square color $(col2str(barstyle.color))" |> leg_entries
-            end
-        end
-    else
-        for (lab, barstyle) ∈ zip(bar.labels, bar.barstyles)
-            "\n\ttext \"$(lab)\"" |> leg_entries
-            # fill takes precedence
-            if barstyle.fill != colorant"white"
-                "fill $(col2str(barstyle.fill))" |> leg_entries
-            else
-                "marker square color $(col2str(barstyle.color))" |> leg_entries
-            end
         end
     end
 
