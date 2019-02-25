@@ -63,10 +63,11 @@ Histogram.
     nobs      ::Int   # number of non-missing entries
     range     ::T2F   # (minvalue, maxvalue)
     #
-    barstyle  ::BarStyle       = BarStyle() #
-    horiz     ::Bool           = false      # horizontal histogram?
-    bins      ::Option{Int}    = ∅          # number of bins
-    scaling   ::Option{String} = ∅          # scaling (pdf, ...)
+    barstyle::BarStyle    = BarStyle() #
+    horiz   ::Bool        = false      # horizontal histogram?
+    bins    ::Option{Int} = ∅          # number of bins
+    scaling ::String      = "none"     # scaling (pdf, count=none, probability)
+    label   ::String      = ""
 end
 
 

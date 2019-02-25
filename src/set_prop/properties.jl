@@ -264,6 +264,7 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 const SCATTER2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :name   => id => set_labels!, # set_drawing
     :key    => id => set_labels!, # .
+    :keys   => id => set_labels!, # .
     :label  => id => set_labels!, # .
     :labels => id => set_labels!, # .
     )
@@ -272,12 +273,14 @@ merge!(SCATTER2D_OPTS, GMARKERSTYLE_OPTS)
 set_properties!(s::Scatter2D; opts...) = set_properties!(SCATTER2D_OPTS, s; opts...)
 
 const FILL2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :from => fl => set_xmin!,
-    :min  => fl => set_xmin!,
-    :xmin => fl => set_xmin!,
-    :to   => fl => set_xmax!,
-    :max  => fl => set_xmax!,
-    :xmax => fl => set_xmax!,
+    :from  => fl => set_xmin!,
+    :min   => fl => set_xmin!,
+    :xmin  => fl => set_xmin!,
+    :to    => fl => set_xmax!,
+    :max   => fl => set_xmax!,
+    :xmax  => fl => set_xmax!,
+    :key   => id => set_label!, # set_drawing
+    :label => id => set_label!, # .
     )
 merge!(FILL2D_OPTS, FILLSTYLE_OPTS)
 set_properties!(f::Fill2D; opts...) = set_properties!(FILL2D_OPTS, f; opts...)
@@ -289,6 +292,8 @@ const HIST2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :norm       => id     => set_scaling!, # .
     :horiz      => id     => set_horiz!,   # .
     :horizontal => id     => set_horiz!,   # .
+    :key        => id     => set_label!,   # set_drawing
+    :label      => id     => set_label!,   # .
     )
 merge!(HIST2D_OPTS, BARSTYLE_OPTS)
 merge!(HIST2D_OPTS, FILLSTYLE_OPTS)
@@ -298,6 +303,10 @@ const BAR2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :stacked    => id => set_stacked!, # set_drawing
     :horiz      => id => set_horiz!,   # .
     :horizontal => id => set_horiz!,   # .
+    :key        => id => set_labels!,  # set_drawing
+    :label      => id => set_labels!,  # .
+    :keys       => id => set_labels!,  # .
+    :labels     => id => set_labels!,  # .
     )
 merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
 set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)

@@ -139,6 +139,9 @@ function apply_drawing!(g::GLE, leg_entries::GLE, fill::Fill2D,
     isdef(fill.xmin) && "xmin $(fill.xmin)"    |> g
     isdef(fill.xmax) && "xmax $(fill.xmax)"    |> g
 
+    #
+    # Legend
+    #
     if isempty(fill.label)
         "\n\ttext \"fill $(el_counter)\"" |> leg_entries
     else
@@ -170,11 +173,10 @@ function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
     #
 
     # if no color has been specified, assign one according to the PALETTE
-    if !isdef(hist.barstyle.fill) && !isdef(hist.barstyle.color)
+    if !isdef(hist.barstyle.color)
         cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
         (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
         hist.barstyle.color = GP_ENV["PALETTE"][cc]
-        hist.barstyle.fill  = colorant"white"
     end
 
     # (1) indicate what data to read
@@ -207,6 +209,21 @@ function apply_drawing!(g::GLE, leg_entries::GLE, hist::Hist2D,
     # apply styling
     apply_barstyle!(g, hist.barstyle)
     hist.horiz && "horiz" |> g
+
+    #
+    # Legend
+    #
+    if isempty(hist.label)
+        "\n\ttext \"hist $(el_counter)\"" |> leg_entries
+    else
+        "\n\ttext \"$(hist.label)\""      |> leg_entries
+    end
+    # precedence of fill over color
+    if hist.barstyle.fill != colorant"white"
+        "fill $(col2str(hist.barstyle.fill))" |> leg_entries
+    else
+        "marker square color $(col2str(hist.barstyle.color))" |> leg_entries
+    end
 
     return el_counter+1
 end
