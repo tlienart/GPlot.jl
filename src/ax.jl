@@ -8,7 +8,7 @@ function erase!(a::Axes2D)
     a.objects  = Vector{Object2D}()
     a.legend   = ∅
     GP_ENV["CURAXES"] = a
-    return _preview()
+    return preview()
 end
 
 """
@@ -16,7 +16,7 @@ end
 
 Clears the current axes, removing all drawings and resetting all options.
 """
-cla!() = (reset!(gca()); _preview())
+cla!() = (reset!(gca()); preview())
 
 """
     cla()
@@ -30,7 +30,7 @@ cla = cla!
 
 Clears all objects (annotations, arrows, ...) from the current axes, leaves everything else.
 """
-clo!() = (gca().objects = Vector{Object2D}(); _preview())
+clo!() = (gca().objects = Vector{Object2D}(); preview())
 
 """
     clo()
@@ -80,7 +80,7 @@ Set the (current) axes to math mode (where the axes go through (0,0)). It is rec
 adjust the axis limits via [`xlim!`](@ref) and [`ylim!`](@ref) to make sure that the origin is
 somewhere in the drawn area (otherwise the results will be rather ugly).
 """
-math!(; axes=nothing) = (axes = check_axes(axes); axes.math = true; _preview())
+math!(; axes=nothing) = (axes = check_axes(axes); axes.math = true; preview())
 
 """
     math()
@@ -111,11 +111,11 @@ function grid!(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
         if s_lc == "off"
             axes.xaxis.ticks.grid = false
             axes.yaxis.ticks.grid = false
-            return _preview()
+            return preview()
         elseif s_lc == "on"
             axes.xaxis.ticks.grid = true
             axes.yaxis.ticks.grid = true
-            return _preview()
+            return preview()
         else
             throw(OptionValueError("Unrecognised shorthand toggle for grid.", short))
         end
@@ -139,7 +139,7 @@ function grid!(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
             end
         end
     end
-    return _preview()
+    return preview()
 end
 
 """
@@ -162,7 +162,7 @@ function _lim!(axis_sym::Symbol, min::Option{Float64}, max::Option{Float64};
     axis = getfield(axes, axis_sym)
     setfield!(axis, :min, min)
     setfield!(axis, :max, max)
-    return _preview()
+    return preview()
 end
 
 # Generate xlim!, xlim, and associated for each axis
@@ -188,7 +188,7 @@ function _scale!(axis_sym::Symbol, v::String; axes=nothing)
     axis.log = get(AXSCALE, v) do
         throw(OptionValueError("axis scale", v))
     end
-    return _preview()
+    return preview()
 end
 
 # Generate xscale!, xscale, and associated for each axis

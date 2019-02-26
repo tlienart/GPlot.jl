@@ -29,7 +29,7 @@ function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
         add_axes!(f, Axes2D{B}(origin=(anchors[i, 1]*W, anchors[i, 2]*H),
                                  size=(anchors[i, 3]*W, anchors[i, 4]*H)))
     end
-    return _preview()
+    return preview()
 end
 
 """

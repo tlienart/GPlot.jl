@@ -222,7 +222,7 @@ merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
 
 const LEGEND_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :pos        => lc    => set_position!, # set_ax_elems
+    :pos        => lc    => set_position!, # set_legend
     :position   => lc    => set_position!, # .
     :off        => id    => set_off!,      # .
     :nobox      => id    => set_nobox!,    # .
