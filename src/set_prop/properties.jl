@@ -18,7 +18,7 @@ function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
         setprop!(obj, argcheck(opts[optname], optname))
     end
     defer_preview && return nothing
-    return _preview()
+    return preview()
 end
 
 set!(obj; opts...) = set_properties!(obj; opts...)

@@ -12,6 +12,9 @@ include("ax.jl")
 # 25 feb 19
 include("ax_elem.jl")
 
+# 26 feb 19
+include("legend.jl")
+
 # 25 feb 19
 include("drawing.jl")
 

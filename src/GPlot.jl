@@ -9,7 +9,7 @@ using DocStringExtensions: SIGNATURES
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, clf!, cla!, clo!, clf, cla, clo, erase!,
+export Figure, gcf, gca, clf!, cla!, clo!, cll!, clf, cla, clo, cll, erase!,
     continuous_preview,
     # General set function
     set, set_palette,

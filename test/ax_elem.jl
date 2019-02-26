@@ -11,16 +11,6 @@
     @test t.textstyle.font == "psh"
     @test t.dist == 0.3
 
-    # LEGEND
-    l = GPlot.Legend()
-    @test isnothing(l.position)
-    @test l.textstyle isa G.TextStyle
-    @test l.offset == (0.0,0.0)
-    @test isnothing(l.bgcolor)
-    @test isnothing(l.margins)
-    @test !l.nobox
-    @test !l.off
-
     # TICKS AND TICKSLABELS
     t = GPlot.Ticks()
     @test t.labels.names == String[]
@@ -108,13 +98,6 @@ end
     @test gca().xaxis.ticks.linestyle.color == colorant"lightgray"
     @test gca().yaxis.ticks.linestyle.color == colorant"lightgray"
 
-    # legend
-    erase!(f)
-    legend(position="top-left")
-    @test f.axes[1].legend.position == "tl"
-    legend!(position="bottom-right")
-    @test f.axes[1].legend.position == "br"
-
     x2ticks("off")
     @test gca().x2axis.ticks.off
     @test gca().x2axis.ticks.labels.off
@@ -125,7 +108,6 @@ end
     @test gca().xaxis.off
     xaxis("on")
     @test !gca().xaxis.off
-
 end
 
 @testset "▶ set_prop/ax_elem            " begin
@@ -150,14 +132,6 @@ end
     @test f.axes[1].yaxis.ticks.off == true
     yticks([1, 2], ["a", "b"], hidelabels=true)
     @test f.axes[1].yaxis.ticks.labels.off == true
-
-    # Legend
-    cla()
-    line([0,0],[1,1],label="line")
-    legend(nobox=true, margins=(1.0,1.0), offset=(.5,.5))
-    @test gca().legend.nobox
-    @test gca().legend.margins == (1.0,1.0)
-    @test gca().legend.offset == (0.5,0.5)
 end
 
 @testset "▶ apply_gle/ax_elem           " begin

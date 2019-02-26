@@ -7,6 +7,7 @@ handle.
 function apply_legend_spec!(g::GLE, h::DrawingHandle{Scatter2D{T}},
                             labels::Union{String,Vector{String}}, figid::String) where T
     scatter = h.drawing
+    labels isa Vector || (labels = fill(labels, scatter.nobj))
     for k ∈ 1:scatter.nobj
         "\n\ttext \"$(labels[k])\"" |> g
         if scatter.linestyles[k].lstyle != 1
@@ -51,6 +52,7 @@ end
 function apply_legend_spec!(g::GLE, h::DrawingHandle{Bar2D{T}},
                             labels::Union{String,Vector{String}}, ::String) where T
     bar = h.drawing
+    labels isa Vector || (labels = fill(labels, bar.nobj))
     for (k, barstyle) ∈ enumerate(bar.barstyles)
         "\n\ttext \"$(labels[k])\"" |> g
         if barstyle.fill != colorant"white"
@@ -70,6 +72,7 @@ Internal function to apply a `Legend` object `leg` in a GLE context with entries
 """
 function apply_legend!(g::GLE, l::Legend, parent_font::String, figid::String)
     l.off && return nothing
+    isempty(l.handles) && return nothing
     "\ngsave" |> g
     apply_textstyle!(g, l.textstyle, parent_font; addset=true)
 
@@ -84,13 +87,8 @@ function apply_legend!(g::GLE, l::Legend, parent_font::String, figid::String)
     sum(l.offset)>0   && "offset $(l.offset[1]) $(l.offset[2])"    |> g
     isdef(l.position) && "\n\tposition $(l.position)"              |> g
 
-    if isempty(l.handles)
-        # entries is the key part, it's generated via apply_drawings.
-        entries |> g
-    else
-        for (handle, label) ∈ zip(l.handles, l.labels)
-            apply_legend_spec!(g, handle, label, figid)
-        end
+    for (handle, label) ∈ zip(l.handles, l.labels)
+        apply_legend_spec!(g, handle, label, figid)
     end
     #
     "\nend key"    |> g
