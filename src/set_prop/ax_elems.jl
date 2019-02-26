@@ -22,7 +22,7 @@ set_off!(o, v::Bool) = (o.off = v)
 
 Internal function to set the length of an object.
 """
-set_length!(o::Ticks, v::Float64) = throw(NotImplementedError("set_length!"))
+set_length!(o::Ticks, v::Float64) = (o.length = v)
 
 """
     set_symticks!(obj, v)

@@ -241,8 +241,8 @@ const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     # ticks related
     :off        => id    => set_off!,        # set_ax_elems
     :hideticks  => id    => set_off!,        # .
-    :len        => posfl => set_length!,     # .
-    :length     => posfl => set_length!,     # .
+    :len        => fl    => set_length!,     # .
+    :length     => fl    => set_length!,     # .
     :sym        => id    => set_symticks!,   # .
     :symticks   => id    => set_symticks!,   # .
     :tickscol   => col   => set_color!,      # .

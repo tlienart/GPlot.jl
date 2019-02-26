@@ -66,7 +66,7 @@ for axs ∈ ("x", "y", "x2", "y2")
                     throw(OptionValueError("Unrecognised shorthand toggle for axis.", short))
                 end
             end
-            return nothing
+            return preview()
         end
         $f = $f! # synonyms
     end

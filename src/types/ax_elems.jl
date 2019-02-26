@@ -24,7 +24,7 @@ end
     linestyle::LineStyle   = LineStyle()   # how the ticks marks look
     # ---
     places   ::Vector{Float64} = Float64[] # where the ticks are
-    length   ::Option{Float64} = ∅         # how long the ticks spine
+    length   ::Option{Float64} = ∅         # how long the ticks spine (negative for outside)
     # --- toggle-able
     symticks ::Bool = false # draws ticks on 2 sides of
     off      ::Bool = false # whether to suppress them
