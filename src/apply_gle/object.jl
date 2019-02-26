@@ -17,6 +17,7 @@ end
 
 function apply_object!(g::GLE, obj::StraightLine2D)
     "\ngsave"    |> g
+    apply_linestyle!(g, obj.linestyle; addset=true)
     if obj.horiz
         "\namove xg(xgmin) yg($(obj.anchor))" |> g
         "\naline xg(xgmax) yg($(obj.anchor))" |> g

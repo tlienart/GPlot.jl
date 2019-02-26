@@ -73,14 +73,14 @@ function apply_drawing!(g::GLE, scatter::Scatter2D,
             "line" |> g; apply_linestyle!(g, scatter.linestyles[k])
             # if a marker color is specified and different than the line
             # color we need to have a special subroutine for GLE
-            mcol_flag = false
+            mcol = false
             if isdef(scatter.markerstyles[k].color) &&
                     (scatter.markerstyles[k].color != scatter.linestyles[k].color)
-                mcol_flag = true
+                mcol = true
                 add_sub_marker!(Figure(figid; _noreset=true), scatter.markerstyles[k])
             end
             # apply markerstyle to the axes & the legend
-            apply_markerstyle!(g, scatter.markerstyles[k], mcol_flag=mcol_flag)
+            apply_markerstyle!(g, scatter.markerstyles[k], mcol=mcol)
         else
             # Scatter plot; if there's no specified marker color,
             # take the default line color
