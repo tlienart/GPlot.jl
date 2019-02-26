@@ -12,7 +12,7 @@ function apply_legend_spec!(g::GLE, h::DrawingHandle{Scatter2D{T}},
         "\n\ttext \"$(labels[k])\"" |> g
         if scatter.linestyles[k].lstyle != 1
             # line plot
-            "line" |> g; apply_linestyle!(g, scatter.linestyles[k], legend=true)
+            "line" |> g; apply_linestyle!(g, scatter.linestyles[k]; nosmooth=true)
             mcol_flag = false
             if isdef(scatter.markerstyles[k].color) &&
                     (scatter.markerstyles[k].color != scatter.linestyles[k].color)

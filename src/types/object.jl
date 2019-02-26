@@ -24,3 +24,14 @@ Place text somewhere relative to current axes.
     position::String = "cc" # position with respect to anchor (by default centered on anchor)
     textstyle::TextStyle = TextStyle()
 end
+
+"""
+    StraightLine2D <: Object
+
+Place either a vertical or horizontal straightline at given anchor (from axis to axis).
+"""
+@with_kw mutable struct StraightLine2D <: Object2D
+    anchor::Float64
+    horiz::Bool
+    linestyle::LineStyle = LineStyle()
+end

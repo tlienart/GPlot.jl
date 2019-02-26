@@ -16,8 +16,8 @@ export Figure, gcf, gca, clf!, cla!, clo!, cll!, clf, cla, clo, cll, erase!,
     # Layout
     layout!, layout, subplot,
     # Drawings
-    line!, plot!, scatter!, fill_between!, hist!, bar!,
-    line, plot, scatter, fill_between, hist, bar,
+    vline!, hline!, line!, plot!, scatter!, fill_between!, hist!, bar!,
+    vline, hline, line, plot, scatter, fill_between, hist, bar,
     # Objects
     text!, text,
     # Axis / Axes

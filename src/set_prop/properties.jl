@@ -324,6 +324,11 @@ const TEXT2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
 merge!(TEXT2D_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Text2D; opts...) = set_properties!(TEXT2D_OPTS, t; opts...)
 
+const STRAIGHTLINE2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
+    )
+merge!(STRAIGHTLINE2D_OPTS, LINESTYLE_OPTS)
+set_properties!(t::StraightLine2D; opts...) = set_properties!(STRAIGHTLINE2D_OPTS, t; opts...)
+
 ####
 #### Options for AX*
 ####
