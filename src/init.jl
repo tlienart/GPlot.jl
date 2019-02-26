@@ -1,4 +1,6 @@
 function __init__()
+    # check if in IJulia, and if that's the case disable the continuous_preview by default
+    isdefined(Main, :IJulia) && Main.IJulia.inited && continuous_preview(false)
     # very simple warmup
     t = @elapsed begin
         f = Figure("_")
