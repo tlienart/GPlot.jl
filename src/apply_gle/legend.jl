@@ -13,14 +13,14 @@ function apply_legend_spec!(g::GLE, h::DrawingHandle{Scatter2D{T}},
         if scatter.linestyles[k].lstyle != 1
             # line plot
             "line" |> g; apply_linestyle!(g, scatter.linestyles[k]; nosmooth=true)
-            mcol_flag = false
+            mcol = false
             if isdef(scatter.markerstyles[k].color) &&
                     (scatter.markerstyles[k].color != scatter.linestyles[k].color)
-                mcol_flag = true
+                mcol = true
                 add_sub_marker!(Figure(figid; _noreset=true), scatter.markerstyles[k])
             end
             # apply markerstyle
-            apply_markerstyle!(g, scatter.markerstyles[k], mcol_flag=mcol_flag)
+            apply_markerstyle!(g, scatter.markerstyles[k], mcol=mcol)
         else
             # scatter plot
             if !isdef(scatter.markerstyles[k].color)

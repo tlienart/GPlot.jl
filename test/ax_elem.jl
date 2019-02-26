@@ -118,7 +118,6 @@ end
     @test_throws GPlot.UnknownOptionError  title("b", blah=5)
     # Ticks
     y2ticks([1, 2], off=true); @test f.axes[1].y2axis.ticks.off
-    @test_throws GPlot.NotImplementedError yticks([1, 2], length=0.5)
     @test_throws GPlot.NotImplementedError y2ticks([1, 2], symticks=true)
     erase!(f)
     x2ticks([1, 2], ["a", "b"], tickscolor="blue")
