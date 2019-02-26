@@ -333,6 +333,13 @@ set_properties!(t::StraightLine2D; opts...) = set_properties!(STRAIGHTLINE2D_OPT
 #### Options for AX*
 ####
 
+const  AXES_OPTS = Dict{Symbol,Pair{Function, Function}}(
+    :size   => fl => set_size!,  # set figure
+    :title  => id => set_title!, # set ax
+    :off    => id => set_off!,   # set axelems
+    )
+set_properties!(a::Axes; opts...) = set_properties!(AXES_OPTS, a; opts...)
+
 const AXIS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :title  => id    => set_title!,  # set_ax
     :base   => posfl => set_base!,   # .

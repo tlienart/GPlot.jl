@@ -40,6 +40,34 @@ See [`clo!`](@ref).
 clo = clo!
 
 ####
+#### axes
+####
+function axis(short::String=""; axes=nothing)
+    axes = check_axes(axes)
+    if !isempty(short)
+        s_lc = lowercase(short)
+        if s_lc == "math"
+            axes.math = true
+        elseif s_lc == "nomath"
+            axes.math = false
+        elseif s_lc == "equal"
+            throw(NotImplementedError("axis(equal)"))
+            #= would need to
+            1. get the size from gca() to get the aspect ratio
+            2. modify the xlim/ylim so that they match that ratio
+            the difficulty is to get xlim/ylim when they're not set
+            explicitly. would need to figure out a way
+            to declare local variables
+            Maybe just xaxis min xgmin*... max xgmax*...
+            =#
+        else
+            throw(OptionValueError("Unrecognised shorthand toggle for axes.", short))
+        end
+    end
+    return preview()
+end
+
+####
 #### [x|y|...]axis(...)
 ####
 
@@ -80,7 +108,7 @@ Set the (current) axes to math mode (where the axes go through (0,0)). It is rec
 adjust the axis limits via [`xlim!`](@ref) and [`ylim!`](@ref) to make sure that the origin is
 somewhere in the drawn area (otherwise the results will be rather ugly).
 """
-math!(; axes=nothing) = (axes = check_axes(axes); axes.math = true; preview())
+math!(b=true; axes=nothing) = (axes = check_axes(axes); axes.math = b; preview())
 
 """
     math()

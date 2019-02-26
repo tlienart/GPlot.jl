@@ -36,7 +36,7 @@ export Figure, gcf, gca, clf!, cla!, clo!, cll!, clf, cla, clo, cll, erase!,
     xscale!, x2scale!, yscale!, y2scale!,
     xscale, x2scale, yscale, y2scale,
     # -- misc
-    xaxis!, x2axis!, yaxis!, y2axis!,
+    axis, xaxis!, x2axis!, yaxis!, y2axis!,
     xaxis, x2axis, yaxis, y2axis,
     grid!, math!,
     grid, math,

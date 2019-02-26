@@ -32,6 +32,7 @@ abstract type Axes{B <: Backend} end
     origin::Option{T2F}    = ∅ # related to layout
     # -- toggle-able
     math::Bool = false # axis crossing (0, 0)
+    off::Bool = false
 end
 
 
