@@ -16,13 +16,13 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase,
     # Layout
     layout, subplot,
     # Drawings
-    plot!, scatter!, fill_between!, hist!, bar!,
-    plot, scatter, fill_between, hist, bar,
+    plot!, scatter!, fill_between!, hist!, bar!,  # append mode
+    plot, scatter, fill_between, hist, bar,       # new/overwrite mode
     # Objects
     text, vline, hline, line,
     # Axis / Axes
     # -- legend
-    legend!, legend,
+    legend,
     # -- titles
     title, xtitle, x2title, ytitle, y2title,
     xlabel, x2label, ylabel, y2label,
