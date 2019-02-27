@@ -14,5 +14,11 @@ not happen, need to explicitly call preview for instance
 
 - when adding text, there's no overwrite (ambiguous) so if it fails you'll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest
 unchanged
+
+- API
+
+-- plotting stuff with ! = append
+-- everything else doesn't have ! bc confusing
+
 =#
 ```

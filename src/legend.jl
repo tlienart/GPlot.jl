@@ -13,12 +13,13 @@ cll = cll!
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.
 """
-function legend!(vd::Option{Vector{DrawingHandle{T}}}=nothing,
+function legend(vd::Option{Vector{DrawingHandle{T}}}=nothing,
                  labels::Option{Vector{<:Union{String,Vector{String}}}}=nothing;
-                 axes=nothing, overwrite=false, opts...) where T
+                 axes=nothing, opts...) where T
     axes=check_axes(axes)
-    # if there exists a legend object but overwrite, then reset it
-    (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
+    # create a new legend object
+    axes.legend = Legend()
+    # check if handles are given, if none, try to apply a default legend
     if isnothing(vd)
         isnothing(labels) || throw(ArgumentError("Cannot pass labels without handles."))
         axes.legend.handles = [DrawingHandle(d) for d ∈ axes.drawings]
@@ -59,6 +60,7 @@ function legend!(vd::Option{Vector{DrawingHandle{T}}}=nothing,
                 end
             end
         end
+    # handles are given, check the labels
     else
         isnothing(labels) && throw(ArgumentError("Labels must be provided along with handles"))
         length(vd) == length(labels) || throw(ArgumentError("There must be as many labels given "*
@@ -69,13 +71,4 @@ function legend!(vd::Option{Vector{DrawingHandle{T}}}=nothing,
     set_properties!(axes.legend; defer_preview=true, opts...)
     return preview()
 end
-legend!(d::DrawingHandle{T}, s::String; o...) where T = legend!([d],[s]; o...)
-
-
-"""
-    legend(; options...)
-
-Creates a new legend object on the current axes with the given options.
-If one already exist, it will be destroyed and replaced by this one.
-"""
-legend(a...; o...) = legend!(a...; overwrite=true, o...)
+legend(d::DrawingHandle{T}, s::String; o...) where T = legend([d],[s]; o...)

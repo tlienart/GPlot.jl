@@ -4,6 +4,8 @@ const G = GPlot
 isin(s, str) = @test occursin(str, s)
 notisin(s, str) = @test !occursin(str, s)
 
+# disable continuous preview in tests
+_bk_cont_preview = G.GP_ENV["CONT_PREVIEW"]
 continuous_preview(false)
 
 if VERSION < v"1.1"
