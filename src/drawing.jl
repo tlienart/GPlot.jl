@@ -2,8 +2,7 @@
 #### Data assembling
 ####
 
-function plotdata(x)
-    x isa AVM{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
+function plotdata(x::AVM{<:CanMiss{<:Real}})
     hasmissing = Missing <: eltype(x)
     hasmissing = hasmissing || any(isinf, x)
     hasmissing = hasmissing || any(isnan, x)
@@ -11,8 +10,7 @@ function plotdata(x)
             hasmissing=hasmissing,
             nobj=size(x, 2))
 end
-function plotdata(x, ys...)
-    x isa AV{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
+function plotdata(x::AV{<:CanMiss{<:Real}}, ys...)
     nobj = 0
     hasmissing = Missing <: eltype(x)
     hasmissing = hasmissing || any(isinf, x)
@@ -180,3 +178,18 @@ end
 Erase previous drawings and add a bar plot. See also [`bar!`](@ref).
 """
 bar(a...; o...) =  bar!(a...; overwrite=true, o...)
+
+
+####
+#### this is for extra drawings that are not meant to be overlaid with anything
+#### else such as boxplot, polarplot, pieplot
+####
+
+function boxplot(ys...; axes=nothing, o...)
+    axes = check_axes(axes)
+    nobj = sum(size(y, 2) for y ∈ ys)
+    bp = Boxplot(bd.data, nobj)
+    set_properties!(bp; defer_preview=true, o...)
+    push!(axes.drawings, bp)
+    return preview() # not a handle, this does not have a legend
+end

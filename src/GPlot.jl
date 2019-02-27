@@ -2,10 +2,12 @@
 
 module GPlot
 
+using DocStringExtensions: SIGNATURES
+
 using Parameters
 using Colors
 using DelimitedFiles: writedlm
-using DocStringExtensions: SIGNATURES
+using Statistics: quantile
 
 import Base: |>, take!, isempty
 
@@ -118,6 +120,7 @@ include("ax_elem.jl")
 include("legend.jl")
 include("figure.jl")
 include("layout.jl")
+include("gle_sub.jl")
 
 # Rendering of things (preview/savefig)
 include("render.jl")

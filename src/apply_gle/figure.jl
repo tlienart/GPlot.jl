@@ -40,11 +40,17 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
     # NOTE: this organisation is so that if axes need extra
     # subroutines, these will be generated after applying axes
     # but need to be put before in the GLE script
-    gtemp = GLE()
+    gtemp = GLE();
     foreach(a -> apply_axes!(gtemp, a, f.id), f.axes)
     if !isempty(f.subroutines)
-        for sub ∈ values(f.subroutines)
-            sub |> g
+        ks = keys(f.subroutines)
+        # subroutines for drawings
+        for key ∈ filter(k->startswith(k, "draw_"), ks)
+            f.subroutines[key] |> g
+        end
+        # subroutines for markercolors
+        for key ∈ filter(k->startswith(k, "marker"), ks)
+            f.subroutines[key] |> g
         end
     end
     gtemp |> g

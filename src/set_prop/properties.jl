@@ -313,6 +313,10 @@ const BAR2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
 merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
 set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
 
+const BOXPLOT_OPTS = Dict{Symbol,Pair{Function, Function}}(
+    )
+set_properties!(bp::Boxplot; opts...) = set_properties!(BOXPLOT_OPTS, bp; opts...)
+
 ####
 #### Options for OBJECTS
 ####

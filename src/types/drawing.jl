@@ -83,8 +83,7 @@ Bar plot(s).
 """
 @with_kw mutable struct Bar2D{T} <: Drawing2D
     data      ::T               # data container
-    hasmissing::Bool            # whether has missing|inf|nan
-    nobj      ::Int
+    hasmissing::Bool            # whether has missing|inf|nan nobj      ::Int
     barstyles ::Vector{BarStyle}
     #
     stacked::Bool            = false
@@ -100,3 +99,21 @@ end
 Internal constructor for Bar2D object adding barstyles.
 """
 Bar2D(d, m, n) = Bar2D(data=d, hasmissing=m, nobj=n, barstyles=nvec(n, BarStyle))
+
+
+"""
+    Boxplot <: Drawing2D
+
+Boxplot(s).
+"""
+@with_kw mutable struct Boxplot <: Drawing2D
+    data      ::Tuple # generic data container, see data processing in apply
+    nobj      ::Int
+    #
+    boxstyles::Vector{BoxplotStyle}
+
+#    horiz  ::Bool            = false
+#    width  ::Option{Float64} = ∅
+#    labels ::Vector{String}  = String[]
+end
+Boxplot(d, n) = Boxplot(data=d, nobj=n, boxstyles=nvec(n, BoxplotStyle))

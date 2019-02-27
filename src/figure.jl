@@ -98,30 +98,3 @@ function destroy(f::Figure)
     GP_ENV["CURAXES"] = nothing
     return nothing
 end
-
-####
-#### Subroutines
-####
-
-"""
-    add_sub_marker!(f, m)
-
-Internal function to add an appropriate subroutine to the GLE script to deal with markers that
-must have a different color than the line they are associated with. For instance if you want a
-blue line with red markers, you need to define a specfici subroutine for red-markers otherwise both
-line and markers are going to be of the same color.
-"""
-function add_sub_marker!(f::Figure, m::MarkerStyle)
-    if str(m) ∉ keys(f.subroutines)
-        f.subroutines[str(m)] = """
-        sub _$(str(m)) size mdata
-        	gsave
-            set color $(col2str(m.color))
-            marker $(m.marker) 1
-        	grestore
-        end sub
-        define marker $(str(m)) _$(str(m))
-        """
-    end
-    return nothing
-end
