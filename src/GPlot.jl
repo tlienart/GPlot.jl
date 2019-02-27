@@ -9,37 +9,31 @@ using DocStringExtensions: SIGNATURES
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, clf!, cla!, clo!, clf, cla, clo, erase!,
+export Figure, gcf, gca, clf, cla, clo, cll, erase,
     continuous_preview,
     # General set function
     set, set_palette,
     # Layout
-    layout!, layout, subplot,
+    layout, subplot,
     # Drawings
-    line!, plot!, scatter!, fill_between!, hist!, bar!,
-    line, plot, scatter, fill_between, hist, bar,
+    plot!, scatter!, fill_between!, hist!, bar!,  # append mode
+    plot, scatter, fill_between, hist, bar,       # new/overwrite mode
     # Objects
-    text!, text,
+    text, vline, hline, line,
     # Axis / Axes
+    # -- legend
+    legend,
     # -- titles
-    title!, xtitle!, x2title!, ytitle!, y2title!,
-    xlabel!, x2label!, ylabel!, y2label!, legend!,
     title, xtitle, x2title, ytitle, y2title,
-    xlabel, x2label, ylabel, y2label, legend,
+    xlabel, x2label, ylabel, y2label,
     # -- lims
-    xlim!, x2lim!, ylim!, y2lim!,
     xlim, x2lim, ylim, y2lim,
     # -- ticks
-    xticks!, x2ticks!, yticks!, y2ticks!,
     xticks, x2ticks, yticks, y2ticks,
     # -- scale
-    xscale!, x2scale!, yscale!, y2scale!,
     xscale, x2scale, yscale, y2scale,
     # -- misc
-    xaxis!, x2axis!, yaxis!, y2axis!,
-    xaxis, x2axis, yaxis, y2axis,
-    grid!, math!,
-    grid, math,
+    axis, xaxis, x2axis, yaxis, y2axis, grid, math,
     # Preview / rendering / saving
     preview, savefig, isempty, debug_gle,
     # Simple macros for tex strings
@@ -89,6 +83,7 @@ include("types/style.jl")
 include("types/drawing.jl")
 include("types/object.jl")
 include("types/ax_elems.jl")
+include("types/legend.jl")
 include("types/ax.jl")
 include("types/figure.jl")
 
@@ -101,6 +96,7 @@ include("set_prop/style.jl")
 include("set_prop/drawing.jl")
 include("set_prop/object.jl")
 include("set_prop/ax_elems.jl")
+include("set_prop/legend.jl")
 include("set_prop/ax.jl")
 include("set_prop/figure.jl")
 include("set_prop/properties.jl")
@@ -110,6 +106,7 @@ include("apply_gle/style.jl")
 include("apply_gle/drawing.jl")
 include("apply_gle/object.jl")
 include("apply_gle/ax_elems.jl")
+include("apply_gle/legend.jl")
 include("apply_gle/ax.jl")
 include("apply_gle/figure.jl")
 
@@ -118,6 +115,7 @@ include("drawing.jl")
 include("object.jl")
 include("ax.jl")
 include("ax_elem.jl")
+include("legend.jl")
 include("figure.jl")
 include("layout.jl")
 

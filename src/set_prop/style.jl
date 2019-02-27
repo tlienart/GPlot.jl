@@ -11,7 +11,7 @@ field of object `obj`.
 """
 set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
 set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c)
-set_color!(o::Ticks, c::Color) = (o.linestyle.color = c)
+set_color!(o::Union{Ticks,StraightLine2D}, c::Color) = (o.linestyle.color = c)
 
 set_textcolor!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
 set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
@@ -121,7 +121,7 @@ function set_lstyle!(o::LineStyle, v::String)
     end
     return nothing
 end
-set_lstyle!(o::Ticks, v::String) = set_lstyle!(o.linestyle, v)
+set_lstyle!(o::Union{Ticks,StraightLine2D}, v::String) = set_lstyle!(o.linestyle, v)
 
 """
     set_lwidth!(obj, v)
@@ -129,7 +129,7 @@ set_lstyle!(o::Ticks, v::String) = set_lstyle!(o.linestyle, v)
 Internal function to set the line width associated with the relevant field of `obj`.
 """
 set_lwidth!(o::Union{LineStyle, Axis}, v::Float64) = (o.lwidth = v)
-set_lwidth!(o::Ticks, v::Float64) = set_lwidth!(o.linestyle, v)
+set_lwidth!(o::Union{Ticks,StraightLine2D}, v::Float64) = set_lwidth!(o.linestyle, v)
 
 """
     set_smooth!(obj, v)

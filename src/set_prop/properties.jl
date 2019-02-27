@@ -18,7 +18,7 @@ function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
         setprop!(obj, argcheck(opts[optname], optname))
     end
     defer_preview && return nothing
-    return _preview()
+    return preview()
 end
 
 set!(obj; opts...) = set_properties!(obj; opts...)
@@ -222,7 +222,7 @@ merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
 
 const LEGEND_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :pos        => lc    => set_position!, # set_ax_elems
+    :pos        => lc    => set_position!, # set_legend
     :position   => lc    => set_position!, # .
     :off        => id    => set_off!,      # .
     :nobox      => id    => set_nobox!,    # .
@@ -241,8 +241,8 @@ const TICKS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     # ticks related
     :off        => id    => set_off!,        # set_ax_elems
     :hideticks  => id    => set_off!,        # .
-    :len        => posfl => set_length!,     # .
-    :length     => posfl => set_length!,     # .
+    :len        => fl    => set_length!,     # .
+    :length     => fl    => set_length!,     # .
     :sym        => id    => set_symticks!,   # .
     :symticks   => id    => set_symticks!,   # .
     :tickscol   => col   => set_color!,      # .
@@ -324,9 +324,21 @@ const TEXT2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
 merge!(TEXT2D_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Text2D; opts...) = set_properties!(TEXT2D_OPTS, t; opts...)
 
+const STRAIGHTLINE2D_OPTS = Dict{Symbol,Pair{Function, Function}}(
+    )
+merge!(STRAIGHTLINE2D_OPTS, LINESTYLE_OPTS)
+set_properties!(t::StraightLine2D; opts...) = set_properties!(STRAIGHTLINE2D_OPTS, t; opts...)
+
 ####
 #### Options for AX*
 ####
+
+const  AXES_OPTS = Dict{Symbol,Pair{Function, Function}}(
+    :size   => fl => set_size!,  # set figure
+    :title  => id => set_title!, # set ax
+    :off    => id => set_off!,   # set axelems
+    )
+set_properties!(a::Axes; opts...) = set_properties!(AXES_OPTS, a; opts...)
 
 const AXIS_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :title  => id    => set_title!,  # set_ax

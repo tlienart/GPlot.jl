@@ -6,22 +6,6 @@
     dist::Option{Float64} = ∅  # distance labels - title
 end
 
-@with_kw mutable struct Legend
-    handles::Vector{DrawingHandle} = DrawingHandle[]
-    labels::Vector{Union{String,Vector{String}}} = String[]
-    # ---
-    position::Option{String}   = ∅
-    textstyle::TextStyle       = TextStyle()
-    offset  ::T2F              = (0.0, 0.0)
-    bgcolor ::Option{Colorant} = ∅
-    margins ::Option{T2F}      = ∅
-    nobox   ::Bool             = false
-    off     ::Bool             = false
-    # TODO: can this take a textstyle?
-    # entries *not* contained in the struct, they're generated elsewhere
-    # nobox      ::Option{Bool}                = ∅
-end
-
 @with_kw mutable struct TicksLabels
     names::Vector{String} = String[]
     # ---
@@ -40,7 +24,7 @@ end
     linestyle::LineStyle   = LineStyle()   # how the ticks marks look
     # ---
     places   ::Vector{Float64} = Float64[] # where the ticks are
-    length   ::Option{Float64} = ∅         # how long the ticks spine
+    length   ::Option{Float64} = ∅         # how long the ticks spine (negative for outside)
     # --- toggle-able
     symticks ::Bool = false # draws ticks on 2 sides of
     off      ::Bool = false # whether to suppress them

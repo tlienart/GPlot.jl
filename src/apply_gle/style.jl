@@ -20,12 +20,13 @@ end
 
 Internal function to apply the linestyle `s` in a GLE context.
 """
-@inline function apply_linestyle!(g::GLE, s::LineStyle; legend=false)
+@inline function apply_linestyle!(g::GLE, s::LineStyle; nosmooth=false, addset=false)
     isanydef(s) || return nothing
+    addset && "\nset" |> g
     isdef(s.lstyle) && "lstyle $(s.lstyle)"           |> g
     isdef(s.lwidth) && "lwidth $(s.lwidth)"           |> g
     isdef(s.color)  && "color $(col2str(s.color))"    |> g
-    legend || isdef(s.smooth) && s.smooth && "smooth" |> g
+    nosmooth || isdef(s.smooth) && s.smooth && "smooth" |> g
     return nothing
 end
 
@@ -34,9 +35,9 @@ end
 
 Internal function to apply the markerstyle `s` in a GLE context.
 """
-@inline function apply_markerstyle!(g::GLE, s::MarkerStyle; mcol_flag=false)
+@inline function apply_markerstyle!(g::GLE, s::MarkerStyle; mcol=false)
     isanydef(s) || return nothing
-    if !mcol_flag
+    if !mcol
         isdef(s.marker) && "marker $(s.marker)" |> g
         isdef(s.msize)  && "msize $(s.msize)"   |> g
         isdef(s.color)  && "color $(col2str(s.color))" |> g

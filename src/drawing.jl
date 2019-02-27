@@ -69,7 +69,7 @@ plot(x, y, color="blue", lstyle="--", marker="o", lwidth=0.05, label="First plot
 """
 function plot!(x, ys...; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase!(axes)
+    overwrite && erase(axes)
     pd = plotdata(x, ys...)
     scatter = Scatter2D(pd.data, pd.hasmissing, pd.nobj)
     set_properties!(scatter; defer_preview=true, o...)
@@ -104,27 +104,6 @@ Erase previous drawings and add a scatter plot (no line joins the points). See a
 scatter(a...; o...)  = plot!(a...; ls="none", marker="o", overwrite=true, o...)
 
 ####
-#### line, line!
-####
-
-"""
-    line!(from, to; options)
-
-Add a line from `from` (in `[x, y]` format) to `to` (same format). For instance
-```julia
-line!([0, 0], [1, 1]; ls="--")
-```
-"""
-line!(a::AVR, b::AVR; o...) = plot!([a[1],b[1]], [a[2],b[2]]; o...)
-
-"""
-    line(from, to; options)
-
-Erase previous drawings and add a line. See also [`line!`](@ref).
-"""
-line(a...; o...)  = line!(a...; overwrite=true, o...)
-
-####
 #### fill_between!, fill_between
 ####
 
@@ -136,7 +115,7 @@ be specified as single numbers (= horizontal line).
 """
 function fill_between!(x, y1, y2; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase!(axes)
+    overwrite && erase(axes)
     fill = Fill2D(data=filldata(x, y1, y2))
     set_properties!(fill; defer_preview=true, o...)
     push!(axes.drawings, fill)
@@ -161,7 +140,7 @@ Add a histogram of `x` on the current axes.
 """
 function hist!(x; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase!(axes)
+    overwrite && erase(axes)
     hd = histdata(x)
     hist = Hist2D(data=hd.data, hasmissing=hd.hasmissing, nobs=hd.nobs, range=hd.range)
     set_properties!(hist; defer_preview=true, o...)
@@ -187,7 +166,7 @@ Add a bar plot.
 """
 function bar!(x, ys...; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase!(axes)
+    overwrite && erase(axes)
     bd = plotdata(x, ys...)
     bar = Bar2D(bd.data, bd.hasmissing, bd.nobj)
     set_properties!(bar; defer_preview=true, o...)

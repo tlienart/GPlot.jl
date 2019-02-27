@@ -32,6 +32,8 @@ The `figid` is useful to keep track of the figure the axes belong to
 which is required in the `apply_drawings` subroutine that is called.
 """
 function apply_axes!(g::GLE, a::Axes2D, figid::String)
+    a.off && return nothing
+    
     isdef(a.origin) && "\namove $(a.origin[1]) $(a.origin[2])" |> g
     scale = ifelse(isdef(a.origin), "fullsize", "scale auto")
 

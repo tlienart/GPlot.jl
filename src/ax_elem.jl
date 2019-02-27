@@ -7,35 +7,25 @@
 
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
-function _title!(el::Symbol, text::String="";
-                 axes=nothing, overwrite=false, opts...)
+function _title(el::Symbol, text::String=""; axes=nothing, opts...)
     axes = check_axes(axes)
     # retrieve on what object to apply the title either the current axes or a sub-axis
     obj = (el == :axis) ? axes : getfield(axes, el)
-    if isdef(obj.title)
-        # if overwrite, clear the current title
-        overwrite && (obj.title = Title())
-        obj.title.text = ifelse(isempty(text), obj.title.text, text)
-    else # title doesn't exist, create one
-        obj.title = Title(text=text)
-    end
+    # create a new title object with the text and apply properties
+    obj.title = Title(text=text)
     set_properties!(obj.title; defer_preview=true, opts...)
-    return _preview()
+    return preview()
 end
 
-# Generate xlim!, xlim, and associated for each axis
+# Generate xtitle, and associated for each axis
 for axs ∈ ("", "x", "y", "x2", "y2")
-    f!  = Symbol(axs * "title!")
     f   = Symbol(axs * "title")
-    f2! = Symbol(axs * "label!") # synonyms xlabel = xtitle
     f2  = Symbol(axs * "label")
     ex = quote
         # mutate
-        $f!(t::String=""; o...) = _title!(Symbol($axs * "axis"), t; axes=gca(), o...)
-        # overwrite
-        $f(a...; o...) = $f!(a...; overwrite=true, o...)
-        # more synonyms xlabel, ylabel, etc
-        !isempty($axs) && ($f2! = $f!; $f2 = $f)
+        $f(t::String=""; o...) = _title(Symbol($axs * "axis"), t; axes=gca(), o...)
+        # synonyms xlabel, ylabel, etc
+        !isempty($axs) && ($f2 = $f)
     end
     eval(ex)
 end
@@ -44,23 +34,19 @@ end
 #### [x|y|x2|y2]ticks
 ####
 
-function _ticks!(axis_sym::Symbol, loc::Vector{Float64}=Float64[], lab::Vector{String}=String[];
-                 axes=nothing, overwrite=false, opts...)
+function _ticks(axis_sym::Symbol, loc::Vector{Float64}=Float64[],
+                lab::Vector{String}=String[]; axes=nothing, opts...)
     axes = check_axes(axes)
     # retrieve the appropriate axis
     axis = getfield(axes, axis_sym)
-    # if overwrite, clear the current ticks object
-    overwrite && (axis.ticks = Ticks())
+    # create a new ticks object
+    axis.ticks = Ticks()
     # if locs are empty, just pass options and return
     if isempty(loc)
         isempty(lab) || throw(ArgumentError("Cannot pass ticks labels without specifying " *
                                             "ticks locations"))
         set_properties!(axis.ticks; defer_preview=true, opts...)
-        return _preview()
-    end
-    # if locations exist but are different than the ones passed, remove the labels + rewrite locs
-    if !isempty(axis.ticks.places) && axis.ticks.places != loc
-        axis.ticks.labels = TicksLabels()
+        return preview()
     end
     axis.ticks.places = loc
     # process labels if any are passed
@@ -71,20 +57,19 @@ function _ticks!(axis_sym::Symbol, loc::Vector{Float64}=Float64[], lab::Vector{S
     end
     # set remaining properties and return
     set_properties!(axis.ticks; defer_preview=true, opts...)
-    return _preview()
+    return preview()
 end
 
 # Generate xticks!, xticks, and associated for each axis
 for axs ∈ ("x", "y", "x2", "y2")
-    f! = Symbol(axs * "ticks!")
     f  = Symbol(axs * "ticks")
     a  = Symbol(axs * "axis")
     ex = quote
         # xticks!([1, 2], ["a", "b"]; o...)
-        $f!(loc::AVR, lab=String[]; o...) = _ticks!(Symbol($axs * "axis"), fl(loc), lab; o...)
+        $f(loc::AVR, lab=String[]; o...) = _ticks(Symbol($axs * "axis"), fl(loc), lab; o...)
         # xticks!("off"; o...)
-        function $f!(s::String=""; o...)
-            isempty(s) && return _ticks!(Symbol($axs * "axis"); o...)
+        function $f(s::String=""; o...)
+            isempty(s) && return _ticks(Symbol($axs * "axis"); o...)
             ax = getfield(gca(), Symbol($axs * "axis"))
             s_lc = lowercase(s)
             if s_lc == "off"
@@ -98,84 +83,8 @@ for axs ∈ ("x", "y", "x2", "y2")
             else
                 throw(ArgumentError("Unrecognised shorthand: $s"))
             end
-            return _preview()
+            return preview()
         end
-        # overwrite
-        $f(a...; o...) = $f!(a...; overwrite=true, o...)
     end
     eval(ex)
 end
-
-####
-#### legend!, legend
-####
-
-"""
-    $SIGNATURES
-
-Update the properties of an existing legend object present on `axes`. If none
-exist then a new one is created with the given properties.
-"""
-function legend!(vd::Option{Vector{DrawingHandle{T}}}=nothing,
-                 labels::Option{Vector{Union{String,Vector{String}}}}=nothing;
-                 axes=nothing, overwrite=false, opts...) where T
-    axes=check_axes(axes)
-    # if there exists a legend object but overwrite, then reset it
-    (!isdef(axes.legend) || overwrite) && (axes.legend = Legend())
-    if isnothing(vd)
-        isnothing(labels) || throw(ArgumentError("Cannot pass labels without handles."))
-        axes.legend.handles = [DrawingHandle(d) for d ∈ axes.drawings]
-        axes.legend.labels = fill("", length(axes.drawings))
-        s_ctr = 1
-        f_ctr = 1
-        h_ctr = 1
-        b_ctr = 1
-        for (k,d) ∈ enumerate(axes.drawings)
-            if d isa Scatter2D
-                if isempty(d.labels)
-                    axes.legend.labels[k] = ["plot $(s_ctr+e-1)" for e ∈ 1:d.nobj]
-                else
-                    axes.legend.labels[k] = d.labels
-                end
-                s_ctr += d.nobj
-            elseif d isa Fill2D
-                if isempty(d.label)
-                    axes.legend.labels[k] = "fill $f_ctr"
-                else
-                    axes.legend.labels[k] = d.label
-                end
-                f_ctr += 1
-            elseif d isa Hist2D
-                if isempty(d.label)
-                    axes.legend.labels[k] = "hist $h_ctr"
-                else
-                    axes.legend.labels[k] = d.label
-                end
-                h_ctr += 1
-            elseif d isa Bar2D
-                if isempty(d.label)
-                    axes.legend.labels[k] = ["bar $(b_ctr+e-1)" for e ∈ 1:d.nobj]
-                else
-                    axes.legend.labels[k] = d.labels
-                end
-                b_ctr += d.nobj
-            end
-        end
-    else
-        isnothing(labels) && throw(ArgumentError("Labels must be provided along with handles"))
-        length(vd) == length(labels) || throw(ArgumentError("There must be as many labels given "*
-                                                            "as drawing handles"))
-        axes.legend.handles = vd
-        axes.legend.labels  = labels
-    end
-    set_properties!(axes.legend; defer_preview=true, opts...)
-    return _preview()
-end
-
-"""
-    legend(; options...)
-
-Creates a new legend object on the current axes with the given options.
-If one already exist, it will be destroyed and replaced by this one.
-"""
-legend(a...; o...) = legend!(a...; overwrite=true, o...)

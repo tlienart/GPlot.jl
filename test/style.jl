@@ -138,7 +138,7 @@ end
     G.apply_markerstyle!(g, ms); s = String(take!(g))
     @test s == ""
     ms = G.MarkerStyle(marker="circle", msize=0.5, color=colorant"red")
-    G.apply_markerstyle!(g, ms, mcol_flag=true); s = String(take!(g))
+    G.apply_markerstyle!(g, ms, mcol=true); s = String(take!(g))
     @test s == "marker circle_rgba_1_0_0_0_0_0_1_0_ 0.5 "
 
     # barstyle
