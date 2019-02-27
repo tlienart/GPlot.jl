@@ -66,7 +66,7 @@ add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
 
 Replaces `fig`'s current axes by a fresh, empty axes container. Note that
 other properties of the figure are preserved (such as its size, latex
-properties etc). See also [`clf!`](@ref) and [`reset!`](@ref).
+properties etc). See also [`clf`](@ref) and [`reset!`](@ref).
 """
 function erase!(f::Figure)
     # empty associated buffer
@@ -79,20 +79,13 @@ function erase!(f::Figure)
 end
 
 """
-    clf!()
+    clf()
 
 Reset the current figure keeping only its current name and size, everything else is
 set to the default parameters.
 See also [`erase!`](@ref) and [`reset!`](@ref)
 """
-clf!() = (reset!(gcf()); preview())
-
-"""
-    clf()
-
-See [`clf!`](@ref).
-"""
-clf = clf!
+clf() = (reset!(gcf()); preview())
 
 """
     destroy(fig)

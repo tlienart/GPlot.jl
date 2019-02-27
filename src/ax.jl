@@ -12,32 +12,19 @@ function erase!(a::Axes2D)
 end
 
 """
-    cla!()
+    cla()
 
 Clears the current axes, removing all drawings and resetting all options.
 """
-cla!() = (reset!(gca()); preview())
-
-"""
-    cla()
-
-See [`cla!`](@ref).
-"""
-cla = cla!
-
-"""
-    clo!()
-
-Clears all objects (annotations, arrows, ...) from the current axes, leaves everything else.
-"""
-clo!() = (gca().objects = Vector{Object2D}(); preview())
+cla() = (reset!(gca()); preview())
 
 """
     clo()
 
-See [`clo!`](@ref).
+Clears all objects (annotations, arrows, ...) from the current axes, leaves everything else.
 """
-clo = clo!
+clo() = (gca().objects = Vector{Object2D}(); preview())
+
 
 ####
 #### axes
