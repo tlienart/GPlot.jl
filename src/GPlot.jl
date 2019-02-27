@@ -21,16 +21,15 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase,
     # Objects
     text, vline, hline, line,
     # Axis / Axes
+    # -- legend
+    legend!, legend,
     # -- titles
-    title!, xtitle!, x2title!, ytitle!, y2title!,
-    xlabel!, x2label!, ylabel!, y2label!, legend!,
     title, xtitle, x2title, ytitle, y2title,
-    xlabel, x2label, ylabel, y2label, legend,
+    xlabel, x2label, ylabel, y2label,
     # -- lims
     xlim!, x2lim!, ylim!, y2lim!,
     xlim, x2lim, ylim, y2lim,
     # -- ticks
-    xticks!, x2ticks!, yticks!, y2ticks!,
     xticks, x2ticks, yticks, y2ticks,
     # -- scale
     xscale!, x2scale!, yscale!, y2scale!,

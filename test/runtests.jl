@@ -32,3 +32,5 @@ include("properties.jl")
 
 # 25 feb 19
 include("object.jl")
+
+continuous_preview(_bk_cont_preview)

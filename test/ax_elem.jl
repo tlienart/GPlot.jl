@@ -61,17 +61,17 @@ end
     @test f.axes[1].yaxis.ticks.labels.names == ["A", "B"]
     @test isempty(f.axes[1].x2axis.ticks.labels.names)
     @test isempty(f.axes[1].y2axis.ticks.labels.names)
-    xticks!([1.0, 2.3])
+    xticks([1.0, 2.3])
     @test f.axes[1].xaxis.ticks.places == [1.0, 2.3]
     @test isempty(f.axes[1].xaxis.ticks.labels.names)
 
     @test_throws ArgumentError xticks([1, 2], ["A", "B", "C"])
 
-    x2ticks!([3, 5])
+    x2ticks([3, 5])
     @test f.axes[1].x2axis.ticks.places == [3., 5.]
-    yticks!([3, 5])
+    yticks([3, 5])
     @test f.axes[1].yaxis.ticks.places == [3., 5.]
-    y2ticks!([3, 5])
+    y2ticks([3, 5])
     @test f.axes[1].y2axis.ticks.places == [3., 5.]
 
     # -- empty
