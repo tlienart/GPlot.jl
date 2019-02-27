@@ -37,8 +37,8 @@ end
     f = Figure()
     # axis limits
     # -- without kwargs
-    xlim!(0, 3); ylim!(0, 3)
-    x2lim!(0, 3); y2lim!(0, 3)
+    xlim(0, 3); ylim(0, 3)
+    x2lim(0, 3); y2lim(0, 3)
     @test f.axes[1].xaxis.min  == 0.0
     @test f.axes[1].xaxis.max  == 3.0
     @test f.axes[1].x2axis.min == 0.0
@@ -74,7 +74,7 @@ end
 
     # diverse extra ones prompted by codecov
     f = Figure()
-    xlim!(min=0, max=2)
+    xlim(min=0, max=2)
     @test f.axes[1].xaxis.min == 0.0
     @test f.axes[1].xaxis.max == 2.0
     xlim(0, 2)
@@ -82,10 +82,10 @@ end
     @test f.axes[1].xaxis.max == 2.0
 
     erase(gcf())
-    xscale!("log")
+    xscale("log")
     @test f.axes[1].xaxis.log
-    @test_throws G.OptionValueError yscale!("las")
-    xscale!("lin")
+    @test_throws G.OptionValueError yscale("las")
+    xscale("lin")
     @test f.axes[1].xaxis.log == false
     xscale("log")
     @test f.axes[1].xaxis.log

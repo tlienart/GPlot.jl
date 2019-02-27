@@ -27,18 +27,13 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase,
     title, xtitle, x2title, ytitle, y2title,
     xlabel, x2label, ylabel, y2label,
     # -- lims
-    xlim!, x2lim!, ylim!, y2lim!,
     xlim, x2lim, ylim, y2lim,
     # -- ticks
     xticks, x2ticks, yticks, y2ticks,
     # -- scale
-    xscale!, x2scale!, yscale!, y2scale!,
     xscale, x2scale, yscale, y2scale,
     # -- misc
-    axis, xaxis!, x2axis!, yaxis!, y2axis!,
-    xaxis, x2axis, yaxis, y2axis,
-    grid!, math!,
-    grid, math,
+    axis, xaxis, x2axis, yaxis, y2axis, grid, math,
     # Preview / rendering / saving
     preview, savefig, isempty, debug_gle,
     # Simple macros for tex strings

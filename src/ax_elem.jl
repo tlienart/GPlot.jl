@@ -17,7 +17,7 @@ function _title(el::Symbol, text::String=""; axes=nothing, opts...)
     return preview()
 end
 
-# Generate xlim!, xlim, and associated for each axis
+# Generate xtitle, and associated for each axis
 for axs ∈ ("", "x", "y", "x2", "y2")
     f   = Symbol(axs * "title")
     f2  = Symbol(axs * "label")
