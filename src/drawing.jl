@@ -10,7 +10,9 @@ function plotdata(x::AVM{<:CanMiss{<:Real}})
             hasmissing=hasmissing,
             nobj=size(x, 2))
 end
-function plotdata(x::AV{<:CanMiss{<:Real}}, ys...)
+# NOTE: these typechecks within the function body is to avoid clashes/ambiguity with plotdata(x)
+function plotdata(x, ys...)
+    x isa AV{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
     nobj = 0
     hasmissing = Missing <: eltype(x)
     hasmissing = hasmissing || any(isinf, x)
@@ -67,7 +69,7 @@ plot(x, y, color="blue", lstyle="--", marker="o", lwidth=0.05, label="First plot
 """
 function plot!(x, ys...; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase(axes)
+    overwrite && erase!(axes)
     pd = plotdata(x, ys...)
     scatter = Scatter2D(pd.data, pd.hasmissing, pd.nobj)
     set_properties!(scatter; defer_preview=true, o...)
@@ -113,7 +115,7 @@ be specified as single numbers (= horizontal line).
 """
 function fill_between!(x, y1, y2; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase(axes)
+    overwrite && erase!(axes)
     fill = Fill2D(data=filldata(x, y1, y2))
     set_properties!(fill; defer_preview=true, o...)
     push!(axes.drawings, fill)
@@ -138,7 +140,7 @@ Add a histogram of `x` on the current axes.
 """
 function hist!(x; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase(axes)
+    overwrite && erase!(axes)
     hd = histdata(x)
     hist = Hist2D(data=hd.data, hasmissing=hd.hasmissing, nobs=hd.nobs, range=hd.range)
     set_properties!(hist; defer_preview=true, o...)
@@ -164,7 +166,7 @@ Add a bar plot.
 """
 function bar!(x, ys...; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && erase(axes)
+    overwrite && erase!(axes)
     bd = plotdata(x, ys...)
     bar = Bar2D(bd.data, bd.hasmissing, bd.nobj)
     set_properties!(bar; defer_preview=true, o...)
@@ -187,8 +189,37 @@ bar(a...; o...) =  bar!(a...; overwrite=true, o...)
 
 function boxplot(ys...; axes=nothing, o...)
     axes = check_axes(axes)
+    erase!(axes)
+    # analyse data
     nobj = sum(size(y, 2) for y ∈ ys)
-    bp = Boxplot(bd.data, nobj)
+    stats = Matrix{Float64}(undef, nobj, 5) # wlow, q25, q50, q75, whigh
+
+    boxcounter = 1
+    overallmax = -Inf
+    overallmin = Inf
+
+    for y ∈ ys
+        for k ∈ Base.axes(y, 2)
+            yk = collect(skipmissing(view(y, :, k)))
+            q00, q25, q50, q75, q100 = quantile(yk, [.0, .25, .5, .75, 1.0])
+            iqr   = q75 - q25
+            wlow  = q25 - 1.5 * iqr
+            whigh = q75 + 1.5 * iqr
+            stats[k, :] = [wlow, q25, q50, q75, whigh]
+            # outliers
+            ok = collect(filter(e->(e<wlow || e>whigh), yk))
+            isempty(ok) || scatter!(fill(boxcounter, length(ok)), ok; col="red")
+
+            overallmin > q00  && (overallmin = q00)
+            overallmax < q100 && (overallmax = q100)
+            boxcounter += 1
+        end
+    end
+    xlim(0, nobj+1)
+    xticks(1:nobj)
+    ylim(overallmin - 0.5abs(overallmin), overallmax + 0.5abs(overallmax))
+    #
+    bp = Boxplot(stats, nobj)
     set_properties!(bp; defer_preview=true, o...)
     push!(axes.drawings, bp)
     return preview() # not a handle, this does not have a legend

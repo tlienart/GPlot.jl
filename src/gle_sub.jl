@@ -27,40 +27,34 @@ function add_sub_marker!(f::Figure, m::MarkerStyle)
 end
 
 
-function add_sub_boxplot!(f::Figure, el_counter::Int, stats::NamedTuple, b::BoxplotStyle)
+function add_sub_boxplot!(f::Figure, b::BoxplotStyle)
     if str(b) ∉ keys(f.subroutines)
         # This subroutine is modified from the complimentary `graphutil.gle`
         # shipped as extra scripts in GLE.
         f.subroutines[str(b)] = """
-        sub $(str(b)) bwidth msize
-            default bwidth 0.4  ! central box width
-            default msize 1.5   ! marker size
+        sub $(str(b)) x wlow q25 q50 q75 whigh
+            local bwidth = 0.4  ! central box width
+            local msize = 1.5   ! marker size
             set cap round       ! open lines have rounded ends
 
-            local x = $(el_counter)
-
-            local meanv = $(stats.mean)
-            local medv = $(stats.median)
-            local minv = $(stats.min)
-            local maxv = $(stats.max)
-            local w1 = $(stats.low)     ! lower whisker
-            local w2 = $(stats.high)    ! higher whisker
-
-            amove xg(x)-bwidth/2 yg(minv)
-            aline xg(x)+bwidth/2 yg(minv)
-            amove xg(x) yg(minv)
-            aline xg(x) yg(w1)
-            amove xg(x)-bwidth/2 yg(w1)
-            box bwidth yg(w2)-yg(w1)
-            amove xg(x)-bwidth/2 yg(medv)
-            aline xg(x)+bwidth/2 yg(medv)
-            amove xg(x) yg(w2)
-            aline xg(x) yg(maxv)
-            amove xg(x)-bwidth/2 yg(maxv)
-            aline xg(x)+bwidth/2 yg(maxv)
-            amove xg(x) yg(meanv)
-            marker fdiamond msize*bwidth
-
+            ! lower whisker
+            amove xg(x)-bwidth/2 yg(wlow)
+            aline xg(x)+bwidth/2 yg(wlow)
+            ! vertical connection to box
+            amove xg(x) yg(wlow)
+            aline xg(x) yg(q25)
+            ! box
+            amove xg(x)-bwidth/2 yg(q25)
+            box bwidth yg(q75)-yg(q25)
+            ! horizontal line at median
+            amove xg(x)-bwidth/2 yg(q50)
+            aline xg(x)+bwidth/2 yg(q50)
+            ! vertical connection from box
+            amove xg(x) yg(q75)
+            aline xg(x) yg(whigh)
+            ! upper whisker
+            amove xg(x)-bwidth/2 yg(whigh)
+            aline xg(x)+bwidth/2 yg(whigh)
         end sub
         """
     end

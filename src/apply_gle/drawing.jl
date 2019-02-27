@@ -264,29 +264,18 @@ function apply_drawing!(g::GLE, bp::Boxplot,
 
     for k ∈ 1:bp.nobj
         # draw the boxplots one by one
-        # add a boxplot subroutine corresponding to the style
+
+        # 1. add a boxplot subroutine corresponding to the style (if it doesn't already exists)
         add_sub_boxplot!(Figure(figid; _noreset=true), bp.boxstyles[k])
-        # XXX here
+
+        wlow, q25, q50, q75, whigh = bp.stats[k, :]
+
+        # 3. call the subroutine
+#        "\n\tdata \"$faux\" d$(el_counter)" |> g
+        "\n\tdraw $(str(bp.boxstyles[k])) $k $wlow $q25 $q50 $q75 $whigh" |> g
+        # 4. show outliers (if required)
 
         el_counter += 1
     end
-
-    # need to do a bit of data processing here
-
-    # XXX this would potentially have to be done elsewhere to account for potions passed
-    # ynomiss = (Missing <: eltype(y) ? collect(skipmissing(y)) : y)
-    # min, w1, med, w2, max = quantile(ynomiss, [.0, .25, .5, .75, 1.])
-    # outliers = filter(e->(e < w1 || w2 < y), ynomiss)
-
-    # >>>>>>>>>>>>>>>>
-    # GLE
-    #  1. add the subroutine
-    #  2. draw boxplot_XXXX
-    # <<<<<<<<<<<<<<<<
-    add_sub_boxplot!(Figure(figid; _noreset=true), bp.boxplotstyle)
-
-    "\n\tdata \"$faux\" d$(el_counter)"                |> g
-    "\n\tdraw $(str(bp.boxplotstyle)) d$(el_counter)"  |> g
-
-    return el_counter + 1
+    return el_counter
 end

@@ -1,9 +1,9 @@
 """
-    erase(axes)
+    erase!(axes)
 
 Cleans up `axes` for a new drawing, keeps all other properties the same (ticks, ...).
 """
-function erase(a::Axes2D)
+function erase!(a::Axes2D)
     a.drawings = Vector{Drawing2D}()
     a.objects  = Vector{Object2D}()
     a.legend   = ∅

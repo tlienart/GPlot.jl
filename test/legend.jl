@@ -12,7 +12,7 @@ end
 
 @testset "▶ /legend                     " begin
     f = Figure()
-    erase(f)
+    erase!(f)
     legend(position="top-left")
     @test f.axes[1].legend.position == "tl"
     legend(position="bottom-right")

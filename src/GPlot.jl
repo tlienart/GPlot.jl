@@ -11,7 +11,7 @@ using Statistics: quantile
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, clf, cla, clo, cll, erase,
+export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     continuous_preview,
     # General set function
     set, set_palette,
@@ -20,6 +20,8 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase,
     # Drawings
     plot!, scatter!, fill_between!, hist!, bar!,  # append mode
     plot, scatter, fill_between, hist, bar,       # new/overwrite mode
+    # -- special drawings
+    boxplot,
     # Objects
     text, vline, hline, line,
     # Axis / Axes

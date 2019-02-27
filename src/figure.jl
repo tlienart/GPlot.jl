@@ -36,7 +36,7 @@ function Figure(id::String="_fig_"; backend=GP_ENV["BACKEND"](), reset=false, _n
     f = get(GP_ENV["ALLFIGS"], id) do
         GP_ENV["ALLFIGS"][id] = Figure(backend, id)
     end
-    reset && erase(f)
+    reset && erase!(f)
     GP_ENV["CURFIG"]  = f
     GP_ENV["CURAXES"] = isempty(f.axes) ? nothing : f.axes[1]
     set_properties!(f; defer_preview=true, opts...) # f exists but properties have been given
@@ -62,13 +62,13 @@ Internal function to add empty `Axes2D` to the current figure.
 add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
 
 """
-    erase(fig)
+    erase!(fig)
 
 Replaces `fig`'s current axes by a fresh, empty axes container. Note that
 other properties of the figure are preserved (such as its size, latex
 properties etc). See also [`clf`](@ref) and [`reset!`](@ref).
 """
-function erase(f::Figure)
+function erase!(f::Figure)
     # empty associated buffer
     take!(f.g)
     # give `f` a fresh set of axes
@@ -83,7 +83,7 @@ end
 
 Reset the current figure keeping only its current name and size, everything else is
 set to the default parameters.
-See also [`erase`](@ref) and [`reset!`](@ref)
+See also [`erase!`](@ref) and [`reset!`](@ref)
 """
 clf() = (reset!(gcf()); preview())
 

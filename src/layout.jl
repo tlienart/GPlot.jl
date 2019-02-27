@@ -22,7 +22,7 @@ function layout(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     @assert size(anchors, 2) == 4 "anchors must be of size ((nrows*ncols) × 4)"
     @assert all(0 .<= anchors .<= 1) "layout relative anchors must be between 0 and 1"
 
-    erase(f)
+    erase!(f)
     W, H = f.size
     # fill with Axes2D, if later there are axes3D it will just replace
     for i ∈ 1:size(anchors, 1)
@@ -85,7 +85,7 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
     else
         @assert length(f.axes) == nrows*ncols "the layout description does not match the " *
                                               "current axes. If you want to change the " *
-                                              "layout of the current figure use erase(gcf()) " *
+                                              "layout of the current figure use erase!(gcf()) " *
                                               "first to remove the existing axes."
     end
     # 3. select the relevant axes and make them the current ones

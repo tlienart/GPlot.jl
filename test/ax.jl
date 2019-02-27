@@ -59,17 +59,17 @@ end
     @test f.axes[1].y2axis.min == 1.0
     @test f.axes[1].y2axis.max == 2.0
     # scale
-    erase(f)
+    erase!(f)
     xscale("log");
     @test f.axes[1].xaxis.log == true
     @test f.axes[1].x2axis.log == false
     x2scale("log"); yscale("log"); y2scale("log")
     @test f.axes[1].x2axis.log == true
-    erase(f)
+    erase!(f)
     yscale("log")
     @test f.axes[1].xaxis.log == false
     @test f.axes[1].yaxis.log == true
-    erase(f); x2scale("log"); erase(f); y2scale("log")
+    erase!(f); x2scale("log"); erase!(f); y2scale("log")
     @test f.axes[1].y2axis.log == true
 
     # diverse extra ones prompted by codecov
@@ -81,7 +81,7 @@ end
     @test f.axes[1].xaxis.min == 0.0
     @test f.axes[1].xaxis.max == 2.0
 
-    erase(gcf())
+    erase!(gcf())
     xscale("log")
     @test f.axes[1].xaxis.log
     @test_throws G.OptionValueError yscale("las")
@@ -91,7 +91,7 @@ end
     @test f.axes[1].xaxis.log
 
     # xaxis, yaxis, ... with shorthands
-    erase(gcf())
+    erase!(gcf())
     xaxis("log")
     @test f.axes[1].xaxis.log
     xaxis("lin")
@@ -168,7 +168,7 @@ end
     @test_throws G.NotImplementedError G.apply_axes!(g, G.Axes3D{G.GLE}(), f.id)
 
     # AXIS (see also apply_ticks, apply_textstyle)
-    erase(f)
+    erase!(f)
     G.add_axes2d!()
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     # XXX by default subticks are off (may change)
