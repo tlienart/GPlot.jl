@@ -36,25 +36,18 @@ end
     ytitle("blah"); erase(f)
     y2title("blah")
     @test f.axes[1].y2axis.title.text  == "blah"
-    x2title!("blih", font="psh")
+    x2title("blih", font="psh")
     @test f.axes[1].x2axis.title.textstyle.font == "psh"
-    x2title!("blah")
-    @test f.axes[1].x2axis.title.textstyle.font == "psh"
+    x2title("blah")
+    @test isnothing(f.axes[1].x2axis.title.textstyle.font)
     @test f.axes[1].x2axis.title.text == "blah"
     y2title("hello")
     @test f.axes[1].y2axis.title.text == "hello"
     erase(f)
-    xtitle!("hello")
+    xtitle("hello")
     erase(f)
-    title("blah", font="psh"); title!("blih")
+    title("blah", font="psh"); title("blih")
     @test f.axes[1].title.text == "blih"
-    @test f.axes[1].title.textstyle.font == "psh"
-    ytitle("blah", font="psh"); ytitle!("blih")
-    @test f.axes[1].yaxis.title.text == "blih"
-    @test f.axes[1].yaxis.title.textstyle.font == "psh"
-    y2title("blah", font="psh"); y2title!("blih")
-    @test f.axes[1].y2axis.title.text == "blih"
-    @test f.axes[1].y2axis.title.textstyle.font == "psh"
 
     # ticks and ticklabels
     erase(f)

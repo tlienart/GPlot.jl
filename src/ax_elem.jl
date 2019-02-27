@@ -7,35 +7,25 @@
 
 Internal function to set the title of axes (`el==:title`) or axis objects (`el==:xtitle`...).
 """
-function _title!(el::Symbol, text::String="";
-                 axes=nothing, overwrite=false, opts...)
+function _title(el::Symbol, text::String=""; axes=nothing, opts...)
     axes = check_axes(axes)
     # retrieve on what object to apply the title either the current axes or a sub-axis
     obj = (el == :axis) ? axes : getfield(axes, el)
-    if isdef(obj.title)
-        # if overwrite, clear the current title
-        overwrite && (obj.title = Title())
-        obj.title.text = ifelse(isempty(text), obj.title.text, text)
-    else # title doesn't exist, create one
-        obj.title = Title(text=text)
-    end
+    # create a new title object with the text and apply properties
+    obj.title = Title(text=text)
     set_properties!(obj.title; defer_preview=true, opts...)
     return preview()
 end
 
 # Generate xlim!, xlim, and associated for each axis
 for axs ∈ ("", "x", "y", "x2", "y2")
-    f!  = Symbol(axs * "title!")
     f   = Symbol(axs * "title")
-    f2! = Symbol(axs * "label!") # synonyms xlabel = xtitle
     f2  = Symbol(axs * "label")
     ex = quote
         # mutate
-        $f!(t::String=""; o...) = _title!(Symbol($axs * "axis"), t; axes=gca(), o...)
-        # overwrite
-        $f(a...; o...) = $f!(a...; overwrite=true, o...)
-        # more synonyms xlabel, ylabel, etc
-        !isempty($axs) && ($f2! = $f!; $f2 = $f)
+        $f(t::String=""; o...) = _title(Symbol($axs * "axis"), t; axes=gca(), o...)
+        # synonyms xlabel, ylabel, etc
+        !isempty($axs) && ($f2 = $f)
     end
     eval(ex)
 end
