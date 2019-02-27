@@ -9,17 +9,17 @@ using DocStringExtensions: SIGNATURES
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, clf, cla, clo, cll, erase!,
+export Figure, gcf, gca, clf, cla, clo, cll, erase,
     continuous_preview,
     # General set function
     set, set_palette,
     # Layout
-    layout!, layout, subplot,
+    layout, subplot,
     # Drawings
-    vline!, hline!, line!, plot!, scatter!, fill_between!, hist!, bar!,
-    vline, hline, line, plot, scatter, fill_between, hist, bar,
+    plot!, scatter!, fill_between!, hist!, bar!,
+    plot, scatter, fill_between, hist, bar,
     # Objects
-    text!, text,
+    text, vline, hline, line,
     # Axis / Axes
     # -- titles
     title!, xtitle!, x2title!, ytitle!, y2title!,

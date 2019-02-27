@@ -21,10 +21,10 @@
         @test f.axes[i].size == ((0.85/2-0.15/2)W, (0.85/2-0.15/2)H)
     end
 
-    # layout!
+    # layout
     clf()
     @test isempty(f.axes)
-    layout!(f, [0.1 0.1 0.3 0.3;
+    layout(f, [0.1 0.1 0.3 0.3;
                 0.1 0.5 0.3 0.3])
     @test length(f.axes) == 2
     @test f.axes[1].origin == (0.1W, 0.1H)
@@ -32,6 +32,6 @@
     @test f.axes[1].size == (0.3W, 0.3H)
     @test f.axes[2].size == (0.3W, 0.3H)
 
-    @test_throws AssertionError layout!(f, [0.1 0.1 0.3 0.3 0.0; 0.1 0.5 0.3 0.3 0.0])
-    @test_throws AssertionError layout!(f, [0.1 5.1 0.3 0.3 0.0; 0.1 0.5 0.3 0.3 0.0])
+    @test_throws AssertionError layout(f, [0.1 0.1 0.3 0.3 0.0; 0.1 0.5 0.3 0.3 0.0])
+    @test_throws AssertionError layout(f, [0.1 5.1 0.3 0.3 0.0; 0.1 0.5 0.3 0.3 0.0])
 end

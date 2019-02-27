@@ -30,10 +30,10 @@ end
 @testset "▶ /ax_elem                    " begin
     f = Figure()
     # titles and co
-    title("blah"); erase!(f)
-    xtitle("blah"); erase!(f)
-    x2title("blah"); erase!(f)
-    ytitle("blah"); erase!(f)
+    title("blah"); erase(f)
+    xtitle("blah"); erase(f)
+    x2title("blah"); erase(f)
+    ytitle("blah"); erase(f)
     y2title("blah")
     @test f.axes[1].y2axis.title.text  == "blah"
     x2title!("blih", font="psh")
@@ -43,9 +43,9 @@ end
     @test f.axes[1].x2axis.title.text == "blah"
     y2title("hello")
     @test f.axes[1].y2axis.title.text == "hello"
-    erase!(f)
+    erase(f)
     xtitle!("hello")
-    erase!(f)
+    erase(f)
     title("blah", font="psh"); title!("blih")
     @test f.axes[1].title.text == "blih"
     @test f.axes[1].title.textstyle.font == "psh"
@@ -57,7 +57,7 @@ end
     @test f.axes[1].y2axis.title.textstyle.font == "psh"
 
     # ticks and ticklabels
-    erase!(f)
+    erase(f)
     xticks([1, 2], ["A", "B"]); x2ticks([3, 4])
     yticks([1, 2], ["A", "B"]); y2ticks([3, 4])
     @test f.axes[1].xaxis.ticks.places == [1., 2.]
@@ -119,7 +119,7 @@ end
     # Ticks
     y2ticks([1, 2], off=true); @test f.axes[1].y2axis.ticks.off
     @test_throws GPlot.NotImplementedError y2ticks([1, 2], symticks=true)
-    erase!(f)
+    erase(f)
     x2ticks([1, 2], ["a", "b"], tickscolor="blue")
     @test f.axes[1].x2axis.ticks.linestyle.color == colorant"blue"
     y2ticks([1, 2], ["a", "b"], angle=45)
@@ -139,7 +139,7 @@ end
     G.add_axes2d!()
 
     # title (see also apply_textstyle)
-    erase!(f)
+    erase(f)
     title("title")
     xlabel("xlabel", dist=0.5)
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
@@ -147,7 +147,7 @@ end
     isin(s, "xtitle \"xlabel\" dist 0.5")
 
     # ticks (see also apply_linestyle, apply_tickslabels)
-    erase!(f)
+    erase(f)
     y2ticks([1, 2])
     xticks([1, 2], off=true)
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
@@ -156,7 +156,7 @@ end
     # XXX test symticks, length
 
     # tickslabels (see also apply_textstyle)
-    erase!(f)
+    erase(f)
     x2ticks([1, 2], ["a", "b"], dist=0.5, angle=45, shift=1)
     G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
     isin(s, "x2places 1.0 2.0")

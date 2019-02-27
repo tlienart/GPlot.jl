@@ -1,5 +1,5 @@
 """
-    layout!(f, anchors)
+    layout(f, anchors)
 
 Describes a custom grid layout allowing to specify where the axes origin should
 be and how big (all relative to width/height of the figure). The `anchors` matrix
@@ -10,11 +10,11 @@ columns indicate the size of the axes.
 
 # Examples
 ```jl
-julia> layout!(f, [0.1 0.1 0.3 0.3;  # origin = (0.1W,0.1H)
+julia> layout(f, [0.1 0.1 0.3 0.3;  # origin = (0.1W,0.1H)
                    0.1 0.5 0.3 0.3]) # size = (0.3W, 0.3H)
 ```
 """
-function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
+function layout(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     #  ______________________
     # |                      |
     # |  X    Y    W    H    |
@@ -22,7 +22,7 @@ function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     @assert size(anchors, 2) == 4 "anchors must be of size ((nrows*ncols) × 4)"
     @assert all(0 .<= anchors .<= 1) "layout relative anchors must be between 0 and 1"
 
-    erase!(f)
+    erase(f)
     W, H = f.size
     # fill with Axes2D, if later there are axes3D it will just replace
     for i ∈ 1:size(anchors, 1)
@@ -31,13 +31,6 @@ function layout!(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     end
     return preview()
 end
-
-"""
-    layout(f, anchors)
-
-See: [`layout!`](@ref).
-"""
-layout = layout!
 
 """
     subplot(a, b, c)
@@ -52,7 +45,7 @@ julia> subplot(222) # `2×2` grid layout, select top-right axes
 julia> subplot(224) # selects bottom-right axes.
 ```
 
-See also: [`layout!`](@ref) to specify a custom layout.
+See also: [`layout`](@ref) to specify a custom layout.
 """
 function subplot(nrows::Int, ncols::Int, idx::Int)
     @assert 1 <= nrows <= 9 "nrows must be between 1 and 9"
@@ -87,12 +80,12 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
                 k += 1
             end
         end
-        layout!(f, grid)
+        layout(f, grid)
     # 2. if there are axes, check that it matches, if it doesn't
     else
         @assert length(f.axes) == nrows*ncols "the layout description does not match the " *
                                               "current axes. If you want to change the " *
-                                              "layout of the current figure use erase!(gcf()) " *
+                                              "layout of the current figure use erase(gcf()) " *
                                               "first to remove the existing axes."
     end
     # 3. select the relevant axes and make them the current ones
