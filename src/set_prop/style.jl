@@ -185,11 +185,17 @@ for case ∈ ("lstyle", "lwidth", "smooth", "marker", "msize", "mcol")
     f_vector! = Symbol("set_$(case)s!") # e.g. set_markers!
     ex = quote
         # set function for a group of objects (e.g. linestyles, markerstyles)
-        function $f_vector!(vs::Vector, v)
+        function $f_vector!(vs::Vector, v, f::Option{Symbol}=∅)
             v isa Vector || (v = fill(v, length(vs)))
             length(vs) == length(v) || throw(DimensionMismatch($case*"s // dimensions don't match"))
-            for i ∈ 1:length(v)
-                $f_scalar!(vs[i], v[i]) # call the scalar function
+            if !isdef(f)
+                for i ∈ 1:length(v)
+                    $f_scalar!(vs[i], v[i])
+                end
+            else
+                for i ∈ 1:length(v)
+                    $f_scalar!(getfield(vs[i], f), v[i])
+                end
             end
             return nothing
         end
@@ -214,7 +220,7 @@ set_bwidth!(o::Bar2D, v::Float64) = (o.bwidth = v)
 ####
 
 function set_bp!(b::Boxplot, field::Symbol, v)
-    v isa Vector || (v = fill(b.nobj, v))
+    v isa Vector || (v = fill(v, b.nobj))
     length(v) == b.nobj || throw(DimensionMismatch("$(field)s // dimensions don't match"))
     for k ∈ 1:b.nobj
         setfield!(b.boxstyles[k], field, v[k])

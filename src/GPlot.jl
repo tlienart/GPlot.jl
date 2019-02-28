@@ -40,8 +40,8 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     axis, xaxis, x2axis, yaxis, y2axis, grid, math,
     # Preview / rendering / saving
     preview, savefig, isempty, debug_gle,
-    # Simple macros for tex strings
-    @t_str, @tex_str
+    # Simple macros for tex strings and color strings
+    @t_str, @tex_str, @c_str
 
 const PALETTE_1 = [ # imitated from tableau 10 - 2
     RGB(0.33, 0.47, 0.64),

@@ -117,9 +117,9 @@ end
 
 pick_lstyles(o, v) = (o.linestyles, v)
 pick_mstyles(o, v) = (o.markerstyles, v)
-pick_blstyle(b, v) = (b.blstyle, v)
-pick_mlstyle(b, v) = (b.mlstyle, v)
-pick_mmstyle(b, v) = (b.mmstyle, v)
+pick_blstyle(b, v) = (b.boxstyles, v, :blstyle)
+pick_mlstyle(b, v) = (b.boxstyles, v, :mlstyle)
+pick_mmstyle(b, v) = (b.boxstyles, v, :mmstyle)
 
 
 
@@ -333,15 +333,17 @@ set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
 const BOXPLOT_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :horiz => id => set_horiz!, # set_drawing
     # box styling
-    :box_width          => fl => set_bwidths!, # set_drawing
-    :box_widths         => fl => set_bwidths!, # .
-    :box_wwidth         => fl => set_wwidths!, # .
-    :box_wwidths        => fl => set_wwidths!, # .
-    :box_whisker_width  => fl => set_wwidths!, # .
-    :box_whisker_widths => fl => set_wwidths!, # .
+    :box_width          => posfl => set_bwidths!, # set_drawing
+    :box_widths         => posfl => set_bwidths!, # .
+    :box_wwidth         => posfl => set_wwidths!, # .
+    :box_wwidths        => posfl => set_wwidths!, # .
+    :box_w_width        => posfl => set_wwidths!, # .
+    :box_w_widths       => posfl => set_wwidths!, #.
+    :box_whisker_width  => posfl => set_wwidths!, # .
+    :box_whisker_widths => posfl => set_wwidths!, # .
     # how long should the whiskers be
-    :whisker            => fl => set_wrlengths!, # set_drawing
-    :whiskers           => fl => set_wrlengths!, # .
+    :whisker            => posfl => set_wrlengths!, # set_drawing
+    :whiskers           => posfl => set_wrlengths!, # .
     # what line style should be used to draw the boxes
     :box_ls         => id    => set_lstyles! ⊙ pick_blstyle,
     :box_lstyle     => id    => set_lstyles! ⊙ pick_blstyle,
@@ -353,10 +355,10 @@ const BOXPLOT_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :box_lwidths    => posfl => set_lwidths! ⊙ pick_blstyle,
     :box_linewidth  => posfl => set_lwidths! ⊙ pick_blstyle,
     :box_linewidths => posfl => set_lwidths! ⊙ pick_blstyle,
-    :box_col        => col   => set_colors! ⊙ pick_blstyle,
-    :box_cols       => col   => set_colors! ⊙ pick_blstyle,
-    :box_color      => col   => set_colors! ⊙ pick_blstyle,
-    :box_colors     => col   => set_colors! ⊙ pick_blstyle,
+    :box_col        => col   => set_colors! ⊙ pick_blstyle, # 🚫
+    :box_cols       => col   => set_colors! ⊙ pick_blstyle, # 🚫
+    :box_color      => col   => set_colors! ⊙ pick_blstyle, # 🚫
+    :box_colors     => col   => set_colors! ⊙ pick_blstyle, # 🚫
     # median line
     :med_ls         => id    => set_lstyles! ⊙ pick_mlstyle,
     :med_lstyle     => id    => set_lstyles! ⊙ pick_mlstyle,
