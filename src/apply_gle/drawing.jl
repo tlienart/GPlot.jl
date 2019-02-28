@@ -143,12 +143,12 @@ function apply_drawing!(g::GLE, hist::Hist2D,
 
     # if no color has been specified, assign one according to the PALETTE
     if !isdef(hist.barstyle.color)
-        if hist.barstyle.fill == colorant"white"
+        if hist.barstyle.fill == c"white"
             cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
             (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
             hist.barstyle.color = GP_ENV["PALETTE"][cc]
         else
-            hist.barstyle.color = colorant"white" # looks nicer than black
+            hist.barstyle.color = c"white" # looks nicer than black
         end
     end
 
@@ -213,12 +213,12 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     # if no color has been specified, assign one according to the PALETTE
     for c ∈ eachindex(bar.barstyles)
         if !isdef(bar.barstyles[c].color)
-            if bar.barstyles[c].fill == colorant"white"
+            if bar.barstyles[c].fill == c"white"
                 cc = mod(el_counter+c-1, GP_ENV["SIZE_PALETTE"])
                 (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
                 bar.barstyles[c].color = GP_ENV["PALETTE"][cc]
             else
-                bar.barstyles[c].color = colorant"white"
+                bar.barstyles[c].color = c"white"
             end
         end
     end
@@ -262,18 +262,33 @@ end
 function apply_drawing!(g::GLE, bp::Boxplot,
                         el_counter::Int, origin::T2F, figid::String)
 
+    # 1. add boxplot subroutines (verticald and horizontal) if not there already
+    subname = ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert")
+    f = Figure(figid; _noreset=true)
+    if subname ∉ keys(f.subroutines)
+        f.subroutines[subname] = GLE_DRAW_SUB[subname]
+    end
+
     for k ∈ 1:bp.nobj
         # draw the boxplots one by one
 
-        # 1. add a boxplot subroutine corresponding to the style (if it doesn't already exists)
-        add_sub_boxplot!(Figure(figid; _noreset=true), bp.boxstyles[k])
+        # 1. retrieve the statistics
+        wlow, q25, q50, q75, whigh, mean = bp.stats[k, :]
 
-        wlow, q25, q50, q75, whigh = bp.stats[k, :]
-
-        # 3. call the subroutine
-#        "\n\tdata \"$faux\" d$(el_counter)" |> g
-        "\n\tdraw $(str(bp.boxstyles[k])) $k $wlow $q25 $q50 $q75 $whigh" |> g
-        # 4. show outliers (if required)
+        # 2. call the subroutine
+        s = bp.boxstyles[k]
+        "\n\tdraw $(ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert"))" |> g
+        "$k $wlow $q25 $q50 $q75 $whigh $mean"                          |> g
+        # box styling
+        sbl = s.blstyle
+        "$(s.bwidth) $(s.wwidth) $(sbl.lstyle) $(sbl.lwidth) \"$(col2str(sbl.color))\"" |> g
+        # median line
+        sml = s.mlstyle
+        "$(sml.lstyle) $(sml.lwidth) \"$(col2str(sml.color))\"" |> g
+        # mean marker NOTE: the marker size drawn by itself and in a plot are not scaled the same
+        # way, to make them scale the same way there is the division by textstyle.hei.
+        sm = s.mmstyle
+        "$(Int(s.mshow)) $(sm.marker) $(sm.msize/f.textstyle.hei) \"$(col2str(sm.color))\"" |> g
 
         el_counter += 1
     end

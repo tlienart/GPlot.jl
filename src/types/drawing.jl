@@ -108,13 +108,11 @@ Bar2D(d, m, n) = Bar2D(data=d, hasmissing=m, nobj=n, barstyles=nvec(n, BarStyle)
 Boxplot(s).
 """
 @with_kw mutable struct Boxplot <: Drawing2D
-    stats::Matrix{Float64} # generic data container, see data processing in apply
+    stats::Matrix{Float64}             # quantile etc
     nobj ::Int
     #
     boxstyles::Vector{BoxplotStyle}
     #
-#    horiz  ::Bool            = false
-#    width  ::Option{Float64} = ∅
-#    labels ::Vector{String}  = String[]
+    horiz::Bool = false # vertical boxplots by default
 end
 Boxplot(d, n) = Boxplot(stats=d, nobj=n, boxstyles=nvec(n, BoxplotStyle))

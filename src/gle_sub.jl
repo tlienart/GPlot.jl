@@ -26,37 +26,94 @@ function add_sub_marker!(f::Figure, m::MarkerStyle)
     return nothing
 end
 
+const GLE_DRAW_SUB = Dict{String,String}()
 
-function add_sub_boxplot!(f::Figure, b::BoxplotStyle)
-    if str(b) ∉ keys(f.subroutines)
-        # This subroutine is modified from the complimentary `graphutil.gle`
-        # shipped as extra scripts in GLE.
-        f.subroutines[str(b)] = """
-        sub $(str(b)) x wlow q25 q50 q75 whigh
-            local bwidth = 0.4  ! central box width
-            local msize = 1.5   ! marker size
-            set cap round       ! open lines have rounded ends
+####
+#### Boxplot
+####
 
-            ! lower whisker
-            amove xg(x)-bwidth/2 yg(wlow)
-            aline xg(x)+bwidth/2 yg(wlow)
-            ! vertical connection to box
-            amove xg(x) yg(wlow)
-            aline xg(x) yg(q25)
-            ! box
-            amove xg(x)-bwidth/2 yg(q25)
-            box bwidth yg(q75)-yg(q25)
-            ! horizontal line at median
-            amove xg(x)-bwidth/2 yg(q50)
-            aline xg(x)+bwidth/2 yg(q50)
-            ! vertical connection from box
-            amove xg(x) yg(q75)
-            aline xg(x) yg(whigh)
-            ! upper whisker
-            amove xg(x)-bwidth/2 yg(whigh)
-            aline xg(x)+bwidth/2 yg(whigh)
-        end sub
-        """
-    end
-    return nothing
-end
+const boxplot_box_lstyle = """
+    \tset lstyle blstyle lwidth blwidth color blcolor\$
+    """
+const boxplot_med_lstyle = """
+    \tset lstyle medlstyle lwidth medlwidth color medcolor\$
+    """
+const boxplot_mean_mstyle = """
+    \t    gsave
+    \t    set color mmcol\$
+    \t    marker mmarker\$ mmsize
+    \t    grestore
+    """
+
+const boxplot_core_vertical = """
+    \tgsave
+    $boxplot_box_lstyle
+    \tamove xg(p-wwidth/2) yg(wlow)
+    \taline xg(p+wwidth/2) yg(wlow)
+    \tamove xg(p) yg(wlow)
+    \taline xg(p) yg(q25)
+    \tamove xg(p-bwidth/2) yg(q25) ! bottom left corner
+    \tbox xg(p+bwidth/2)-xg(p-bwidth/2) yg(q75)-yg(q25)
+    \tamove xg(p) yg(q75)
+    \taline xg(p) yg(whigh)
+    \tamove xg(p-wwidth/2) yg(whigh)
+    \taline xg(p+wwidth/2) yg(whigh)
+    \tgrestore
+
+    \tgsave
+    $boxplot_med_lstyle
+    \tamove xg(p-bwidth/2) yg(q50)
+    \taline xg(p+bwidth/2) yg(q50)
+    \tgrestore
+
+    \tif (mshow > 0) then
+    \t    amove xg(p) yg(mean)
+    $boxplot_mean_mstyle
+    \tend if
+    """
+
+const boxplot_core_horizontal = """
+    \tgsave
+    $boxplot_box_lstyle
+    \tamove xg(wlow) yg(p-wwidth/2)
+    \taline xg(wlow) yg(p+wwidth/2)
+    \tamove xg(wlow) yg(p)
+    \taline xg(q25) yg(p)
+    \tamove xg(q25) yg(p-bwidth/2) ! bottom left corner
+    \tbox xg(q75)-xg(q25) yg(p+bwidth/2)-yg(p-bwidth/2)
+    \tamove xg(q75) yg(p)
+    \taline xg(whigh) yg(p)
+    \tamove xg(whigh) yg(p-wwidth/2)
+    \taline xg(whigh) yg(p+wwidth/2)
+    \tgrestore
+
+    \tgsave
+    $boxplot_med_lstyle
+    \tamove xg(q50) yg(p-bwidth/2)
+    \taline xg(q50) yg(p+bwidth/2)
+    \tgrestore
+
+    \tif (mshow > 0) then
+    \t    amove xg(mean) yg(p)
+    $boxplot_mean_mstyle
+    \tend if
+    """
+
+const boxplot_args = ("p wlow q25 q50 q75 whigh mean ", # NOTE don't forget space at the end
+                      "bwidth wwidth blstyle blwidth blcolor\$ ",
+                      "medlstyle medlwidth medcolor\$ ",
+                      "mshow mmarker\$ mmsize mmcol\$ ")
+
+GLE_DRAW_SUB["boxplot_vert"] = """
+    sub boxplot_vert $(prod(boxplot_args))
+        set cap round ! open lines have rounded ends
+        $boxplot_core_vertical
+    end sub
+    """
+
+GLE_DRAW_SUB["boxplot_horiz"] = """
+    sub boxplot_horiz $(prod(boxplot_args))
+        set cap round ! open lines have rounded ends
+        $boxplot_core_horizontal
+    end sub
+    """

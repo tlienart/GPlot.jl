@@ -45,7 +45,7 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
     if !isempty(f.subroutines)
         ks = keys(f.subroutines)
         # subroutines for drawings
-        for key ∈ filter(k->startswith(k, "draw_"), ks)
+        for key ∈ filter(k->startswith(k, "boxplot_"), ks)
             f.subroutines[key] |> g
         end
         # subroutines for markercolors

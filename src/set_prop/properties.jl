@@ -314,6 +314,56 @@ merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
 set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
 
 const BOXPLOT_OPTS = Dict{Symbol,Pair{Function, Function}}(
+    :horiz      => id => set_horiz!, # 💡
+    # box styling
+    :box_width      => fl => set_widths!, # XXX
+    :box_widths     => fl => set_widths!,
+    :box_wwidth     => fl => set_wwidths!, #
+    :box_wwidths    => fl => set_wwidths!,
+    :box_whisker_width  => fl => set_wwidths!,
+    :box_whisker_widths => fl => set_wwidths!,
+    # how long should the whiskers be
+    :whisker => fl => set_wrlengths!,
+    :whiskers => fl => set_wrlengths!,
+    # what line style should be used to draw the boxes
+    :box_ls         => id    => set_box_lstyles!,
+    :box_lstyle     => id    => set_box_lstyles!,
+    :box_lstyles    => id    => set_box_lstyles!,
+    :box_linestyle  => id    => set_box_lstyles!,
+    :box_linestyles => id    => set_box_lstyles!,
+    :box_lw         => posfl => set_box_lwidths!,
+    :box_lwidth     => posfl => set_box_lwidths!,
+    :box_lwidths    => posfl => set_box_lwidths!,
+    :box_linewidth  => posfl => set_box_lwidths!,
+    :box_linewidths => posfl => set_box_lwidths!,
+    :box_col        => col   => set_box_colors!,
+    :box_cols       => col   => set_box_colors!,
+    :box_color      => col   => set_box_colors!,
+    :box_colors     => col   => set_box_colors!,
+    # median line
+    :med_ls         => id    => set_med_lstyles!,
+    :med_lstyle     => id    => set_med_lstyles!,
+    :med_lstyles    => id    => set_med_lstyles!,
+    :med_linestyle  => id    => set_med_lstyles!,
+    :med_linestyles => id    => set_med_lstyles!,
+    :med_lw         => posfl => set_med_lwidths!,
+    :med_lwidth     => posfl => set_med_lwidths!,
+    :med_lwidths    => posfl => set_med_lwidths!,
+    :med_linewidth  => posfl => set_med_lwidths!,
+    :med_linewidths => posfl => set_med_lwidths!,
+    :med_col        => col   => set_med_colors!,
+    :med_cols       => col   => set_med_colors!,
+    :med_color      => col   => set_med_colors!,
+    :med_colors     => col   => set_med_colors!,
+
+    # XXX
+    # HERE need to
+    # -- add all those functions (make them call the simpler ones)
+    # -- add more functions for
+    # -- -- mshow
+    # -- -- >> markerstyle for mean
+    # -- -- oshow
+    # -- -- >> markerstyle for outliers
     )
 set_properties!(bp::Boxplot; opts...) = set_properties!(BOXPLOT_OPTS, bp; opts...)
 

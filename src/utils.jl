@@ -112,6 +112,8 @@ end
 
 @eval const $(Symbol("@t_str")) = $(Symbol("@tex_str"))
 
+@eval const $(Symbol("@c_str")) = $(Symbol("@colorant_str"))
+
 #######################################
 
 struct NotImplementedError <: Exception
