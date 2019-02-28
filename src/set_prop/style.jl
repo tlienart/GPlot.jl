@@ -12,6 +12,7 @@ field of object `obj`.
 set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
 set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c)
 set_color!(o::Union{Ticks,StraightLine2D}, c::Color) = (o.linestyle.color = c)
+set_color!(o, c::Color) = (o.color = c)
 
 set_textcolor!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
 set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
@@ -22,8 +23,7 @@ set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
 Internal functions to set the fill color value `v` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_fill!(o::Fill2D, c::Colorant) = (o.fillstyle.fill = c)
-set_fill!(o::Hist2D, c::Colorant) = (o.barstyle.fill = c)
+set_fill!(o, c::Colorant) = (o.fill = c)
 
 """
     set_colors!(obj, cols, parent, field)
@@ -32,22 +32,16 @@ Internal function to set the color values `cols` (after parsing) to `obj.parent[
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 If a single value is passed, all fields will be assigned to that value.
 """
-function set_colors!(o::Union{Scatter2D,Bar2D}, c::Union{Color, Vector{<:Color}},
-                     parent::Symbol, field::Symbol)
-    c isa Vector || (c = fill(c, o.nobj))
+function set_colors!(vs::Vector, c::Union{Color, Vector{<:Color}}, field::Symbol=:color)
+    c isa Vector || (c = fill(c, length(vs)))
     # check dimensions match
-    length(c) == o.nobj || throw(OptionValueError("colors // dimensions don't match", c))
+    length(c) == length(vs) || throw(DimensionMismatch("colors // dimensions don't match"))
     # assign
-    ex = quote
-        for (i, col) ∈ enumerate($c)
-            $o.$parent[i].$field = col
-        end
+    for (i, col) ∈ enumerate(c)
+        set_color!(getfield(vs[i], field), col)
     end
-    eval(ex)
     return nothing
 end
-set_colors!(o::Bar2D, c)     = set_colors!(o, c, :barstyles,  :color)
-set_colors!(o::Scatter2D, c) = set_colors!(o, c, :linestyles, :color)
 
 """
     set_fills!(obj, cols)
@@ -55,7 +49,7 @@ set_colors!(o::Scatter2D, c) = set_colors!(o, c, :linestyles, :color)
 Internal functions to set the fill color values `cols` (after parsing) to the appropriate
 fields of object `o`. If a single value is passed, all fields will be assigned to that value.
 """
-set_fills!(o::Bar2D, c) = set_colors!(o, c, :barstyles, :fill)
+set_fills!(vs::Vector, c) = set_colors!(vs, c, :fill)
 
 
 """
@@ -64,7 +58,7 @@ set_fills!(o::Bar2D, c) = set_colors!(o, c, :barstyles, :fill)
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(o::Union{Fill2D, Hist2D}, α::Float64, parent::Symbol)
+function set_alpha!(o::Union{Fill2D,Hist2D}, α::Float64, parent::Symbol)
     eval(:($o.$parent.fill = coloralpha($o.$parent.fill, $α)))
     return nothing
 end
@@ -189,12 +183,12 @@ for case ∈ ("lstyle", "lwidth", "smooth", "marker", "msize", "mcol")
             v isa Vector || (v = fill(v, length(vs)))
             length(vs) == length(v) || throw(DimensionMismatch($case*"s // dimensions don't match"))
             if !isdef(f)
-                for i ∈ 1:length(v)
-                    $f_scalar!(vs[i], v[i])
+                for (i, vi) ∈ enumerate(v)
+                    $f_scalar!(vs[i], vi)
                 end
             else
-                for i ∈ 1:length(v)
-                    $f_scalar!(getfield(vs[i], f), v[i])
+                for (i, vi) ∈ enumerate(v)
+                    $f_scalar!(getfield(vs[i], f), vi)
                 end
             end
             return nothing
