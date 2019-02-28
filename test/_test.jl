@@ -6,6 +6,7 @@ notisin(s, str) = @test !occursin(str, s)
 
 # disable continuous preview in tests
 _bk_cont_preview = G.GP_ENV["CONT_PREVIEW"]
+_bk_palette = G.GP_ENV["PALETTE"]
 continuous_preview(false)
 
 if VERSION < v"1.1"

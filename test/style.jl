@@ -62,7 +62,7 @@ end
     @test gca().drawings[1].barstyles[2].color == colorant"blue"
     @test gca().drawings[1].barstyles[1].fill == colorant"blue"
     @test gca().drawings[1].barstyles[2].fill == colorant"red"
-    @test_throws G.OptionValueError bar(x, y, 2y, colors=["red"])
+    @test_throws DimensionMismatch bar(x, y, 2y, colors=["red"])
 
     f = Figure(transparency=true)
     hist(y, fcol="indianred", alpha=0.5)
@@ -108,7 +108,7 @@ end
 
     cla()
     bar([1, 2, 3], width=1.2)
-    @test gca().drawings[1].width==1.2
+    @test gca().drawings[1].bwidth==1.2
 end
 
 @testset "▶ apply_gle/style             " begin
@@ -139,7 +139,7 @@ end
     @test s == ""
     ms = G.MarkerStyle(marker="circle", msize=0.5, color=colorant"red")
     G.apply_markerstyle!(g, ms, mcol=true); s = String(take!(g))
-    @test s == "marker circle_rgba_1_0_0_0_0_0_1_0_ 0.5 "
+    @test s == "marker marker_circle_rgba_1_0_0_0_0_0_1_0_ 0.5 "
 
     # barstyle
     bs = G.BarStyle(color=colorant"red", fill=colorant"blue")

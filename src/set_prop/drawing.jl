@@ -32,7 +32,7 @@ function set_scaling!(o::Hist2D, v::String)
    return nothing
 end
 
-set_horiz!(o::Union{Hist2D, Bar2D}, v::Bool) = (o.horiz = v)
+set_horiz!(o::Union{Hist2D,Bar2D,Boxplot}, v::Bool) = (o.horiz = v)
 
 ####
 #### Fill2D

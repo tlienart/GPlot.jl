@@ -32,22 +32,16 @@ Internal function to set the color values `cols` (after parsing) to `obj.parent[
 `i` covers the number of elements (e.g. vector of `LineStyle`).
 If a single value is passed, all fields will be assigned to that value.
 """
-function set_colors!(o::Union{Scatter2D,Bar2D}, c::Union{Color, Vector{<:Color}},
-                     parent::Symbol, field::Symbol)
-    c isa Vector || (c = fill(c, o.nobj))
+function set_colors!(vs::Vector, c::Union{Color, Vector{<:Color}}, field::Symbol=:color)
+    c isa Vector || (c = fill(c, length(vs)))
     # check dimensions match
-    length(c) == o.nobj || throw(OptionValueError("colors // dimensions don't match", c))
+    length(c) == length(vs) || throw(DimensionMismatch("colors // dimensions don't match"))
     # assign
-    ex = quote
-        for (i, col) ∈ enumerate($c)
-            $o.$parent[i].$field = col
-        end
+    for (i, col) ∈ enumerate(c)
+        setfield!(vs[i], field, col)
     end
-    eval(ex)
     return nothing
 end
-set_colors!(o::Bar2D, c)     = set_colors!(o, c, :barstyles,  :color)
-set_colors!(o::Scatter2D, c) = set_colors!(o, c, :linestyles, :color)
 
 """
     set_fills!(obj, cols)
@@ -55,7 +49,7 @@ set_colors!(o::Scatter2D, c) = set_colors!(o, c, :linestyles, :color)
 Internal functions to set the fill color values `cols` (after parsing) to the appropriate
 fields of object `o`. If a single value is passed, all fields will be assigned to that value.
 """
-set_fills!(o::Bar2D, c) = set_colors!(o, c, :barstyles, :fill)
+set_fills!(vs::Vector, c) = set_colors!(vs, c, :fill)
 
 
 """
@@ -64,7 +58,7 @@ set_fills!(o::Bar2D, c) = set_colors!(o, c, :barstyles, :fill)
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(o::Union{Fill2D, Hist2D}, α::Float64, parent::Symbol)
+function set_alpha!(o::Union{Fill2D,Hist2D}, α::Float64, parent::Symbol)
     eval(:($o.$parent.fill = coloralpha($o.$parent.fill, $α)))
     return nothing
 end
@@ -179,29 +173,28 @@ function set_mcol!(o::MarkerStyle, c::Color)
     return nothing
 end
 
-
 # generate functions that take vector inputs for linestyle and markerstyle
-for case ∈ (:linestyles   => ("lstyle", "lwidth", "smooth"),
-            :markerstyles => ("marker", "msize", "mcol"))
-    field = case.first
-    for opt ∈ case.second
-        f_scalar! = Symbol("set_" * opt * "!")  # function with scalar input
-        f_vector! = Symbol("set_" * opt * "s!") # e.g. set_markers!
-        ex = quote
-            # set function for a group of objects
-            function $f_vector!(o::Scatter2D, v::Vector)
-                length(v) == o.nobj || throw(DimensionMismatch($opt*"s // dimensions don't match"))
-                for i ∈ 1:o.nobj
-                    $f_scalar!(o.$field[i], v[i]) # call the scalar function
+for case ∈ ("lstyle", "lwidth", "smooth", "marker", "msize", "mcol")
+    f_scalar! = Symbol("set_$(case)!")  # function with scalar input
+    f_vector! = Symbol("set_$(case)s!") # e.g. set_markers!
+    ex = quote
+        # set function for a group of objects (e.g. linestyles, markerstyles)
+        function $f_vector!(vs::Vector, v, f::Option{Symbol}=∅)
+            v isa Vector || (v = fill(v, length(vs)))
+            length(vs) == length(v) || throw(DimensionMismatch($case*"s // dimensions don't match"))
+            if !isdef(f)
+                for (i, vi) ∈ enumerate(v)
+                    $f_scalar!(vs[i], vi)
                 end
-                return nothing
+            else
+                for (i, vi) ∈ enumerate(v)
+                    $f_scalar!(getfield(vs[i], f), vi)
+                end
             end
-            # if expects a vector but a scalar is given, a vector of
-            # the appropriate size is filled with the scalar value
-            $f_vector!(o::Scatter2D, v) = $f_vector!(o, fill(v, length(o.$field)))
+            return nothing
         end
-        eval(ex)
     end
+    eval(ex)
 end
 
 ####
@@ -209,8 +202,43 @@ end
 ####
 
 """
-    set_width!(obj, v)
+    set_bwidth!(obj, v)
 
-Internal function to set the bin width to value `v`.
+Internal function to set the bin or box width to value `v`.
 """
-set_width!(o::Bar2D, v::Float64) = (o.width = v)
+set_bwidth!(o::Bar2D, v::Float64) = (o.bwidth = v)
+
+
+####
+#### Boxplot related
+####
+
+function set_bp!(b::Boxplot, field::Symbol, v)
+    v isa Vector || (v = fill(v, b.nobj))
+    length(v) == b.nobj || throw(DimensionMismatch("$(field)s // dimensions don't match"))
+    for k ∈ 1:b.nobj
+        setfield!(b.boxstyles[k], field, v[k])
+    end
+    return nothing
+end
+
+"""
+    set_bwidths!(b, v)
+
+Internal function to set the box widths to values `v`.
+"""
+set_bwidths!(b::Boxplot, v) = set_bp!(b, :bwidth, v)
+
+"""
+    set_wwidth!(b, v)
+
+Internal function to set the whisker width to value `v`.
+"""
+set_wwidths!(b::Boxplot, v) = set_bp!(b, :wwidth, v)
+
+"""
+    set_wrlengths!(obj, v)
+
+Internal function to set the whiskers relative lengths to value `v`.
+"""
+set_wrlengths!(b::Boxplot, v) = set_bp!(b, :wrlength, v)

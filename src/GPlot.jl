@@ -2,14 +2,16 @@
 
 module GPlot
 
+using DocStringExtensions: SIGNATURES
+
 using Parameters
 using Colors
 using DelimitedFiles: writedlm
-using DocStringExtensions: SIGNATURES
+using Statistics: quantile
 
 import Base: |>, take!, isempty
 
-export Figure, gcf, gca, clf, cla, clo, cll, erase,
+export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     continuous_preview,
     # General set function
     set, set_palette,
@@ -18,6 +20,8 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase,
     # Drawings
     plot!, scatter!, fill_between!, hist!, bar!,  # append mode
     plot, scatter, fill_between, hist, bar,       # new/overwrite mode
+    # -- special drawings
+    boxplot,
     # Objects
     text, vline, hline, line,
     # Axis / Axes
@@ -36,8 +40,8 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase,
     axis, xaxis, x2axis, yaxis, y2axis, grid, math,
     # Preview / rendering / saving
     preview, savefig, isempty, debug_gle,
-    # Simple macros for tex strings
-    @t_str, @tex_str
+    # Simple macros for tex strings and color strings
+    @t_str, @tex_str, @c_str
 
 const PALETTE_1 = [ # imitated from tableau 10 - 2
     RGB(0.33, 0.47, 0.64),
@@ -118,6 +122,7 @@ include("ax_elem.jl")
 include("legend.jl")
 include("figure.jl")
 include("layout.jl")
+include("gle_sub.jl")
 
 # Rendering of things (preview/savefig)
 include("render.jl")

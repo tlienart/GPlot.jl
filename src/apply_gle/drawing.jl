@@ -143,12 +143,12 @@ function apply_drawing!(g::GLE, hist::Hist2D,
 
     # if no color has been specified, assign one according to the PALETTE
     if !isdef(hist.barstyle.color)
-        if hist.barstyle.fill == colorant"white"
+        if hist.barstyle.fill == c"white"
             cc = mod(el_counter, GP_ENV["SIZE_PALETTE"])
             (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
             hist.barstyle.color = GP_ENV["PALETTE"][cc]
         else
-            hist.barstyle.color = colorant"white" # looks nicer than black
+            hist.barstyle.color = c"white" # looks nicer than black
         end
     end
 
@@ -213,12 +213,12 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     # if no color has been specified, assign one according to the PALETTE
     for c ∈ eachindex(bar.barstyles)
         if !isdef(bar.barstyles[c].color)
-            if bar.barstyles[c].fill == colorant"white"
+            if bar.barstyles[c].fill == c"white"
                 cc = mod(el_counter+c-1, GP_ENV["SIZE_PALETTE"])
                 (cc == 0) && (cc = GP_ENV["SIZE_PALETTE"])
                 bar.barstyles[c].color = GP_ENV["PALETTE"][cc]
             else
-                bar.barstyles[c].color = colorant"white"
+                bar.barstyles[c].color = c"white"
             end
         end
     end
@@ -233,7 +233,7 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     if nbars==1 || !bar.stacked
         # bar d1,d2,d3
         "\n\tbar $(svec2str(("d$(el_counter+i-1)" for i ∈ 1:nbars)))" |> g
-        isdef(bar.width) && "width $(bar.width)" |> g
+        isdef(bar.bwidth) && "width $(bar.bwidth)" |> g
         # apply bar styles
         apply_barstyles_nostack!(g, bar.barstyles)
         bar.horiz && "horiz" |> g
@@ -242,7 +242,7 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     else
         # first base bar
         "\n\tbar d$(el_counter)" |> g
-        isdef(bar.width) && "width $(bar.width)" |> g
+        isdef(bar.bwidth) && "width $(bar.bwidth)" |> g
         apply_barstyle!(g, bar.barstyles[1])
         bar.horiz && "horiz" |> g
         # bars stacked on top
@@ -253,4 +253,44 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     end
 
     return el_counter + nbars
+end
+
+####
+#### Apply Boxplot
+####
+
+function apply_drawing!(g::GLE, bp::Boxplot,
+                        el_counter::Int, origin::T2F, figid::String)
+
+    # 1. add boxplot subroutines (verticald and horizontal) if not there already
+    subname = ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert")
+    f = Figure(figid; _noreset=true)
+    if subname ∉ keys(f.subroutines)
+        f.subroutines[subname] = GLE_DRAW_SUB[subname]
+    end
+
+    for k ∈ 1:bp.nobj
+        # draw the boxplots one by one
+
+        # 1. retrieve the statistics
+        wlow, q25, q50, q75, whigh, mean = bp.stats[k, :]
+
+        # 2. call the subroutine
+        s = bp.boxstyles[k]
+        "\n\tdraw $(ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert"))" |> g
+        "$k $wlow $q25 $q50 $q75 $whigh $mean"                          |> g
+        # box styling
+        sbl = s.blstyle
+        "$(s.bwidth) $(s.wwidth) $(sbl.lstyle) $(sbl.lwidth) \"$(col2str(sbl.color))\"" |> g
+        # median line
+        sml = s.mlstyle
+        "$(sml.lstyle) $(sml.lwidth) \"$(col2str(sml.color))\"" |> g
+        # mean marker NOTE: the marker size drawn by itself and in a plot are not scaled the same
+        # way, to make them scale the same way there is the division by textstyle.hei.
+        sm = s.mmstyle
+        "$(Int(s.mshow)) $(sm.marker) $(sm.msize/f.textstyle.hei) \"$(col2str(sm.color))\"" |> g
+
+        el_counter += 1
+    end
+    return el_counter
 end

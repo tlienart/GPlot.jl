@@ -38,15 +38,6 @@ Return the backend type associated with figure `f`.
 get_backend(f::Figure{B}=gcf()) where {B} = B
 
 """
-    str(m::MarkerStyle)
-
-Internal function to help in the specific case where a line with markers of different
-color than the line is required. In that case a subroutine has to be written to help
-GLE, see [`add_sub_marker!`](@ref).
-"""
-str(m::MarkerStyle) = "$(m.marker)_$(col2str(m.color; str=true))"
-
-"""
     palette(v::Vector{Color})
 
 Set the default palette. To see the current one, write `GPlot.GP_ENV["PALETTE"]` in the REPL.
