@@ -108,7 +108,7 @@ end
 
     cla()
     bar([1, 2, 3], width=1.2)
-    @test gca().drawings[1].width==1.2
+    @test gca().drawings[1].bwidth==1.2
 end
 
 @testset "▶ apply_gle/style             " begin

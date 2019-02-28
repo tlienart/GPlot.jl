@@ -233,7 +233,7 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     if nbars==1 || !bar.stacked
         # bar d1,d2,d3
         "\n\tbar $(svec2str(("d$(el_counter+i-1)" for i ∈ 1:nbars)))" |> g
-        isdef(bar.width) && "width $(bar.width)" |> g
+        isdef(bar.bwidth) && "width $(bar.bwidth)" |> g
         # apply bar styles
         apply_barstyles_nostack!(g, bar.barstyles)
         bar.horiz && "horiz" |> g
@@ -242,7 +242,7 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     else
         # first base bar
         "\n\tbar d$(el_counter)" |> g
-        isdef(bar.width) && "width $(bar.width)" |> g
+        isdef(bar.bwidth) && "width $(bar.bwidth)" |> g
         apply_barstyle!(g, bar.barstyles[1])
         bar.horiz && "horiz" |> g
         # bars stacked on top

@@ -21,8 +21,7 @@ function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
     return preview()
 end
 
-set!(obj; opts...) = set_properties!(obj; opts...)
-set = set!
+set(obj; opts...) = set_properties!(obj; opts...)
 
 ####
 #### Value checkers for set_properties functions the symbol corresponds to the name
@@ -107,6 +106,24 @@ function alpha(α::Real, optname::Symbol)
 end
 
 ####
+#### Pickers
+####
+
+# this behaves like ∘ except it splats the output of g, this is useful in set_properties
+# when wanting to use a set function but it has to be applied on a subfield of the object,
+# then we apply a "selector" first to pick that subfield before applying the setter.
+# the effect would be something like  setter(picker(obj), value) and is written (setter ⊙ picker)
+⊙(f::Function, g::Function) = (λ(args...) = f(g(args...)...))
+
+pick_lstyles(o, v) = (o.linestyles, v)
+pick_mstyles(o, v) = (o.markerstyles, v)
+pick_blstyle(b, v) = (b.blstyle, v)
+pick_mlstyle(b, v) = (b.mlstyle, v)
+pick_mmstyle(b, v) = (b.mmstyle, v)
+
+
+
+####
 #### Options for STYLE
 ####
 
@@ -132,18 +149,18 @@ const LINESTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     )
 
 const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :ls         => id    => set_lstyles!, # set_style
-    :lstyle     => id    => set_lstyles!, # .
-    :linestyle  => id    => set_lstyles!, # .
-    :lstyles    => id    => set_lstyles!, # .
-    :linestyles => id    => set_lstyles!, # .
-    :lw         => posfl => set_lwidths!, # .
-    :lwidth     => posfl => set_lwidths!, # .
-    :linewidth  => posfl => set_lwidths!, # .
-    :lwidths    => posfl => set_lwidths!, # .
-    :linewidths => posfl => set_lwidths!, # .
-    :smooth     => id    => set_smooths!, # .
-    :smooths    => id    => set_smooths!, # .
+    :ls         => id    => set_lstyles! ⊙ pick_lstyles, # set_style
+    :lstyle     => id    => set_lstyles! ⊙ pick_lstyles, # .
+    :linestyle  => id    => set_lstyles! ⊙ pick_lstyles, # .
+    :lstyles    => id    => set_lstyles! ⊙ pick_lstyles, # .
+    :linestyles => id    => set_lstyles! ⊙ pick_lstyles, # .
+    :lw         => posfl => set_lwidths! ⊙ pick_lstyles, # .
+    :lwidth     => posfl => set_lwidths! ⊙ pick_lstyles, # .
+    :linewidth  => posfl => set_lwidths! ⊙ pick_lstyles, # .
+    :lwidths    => posfl => set_lwidths! ⊙ pick_lstyles, # .
+    :linewidths => posfl => set_lwidths! ⊙ pick_lstyles, # .
+    :smooth     => id    => set_smooths! ⊙ pick_lstyles, # .
+    :smooths    => id    => set_smooths! ⊙ pick_lstyles, # .
     :col        => col   => set_colors!,  # .
     :color      => col   => set_colors!,  # .
     :cols       => col   => set_colors!,  # .
@@ -151,24 +168,24 @@ const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     )
 
 const GMARKERSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :marker           => lc    => set_markers!, # set_style
-    :markers          => lc    => set_markers!, # .
-    :msize            => posfl => set_msizes!,  # .
-    :msizes           => posfl => set_msizes!,  # .
-    :markersize       => posfl => set_msizes!,  # .
-    :markersizes      => posfl => set_msizes!,  # .
-    :mcol             => col   => set_mcols!,   # .
-    :markercol        => col   => set_mcols!,   # .
-    :markercolor      => col   => set_mcols!,   # .
-    :mfacecol         => col   => set_mcols!,   # .
-    :mfacecolor       => col   => set_mcols!,   # .
-    :markerfacecolor  => col   => set_mcols!,   # .
-    :mcols            => col   => set_mcols!,   # .
-    :markercols       => col   => set_mcols!,   # .
-    :markercolors     => col   => set_mcols!,   # .
-    :mfacecols        => col   => set_mcols!,   # .
-    :mfacecolors      => col   => set_mcols!,   # .
-    :markerfacecolors => col   => set_mcols!,   # .
+    :marker           => lc    => set_markers! ⊙ pick_mstyles, # set_style
+    :markers          => lc    => set_markers! ⊙ pick_mstyles, # .
+    :msize            => posfl => set_msizes! ⊙ pick_mstyles,  # .
+    :msizes           => posfl => set_msizes! ⊙ pick_mstyles,  # .
+    :markersize       => posfl => set_msizes! ⊙ pick_mstyles,  # .
+    :markersizes      => posfl => set_msizes! ⊙ pick_mstyles,  # .
+    :mcol             => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :markercol        => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :markercolor      => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :mfacecol         => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :mfacecolor       => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :markerfacecolor  => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :mcols            => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :markercols       => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :markercolors     => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :mfacecols        => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :mfacecolors      => col   => set_mcols! ⊙ pick_mstyles,   # .
+    :markerfacecolors => col   => set_mcols! ⊙ pick_mstyles,   # .
     )
 
 const BARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
@@ -196,8 +213,8 @@ const GBARSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
     :fcolors    => col   => set_fills!,  # .
     :facecolors => col   => set_fills!,  # .
     :fills      => col   => set_fills!,  # .
-    :width      => posfl => set_width!,  # .
-    :binwidth   => posfl => set_width!,  # .
+    :width      => posfl => set_bwidth!, # .
+    :binwidth   => posfl => set_bwidth!, # .
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol,Pair{Function, Function}}(
@@ -314,47 +331,47 @@ merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
 set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
 
 const BOXPLOT_OPTS = Dict{Symbol,Pair{Function, Function}}(
-    :horiz      => id => set_horiz!, # 💡
+    :horiz => id => set_horiz!, # set_drawing
     # box styling
-    :box_width      => fl => set_widths!, # XXX
-    :box_widths     => fl => set_widths!,
-    :box_wwidth     => fl => set_wwidths!, #
-    :box_wwidths    => fl => set_wwidths!,
-    :box_whisker_width  => fl => set_wwidths!,
-    :box_whisker_widths => fl => set_wwidths!,
+    :box_width          => fl => set_bwidths!, # set_drawing
+    :box_widths         => fl => set_bwidths!, # .
+    :box_wwidth         => fl => set_wwidths!, # .
+    :box_wwidths        => fl => set_wwidths!, # .
+    :box_whisker_width  => fl => set_wwidths!, # .
+    :box_whisker_widths => fl => set_wwidths!, # .
     # how long should the whiskers be
-    :whisker => fl => set_wrlengths!,
-    :whiskers => fl => set_wrlengths!,
+    :whisker            => fl => set_wrlengths!, # set_drawing
+    :whiskers           => fl => set_wrlengths!, # .
     # what line style should be used to draw the boxes
-    :box_ls         => id    => set_box_lstyles!,
-    :box_lstyle     => id    => set_box_lstyles!,
-    :box_lstyles    => id    => set_box_lstyles!,
-    :box_linestyle  => id    => set_box_lstyles!,
-    :box_linestyles => id    => set_box_lstyles!,
-    :box_lw         => posfl => set_box_lwidths!,
-    :box_lwidth     => posfl => set_box_lwidths!,
-    :box_lwidths    => posfl => set_box_lwidths!,
-    :box_linewidth  => posfl => set_box_lwidths!,
-    :box_linewidths => posfl => set_box_lwidths!,
-    :box_col        => col   => set_box_colors!,
-    :box_cols       => col   => set_box_colors!,
-    :box_color      => col   => set_box_colors!,
-    :box_colors     => col   => set_box_colors!,
+    :box_ls         => id    => set_lstyles! ⊙ pick_blstyle,
+    :box_lstyle     => id    => set_lstyles! ⊙ pick_blstyle,
+    :box_lstyles    => id    => set_lstyles! ⊙ pick_blstyle,
+    :box_linestyle  => id    => set_lstyles! ⊙ pick_blstyle,
+    :box_linestyles => id    => set_lstyles! ⊙ pick_blstyle,
+    :box_lw         => posfl => set_lwidths! ⊙ pick_blstyle,
+    :box_lwidth     => posfl => set_lwidths! ⊙ pick_blstyle,
+    :box_lwidths    => posfl => set_lwidths! ⊙ pick_blstyle,
+    :box_linewidth  => posfl => set_lwidths! ⊙ pick_blstyle,
+    :box_linewidths => posfl => set_lwidths! ⊙ pick_blstyle,
+    :box_col        => col   => set_colors! ⊙ pick_blstyle,
+    :box_cols       => col   => set_colors! ⊙ pick_blstyle,
+    :box_color      => col   => set_colors! ⊙ pick_blstyle,
+    :box_colors     => col   => set_colors! ⊙ pick_blstyle,
     # median line
-    :med_ls         => id    => set_med_lstyles!,
-    :med_lstyle     => id    => set_med_lstyles!,
-    :med_lstyles    => id    => set_med_lstyles!,
-    :med_linestyle  => id    => set_med_lstyles!,
-    :med_linestyles => id    => set_med_lstyles!,
-    :med_lw         => posfl => set_med_lwidths!,
-    :med_lwidth     => posfl => set_med_lwidths!,
-    :med_lwidths    => posfl => set_med_lwidths!,
-    :med_linewidth  => posfl => set_med_lwidths!,
-    :med_linewidths => posfl => set_med_lwidths!,
-    :med_col        => col   => set_med_colors!,
-    :med_cols       => col   => set_med_colors!,
-    :med_color      => col   => set_med_colors!,
-    :med_colors     => col   => set_med_colors!,
+    :med_ls         => id    => set_lstyles! ⊙ pick_mlstyle,
+    :med_lstyle     => id    => set_lstyles! ⊙ pick_mlstyle,
+    :med_lstyles    => id    => set_lstyles! ⊙ pick_mlstyle,
+    :med_linestyle  => id    => set_lstyles! ⊙ pick_mlstyle,
+    :med_linestyles => id    => set_lstyles! ⊙ pick_mlstyle,
+    :med_lw         => posfl => set_lwidths! ⊙ pick_mlstyle,
+    :med_lwidth     => posfl => set_lwidths! ⊙ pick_mlstyle,
+    :med_lwidths    => posfl => set_lwidths! ⊙ pick_mlstyle,
+    :med_linewidth  => posfl => set_lwidths! ⊙ pick_mlstyle,
+    :med_linewidths => posfl => set_lwidths! ⊙ pick_mlstyle,
+    # :med_col        => col   => set_colors! ⊙ pick_mlstyle,
+    # :med_cols       => col   => set_colors! ⊙ pick_mlstyle,
+    # :med_color      => col   => set_colors! ⊙ pick_mlstyle,
+    # :med_colors     => col   => set_colors! ⊙ pick_mlstyle,
 
     # XXX
     # HERE need to

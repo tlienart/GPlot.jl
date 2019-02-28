@@ -89,7 +89,7 @@ Bar plot(s).
     #
     stacked::Bool            = false
     horiz  ::Bool            = false
-    width  ::Option{Float64} = ∅
+    bwidth ::Option{Float64} = ∅ # general bar width
     #
     labels ::Vector{String}  = String[]
 end

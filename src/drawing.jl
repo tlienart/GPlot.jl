@@ -120,7 +120,9 @@ be specified as single numbers (= horizontal line).
 """
 function fill_between!(x, y1, y2; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+    if overwrite
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+    end
     fill = Fill2D(data=filldata(x, y1, y2))
     set_properties!(fill; defer_preview=true, o...)
     push!(axes.drawings, fill)
@@ -145,7 +147,9 @@ Add a histogram of `x` on the current axes.
 """
 function hist!(x; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+    if overwrite
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+    end
     hd = histdata(x)
     hist = Hist2D(data=hd.data, hasmissing=hd.hasmissing, nobs=hd.nobs, range=hd.range)
     set_properties!(hist; defer_preview=true, o...)
@@ -171,7 +175,9 @@ Add a bar plot.
 """
 function bar!(x, ys...; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
-    overwrite && all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+    if overwrite
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+    end
     bd = plotdata(x, ys...)
     bar = Bar2D(bd.data, bd.hasmissing, bd.nobj)
     set_properties!(bar; defer_preview=true, o...)
