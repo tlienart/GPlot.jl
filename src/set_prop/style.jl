@@ -12,7 +12,6 @@ field of object `obj`.
 set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
 set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c)
 set_color!(o::Union{Ticks,StraightLine2D}, c::Color) = (o.linestyle.color = c)
-set_color!(o, c::Color) = (o.color = c)
 
 set_textcolor!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
 set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
@@ -23,7 +22,8 @@ set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
 Internal functions to set the fill color value `v` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_fill!(o, c::Colorant) = (o.fill = c)
+set_fill!(o::Fill2D, c::Colorant) = (o.fillstyle.fill = c)
+set_fill!(o::Hist2D, c::Colorant) = (o.barstyle.fill = c)
 
 """
     set_colors!(obj, cols, parent, field)
@@ -38,7 +38,7 @@ function set_colors!(vs::Vector, c::Union{Color, Vector{<:Color}}, field::Symbol
     length(c) == length(vs) || throw(DimensionMismatch("colors // dimensions don't match"))
     # assign
     for (i, col) ∈ enumerate(c)
-        set_color!(getfield(vs[i], field), col)
+        setfield!(vs[i], field, col)
     end
     return nothing
 end

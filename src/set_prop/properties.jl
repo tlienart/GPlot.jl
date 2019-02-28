@@ -118,7 +118,7 @@ end
 
 pick_lstyles(o, v) = (o.linestyles, v)
 pick_mstyles(o, v) = (o.markerstyles, v)
-pick_bstyles(o, v) = (o.bstyles, v)
+pick_bstyles(o, v) = (o.barstyles, v)
 pick_blstyle(b, v) = (b.boxstyles, v, :blstyle)
 pick_mlstyle(b, v) = (b.boxstyles, v, :mlstyle)
 pick_mmstyle(b, v) = (b.boxstyles, v, :mmstyle)
@@ -378,8 +378,7 @@ const BOXPLOT_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :med_colors     => col   => set_colors! ⊙ pick_mlstyle,
 
     # XXX
-    # HERE need to
-    # -- add more functions for
+    # HERE need to # -- add more functions for
     # -- -- mshow
     # -- -- >> markerstyle for mean
     # -- -- oshow

@@ -62,7 +62,7 @@ end
     @test gca().drawings[1].barstyles[2].color == colorant"blue"
     @test gca().drawings[1].barstyles[1].fill == colorant"blue"
     @test gca().drawings[1].barstyles[2].fill == colorant"red"
-    @test_throws G.OptionValueError bar(x, y, 2y, colors=["red"])
+    @test_throws DimensionMismatch bar(x, y, 2y, colors=["red"])
 
     f = Figure(transparency=true)
     hist(y, fcol="indianred", alpha=0.5)
