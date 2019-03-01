@@ -114,7 +114,7 @@ function heatmap_ticks(ax::String; axes=gca())
     nrows, ncols = size(axes.objects[1].data)
     ax_lc = lowercase(ax)
     ax_lc ∈ ["x", "x2"] && return (collect(0:(ncols-1)) .+ 0.5) ./ ncols
-    ax_lc ∈ ["y", "y2"] && return (collect(0:(nrows-1)) .+ 0.5) ./ nrows
+    ax_lc ∈ ["y", "y2"] && return (collect((nrows-1):-1:0) .+ 0.5) ./ nrows
     throw(ArgumentError("Unrecognised ax descriptor expected "*
                                                "one of [x, x2, y, y2]"))
 end
@@ -125,6 +125,9 @@ end
 Creates a heatmap corresponding to matrix `X`. Doing this with matrices larger than 100x100
 with the GLE backend can be slow. As an indication, 500x500 takes about 20 seconds on a standard
 laptop. Time scales with the number of elements (so 100x100 takes under a second).
+Beyond 20x20 no automatic ticks are provided as they look too squashed. If you still want ticks,
+you can provide your own using `xticks(heatmap_ticks("x"), ["tick1", ...]; opts...)`.
+See also [`heatmap_ticks`](@ref).
 """
 function heatmap(data::Matrix{Float64}; axes=nothing, o...)
     # TODO:
@@ -144,9 +147,13 @@ function heatmap(data::Matrix{Float64}; axes=nothing, o...)
     nrows, ncols = size(data)
 
     # add labels if provided to the heatmap object
-    xplaces = (collect(0:(ncols-1)) .+ 0.5) ./ ncols
+    xplaces = heatmap_ticks("x")
     if isempty(h.xnames)
-        xticks(xplaces, [t"{\it x}_{##i}" for i ∈ 1:ncols]; axes=axes, fontsize=12)
+        if ncols <= 20
+            xticks(xplaces, [t"{\it x}_{##i}" for i ∈ 1:ncols]; axes=axes, fontsize=12)
+        else
+            xticks("off")
+        end
     else
         xticks(xplaces, h.xnames; length=0, axes=axes)
     end
@@ -155,9 +162,13 @@ function heatmap(data::Matrix{Float64}; axes=nothing, o...)
     else
         x2ticks(xplaces, h.x2names; length=0, axes=axes)
     end
-    yplaces = (collect(0:(nrows-1)) .+ 0.5) ./ nrows
+    yplaces = heatmap_ticks("y")
     if isempty(h.ynames)
-        yticks(yplaces, [t"{\it y}_{##i}" for i ∈ 1:nrows]; axes=axes, fontsize=12)
+        if nrows <= 20
+            yticks(yplaces, [t"{\it y}_{##i}" for i ∈ 1:nrows]; axes=axes, fontsize=12)
+        else
+            yticks("off")
+        end
     else
         yticks(yplaces, h.ynames; length=0, axes=axes)
     end
