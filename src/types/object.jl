@@ -26,7 +26,7 @@ Place text somewhere relative to current axes.
 end
 
 """
-    StraightLine2D <: Object
+    StraightLine2D <: Object2D
 
 Place either a vertical or horizontal straightline at given anchor (from axis to axis).
 """
@@ -34,4 +34,37 @@ Place either a vertical or horizontal straightline at given anchor (from axis to
     anchor::Float64
     horiz::Bool
     linestyle::LineStyle = LineStyle()
+end
+
+
+"""
+    Box2D <: Object2D
+
+Place a 2D filled box.
+"""
+@with_kw mutable struct Box2D <: Object2D
+    anchor::T2F  # where the box is (in graph units)
+    size::T2F    # width, hei (in graph units)
+    #
+    position::String     = "bl"        # position of the anchor with respect to the box
+    nobox::Bool          = true        # show an edge or not
+    linestyle::LineStyle = LineStyle() # style of the box edge
+    fillstyle::Option{FillStyle} = ∅   # if none --> transparent box
+    # text::String
+    # textStyle::TextStyle = TextStyle()
+end
+
+
+"""
+    Heatmap <: Object2D
+
+Heatmap of a matrix.
+"""
+@with_kw mutable struct Heatmap <: Object2D
+    data::Matrix{Float64}
+    colormap::Vector{Color} = colormap("RdBu", 10)
+    xnames::Vector{String} = String[]
+    x2names::Vector{String} = String[]
+    ynames::Vector{String} = String[]
+    y2names::Vector{String} = String[]
 end

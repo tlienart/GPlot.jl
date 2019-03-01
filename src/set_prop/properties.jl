@@ -59,9 +59,9 @@ end
 
 Internal function to process a color, if a string is passed, it is parsed by the `Colors` package.
 """
-col(c::Color, ::Symbol)     = c
-col(s::String, ::Symbol)    = parse(Color, s)
-col(v::Vector, s::Symbol)   = col.(v, s)
+col(c::Color, ::Symbol)   = c
+col(s::String, ::Symbol)  = parse(Color, s)
+col(v::Vector, s::Symbol) = col.(v, s)
 
 """
     opcol(x, s)
@@ -84,6 +84,7 @@ function opcol(s::String, n::Symbol)::Option{Color}
     end
     return col(s, n)
 end
+opcol(c::Color, n::Symbol) = col(c, n)
 
 """
     alpha(α, s)
@@ -194,37 +195,32 @@ const BARSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     )
 
 const GBARSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    # bar fill color (main)
     :col        => col   => set_fills! ⊙ pick_bstyles,  # set_style
     :color      => col   => set_fills! ⊙ pick_bstyles,  # .
+    :cols       => col   => set_fills! ⊙ pick_bstyles,  # .
+    :colors     => col   => set_fills! ⊙ pick_bstyles,  # .
+    :fill       => col   => set_fills! ⊙ pick_bstyles,  # .
+    :fills      => col   => set_fills! ⊙ pick_bstyles,  # .
+    # edge color (secondary)
     :ecol       => col   => set_colors! ⊙ pick_bstyles, # .
     :edgecol    => col   => set_colors! ⊙ pick_bstyles, # .
     :edgecolor  => col   => set_colors! ⊙ pick_bstyles, # .
-    :cols       => col   => set_colors! ⊙ pick_bstyles, # .
-    :colors     => col   => set_colors! ⊙ pick_bstyles, # .
     :ecols      => col   => set_colors! ⊙ pick_bstyles, # .
     :edgecols   => col   => set_colors! ⊙ pick_bstyles, # .
     :edgecolors => col   => set_colors! ⊙ pick_bstyles, # .
-    :fcol       => col   => set_fills! ⊙ pick_bstyles,  # .
-    :fcolor     => col   => set_fills! ⊙ pick_bstyles,  # .
-    :facecolor  => col   => set_fills! ⊙ pick_bstyles,  # .
-    :fill       => col   => set_fills! ⊙ pick_bstyles,  # .
-    :fcols      => col   => set_fills! ⊙ pick_bstyles,  # .
-    :fcolors    => col   => set_fills! ⊙ pick_bstyles,  # .
-    :facecolors => col   => set_fills! ⊙ pick_bstyles,  # .
-    :fills      => col   => set_fills! ⊙ pick_bstyles,  # .
+    # bar width
     :width      => posfl => set_bwidth!, # .
-    :binwidth   => posfl => set_bwidth!, # .
+    :bwidth     => posfl => set_bwidth!, # .
+    :barwidth   => posfl => set_bwidth!, # .
     )
 
 const FILLSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
-    :col       => col   => set_fill!,  # set_style
-    :color     => col   => set_fill!,  # .
-    :fcol      => col   => set_fill!,  # .
-    :ffill     => col   => set_fill!,  # .
-    :facecol   => col   => set_fill!,  # .
-    :facefill  => col   => set_fill!,  # .
-    :fill      => col   => set_fill!,  # .
-    :alpha     => alpha => set_alpha!, # .
+    # fill color and alpha
+    :col   => col   => set_fill!,  # set_style
+    :color => col   => set_fill!,  # .
+    :fill  => col   => set_fill!,  # .
+    :alpha => alpha => set_alpha!, # .
     )
 
 
@@ -242,13 +238,19 @@ merge!(TITLE_OPTS, TEXTSTYLE_OPTS)
 set_properties!(t::Title; opts...) = set_properties!(TITLE_OPTS, t; opts...)
 
 const LEGEND_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    # position of the legend
     :pos        => lc    => set_position!, # set_legend
     :position   => lc    => set_position!, # .
+    # toggle legend on/off
     :off        => id    => set_off!,      # .
+    :on         => not   => set_off!,      # .
+    # toggle surrounding box on/off
     :nobox      => id    => set_nobox!,    # .
     :box        => not   => set_nobox!,    # .
+    # specify margins (internal) and offset (external)
     :margins    => fl    => set_margins!,  # .
     :offset     => fl    => set_offset!,   # .
+    # background color and alpha
     :bgcol      => opcol => set_color!,    # set_style
     :bgcolor    => opcol => set_color!,    # .
     :background => opcol => set_color!,    # .
@@ -259,21 +261,26 @@ set_properties!(l::Legend; opts...) = set_properties!(LEGEND_OPTS, l; opts...)
 
 const TICKS_OPTS = Dict{Symbol,Pair{Function,Function}}(
     # ticks related
-    :off        => id    => set_off!,        # set_ax_elems
-    :hideticks  => id    => set_off!,        # .
-    :len        => fl    => set_length!,     # .
-    :length     => fl    => set_length!,     # .
-    :sym        => id    => set_symticks!,   # .
-    :symticks   => id    => set_symticks!,   # .
-    :tickscol   => col   => set_color!,      # .
-    :tickscolor => col   => set_color!,      # .
-    :grid       => id    => set_grid!,       # .
+    :off        => id  => set_off!,        # set_ax_elems
+    :on         => not => set_off!,        # .
+    :len        => fl  => set_length!,     # .
+    :length     => fl  => set_length!,     # .
+    :sym        => id  => set_symticks!,   # .
+    :symticks   => id  => set_symticks!,   # .
+    # ticks color
+    :tcol       => col => set_color!,      # .
+    :tickscol   => col => set_color!,      # .
+    :tickscolor => col => set_color!,      # .
+    # grid mode
+    :grid       => id  => set_grid!,       # .
     # labels related
-    :hidelabels => id => set_labels_off!, # set_ax_elems
-    :angle      => fl => set_angle!,      # .
-    :format     => lc => set_format!,     # .
-    :shift      => fl => set_shift!,      # .
-    :dist       => id => set_dist!,       # .
+    :hidelabels => id  => set_labels_off!, # set_ax_elems
+    :showlabels => not => set_labels_off!, # .
+    :angle      => fl  => set_angle!,      # .
+    :format     => lc  => set_format!,     # .
+    :shift      => fl  => set_shift!,      # .
+    :dist       => id  => set_dist!,       # .
+    :distance   => id  => set_dist!,
     )
 merge!(TICKS_OPTS, LINESTYLE_OPTS) # ticks line
 merge!(TICKS_OPTS, TEXTSTYLE_OPTS) # labels
@@ -329,7 +336,7 @@ const BAR2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :stacked    => id => set_stacked!, # set_drawing
     :horiz      => id => set_horiz!,   # .
     :horizontal => id => set_horiz!,   # .
-    :key        => id => set_labels!,  # set_drawing
+    :key        => id => set_labels!,  # .
     :label      => id => set_labels!,  # .
     :keys       => id => set_labels!,  # .
     :labels     => id => set_labels!,  # .
@@ -346,8 +353,6 @@ const BOXPLOT_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :box_widths         => posfl => set_bwidths!, # .
     :box_wwidth         => posfl => set_wwidths!, # .
     :box_wwidths        => posfl => set_wwidths!, # .
-    :box_w_width        => posfl => set_wwidths!, # .
-    :box_w_widths       => posfl => set_wwidths!, #.
     :box_whisker_width  => posfl => set_wwidths!, # .
     :box_whisker_widths => posfl => set_wwidths!, # .
     # how long should the whiskers be
@@ -434,6 +439,33 @@ const STRAIGHTLINE2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
 merge!(STRAIGHTLINE2D_OPTS, LINESTYLE_OPTS)
 set_properties!(t::StraightLine2D; opts...) = set_properties!(STRAIGHTLINE2D_OPTS, t; opts...)
 
+const BOX2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    :pos      => id    => set_position!, # set legend
+    :position => id    => set_position!, # .
+    :nobox    => id    => set_nobox!,    # .
+    :box      => not   => set_nobox!,    # .
+    :fill     => opcol => set_fill!,     # .
+    :alpha    => alpha => set_alpha!,    # .
+    )
+merge!(BOX2D_OPTS, LINESTYLE_OPTS)
+set_properties!(b::Box2D; opts...) = set_properties!(BOX2D_OPTS, b; opts...)
+
+const HEATMAP_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    # labels
+    :xnames   => id  => set_xnames!,
+    :xlabels  => id  => set_xnames!,
+    :ynames   => id  => set_ynames!,
+    :ylabels  => id  => set_ynames!,
+    :x2names  => id  => set_x2names!,
+    :x2labels => id  => set_x2names!,
+    :y2names  => id  => set_y2names!,
+    :y2labels => id  => set_y2names!,
+    # colormap
+    :cmap     => col => set_colormap!,
+    :colormap => col => set_colormap!,
+    )
+set_properties!(h::Heatmap; opts...) = set_properties!(HEATMAP_OPTS, h; opts...)
+
 
 ###############################################################
 ####
@@ -443,9 +475,9 @@ set_properties!(t::StraightLine2D; opts...) = set_properties!(STRAIGHTLINE2D_OPT
 
 
 const  AXES_OPTS = Dict{Symbol,Pair{Function,Function}}(
-    :size   => fl => set_size!,  # set figure
-    :title  => id => set_title!, # set ax
-    :off    => id => set_off!,   # set axelems
+    :size  => fl => set_size!,  # set figure
+    :title => id => set_title!, # set ax
+    :off   => id => set_off!,   # set axelems
     )
 set_properties!(a::Axes; opts...) = set_properties!(AXES_OPTS, a; opts...)
 

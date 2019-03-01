@@ -21,14 +21,19 @@ prefixed by `p`.
 function apply_ticks!(g::GLE, t::Ticks, prefix::String, parent_font::String)
     # [x]ticks ...
     "\n\t$(prefix)ticks" |> g
-    t.off && ("off"      |> g; return nothing)
+    if t.off
+        "off" |> g
+        # also discard the labels and don't call anything else
+        "\n\t$(prefix)labels off" |> g
+        return nothing
+    end
     # - style
     isdef(t.length) && "length $(t.length)" |> g
     apply_linestyle!(g, t.linestyle)
     # [x]places pos1 pos2 ...
     isempty(t.places) || "\n\t$(prefix)places $(vec2str(t.places))" |> g
     # [x]xaxis symticks
-    t.symticks && "\n\t$(prefix)axis symticks"             |> g
+    t.symticks && "\n\t$(prefix)axis symticks" |> g
     apply_tickslabels!(g, t.labels, prefix, parent_font)
     return nothing
 end

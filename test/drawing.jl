@@ -235,7 +235,7 @@ end
     # HIST2D
     clf()
     x = [0.1, 0.1, 0.2, 0.1, 0.3, 0.5, 0.7, 0.2, 0.1]
-    hist(x, norm="pdf", fcol="blue", ecol="red")
+    hist(x, norm="pdf", col="blue", ecol="red", nbins=9)
     s = G.assemble_figure(gcf(), debug=true)
     isin(s, "let d2 = hist d1 from $(minimum(x)) to $(maximum(x)) bins 9")
     isin(s, "let d2 = d2*1.666")

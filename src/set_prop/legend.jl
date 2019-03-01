@@ -3,7 +3,7 @@
 
 Internal function to set the position of the legend using a describer like "tl" (top-left).
 """
-function set_position!(o::Legend, v::String)
+function set_position!(o::Union{Legend,Box2D}, v::String)
    @assert get_backend() == GLE "position/only GLE backend supported"
    o.position = get(GLE_POSITION, v) do
       throw(OptionValueError("position", v))
@@ -16,7 +16,7 @@ end
 
 Internal function to toggle nobox on or off for the legend.
 """
-set_nobox!(o::Legend, b::Bool) = (o.nobox = b)
+set_nobox!(o::Union{Legend,Box2D}, b::Bool) = (o.nobox = b)
 
 """
    set_margins!(legend, m)

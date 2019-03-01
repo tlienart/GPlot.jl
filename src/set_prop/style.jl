@@ -10,11 +10,12 @@ Internal functions to set the color value `col` (after parsing) to the appropria
 field of object `obj`.
 """
 set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
-set_color!(o::Hist2D, c::Color) = (o.barstyle.color = c)
-set_color!(o::Union{Ticks,StraightLine2D}, c::Color) = (o.linestyle.color = c)
 
-set_textcolor!(o::Ticks, c::Color) = (o.labels.textstyle.color = c)
-set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
+set_color!(o::Hist2D, c) = (o.barstyle.color = c)
+set_color!(o::Union{Ticks,StraightLine2D,Box2D}, c) = (o.linestyle.color = c)
+
+set_textcolor!(o::Ticks, c) = (o.labels.textstyle.color = c)
+set_textcolor!(o::Union{Figure,Axis,Title}, c) = (o.textstyle.color = c)
 
 """
     set_fill!(obj, col)
@@ -22,8 +23,8 @@ set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = (o.textstyle.color = c)
 Internal functions to set the fill color value `v` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_fill!(o::Fill2D, c::Colorant) = (o.fillstyle.fill = c)
-set_fill!(o::Hist2D, c::Colorant) = (o.barstyle.fill = c)
+set_fill!(o::Union{Fill2D,Box2D}, c) = (o.fillstyle = FillStyle(c))
+set_fill!(o::Hist2D, c) = (o.barstyle.fill = c)
 
 """
     set_colors!(obj, cols, parent, field)
@@ -62,7 +63,7 @@ function set_alpha!(o::Union{Fill2D,Hist2D}, α::Float64, parent::Symbol)
     eval(:($o.$parent.fill = coloralpha($o.$parent.fill, $α)))
     return nothing
 end
-set_alpha!(o::Fill2D, α::Float64) = set_alpha!(o, α, :fillstyle)
+set_alpha!(o::Union{Fill2D,Box2D}, α::Float64) = set_alpha!(o, α, :fillstyle)
 set_alpha!(o::Hist2D, α::Float64) = set_alpha!(o, α, :barstyle)
 set_alpha!(o::Union{Figure,Legend}, α::Float64) = (o.bgcolor = coloralpha(o.bgcolor, α); ∅)
 
@@ -115,7 +116,7 @@ function set_lstyle!(o::LineStyle, v::String)
     end
     return nothing
 end
-set_lstyle!(o::Union{Ticks,StraightLine2D}, v::String) = set_lstyle!(o.linestyle, v)
+set_lstyle!(o, v::String) = set_lstyle!(o.linestyle, v)
 
 """
     set_lwidth!(obj, v)
@@ -123,7 +124,7 @@ set_lstyle!(o::Union{Ticks,StraightLine2D}, v::String) = set_lstyle!(o.linestyle
 Internal function to set the line width associated with the relevant field of `obj`.
 """
 set_lwidth!(o::Union{LineStyle, Axis}, v::Float64) = (o.lwidth = v)
-set_lwidth!(o::Union{Ticks,StraightLine2D}, v::Float64) = set_lwidth!(o.linestyle, v)
+set_lwidth!(o, v::Float64) = set_lwidth!(o.linestyle, v)
 
 """
     set_smooth!(obj, v)
