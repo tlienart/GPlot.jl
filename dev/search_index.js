@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GPlot.jl - Documentation",
     "category": "section",
-    "text": "#=\nTodo:\n- work out how to have syntax highlighting\n\n- Appendix/fonts\n  - link to tug.dk font catalogue, suggest the ones that work with pdflatex\n\n- preview mode: if in a wrapped scope, the continuous preview will\nnot happen, need to explicitly call preview for instance\n@elapsed text!(...) will not display unless preview is called explicitly\n\n- when adding text, there\'s no overwrite (ambiguous) so if it fails you\'ll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest\nunchanged\n\n- API\n\n-- plotting stuff with ! = append\n-- everything else doesn\'t have ! bc confusing\n\n=#"
+    "text": "#=\nTodo:\n- work out how to have syntax highlighting\n\n- Appendix/fonts\n  - link to tug.dk font catalogue, suggest the ones that work with pdflatex\n\n- preview mode: if in a wrapped scope, the continuous preview will\nnot happen, need to explicitly call preview for instance\n@elapsed text!(...) will not display unless preview is called explicitly\n\n- when adding text, there\'s no overwrite (ambiguous) so if it fails you\'ll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest\nunchanged\n\n- API\n\n-- plotting stuff with ! = append\n-- everything else doesn\'t have ! bc confusing\n\n- Latex\n\n-- t\"x^{\\star}\" will work but t\"\\sqrt\" won\'t unless you use TeX in the figure. (need to show examples for this)\n\n=#"
 },
 
 {
