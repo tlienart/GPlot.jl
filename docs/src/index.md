@@ -20,5 +20,9 @@ unchanged
 -- plotting stuff with ! = append
 -- everything else doesn't have ! bc confusing
 
+- Latex
+
+-- t"x^{\star}" will work but t"\sqrt" won't unless you use TeX in the figure. (need to show examples for this)
+
 =#
 ```

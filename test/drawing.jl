@@ -110,13 +110,13 @@ end
     line([0,0],[1,1])
     @test checkzip(gca().drawings[1].data, [0 0; 1 1])
 
-    erase(gcf())
+    erase!(gcf())
     # -- multiplot
     plot(x, y, 2y, 3y)
     el = gca().drawings[1]
     @test checkzip(el.data, hcat(x, y, 2y, 3y))
 
-    erase(gcf())
+    erase!(gcf())
     # -- scatterplot
     scatter(x, y)
     scatter!(2x, 2y, 3y)
@@ -130,7 +130,7 @@ end
     @test el2.markerstyles[2].marker == "circle"
 
     # FILL2D
-    erase(gcf())
+    erase!(gcf())
     gcf().transparency = true
     x = 1:5
     y1 = exp.(x)
@@ -152,7 +152,7 @@ end
     @test checkzip(el.data, hcat(x, zero(x).+1, zero(x).+2))
 
     # HIST2D
-    erase(gcf())
+    erase!(gcf())
     x = rand(Float32, 10)
     hist(x)
     @test checkzip(gca().drawings[1].data, x)

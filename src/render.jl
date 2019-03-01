@@ -102,7 +102,7 @@ end
 preview(fig::Figure) = PreviewFigure(fig)
 preview() = preview(gcf())
 
-function Base.show(io::IO, ::MIME"image/png", obj::Union{PreviewFigure, DrawingHandle})
+function Base.show(io::IO, ::MIME"image/png", obj::Union{PreviewFigure,DrawingHandle})
     GP_ENV["CONT_PREVIEW"] || return nothing
     disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
                 (isdefined(Main, :IJulia) && Main.IJulia.inited)

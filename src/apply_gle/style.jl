@@ -4,8 +4,7 @@
 Internal function to apply the textstyle `s` in a GLE context.
 """
 @inline function apply_textstyle!(g::GLE, s::TextStyle, parent_font::String=""; addset=false)
-    if !isdef(s.font)
-        isempty(parent_font) && return nothing
+    if !isdef(s.font) && !isempty(parent_font)
         s.font = parent_font
     end
     addset         && "\nset"                     |> g

@@ -89,7 +89,7 @@ Bar plot(s).
     #
     stacked::Bool            = false
     horiz  ::Bool            = false
-    width  ::Option{Float64} = ∅
+    bwidth ::Option{Float64} = ∅ # general bar width
     #
     labels ::Vector{String}  = String[]
 end
@@ -100,3 +100,19 @@ end
 Internal constructor for Bar2D object adding barstyles.
 """
 Bar2D(d, m, n) = Bar2D(data=d, hasmissing=m, nobj=n, barstyles=nvec(n, BarStyle))
+
+
+"""
+    Boxplot <: Drawing2D
+
+Boxplot(s).
+"""
+@with_kw mutable struct Boxplot <: Drawing2D
+    stats::Matrix{Float64}             # quantile etc
+    nobj ::Int
+    #
+    boxstyles::Vector{BoxplotStyle}
+    #
+    horiz::Bool = false # vertical boxplots by default
+end
+Boxplot(d, n) = Boxplot(stats=d, nobj=n, boxstyles=nvec(n, BoxplotStyle))

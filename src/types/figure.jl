@@ -17,7 +17,7 @@ mutable struct Figure{B<:Backend}
 end
 Figure(g::B, id::String) where B<:Backend =
     Figure(g, id, Vector{Axes{B}}(), (12., 9.), TextStyle(font="texcmss", hei=0.35),
-           colorant"white", ∅, ∅, ∅, ∅, Dict{String,String}())
+           c"white", ∅, ∅, ∅, ∅, Dict{String,String}())
 
 """
     reset!(f)
@@ -28,7 +28,7 @@ function reset!(f::Figure{B}) where B
     take!(f.g) # empty the buffer
     f.axes         = Vector{Axes{B}}() # clean axes
     f.textstyle    = TextStyle(font="texcmss", hei=0.35) # default fontstyle
-    f.bgcolor      = colorant"white" # default bg color
+    f.bgcolor      = c"white" # default bg color
     f.texlabels    = ∅
     f.texscale     = ∅
     f.texpreamble  = ∅
