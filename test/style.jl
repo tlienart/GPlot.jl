@@ -47,17 +47,17 @@ end
     plot(x, y, col="indianred", mcol="blue")
     @test gca().drawings[1].linestyles[1].color == colorant"indianred"
     @test gca().drawings[1].markerstyles[1].color == colorant"blue"
-    hist(y, fcol="indianred", ecol="blue")
+    hist(y, fill="indianred", ecol="blue")
     @test gca().drawings[1].barstyle.color == colorant"blue"
     @test gca().drawings[1].barstyle.fill == colorant"indianred"
-    fill_between(x, y, 2y, fcol="blue")
+    fill_between(x, y, 2y, fill="blue")
     @test gca().drawings[1].fillstyle.fill == colorant"blue"
     xticks([1,2],["a","b"],tickscolor="blue", col="red")
     @test gca().xaxis.ticks.linestyle.color == colorant"blue"
     @test gca().xaxis.ticks.labels.textstyle.color == colorant"red"
     title("blah", col="red")
     @test gca().title.textstyle.color == colorant"red"
-    bar(x, y, 2y, colors=["red", "blue"], fcol=["blue", "red"])
+    bar(x, y, 2y, ecols=["red", "blue"], fills=["blue", "red"])
     @test gca().drawings[1].barstyles[1].color == colorant"red"
     @test gca().drawings[1].barstyles[2].color == colorant"blue"
     @test gca().drawings[1].barstyles[1].fill == colorant"blue"
@@ -65,7 +65,7 @@ end
     @test_throws DimensionMismatch bar(x, y, 2y, colors=["red"])
 
     f = Figure(transparency=true)
-    hist(y, fcol="indianred", alpha=0.5)
+    hist(y, fill="indianred", alpha=0.5)
     @test gca().drawings[1].barstyle.fill.alpha == 0.502Colors.N0f8
 
     title("blah", font="roman", fontsize=0.3)

@@ -23,8 +23,6 @@ end
 
 set(obj; opts...) = set_properties!(obj; opts...)
 
-function set(s::Symbol)
-
 ####
 #### Value checkers for set_properties functions the symbol corresponds to the name
 #### of the option that is being modified
