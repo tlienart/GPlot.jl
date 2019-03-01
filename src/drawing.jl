@@ -3,6 +3,7 @@
 ####
 
 function plotdata(x::AVM{<:CanMiss{<:Real}})
+    isempty(x) && throw(ArgumentError("Cannot display an empty vector"))
     hasmissing = Missing <: eltype(x)
     hasmissing = hasmissing || any(isinf, x)
     hasmissing = hasmissing || any(isnan, x)
@@ -12,6 +13,7 @@ function plotdata(x::AVM{<:CanMiss{<:Real}})
 end
 # NOTE: these typechecks within the function body is to avoid clashes/ambiguity with plotdata(x)
 function plotdata(x, ys...)
+    isempty(x) && throw(ArgumentError("Cannot display empty vectors."))
     x isa AV{<:CanMiss{<:Real}} || throw(ArgumentError("x has un-handled type $(typeof(x))"))
     nobj = 0
     hasmissing = Missing <: eltype(x)
@@ -30,6 +32,7 @@ function plotdata(x, ys...)
 end
 
 function filldata(x::AVR, y1::Union{Real,AVR}, y2::Union{Real,AVR})
+    isempty(x) && throw(ArgumentError("Cannot display empty vectors."))
     y1 isa AV || (y1 = fill(y1, length(x)))
     y2 isa AV || (y2 = fill(y2, length(x)))
     length(x) == length(y1) == length(y2) ||throw(DimensionMismatch("vectors must have " *
@@ -38,6 +41,7 @@ function filldata(x::AVR, y1::Union{Real,AVR}, y2::Union{Real,AVR})
 end
 
 function histdata(x::AV{<:CanMiss{<:Real}})
+    isempty(x) && throw(ArgumentError("Cannot display an empty vector."))
     sx = skipmissing(x)
     return (data=zip(x),
             hasmissing=(Missing <: eltype(x)),
@@ -206,6 +210,8 @@ Erase previous drawings and add a boxplot. Missing values are allowed but not In
 function boxplot(ys...; axes=nothing, o...)
     axes = check_axes(axes)
     reset!(axes) # always on fresh axes
+
+    isempty(first(ys)) && throw(ArgumentError("Cannot display empty vectors."))
 
     # setting an empty struct first so that we can exploit the options
     # the actual data will be provided after analysis

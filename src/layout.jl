@@ -19,8 +19,8 @@ function layout(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     # |                      |
     # |  X    Y    W    H    |
     # |______________________|
-    @assert size(anchors, 2) == 4 "anchors must be of size ((nrows*ncols) × 4)"
-    @assert all(0 .<= anchors .<= 1) "layout relative anchors must be between 0 and 1"
+    size(anchors, 2) == 4 || throw(ArgumentError("anchors must be of size ((nrows*ncols) × 4)"))
+    all(0 .<= anchors .<= 1) || throw(ArgumentError("layout relative anchors must be between 0 and 1"))
 
     erase!(f)
     W, H = f.size
@@ -48,11 +48,13 @@ julia> subplot(224) # selects bottom-right axes.
 See also: [`layout`](@ref) to specify a custom layout.
 """
 function subplot(nrows::Int, ncols::Int, idx::Int)
-    @assert 1 <= nrows <= 9 "nrows must be between 1 and 9"
-    @assert 1 <= ncols <= 9 "ncols must be between 1 and 9"
-    @assert 1 <= idx <= nrows*ncols "idx must be between 1 and $(nrows*ncols)"
+    1 <= nrows <= 9 || throw(ArgumentError("nrows must be between 1 and 9"))
+    1 <= ncols <= 9 || throw(ArgumentError("ncols must be between 1 and 9"))
+    1 <= idx <= nrows*ncols || throw(ArgumentError("idx must be between 1 and $(nrows*ncols)"))
 
     f = gcf()
+    W, H = f.size
+    wh_ratio = W/H
     # 1. if there are no axes in the current figure, add them
     if isempty(f.axes)
         # default layout is a grid
@@ -64,29 +66,40 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
         # | a4     a5     a6     |
         # |______________________|
 
-        vbox = 0.85 * 1/nrows
-        voff = 0.15 * 1/nrows # vertical gap
-        hbox = 0.85 * 1/ncols
-        hoff = 0.15 * 1/ncols # horizontal gap
+        # this has been hand-tuned to give acceptable results for
+        # (1, 2, 3) x (1, 2, 3). Beyond that is likely too cramped
+
+        v_rel = 0.2 * wh_ratio * (1 + 0.2*(nrows-1))  # relative vertical margin
+        vbox  = 1.0 / (nrows * (1.0 + v_rel) + v_rel) # relative vertical box size
+        h_rel = 0.2 * (1 + 0.2*(ncols-1))             # relative horizontal margin
+        hbox  = 1.0 / (ncols * (1.0 + h_rel) + h_rel) # relative horizontal boxsize
+
+        vbox_m  = vbox * v_rel
+        hbox_m  = hbox * h_rel
+        vbox_wm = vbox + vbox_m
+        hbox_wm = hbox + hbox_m
+        hard_bottom = 0.01 * wh_ratio
+        hard_left   = 0.01
 
         grid = zeros(nrows*ncols, 4)
         k = 1
         for r ∈ 1:nrows
             for c ∈ 1:ncols
-                grid[k, 1] = (hbox * (c-1)) + hoff   # increasing left to right
-                grid[k, 3] = hbox - hoff             # width of graph
-                grid[k, 2] = 1.0 - (vbox * r) + voff # decreasing top to bottom
-                grid[k, 4] = vbox - voff             # heigth of graph
+                # increasing left to right
+                # decreasing top to bottom
+                grid[k, 1] = hard_left + hbox_m + (hbox_wm * (c-1)) # increasing left to right
+                grid[k, 3] = hbox
+                grid[k, 2] = hard_bottom + 1.0 - vbox_wm * r
+                grid[k, 4] = vbox
                 k += 1
             end
         end
         layout(f, grid)
     # 2. if there are axes, check that it matches, if it doesn't
     else
-        @assert length(f.axes) == nrows*ncols "the layout description does not match the " *
-                                              "current axes. If you want to change the " *
-                                              "layout of the current figure use erase!(gcf()) " *
-                                              "first to remove the existing axes."
+        length(f.axes) == nrows*ncols || throw(ArgumentError("the layout description does not " *
+                              "match the current axes. If you want to change the layout of " *
+                              "the current figure use `clf()` first to remove the existing axes."))
     end
     # 3. select the relevant axes and make them the current ones
     curax = f.axes[idx]
@@ -95,7 +108,7 @@ function subplot(nrows::Int, ncols::Int, idx::Int)
 end
 
 function subplot(d::Int)
-    @assert 111 <= d <= 999 "invalid description for the layout"
+    111 <= d <= 999 || throw(ArgumentError("invalid description for the layout"))
     nrows = div(d, 100)
     dd    = d - 100nrows
     ncols = div(dd, 10)
