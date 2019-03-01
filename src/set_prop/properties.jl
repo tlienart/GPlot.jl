@@ -122,12 +122,15 @@ pick_bstyles(o, v) = (o.barstyles, v)
 pick_blstyle(b, v) = (b.boxstyles, v, :blstyle)
 pick_mlstyle(b, v) = (b.boxstyles, v, :mlstyle)
 pick_mmstyle(b, v) = (b.boxstyles, v, :mmstyle)
+pick_omstyle(b, v) = (b.boxstyles, v, :omstyle)
 
 
-
+###############################################################
 ####
 #### Options for STYLE
 ####
+###############################################################
+
 
 const TEXTSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :font      => lc    => set_font!,      # set_style
@@ -179,15 +182,9 @@ const GMARKERSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :mcol             => col   => set_mcols! ⊙ pick_mstyles,   # .
     :markercol        => col   => set_mcols! ⊙ pick_mstyles,   # .
     :markercolor      => col   => set_mcols! ⊙ pick_mstyles,   # .
-    :mfacecol         => col   => set_mcols! ⊙ pick_mstyles,   # .
-    :mfacecolor       => col   => set_mcols! ⊙ pick_mstyles,   # .
-    :markerfacecolor  => col   => set_mcols! ⊙ pick_mstyles,   # .
     :mcols            => col   => set_mcols! ⊙ pick_mstyles,   # .
     :markercols       => col   => set_mcols! ⊙ pick_mstyles,   # .
     :markercolors     => col   => set_mcols! ⊙ pick_mstyles,   # .
-    :mfacecols        => col   => set_mcols! ⊙ pick_mstyles,   # .
-    :mfacecolors      => col   => set_mcols! ⊙ pick_mstyles,   # .
-    :markerfacecolors => col   => set_mcols! ⊙ pick_mstyles,   # .
     )
 
 const BARSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
@@ -230,9 +227,13 @@ const FILLSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :alpha     => alpha => set_alpha!, # .
     )
 
+
+###############################################################
 ####
 #### Options for AX_ELEMS
 ####
+###############################################################
+
 
 const TITLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :dist => posfl => set_dist!
@@ -278,9 +279,13 @@ merge!(TICKS_OPTS, LINESTYLE_OPTS) # ticks line
 merge!(TICKS_OPTS, TEXTSTYLE_OPTS) # labels
 set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 
+
+###############################################################
 ####
 #### Options for DRAWINGS
 ####
+###############################################################
+
 
 const SCATTER2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :name   => id => set_labels!, # set_drawing
@@ -333,7 +338,9 @@ merge!(BAR2D_OPTS, GBARSTYLE_OPTS)
 set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
 
 const BOXPLOT_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    # -- global toggle
     :horiz => id => set_horiz!, # set_drawing
+    # -- now inside BOXSTYLES
     # box styling
     :box_width          => posfl => set_bwidths!, # set_drawing
     :box_widths         => posfl => set_bwidths!, # .
@@ -376,19 +383,44 @@ const BOXPLOT_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :med_cols       => col   => set_colors! ⊙ pick_mlstyle,
     :med_color      => col   => set_colors! ⊙ pick_mlstyle,
     :med_colors     => col   => set_colors! ⊙ pick_mlstyle,
-
-    # XXX
-    # HERE need to # -- add more functions for
-    # -- -- mshow
-    # -- -- >> markerstyle for mean
-    # -- -- oshow
-    # -- -- >> markerstyle for outliers
+    # mean marker
+    :mean_show         => id    => set_mshow!,
+    :mean_marker       => id    => set_markers! ⊙ pick_mmstyle,
+    :mean_markers      => id    => set_markers! ⊙ pick_mmstyle,
+    :mean_msize        => posfl => set_msizes! ⊙ pick_mmstyle,
+    :mean_msizes       => posfl => set_msizes! ⊙ pick_mmstyle,
+    :mean_markersize   => posfl => set_msizes! ⊙ pick_mmstyle,
+    :mean_markersizes  => posfl => set_msizes! ⊙ pick_mmstyle,
+    :mean_mcol         => col   => set_mcols! ⊙ pick_mmstyle,
+    :mean_mcols        => col   => set_mcols! ⊙ pick_mmstyle,
+    :mean_markercol    => col   => set_mcols! ⊙ pick_mmstyle,
+    :mean_markercols   => col   => set_mcols! ⊙ pick_mmstyle,
+    :mean_markercolor  => col   => set_mcols! ⊙ pick_mmstyle,
+    :mean_markercolors => col   => set_mcols! ⊙ pick_mmstyle,
+    # outliers
+    :out_show         => id    => set_mshow!,
+    :out_marker       => id    => set_markers! ⊙ pick_omstyle,
+    :out_markers      => id    => set_markers! ⊙ pick_omstyle,
+    :out_msize        => posfl => set_msizes! ⊙ pick_omstyle,
+    :out_msizes       => posfl => set_msizes! ⊙ pick_omstyle,
+    :out_markersize   => posfl => set_msizes! ⊙ pick_omstyle,
+    :out_markersizes  => posfl => set_msizes! ⊙ pick_omstyle,
+    :out_mcol         => col   => set_mcols! ⊙ pick_omstyle,
+    :out_mcols        => col   => set_mcols! ⊙ pick_omstyle,
+    :out_markercol    => col   => set_mcols! ⊙ pick_omstyle,
+    :out_markercols   => col   => set_mcols! ⊙ pick_omstyle,
+    :out_markercolor  => col   => set_mcols! ⊙ pick_omstyle,
+    :out_markercolors => col   => set_mcols! ⊙ pick_omstyle,
     )
 set_properties!(bp::Boxplot; opts...) = set_properties!(BOXPLOT_OPTS, bp; opts...)
 
+
+###############################################################
 ####
 #### Options for OBJECTS
 ####
+###############################################################
+
 
 const TEXT2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :pos      => id    => set_position!, # set_drawing
@@ -402,9 +434,13 @@ const STRAIGHTLINE2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
 merge!(STRAIGHTLINE2D_OPTS, LINESTYLE_OPTS)
 set_properties!(t::StraightLine2D; opts...) = set_properties!(STRAIGHTLINE2D_OPTS, t; opts...)
 
+
+###############################################################
 ####
 #### Options for AX*
 ####
+###############################################################
+
 
 const  AXES_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :size   => fl => set_size!,  # set figure
@@ -425,9 +461,13 @@ const AXIS_OPTS = Dict{Symbol,Pair{Function,Function}}(
 merge!(AXIS_OPTS, TEXTSTYLE_OPTS)
 set_properties!(a::Axis; opts...) = set_properties!(AXIS_OPTS, a; opts...)
 
+
+###############################################################
 ####
 #### Options for FIGURE
 ####
+###############################################################
+
 
 const FIGURE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :size         => posfl => set_size!,         # set_figure

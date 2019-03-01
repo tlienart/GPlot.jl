@@ -237,8 +237,39 @@ Internal function to set the whisker width to value `v`.
 set_wwidths!(b::Boxplot, v) = set_bp!(b, :wwidth, v)
 
 """
-    set_wrlengths!(obj, v)
+    set_wrlengths!(b, v)
 
 Internal function to set the whiskers relative lengths to value `v`.
 """
 set_wrlengths!(b::Boxplot, v) = set_bp!(b, :wrlength, v)
+
+"""
+    set_show!(b, v, f)
+
+Internal function to toggle the display of an element `f` in a boxplot. See [`set_mshow!`](@ref)
+and [`set_oshow!`](@ref).
+"""
+function set_show!(b::Boxplot, v::Union{Bool, Vector{Bool}}, field::Symbol)
+    v isa Vector || (v = fill(v, b.nobj))
+    length(v) == b.nobj || throw(DimensionMismatch("set_mshow // dimensions don't match"))
+    for (k, vk) ∈ enumerate(v)
+        setfield!(b.boxstyles[k], field, vk)
+    end
+    return nothing
+end
+
+"""
+    set_mshow!(b, v)
+
+Internal function to toggle the display of the mean point in a boxplot. (A vector can
+be passed to set this individually on each boxplot shown).
+"""
+set_mshow!(b::Boxplot, v) = set_show!(b, v, :mshow)
+
+"""
+    set_oshow!(b, v)
+
+Internal function to toggle the display of outliers in a boxplot. (A vector can
+be passed to set this individually on each boxplot shown).
+"""
+set_oshow!(b::Boxplot, v) = set_show!(b, v, :oshow)
