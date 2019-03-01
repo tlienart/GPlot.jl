@@ -103,6 +103,19 @@ end
 
 #######################################
 
+"""
+    tex_str(s)
+
+Allows use of \$ and \\ while also allowing interpolation via `##name`. This is useful
+for labels that contain tex-like expressions that may be generated in a sequence.
+
+### Example
+
+```julia
+ i=5
+t"\$x+##i\$" # amounts to "\$x+5\$"
+```
+"""
 macro tex_str(s)
     m = match(r"##([_\p{L}](?:[\p{L}\d_]*))", s)
     m === nothing && return s

@@ -161,11 +161,9 @@ function apply_drawing!(g::GLE, hist::Hist2D,
     "from $minx to $maxx" |> g
     el_counter += 1
 
-    # number of bins (TODO: better criterion, see StatsPlots.jl)
+    # number of bins
     nobs = hist.nobs
-    nbauto = (nobs < 10) * nobs +
-             (10 <= nobs < 30) * 10 +
-             (nobs > 30) * min(round(Int, sqrt(nobs)), 150)
+    nbauto = (nobs == 0 ? 1 : ceil(Integer, log2(nobs))+1) # sturges, see StatsBase
     bins = isdef(hist.bins) ? hist.bins : nbauto
     "bins $bins" |> g
 

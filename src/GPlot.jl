@@ -23,7 +23,7 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     # -- special drawings
     boxplot,
     # Objects
-    text, vline, hline, line,
+    text, vline, hline, line, box, heatmap, heatmap_ticks,
     # Axis / Axes
     # -- legend
     legend,
