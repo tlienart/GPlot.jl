@@ -60,11 +60,11 @@ function apply_drawing!(g::GLE, hm::Heatmap,
 
     # 3. load data
     vs = prod("d$j=c0,c$j " for j ∈ 1:nct)
-    "\ndata \"$faux\" $vs" |> g
+    "\n\tdata \"$faux\" $vs" |> g
 
     # 4. go over all the columns and draw the boxes (scales linearly with # cols)
     for j ∈ 1:nct
-        "\ndraw hm_$hashid $j d$j $bw $bh" |> g
+        "\n\tdraw hm_$hashid $j d$j $bw $bh" |> g
     end
     return el_counter + 1
 end

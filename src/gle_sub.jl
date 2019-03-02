@@ -12,8 +12,8 @@ both line and markers are going to be of the same color.
 Note: these subroutines all start with the name `mk_....` (see [`str`](@ref)).
 """
 function add_sub_marker!(f::Figure, m::MarkerStyle)
-    if str(m) ∉ keys(f.subroutines)
-        f.subroutines[str(m)] = """
+    str(m) ∈ keys(f.subroutines) && return nothing
+    f.subroutines[str(m)] = """
         sub _$(str(m)) size mdata
         	gsave
             set color $(col2str(m.color))
@@ -22,7 +22,6 @@ function add_sub_marker!(f::Figure, m::MarkerStyle)
         end sub
         define marker $(str(m)) _$(str(m))
         """
-    end
     return nothing
 end
 
@@ -169,12 +168,61 @@ function add_sub_heatmap!(f::Figure, hm::Heatmap, hashid::UInt)
 
     f.subroutines["hm_$hashid"] = """
         sub hm_$hashid j ds\$ bw bh
+            local zij = 0
+            local cij = \"\"
             for i = 1 to ndata(ds\$)
                 zij = datayvalue(ds\$,i)
-                cij\$ = \"\"
                 $ifpart
                 $boxpart
             next i
+        end sub
+        """
+    return nothing
+end
+
+
+###############################################################
+####
+#### Palette a vector of colors
+####
+###############################################################
+
+function add_sub_palette!(f::Figure, vc::Vector{<:Color})
+    # TODO
+    # - add to subroutines load
+    nc   = length(vc)-1
+    incr = 1/(length(vc)-1)
+    bot = vc[1]
+    top = vc[2]
+    core = """
+        local r = 0
+        \tlocal g = 0
+        \tlocal b = 0
+        \tif (z <= $incr) then
+            r = $(round3d(bot.r))*(1-z*$nc)+$(round3d(top.r))*z*$nc
+            g = $(round3d(bot.g))*(1-z*$nc)+$(round3d(top.g))*z*$nc
+            b = $(round3d(bot.b))*(1-z*$nc)+$(round3d(top.b))*z*$nc
+        """
+    for i ∈ 2:length(vc)-1
+        bot = vc[i] # bottom color
+        top = vc[i+1]   # top color
+        core *= """
+            \telse if ($(incr*(i-1)) < z) and (z <= $(incr*i)) then
+                r = $(round3d(bot.r))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.r))*(z-$(incr*(i-1)))*$nc
+                g = $(round3d(bot.g))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.g))*(z-$(incr*(i-1)))*$nc
+                b = $(round3d(bot.b))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.b))*(z-$(incr*(i-1)))*$nc
+        """
+    end
+    core *= """
+        \tend if
+        """
+
+    pname = "plt_$(hash(vc))"
+    pname ∈ keys(f.subroutines) && return nothing
+    f.subroutines[pname] = """
+        sub $pname z
+            $core
+            return rgb(r,g,b)
         end sub
         """
     return nothing
