@@ -419,6 +419,11 @@ const BOXPLOT_OPTS = Dict{Symbol,Pair{Function,Function}}(
     )
 set_properties!(bp::Boxplot; opts...) = set_properties!(BOXPLOT_OPTS, bp; opts...)
 
+const HEATMAP_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    :cmap     => col => set_cmap!,
+    :colormap => col => set_cmap!,
+    )
+set_properties!(h::Heatmap; opts...) = set_properties!(HEATMAP_OPTS, h; opts...)
 
 ###############################################################
 ####
@@ -449,22 +454,6 @@ const BOX2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
     )
 merge!(BOX2D_OPTS, LINESTYLE_OPTS)
 set_properties!(b::Box2D; opts...) = set_properties!(BOX2D_OPTS, b; opts...)
-
-const HEATMAP_OPTS = Dict{Symbol,Pair{Function,Function}}(
-    # labels
-    :xnames   => id  => set_xnames!,
-    :xlabels  => id  => set_xnames!,
-    :ynames   => id  => set_ynames!,
-    :ylabels  => id  => set_ynames!,
-    :x2names  => id  => set_x2names!,
-    :x2labels => id  => set_x2names!,
-    :y2names  => id  => set_y2names!,
-    :y2labels => id  => set_y2names!,
-    # colormap
-    :cmap     => col => set_colormap!,
-    :colormap => col => set_colormap!,
-    )
-set_properties!(h::Heatmap; opts...) = set_properties!(HEATMAP_OPTS, h; opts...)
 
 
 ###############################################################

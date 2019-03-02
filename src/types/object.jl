@@ -53,18 +53,3 @@ Place a 2D filled box.
     # text::String
     # textStyle::TextStyle = TextStyle()
 end
-
-
-"""
-    Heatmap <: Object2D
-
-Heatmap of a matrix.
-"""
-@with_kw mutable struct Heatmap <: Object2D
-    data::Matrix{Float64}
-    colormap::Vector{Color} = colormap("RdBu", 10)
-    xnames::Vector{String} = String[]
-    x2names::Vector{String} = String[]
-    ynames::Vector{String} = String[]
-    y2names::Vector{String} = String[]
-end

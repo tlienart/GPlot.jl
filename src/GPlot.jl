@@ -108,6 +108,7 @@ include("set_prop/properties.jl")
 # Write objects to GLE buffer
 include("apply_gle/style.jl")
 include("apply_gle/drawing.jl")
+include("apply_gle/drawing2.jl")
 include("apply_gle/object.jl")
 include("apply_gle/ax_elems.jl")
 include("apply_gle/legend.jl")
@@ -115,8 +116,9 @@ include("apply_gle/ax.jl")
 include("apply_gle/figure.jl")
 
 # Main call for elements
-include("drawing.jl")
-include("object.jl")
+include("drawing.jl")   # plot, scatter, fill, hist, bar
+include("drawing2.jl")  # boxplot, heatmap
+include("object.jl")    # text, hline, vline, box
 include("ax.jl")
 include("ax_elem.jl")
 include("legend.jl")

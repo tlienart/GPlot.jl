@@ -9,7 +9,7 @@ Internal function to add an appropriate subroutine to the GLE script to deal wit
 must have a different color than the line they are associated with. For instance if you want a
 blue line with red markers, you need to define a specfici subroutine for red-markers otherwise
 both line and markers are going to be of the same color.
-Note: these subroutines all start with the name `marker_....` (see [`str`](@ref)).
+Note: these subroutines all start with the name `mk_....` (see [`str`](@ref)).
 """
 function add_sub_marker!(f::Figure, m::MarkerStyle)
     if str(m) ∉ keys(f.subroutines)
@@ -28,9 +28,11 @@ end
 
 const GLE_DRAW_SUB = Dict{String,String}()
 
+###############################################################
 ####
-#### Boxplot
+#### Boxplot subroutine
 ####
+###############################################################
 
 const boxplot_box_lstyle = """
     \tset lstyle blstyle lwidth blwidth color blcolor\$
@@ -104,16 +106,76 @@ const boxplot_args = ("p wlow q25 q50 q75 whigh mean ", # NOTE don't forget spac
                       "medlstyle medlwidth medcolor\$ ",
                       "mshow mmarker\$ mmsize mmcol\$ ")
 
-GLE_DRAW_SUB["boxplot_vert"] = """
+GLE_DRAW_SUB["bp_vert"] = """
     sub boxplot_vert $(prod(boxplot_args))
         set cap round ! open lines have rounded ends
         $boxplot_core_vertical
     end sub
     """
 
-GLE_DRAW_SUB["boxplot_horiz"] = """
+GLE_DRAW_SUB["bp_horiz"] = """
     sub boxplot_horiz $(prod(boxplot_args))
         set cap round ! open lines have rounded ends
         $boxplot_core_horizontal
     end sub
     """
+
+###############################################################
+####
+#### Heatmap Subroutine
+####
+###############################################################
+
+"""
+    add_sub_marker!(f, m)
+
+Internal function to add a heatmap subroutine to the GLE script.
+"""
+function add_sub_heatmap!(f::Figure, hm::Heatmap, hashid::UInt)
+
+    #=
+    if zij <= 1 then
+        col$ = firstcolor
+    else if zij <=2 then
+        col$ = secondcolor
+    ...
+    else
+        col$ = missingcolor
+    end
+    =#
+    ifpart = """
+        \n\t\tif zij <= 1 then        ! both 0 and 1
+            cij\$ = \"$(col2str(hm.cmap[1]))\"
+        """
+    for k ∈ 2:length(hm.cmap)-1
+        ifpart *= """
+            \n\t\telse if zij <= $k then
+                cij\$ = \"$(col2str(hm.cmap[k]))\"
+            """
+    end
+    ifpart *= """
+        \n\t\telse
+            cij\$ = \"$(col2str(hm.cmiss))\"
+        end if
+        """
+
+    boxpart = ifelse(hm.transpose, """
+        \t\tamove xg((i-1)*bh) yg(1-j*bw)
+        box xg(bh)-xg(0) yg(bw)-yg(0) nobox fill cij\$
+        """, """
+        \t\tamove xg((j-1)*bw) yg(1-i*bh)
+        box xg(bw)-xg(0) yg(bh)-yg(0) nobox fill cij\$
+        """)
+
+    f.subroutines["hm_$hashid"] = """
+        sub hm_$hashid j ds\$ bw bh
+            for i = 1 to ndata(ds\$)
+                zij = datayvalue(ds\$,i)
+                cij\$ = \"\"
+                $ifpart
+                $boxpart
+            next i
+        end sub
+        """
+    return nothing
+end
