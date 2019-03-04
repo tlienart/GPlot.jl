@@ -33,6 +33,8 @@ abstract type Axes{B <: Backend} end
     # -- toggle-able
     math::Bool = false # axis crossing (0, 0)
     off::Bool = false
+    # --
+    scale::String = "auto"
 end
 
 

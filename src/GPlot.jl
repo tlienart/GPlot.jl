@@ -85,9 +85,9 @@ include("utils.jl")
 # Type of objects
 include("types/style.jl")
 include("types/drawing.jl")
-include("types/object.jl")
 include("types/ax_elems.jl")
 include("types/legend.jl")
+include("types/object.jl")
 include("types/ax.jl")
 include("types/figure.jl")
 

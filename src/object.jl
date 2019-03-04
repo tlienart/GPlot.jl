@@ -94,3 +94,27 @@ function box(size::Tuple, anchor::Tuple; axes=nothing, o...)
     push!(axes.objects, b)
     return preview()
 end
+
+
+"""
+    colorbar()
+
+Add a colorbar on a side of the axes.
+"""
+function colorbar(zmin::Real, zmax::Real, cmap::Vector{<:Color}; axes=nothing, o...)
+    axes = check_axes(axes)
+    # check if there is an existing colorbar, if so remove it
+    mask = isa.(axes.objects, Colorbar)
+    # disable 'scale auto' (to have space around the axes)
+    axes.scale = ""
+    b = Colorbar(zmin=fl(zmin), zmax=fl(zmax), cmap=cmap,
+                 ticks=Ticks(places=collect(range(zmin, zmax, length=5))[2:end-1]),
+                 position="top", offset=(0.0, 0.3))
+#    set_properties!(b; defer_preview=true, o...)
+    if any(mask)
+        axes.objects[findfirst(mask)] = b
+    else
+        push!(axes.objects, b)
+    end
+    return preview()
+end

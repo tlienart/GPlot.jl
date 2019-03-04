@@ -135,7 +135,6 @@ GLE_DRAW_SUB["bp_horiz"] = """
 Internal function to add a heatmap subroutine to the GLE script.
 """
 function add_sub_heatmap!(f::Figure, hm::Heatmap, hashid::UInt)
-
     #=
     if zij <= 1 then
         col$ = firstcolor
@@ -187,8 +186,6 @@ end
 ###############################################################
 
 function add_sub_palette!(f::Figure, vc::Vector{<:Color})
-    # TODO
-    # - add to subroutines load
     nc   = length(vc)-1
     incr = 1/(length(vc)-1)
     bot = vc[1]

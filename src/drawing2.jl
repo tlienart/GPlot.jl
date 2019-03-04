@@ -87,7 +87,7 @@ function boxplot(ys...; axes=nothing, o...)
             end
         end
     end
-    return preview() # not a handle, this does not have a legend
+    return DrawingHandle(bp)
 end
 
 ####
@@ -198,5 +198,5 @@ function heatmap(data::Matrix{<:CanMiss{Real}}; axes=nothing, o...)
     end
     x2ticks("off")
     y2ticks("off")
-    return preview()
+    return DrawingHandle(h)
 end

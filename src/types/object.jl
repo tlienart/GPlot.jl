@@ -53,3 +53,24 @@ Place a 2D filled box.
     # text::String
     # textStyle::TextStyle = TextStyle()
 end
+
+
+"""
+    Colorbar <: Object2D
+
+Add a colorbar.
+"""
+@with_kw mutable struct Colorbar <: Object2D
+    zmin::Float64
+    zmax::Float64
+    cmap::Vector{Color}
+    ticks::Ticks
+    # --
+    names::Option{Vector{String}} = ∅
+    size::Option{T2F}             = ∅ # (width, height)
+    # --
+    pixels::Int       = 100     # resolution for the color bar
+    nobox::Bool       = true    #
+    position::String  = "right" # left, right, bottom, top
+    offset::T2F       = (0.3, 0.0)
+end
