@@ -21,9 +21,9 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     plot!, scatter!, fill_between!, hist!, bar!,  # append mode
     plot, scatter, fill_between, hist, bar,       # new/overwrite mode
     # -- special drawings
-    boxplot,
+    boxplot, heatmap, heatmap_ticks,
     # Objects
-    text, vline, hline, line, box, heatmap, heatmap_ticks,
+    text, vline, hline, line, box, colorbar,
     # Axis / Axes
     # -- legend
     legend,

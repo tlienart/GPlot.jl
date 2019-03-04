@@ -12,11 +12,11 @@ function set_position!(o::Union{Legend,Box2D}, v::String)
 end
 
 """
-   set_nobox!(legend, b)
+   set_nobox!(o, b)
 
-Internal function to toggle nobox on or off for the legend.
+Internal function to toggle nobox on or off for an object.
 """
-set_nobox!(o::Union{Legend,Box2D}, b::Bool) = (o.nobox = b)
+set_nobox!(o::Union{Legend,Box2D,Colorbar}, b::Bool) = (o.nobox = b)
 
 """
    set_margins!(legend, m)
@@ -26,9 +26,8 @@ Internal function to set the margins of the legend (internal distance from legen
 set_margins!(o::Legend, m::T2F) = (o.margins = m)
 
 """
-   set_offset!(legend, m)
+   set_offset!(obj, m)
 
-Internal function to set the offset of the legend (external distance from legend box to its
-position anchor.
+Internal function to set the offset of the object (external distance from object to axis).
 """
-set_offset!(o::Legend, v::T2F) = (o.offset = v)
+set_offset!(o::Union{Legend,Colorbar}, v::T2F) = (o.offset = v)
