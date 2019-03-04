@@ -44,6 +44,10 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
     foreach(a -> apply_axes!(gtemp, a, f.id), f.axes)
     if !isempty(f.subroutines)
         ks = keys(f.subroutines)
+        # subroutines for palettes
+        for key ∈ filter(k->startswith(k, "cmap_"), ks)
+            f.subroutines[key] |> g
+        end
         # subroutines for drawings
         for key ∈ filter(k->startswith(k, r"bp_|hm_"), ks) # boxplot, heatmap
             f.subroutines[key] |> g

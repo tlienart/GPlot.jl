@@ -195,28 +195,26 @@ function add_sub_palette!(f::Figure, vc::Vector{<:Color})
     top = vc[2]
     core = """
         local r = 0
-        local g = 0
-        local b = 0
-        if (z <= $incr) then
-            r = $(round3d(bot.r))*(1-z*$nc)+$(round3d(top.r))*z*$nc
-            g = $(round3d(bot.g))*(1-z*$nc)+$(round3d(top.g))*z*$nc
-            b = $(round3d(bot.b))*(1-z*$nc)+$(round3d(top.b))*z*$nc
+        \tlocal g = 0
+        \tlocal b = 0
+        \tif (z <= $incr) then
+        \t    r = $(round3d(bot.r))*(1-z*$nc)+$(round3d(top.r))*z*$nc
+        \t    g = $(round3d(bot.g))*(1-z*$nc)+$(round3d(top.g))*z*$nc
+        \t    b = $(round3d(bot.b))*(1-z*$nc)+$(round3d(top.b))*z*$nc
         """
     for i ∈ 2:length(vc)-1
         bot = vc[i] # bottom color
         top = vc[i+1]   # top color
         core *= """
-            else if ($(incr*(i-1)) < z) and (z <= $(incr*i)) then
-                r = $(round3d(bot.r))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.r))*(z-$(incr*(i-1)))*$nc
-                g = $(round3d(bot.g))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.g))*(z-$(incr*(i-1)))*$nc
-                b = $(round3d(bot.b))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.b))*(z-$(incr*(i-1)))*$nc
-        """
+            \telse if ($(incr*(i-1)) < z) and (z <= $(incr*i)) then
+            \t    r = $(round3d(bot.r))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.r))*(z-$(incr*(i-1)))*$nc
+            \t    g = $(round3d(bot.g))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.g))*(z-$(incr*(i-1)))*$nc
+            \t    b = $(round3d(bot.b))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.b))*(z-$(incr*(i-1)))*$nc
+            """
     end
-    core *= """
-        end if
-        """
+    core *= """\tend if"""
 
-    pname = "plt_$(hash(vc))"
+    pname = "cmap_$(hash(vc))"
     pname ∈ keys(f.subroutines) && return nothing
     f.subroutines[pname] = """
         sub $pname z
