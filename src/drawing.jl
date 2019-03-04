@@ -46,7 +46,7 @@ function histdata(x::AV{<:CanMiss{<:Real}})
     return (data=zip(x),
             hasmissing=(Missing <: eltype(x)),
             nobs=sum(e->1, sx),
-            range=fl((minimum(sx), maximum(sx))))
+            range=fl(extrema(sx)))
 end
 
 

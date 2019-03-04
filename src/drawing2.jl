@@ -150,9 +150,7 @@ function heatmap(data::Matrix{<:CanMiss{Real}}; axes=nothing, o...)
 
     ncolors = length(h.cmap)
 
-    smd  = skipmissing(data)
-    minv = minimum(smd)
-    maxv = maximum(smd)
+    minv, maxv = extrema(skipmissing(data))
     incr = (maxv - minv) / ncolors
 
     data2 = Matrix{Int}(undef, nrows, ncols)

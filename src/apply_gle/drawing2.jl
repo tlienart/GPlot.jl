@@ -6,7 +6,7 @@ function apply_drawing!(g::GLE, bp::Boxplot,
                         el_counter::Int, origin::T2F, figid::String)
 
     # 1. add boxplot subroutines (verticald and horizontal) if not there already
-    subname = ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert")
+    subname = ifelse(bp.horiz, "bp_horiz", "bp_vert")
     f = Figure(figid; _noreset=true)
     if subname ∉ keys(f.subroutines)
         f.subroutines[subname] = GLE_DRAW_SUB[subname]
@@ -20,7 +20,7 @@ function apply_drawing!(g::GLE, bp::Boxplot,
 
         # 2. call the subroutine
         s = bp.boxstyles[k]
-        "\n\tdraw $(ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert"))" |> g
+        "\n\tdraw $(ifelse(bp.horiz, "bp_horiz", "bp_vert"))" |> g
         "$k $wlow $q25 $q50 $q75 $whigh $mean"                          |> g
         # box styling
         sbl = s.blstyle

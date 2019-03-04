@@ -33,22 +33,20 @@ const GLE_DRAW_SUB = Dict{String,String}()
 ####
 ###############################################################
 
-const boxplot_box_lstyle = """
-    \tset lstyle blstyle lwidth blwidth color blcolor\$
-    """
-const boxplot_med_lstyle = """
-    \tset lstyle medlstyle lwidth medlwidth color medcolor\$
-    """
+const boxplot_box_lstyle = """set lstyle blstyle lwidth blwidth color blcolor\$"""
+const boxplot_med_lstyle = """set lstyle medlstyle lwidth medlwidth color medcolor\$"""
 const boxplot_mean_mstyle = """
-    \t    gsave
-    \t    set color mmcol\$
-    \t    marker mmarker\$ mmsize
-    \t    grestore
-    """
-
+    gsave
+    \tset color mmcol\$
+    \tmarker mmarker\$ mmsize
+    \tgrestore"""
 const boxplot_core_vertical = """
+    ! -----------------------------------------
+    \t! SET LINE STYLE THEN DRAW BOX AND WHISKERS
+    \t! -----------------------------------------
     \tgsave
-    $boxplot_box_lstyle
+    \tset cap round
+    \t$boxplot_box_lstyle
     \tamove xg(p-wwidth/2) yg(wlow)
     \taline xg(p+wwidth/2) yg(wlow)
     \tamove xg(p) yg(wlow)
@@ -60,22 +58,28 @@ const boxplot_core_vertical = """
     \tamove xg(p-wwidth/2) yg(whigh)
     \taline xg(p+wwidth/2) yg(whigh)
     \tgrestore
-
+    \t! ------------------------------------
+    \t! SET LINE STYLE THEN DRAW MEDIAN LINE
+    \t! ------------------------------------
     \tgsave
-    $boxplot_med_lstyle
+    \t$boxplot_med_lstyle
     \tamove xg(p-bwidth/2) yg(q50)
     \taline xg(p+bwidth/2) yg(q50)
     \tgrestore
-
+    \t! --------------------------------------
+    \t! SET MARKER STYLE THEN DRAW MEAN MARKER
+    \t! --------------------------------------
     \tif (mshow > 0) then
     \t    amove xg(p) yg(mean)
-    $boxplot_mean_mstyle
-    \tend if
-    """
-
+    \t$boxplot_mean_mstyle
+    \tend if"""
 const boxplot_core_horizontal = """
+    ! -----------------------------------------
+    \t! SET LINE STYLE THEN DRAW BOX AND WHISKERS
+    \t! -----------------------------------------
     \tgsave
-    $boxplot_box_lstyle
+    \tset cap round
+    \t$boxplot_box_lstyle
     \tamove xg(wlow) yg(p-wwidth/2)
     \taline xg(wlow) yg(p+wwidth/2)
     \tamove xg(wlow) yg(p)
@@ -87,34 +91,34 @@ const boxplot_core_horizontal = """
     \tamove xg(whigh) yg(p-wwidth/2)
     \taline xg(whigh) yg(p+wwidth/2)
     \tgrestore
-
+    \t! ------------------------------------
+    \t! SET LINE STYLE THEN DRAW MEDIAN LINE
+    \t! ------------------------------------
     \tgsave
-    $boxplot_med_lstyle
+    \t$boxplot_med_lstyle
     \tamove xg(q50) yg(p-bwidth/2)
     \taline xg(q50) yg(p+bwidth/2)
     \tgrestore
-
+    \t! --------------------------------------
+    \t! SET MARKER STYLE THEN DRAW MEAN MARKER
+    \t! --------------------------------------
     \tif (mshow > 0) then
     \t    amove xg(mean) yg(p)
-    $boxplot_mean_mstyle
-    \tend if
-    """
-
+    \t    $boxplot_mean_mstyle
+    \tend if"""
 const boxplot_args = ("p wlow q25 q50 q75 whigh mean ", # NOTE don't forget space at the end
                       "bwidth wwidth blstyle blwidth blcolor\$ ",
                       "medlstyle medlwidth medcolor\$ ",
                       "mshow mmarker\$ mmsize mmcol\$ ")
 
 GLE_DRAW_SUB["bp_vert"] = """
-    sub boxplot_vert $(prod(boxplot_args))
-        set cap round ! open lines have rounded ends
+    sub bp_vert $(prod(boxplot_args))
         $boxplot_core_vertical
     end sub
     """
 
 GLE_DRAW_SUB["bp_horiz"] = """
     sub boxplot_horiz $(prod(boxplot_args))
-        set cap round ! open lines have rounded ends
         $boxplot_core_horizontal
     end sub
     """
@@ -143,26 +147,26 @@ function add_sub_heatmap!(f::Figure, hm::Heatmap, hashid::UInt)
     end
     =#
     ifpart = """
-        \n\t\tif zij <= 1 then        ! both 0 and 1
+        \nif zij <= 1 then        ! both 0 and 1
             cij\$ = \"$(col2str(hm.cmap[1]))\"
         """
     for k ∈ 2:length(hm.cmap)-1
         ifpart *= """
-            \n\t\telse if zij <= $k then
+            \nelse if zij <= $k then
                 cij\$ = \"$(col2str(hm.cmap[k]))\"
             """
     end
     ifpart *= """
-        \n\t\telse
+        \nelse
             cij\$ = \"$(col2str(hm.cmiss))\"
         end if
         """
 
     boxpart = ifelse(hm.transpose, """
-        \t\tamove xg((i-1)*bh) yg(1-j*bw)
+        amove xg((i-1)*bh) yg(1-j*bw)
         box xg(bh)-xg(0) yg(bw)-yg(0) nobox fill cij\$
         """, """
-        \t\tamove xg((j-1)*bw) yg(1-i*bh)
+        amove xg((j-1)*bw) yg(1-i*bh)
         box xg(bw)-xg(0) yg(bh)-yg(0) nobox fill cij\$
         """)
 
@@ -196,9 +200,9 @@ function add_sub_palette!(f::Figure, vc::Vector{<:Color})
     top = vc[2]
     core = """
         local r = 0
-        \tlocal g = 0
-        \tlocal b = 0
-        \tif (z <= $incr) then
+        local g = 0
+        local b = 0
+        if (z <= $incr) then
             r = $(round3d(bot.r))*(1-z*$nc)+$(round3d(top.r))*z*$nc
             g = $(round3d(bot.g))*(1-z*$nc)+$(round3d(top.g))*z*$nc
             b = $(round3d(bot.b))*(1-z*$nc)+$(round3d(top.b))*z*$nc
@@ -207,14 +211,14 @@ function add_sub_palette!(f::Figure, vc::Vector{<:Color})
         bot = vc[i] # bottom color
         top = vc[i+1]   # top color
         core *= """
-            \telse if ($(incr*(i-1)) < z) and (z <= $(incr*i)) then
+            else if ($(incr*(i-1)) < z) and (z <= $(incr*i)) then
                 r = $(round3d(bot.r))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.r))*(z-$(incr*(i-1)))*$nc
                 g = $(round3d(bot.g))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.g))*(z-$(incr*(i-1)))*$nc
                 b = $(round3d(bot.b))*(1-(z-$(incr*(i-1)))*$nc)+$(round3d(top.b))*(z-$(incr*(i-1)))*$nc
         """
     end
     core *= """
-        \tend if
+        end if
         """
 
     pname = "plt_$(hash(vc))"
