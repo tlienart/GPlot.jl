@@ -131,12 +131,10 @@ Note: handles missing values but not NaN or Inf.
 """
 function heatmap(data::Matrix{<:CanMiss{Real}}; axes=nothing, o...)
     # TODO:
-    #  - missings should be displayed as white?
     #  - deal with tables instead of forcing matrices?
-    # ==================================
-    # compute the color assignment
-    nrows, ncols = size(data)
+    # ================================================
 
+    nrows, ncols = size(data)
     min(nrows, ncols) <= 1000 || throw(ArgumentError("The matrix is too large to be displayed " *
                                                      "as a heatmap."))
 
@@ -198,9 +196,7 @@ function heatmap(data::Matrix{<:CanMiss{Real}}; axes=nothing, o...)
     else
         yticks(yplaces[masky], ["$i" for i ∈ masky]; axes=axes, fontsize=12)
     end
-
     x2ticks("off")
     y2ticks("off")
-
     return preview()
 end

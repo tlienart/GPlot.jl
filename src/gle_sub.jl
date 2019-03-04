@@ -147,28 +147,23 @@ function add_sub_heatmap!(f::Figure, hm::Heatmap, hashid::UInt)
     end
     =#
     ifpart = """
-        \nif zij <= 1 then        ! both 0 and 1
-            cij\$ = \"$(col2str(hm.cmap[1]))\"
-        """
+        if zij <= 1 then
+        \t\t    cij\$ = \"$(col2str(hm.cmap[1]))\""""
     for k ∈ 2:length(hm.cmap)-1
         ifpart *= """
-            \nelse if zij <= $k then
-                cij\$ = \"$(col2str(hm.cmap[k]))\"
-            """
+            \n\t\telse if zij <= $k then
+            cij\$ = \"$(col2str(hm.cmap[k]))\""""
     end
     ifpart *= """
-        \nelse
+        \n\t\telse
             cij\$ = \"$(col2str(hm.cmiss))\"
-        end if
-        """
+        end if"""
 
     boxpart = ifelse(hm.transpose, """
         amove xg((i-1)*bh) yg(1-j*bw)
-        box xg(bh)-xg(0) yg(bw)-yg(0) nobox fill cij\$
-        """, """
+        \t\tbox xg(bh)-xg(0) yg(bw)-yg(0) nobox fill cij\$""", """
         amove xg((j-1)*bw) yg(1-i*bh)
-        box xg(bw)-xg(0) yg(bh)-yg(0) nobox fill cij\$
-        """)
+        \t\tbox xg(bw)-xg(0) yg(bh)-yg(0) nobox fill cij\$""")
 
     f.subroutines["hm_$hashid"] = """
         sub hm_$hashid j ds\$ bw bh

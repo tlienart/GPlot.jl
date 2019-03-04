@@ -49,12 +49,13 @@ function apply_drawing!(g::GLE, hm::Heatmap,
     hashid = hash((origin, figid))
     add_sub_heatmap!(Figure(figid; _noreset=true), hm, hashid)
 
-    # 2. write the zfile (XXX transpose if columns > 1000)
+    # 2. write the zfile
     faux = auxpath(hash(hm.data), origin, figid)
     isfile(faux) || csv_writer(faux, hm.transpose ? hm.data' : hm.data, false)
 
     nrows, ncols = size(hm.data)
-    bw, bh = inv.((nrows, ncols))
+    bw, bh = inv.((ncols, nrows))
+    hm.transpose && (tmp = bw; bw = bh; bh = bw)
 
     nct = ifelse(hm.transpose, nrows, ncols)
 
