@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Styling options",
     "category": "section",
-    "text": "Line and scatter plots have effectively two things they can get styled:the line styles\nthe marker stylesNote the plural, so that if you are plotting multiple lines at once, each keyword accepts a vector of elements to style the individual plots. Note that if a styling option is specified with a scalar but multiple lines are being plotted, all will have that same option.For instance:plot(randn(10, 3), colors=[\"violet\", \"navyblue\", \"orange\"], lwidth=0.2)(Image: )"
+    "text": "Line and scatter plots have effectively two things they can get styled:the line styles\nthe marker stylesNote the plural, so that if you are plotting multiple lines at once, each keyword accepts a vector of elements to style the individual plots. If a styling option is specified with a scalar but multiple lines are being plotted, all will have that same option.For instance:plot(randn(10, 3), colors=[\"violet\", \"navyblue\", \"orange\"], lwidth=0.1)(Image: )"
 },
 
 {
@@ -93,7 +93,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Line style options",
     "category": "section",
-    "text": "line style [ls , lstyle, linestyle, lstyles and linestyles]: take a string (or vector of strings) describing how the line(s) will look like.\nline width [lw, lwidth, linewidth, lwidths and linewidths]: takes a positive number (or vector of positive numbers) describing how thick the line should be in cm.\nline color [col, color, cols and colors]: take a string or a Color (from the Colors.jl package).\nsmoothness:"
+    "text": "For each of these options, it should be understood that you can either pass a single value or a vector of values.line style [ls , lstyle, linestyle, lstyles and linestyles]: take a string describing how the line(s) will look like.Value Result Comment\n\"-\" (Image: ) default for plot\n\"--\" (Image: ) \n\"-.\" (Image: ) \n\"none\"  default for scatterline width [lw, lwidth, linewidth, lwidths and linewidths]: take a positive number describing how thick the line should be in centimeters.Value Result Comment\n0.001 (Image: ) \n0.01 (Image: ) \n0.05 (Image: ) \n0.1 (Image: ) \n0 (Image: ) default value, corresponds to 0.02line color [col, color, cols and colors]: take a string (most SVG color name) or a Color object (from the Colors.jl package) describing how the line should be coloured.Value Result\n\"cornflowerblue\" (Image: )\n\"forestgreen\" (Image: )\n\"indigo\" (Image: )\n\"RGB(0.5,0.7,0.2)\" (Image: )Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.smoothness: [smooth and smooths]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, smooth=false) or out of interpolating splines (smooth=true). The latter may look nicer for plots that represent a continuous function when there aren\'t many points.x = range(-2, 2, length=20)\ny1 = @. sin(exp(-x)) + 0.5\ny2 = @. sin(exp(-x)) - 0.5\nplot(x, y1; label=\"unsmoothed\")\nplot!(x, y2; smooth=true, label=\"smoothed\")\nlegend()(Image: )Here\'s another example combining several options:x = range(0, 2, length=100)\nfor α ∈ 0.01:0.05:0.8\n    plot!(x, x.^α, lwidth=α/10, col=RGB(0.0,0.0,α), smooth=true)\nend(Image: )"
 },
 
 {
