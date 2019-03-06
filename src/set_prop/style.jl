@@ -13,8 +13,10 @@ set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
 
 set_color!(o::Hist2D, c) = (o.barstyle.color = c)
 set_color!(o::Union{Ticks,StraightLine2D,Box2D}, c) = (o.linestyle.color = c)
+set_color!(o::Colorbar, c) = set_color!(o.ticks, c)
 
 set_textcolor!(o::Ticks, c) = (o.labels.textstyle.color = c)
+set_textcolor!(o::Colorbar, c) = set_textcolor!(o.ticks, c)
 set_textcolor!(o::Union{Figure,Axis,Title}, c) = (o.textstyle.color = c)
 
 """
@@ -85,6 +87,7 @@ function set_font!(obj, font::String)
     return nothing
 end
 set_font!(o::Ticks, font::String) = set_font!(o.labels, font)
+set_font!(o::Colorbar, font::String) = set_font!(o.ticks, font)
 
 """
     set_hei!(obj, fontsize)
@@ -92,6 +95,7 @@ set_font!(o::Ticks, font::String) = set_font!(o.labels, font)
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
 set_hei!(o::Ticks, v::Float64) = (o.labels.textstyle.hei = v * PT_TO_CM)
+set_hei!(o::Colorbar, v::Float64) = set_hei!(o.ticks, v)
 set_hei!(o, v::Float64)        = (o.textstyle.hei = v * PT_TO_CM)
 
 ####

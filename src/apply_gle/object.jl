@@ -94,43 +94,128 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
     ticks ./= (obj.zmax - obj.zmin) # now ticks on [0.0, 1.0]
 
     if obj.position == "right"
-        for (i, tick) ∈ enumerate(ticks)
-            "\namove xg(xgmax)+$dx+$width yg(ygmin)+$dy+$height*$tick" |> g
-            # XXX use parameters: length, shift, ticks label
-            "\nrline $width/3 0" |> g # draw tick
-            "\nrmove $width/3 0" |> g # move a bit more to write the label
-            "\nset just lc"      |> g
-            "\nwrite $(round(obj.ticks.places[i], digits=1))" |> g
+        if !(obj.ticks.off)
+            tlength = isdef(obj.ticks.length) ? obj.ticks.length : "$width/3"
+            "\ngsave"    |> g
+            apply_linestyle!(g, obj.ticks.linestyle; nosmooth=true, addset=true)
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmax)+$dx+$width yg(ygmin)+$dy+$height*$tick" |> g
+                "\nrline $tlength 0" |> g # draw tick
+            end
+            "\ngrestore" |> g
+        end
+        if !(obj.ticks.labels.off)
+            offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
+            shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
+            "\ngsave"    |> g
+            apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
+            # retrieve the labels
+            labels = obj.ticks.labels.names
+            if isempty(labels)
+                labels = ["$(round(obj.ticks.places[i], digits=1))" for i ∈ 1:length(ticks)]
+            end
+            # write them
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmax)+$dx+$width yg(ygmin)+$dy+$height*$tick" |> g
+                "\nrmove $offset 0"    |> g # move a bit more to write the label
+                "\nrmove 0 $shift"     |> g # shift vertical
+                "\nset just lc"        |> g # justify center wrt anchor
+                "\nwrite $(labels[i])" |> g # write label
+            end
+            "\ngrestore" |> g
         end
     elseif obj.position == "left"
-        "\namove xg(xgmin)-$dx yg(ygmin)+$dy" |> g
-        for (i, tick) ∈ enumerate(ticks)
-            "\namove xg(xgmin)-$dx-0.3-$width yg(ygmin)+$dy+$height*$tick" |> g
-            # XXX use parameters: length, shift, ticks label
-            "\nrline -$width/3 0" |> g # draw tick
-            "\nrmove -$width/3 0" |> g # move a bit more to write the label
-            "\nset just rc"       |> g
-            "\nwrite $(round(obj.ticks.places[i], digits=1))" |> g
+        if !(obj.ticks.off)
+            tlength = isdef(obj.ticks.length) ? obj.ticks.length : "$width/3"
+            "\ngsave"    |> g
+            apply_linestyle!(g, obj.ticks.linestyle; nosmooth=true, addset=true)
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmin)-$dx yg(ygmin)+$dy" |> g
+                "\nrline -$tlength 0" |> g # draw tick
+            end
+            "\ngrestore" |> g
+        end
+        if !(obj.ticks.labels.off)
+            offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
+            shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
+            "\ngsave"    |> g
+            apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
+            # retrieve the labels
+            labels = obj.ticks.labels.names
+            if isempty(labels)
+                labels = ["$(round(obj.ticks.places[i], digits=1))" for i ∈ 1:length(ticks)]
+            end
+            # write them
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmin)-$dx yg(ygmin)+$dy" |> g
+                "\nrmove -$offset 0"    |> g # move a bit more to write the label
+                "\nrmove 0 $shift"      |> g # shift vertical
+                "\nset just lc"         |> g # justify center wrt anchor
+                "\nwrite $(labels[i])"  |> g # write label
+            end
+            "\ngrestore" |> g
         end
     elseif obj.position == "bottom"
-        "\namove xg(xgmin)+$dx yg(ygmin)-$dy-0.3-$height" |> g
-        for (i, tick) ∈ enumerate(ticks)
-            "\namove xg(xgmin)+$dx+$width*$tick yg(ygmin)-$dy-0.3-$height" |> g
-            # XXX use parameters: length, shift, ticks label
-            "\nrline 0 -$height/3" |> g # draw tick
-            "\nrmove 0 -$height/3" |> g # move a bit more to write the label
-            "\nset just tc"        |> g
-            "\nwrite $(round(obj.ticks.places[i], digits=1))" |> g
+        if !(obj.ticks.off)
+            tlength = isdef(obj.ticks.length) ? obj.ticks.length : "$height/3"
+            "\ngsave"    |> g
+            apply_linestyle!(g, obj.ticks.linestyle; nosmooth=true, addset=true)
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmin)+$dx yg(ygmin)-$dy-0.3-$height" |> g
+                "\nrline 0 -$tlength" |> g # draw tick
+            end
+            "\ngrestore" |> g
+        end
+        if !(obj.ticks.labels.off)
+            offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
+            shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
+            "\ngsave"    |> g
+            apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
+            # retrieve the labels
+            labels = obj.ticks.labels.names
+            if isempty(labels)
+                labels = ["$(round(obj.ticks.places[i], digits=1))" for i ∈ 1:length(ticks)]
+            end
+            # write them
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmin)+$dx yg(ygmin)-$dy-0.3-$height" |> g
+                "\nrmove 0 -$offset"    |> g # move a bit more to write the label
+                "\nrmove $shift 0"      |> g # shift horizontal
+                "\nset just lc"         |> g # justify center wrt anchor
+                "\nwrite $(labels[i])"  |> g # write label
+            end
+            "\ngrestore" |> g
         end
     else
-        "\namove xg(xgmin)+$dx yg(ygmax)+$dy" |> g
-        for (i, tick) ∈ enumerate(ticks)
-            "\namove xg(xgmin)+$dx+$width*$tick yg(ygmax)+$dy+$height" |> g
-            # XXX use parameters: length, shift, ticks label
-            "\nrline 0 $height/3" |> g # draw tick
-            "\nrmove 0 $height/3" |> g # move a bit more to write the label
-            "\nset just bc"       |> g
-            "\nwrite $(round(obj.ticks.places[i], digits=1))" |> g
+        if !(obj.ticks.off)
+            tlength = isdef(obj.ticks.length) ? obj.ticks.length : "$height/3"
+            "\ngsave"    |> g
+            apply_linestyle!(g, obj.ticks.linestyle; nosmooth=true, addset=true)
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmin)+$dx yg(ygmax)+$dy" |> g
+                "\nrline 0 $tlength" |> g # draw tick
+            end
+            "\ngrestore" |> g
+        end
+        if !(obj.ticks.labels.off)
+            offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
+            shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
+            "\ngsave"    |> g
+            apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
+            # retrieve the labels
+            labels = obj.ticks.labels.names
+            if isempty(labels)
+                labels = ["$(round(obj.ticks.places[i], digits=1))" for i ∈ 1:length(ticks)]
+            end
+            # write them
+            for (i, tick) ∈ enumerate(ticks)
+                "\namove xg(xgmin)+$dx yg(ygmax)+$dy" |> g
+                "\nrmove 0 $offset"     |> g # move a bit more to write the label
+                "\nrmove $shift 0"      |> g # shift horizontal
+                "\nset just lc"         |> g # justify center wrt anchor
+                "\nwrite $(labels[i])"  |> g # write label
+            end
+            "\ngrestore" |> g
         end
     end
     return nothing

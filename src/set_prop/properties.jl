@@ -470,6 +470,7 @@ const COLORBAR_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :labels     => id     => set_labels!,
     )
 merge!(COLORBAR_OPTS, TICKS_OPTS)
+merge!(COLORBAR_OPTS, TEXTSTYLE_OPTS)
 set_properties!(b::Colorbar; opts...) = set_properties!(COLORBAR_OPTS, b; opts...)
 
 ###############################################################
