@@ -419,6 +419,12 @@ const BOXPLOT_OPTS = Dict{Symbol,Pair{Function,Function}}(
     )
 set_properties!(bp::Boxplot; opts...) = set_properties!(BOXPLOT_OPTS, bp; opts...)
 
+const HEATMAP_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    :cmap     => col => set_cmap!,
+    :colormap => col => set_cmap!,
+    )
+set_properties!(h::Heatmap; opts...) = set_properties!(HEATMAP_OPTS, h; opts...)
+
 
 ###############################################################
 ####
@@ -450,22 +456,22 @@ const BOX2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
 merge!(BOX2D_OPTS, LINESTYLE_OPTS)
 set_properties!(b::Box2D; opts...) = set_properties!(BOX2D_OPTS, b; opts...)
 
-const HEATMAP_OPTS = Dict{Symbol,Pair{Function,Function}}(
-    # labels
-    :xnames   => id  => set_xnames!,
-    :xlabels  => id  => set_xnames!,
-    :ynames   => id  => set_ynames!,
-    :ylabels  => id  => set_ynames!,
-    :x2names  => id  => set_x2names!,
-    :x2labels => id  => set_x2names!,
-    :y2names  => id  => set_y2names!,
-    :y2labels => id  => set_y2names!,
-    # colormap
-    :cmap     => col => set_colormap!,
-    :colormap => col => set_colormap!,
+const COLORBAR_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    :pixels     => posint => set_pixels!, # set object
+    :res        => posint => set_pixels!, # .
+    :resolution => posint => set_pixels!, # .
+    :nobox      => id     => set_nobox!,  # set legend
+    :box        => not    => set_nobox!,  # .
+    :pos        => id     => set_position!, # set object
+    :position   => id     => set_position!, # .
+    :offset     => fl     => set_offset!,  # set legend
+    :size       => posfl  => set_size!, # set figure
+    :ticks      => fl     => set_ticks!, # set object
+    :labels     => id     => set_labels!,
     )
-set_properties!(h::Heatmap; opts...) = set_properties!(HEATMAP_OPTS, h; opts...)
-
+merge!(COLORBAR_OPTS, TICKS_OPTS)
+merge!(COLORBAR_OPTS, TEXTSTYLE_OPTS)
+set_properties!(b::Colorbar; opts...) = set_properties!(COLORBAR_OPTS, b; opts...)
 
 ###############################################################
 ####

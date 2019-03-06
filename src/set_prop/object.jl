@@ -1,17 +1,24 @@
-set_colormap!(h::Heatmap, c::Vector{<:Color}) = (h.colormap = c)
+"""
+    set_pixels!(o, v)
 
-for ax ∈ ["x", "x2", "y", "y2"]
-    a = Symbol("$(ax)names")
-    s = 1 + (ax ∈ ["x", "x2"]) # which dimension to check: x->ncols, y->nrows
-    f! = Symbol("set_$(a)!")
-    ex = quote
-        # set_xnames!, ...
-        function $f!(h::Heatmap, names::Vector{String})
-            size(h.data, $s) == length(names) || throw(DimensionMismatch("The names must match " *
-                                                "the dimensions of the data matrix."))
-            h.$a = names
-            return nothing
-        end
-    end
-    eval(ex)
+Internal function to set the number of pixels used for a color-range.
+"""
+set_pixels!(o::Colorbar, v::Int) = (o.pixels = v)
+
+function set_position!(o::Colorbar, v::String)
+    v_lc = lowercase(v)
+    v_lc ∈ ["left", "right", "top", "bottom"] || throw(ArgumentError("Unknown position value $v"))
+    o.position = v
+    return nothing
+end
+
+set_ticks!(o::Colorbar, v::Vector{Float64}) = (o.ticks.places = v; o.ticks.labels = TicksLabels())
+
+function set_labels!(o::Colorbar, v::Vector{String})
+    isempty(o.ticks.places) && throw(ArgumentError("You must specify the ticks position before " *
+                                                   "the labels."))
+    length(o.ticks.places) == length(v) || throw(ArgumentError("The dimensions of ticks places " *
+                                                               "and labels don't match."))
+    o.ticks.labels.names = v
+    return nothing
 end

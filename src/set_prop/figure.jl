@@ -1,9 +1,9 @@
 """
    set_size!(o, t)
 
-Internal function to set a tuple indicating (width, height) size of the figure.
+Internal function to set a tuple indicating (width, height) size of the object.
 """
-set_size!(o::Figure, t::T2F) = (o.size = t)
+set_size!(o::Union{Figure,Colorbar}, t::T2F) = (o.size = t)
 
 """
    set_texlabels!(o, v)

@@ -46,3 +46,10 @@ set_xmax!(o::Fill2D, v::Float64) = (o.xmax = v)
 ####
 
 set_stacked!(o::Bar2D, v::Bool) = (o.stacked = v)
+
+
+####
+#### Heatmap
+####
+
+set_cmap!(h::Heatmap, c::Vector{<:Color}) = (h.cmap = c)
