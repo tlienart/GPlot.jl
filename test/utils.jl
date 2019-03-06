@@ -63,7 +63,7 @@ end
     @test gca() === nothing
 
     m = G.MarkerStyle("circle", 0.5, colorant"blue")
-    @test G.str(m) == "marker_circle_rgba_0_0_0_0_1_0_1_0_"
+    @test G.str(m) == "mk_circle_rgba_0_0_0_0_1_0_1_0_"
 
     set_palette([colorant"blue", colorant"red"])
     @test G.GP_ENV["PALETTE"] == [colorant"blue", colorant"red"]
