@@ -23,6 +23,7 @@ unchanged
 - Latex
 
 -- t"x^{\star}" will work but t"\sqrt" won't unless you use TeX in the figure. (need to show examples for this)
+-- \it , \bf
 
 =#
 ```

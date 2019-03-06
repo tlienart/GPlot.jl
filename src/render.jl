@@ -90,19 +90,19 @@ savefig(fn::String=""; opts...) = savefig(gcf(), fn; opts...)
 
 
 """
-    PreviewFigure
+    PreviewFigure{S}
 
-Internal type to wrap around a figure that is to be previewed. A draft PNG file will be generated
-for quick preview in IJulia or Atom.
+Internal type to wrap around a figure that is to be previewed. A draft PNG file will be generated for quick preview in IJulia or Atom.
 """
-struct PreviewFigure
+struct PreviewFigure{S}
     fig::Figure
 end
 
-preview(fig::Figure) = PreviewFigure(fig)
+preview(fig::Figure) = PreviewFigure{GP_ENV["CONT_PREVIEW"]}(fig)
 preview() = preview(gcf())
 
-function Base.show(io::IO, ::MIME"image/png", obj::Union{PreviewFigure,DrawingHandle})
+function Base.show(io::IO, ::MIME"image/png",
+                   obj::Union{PreviewFigure{true},DrawingHandle{D,true}}) where {D}
     GP_ENV["CONT_PREVIEW"] || return nothing
     disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
                 (isdefined(Main, :IJulia) && Main.IJulia.inited)
@@ -114,5 +114,10 @@ function Base.show(io::IO, ::MIME"image/png", obj::Union{PreviewFigure,DrawingHa
     # write to IO
     write(io, read(fname))
     GP_ENV["DEL_INTERM"] && rm(fname)
+    return nothing
+end
+
+function Base.show(io::IO, ::MIME"text/plain",
+                   obj::Union{PreviewFigure{false},DrawingHandle{D,false}}) where {D}
     return nothing
 end

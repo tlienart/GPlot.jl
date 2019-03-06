@@ -161,11 +161,9 @@ function apply_drawing!(g::GLE, hist::Hist2D,
     "from $minx to $maxx" |> g
     el_counter += 1
 
-    # number of bins (TODO: better criterion, see StatsPlots.jl)
+    # number of bins
     nobs = hist.nobs
-    nbauto = (nobs < 10) * nobs +
-             (10 <= nobs < 30) * 10 +
-             (nobs > 30) * min(round(Int, sqrt(nobs)), 150)
+    nbauto = (nobs == 0 ? 1 : ceil(Integer, log2(nobs))+1) # sturges, see StatsBase
     bins = isdef(hist.bins) ? hist.bins : nbauto
     "bins $bins" |> g
 
@@ -253,44 +251,4 @@ function apply_drawing!(g::GLE, bar::Bar2D,
     end
 
     return el_counter + nbars
-end
-
-####
-#### Apply Boxplot
-####
-
-function apply_drawing!(g::GLE, bp::Boxplot,
-                        el_counter::Int, origin::T2F, figid::String)
-
-    # 1. add boxplot subroutines (verticald and horizontal) if not there already
-    subname = ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert")
-    f = Figure(figid; _noreset=true)
-    if subname ∉ keys(f.subroutines)
-        f.subroutines[subname] = GLE_DRAW_SUB[subname]
-    end
-
-    for k ∈ 1:bp.nobj
-        # draw the boxplots one by one
-
-        # 1. retrieve the statistics
-        wlow, q25, q50, q75, whigh, mean = bp.stats[k, :]
-
-        # 2. call the subroutine
-        s = bp.boxstyles[k]
-        "\n\tdraw $(ifelse(bp.horiz, "boxplot_horiz", "boxplot_vert"))" |> g
-        "$k $wlow $q25 $q50 $q75 $whigh $mean"                          |> g
-        # box styling
-        sbl = s.blstyle
-        "$(s.bwidth) $(s.wwidth) $(sbl.lstyle) $(sbl.lwidth) \"$(col2str(sbl.color))\"" |> g
-        # median line
-        sml = s.mlstyle
-        "$(sml.lstyle) $(sml.lwidth) \"$(col2str(sml.color))\"" |> g
-        # mean marker NOTE: the marker size drawn by itself and in a plot are not scaled the same
-        # way, to make them scale the same way there is the division by textstyle.hei.
-        sm = s.mmstyle
-        "$(Int(s.mshow)) $(sm.marker) $(sm.msize/f.textstyle.hei) \"$(col2str(sm.color))\"" |> g
-
-        el_counter += 1
-    end
-    return el_counter
 end

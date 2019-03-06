@@ -21,3 +21,4 @@ include("object.jl")
 continuous_preview(_bk_cont_preview)
 G.GP_ENV["PALETTE"] = _bk_palette
 G.GP_ENV["SIZE_PALETTE"] = _bk_palette
+true

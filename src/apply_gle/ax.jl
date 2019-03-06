@@ -33,9 +33,12 @@ which is required in the `apply_drawings` subroutine that is called.
 """
 function apply_axes!(g::GLE, a::Axes2D, figid::String)
     a.off && return nothing
-    
+
     isdef(a.origin) && "\namove $(a.origin[1]) $(a.origin[2])" |> g
-    scale = ifelse(isdef(a.origin), "fullsize", "scale auto")
+    scale = ""
+    if a.scale != ""
+        scale = ifelse(isdef(a.origin), "fullsize", "scale $(a.scale)")
+    end
 
     # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     "\nbegin graph\n\t$scale"   |> g
@@ -63,7 +66,7 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
 
     # apply  legend and other floating objects
     isdef(a.legend)    && apply_legend!(g, a.legend, parent_font, figid)
-    isempty(a.objects) || apply_objects!(g, a.objects)
+    isempty(a.objects) || apply_objects!(g, a.objects, figid)
     return nothing
 end
 

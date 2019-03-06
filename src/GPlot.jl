@@ -21,9 +21,9 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     plot!, scatter!, fill_between!, hist!, bar!,  # append mode
     plot, scatter, fill_between, hist, bar,       # new/overwrite mode
     # -- special drawings
-    boxplot,
+    boxplot, heatmap, heatmap_ticks,
     # Objects
-    text, vline, hline, line,
+    text, vline, hline, line, box, colorbar,
     # Axis / Axes
     # -- legend
     legend,
@@ -85,9 +85,9 @@ include("utils.jl")
 # Type of objects
 include("types/style.jl")
 include("types/drawing.jl")
-include("types/object.jl")
 include("types/ax_elems.jl")
 include("types/legend.jl")
+include("types/object.jl")
 include("types/ax.jl")
 include("types/figure.jl")
 
@@ -108,6 +108,7 @@ include("set_prop/properties.jl")
 # Write objects to GLE buffer
 include("apply_gle/style.jl")
 include("apply_gle/drawing.jl")
+include("apply_gle/drawing2.jl")
 include("apply_gle/object.jl")
 include("apply_gle/ax_elems.jl")
 include("apply_gle/legend.jl")
@@ -115,8 +116,9 @@ include("apply_gle/ax.jl")
 include("apply_gle/figure.jl")
 
 # Main call for elements
-include("drawing.jl")
-include("object.jl")
+include("drawing.jl")   # plot, scatter, fill, hist, bar
+include("drawing2.jl")  # boxplot, heatmap
+include("object.jl")    # text, hline, vline, box
 include("ax.jl")
 include("ax_elem.jl")
 include("legend.jl")

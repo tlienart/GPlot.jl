@@ -14,9 +14,10 @@ Overarching type for objects displayable on `Axes2D`.
 abstract type Drawing2D <: Drawing end
 
 
-struct DrawingHandle{D<:Drawing}
+struct DrawingHandle{D<:Drawing,S}
     drawing::D
 end
+DrawingHandle(drawing) = DrawingHandle{typeof(drawing),GP_ENV["CONT_PREVIEW"]}(drawing)
 
 
 """
@@ -116,3 +117,18 @@ Boxplot(s).
     horiz::Bool = false # vertical boxplots by default
 end
 Boxplot(d, n) = Boxplot(stats=d, nobj=n, boxstyles=nvec(n, BoxplotStyle))
+
+
+"""
+    Heatmap <: Drawing2D
+
+Heatmap of a matrix.
+"""
+@with_kw mutable struct Heatmap <: Drawing2D
+    data::Matrix{Int}
+    cmap::Vector{Color} = colormap("RdBu", 10)
+    cmiss::Color = c"white" # box filling for missing values
+    transpose::Bool = false # whether to write the matrix as a transpose
+                            # this is useful because GLE can deal only with 1000-cols
+                            # files at most (at least with the way we do the heatmap now)
+end
