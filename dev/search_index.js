@@ -45,39 +45,95 @@ var documenterSearchIndex = {"docs": [
     "page": "Quick start",
     "title": "Quickstart",
     "category": "section",
-    "text": "Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions refer to the rest of the manual. We will draw a simple plot with two curves, labels, and basic axis styling.Let\'s start by creating a simple figurefig = Figure()note: Note\nit is not required to explicitly call Figure(); if no figure currently exists, the first plotting command will generate one with default parameters.Let\'s now define a function which we would like to plot over the range [-2.5, 2.5]:x = range(-2.5, stop=2.5, length=100)\ny = @. exp(-x^2) * sin(x)\nplot(x, f1.(x), label=\"plot 1\")\nlegend()where we\'ve used the @. syntax to indicate that the operations are done pointwise on x. The syntax should hopefully feel reasonable thus far.(Image: )Let\'s add another curve on this figure and change the colour; let\'s also specify axis limits, where the ticks have to be etc:y2 = @. sin(x^2) * exp(-x/10)\nplot!(x, y2, col=\"blue\", lwidth=0.05, label=\"plot 2\")\n\nxlabel(\"x-axis\")\nylabel(\"y-axis\")\nxticks([-pi/2, 0, pi/2], [\"π/2\", \"0\", \"π/2\"])\nylim(-1.5, 1.5)\nyticks(-1:0.25:1)\n\nlegend()One thing worth noting at this point is that we follow the julia Plots convention adding a ! after plot to indicate that it should modify the current graph without overwriting it (i.e. the curve is added on top of the existing one).(Image: )Now we can save this figure:savefig(fig, \"my_first_figure.pdf\")the command picks up the format (here .pdf) saves the file in the current folder.comment: Comment\nIf you got this far thinking that all this seems reasonable, have a look at the rest of the doc to learn how to plot what you want and how you want it 📊 ."
+    "text": "Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions refer to the rest of the manual. We will draw a simple plot with two curves, labels, and basic axis styling.Let\'s start by creating a simple figurefig = Figure()note: Note\nit is not required to explicitly call Figure(); if no figure currently exists, the first plotting command will generate one with default parameters.Let\'s now define a function which we would like to plot over the range [-2.5, 2.5]:x = range(-2.5, stop=2.5, length=100)\ny = @. exp(-x^2) * sin(x)\nplot(x, y, label=\"plot 1\")\nlegend()where we\'ve used the @. syntax to indicate that the operations are done pointwise on x. The syntax should hopefully feel reasonable thus far.(Image: )Let\'s add another curve on this figure and change the colour; let\'s also specify axis limits, where the ticks have to be etc:y2 = @. sin(x^2) * exp(-x/10)\nplot!(x, y2, col=\"blue\", lwidth=0.05, label=\"plot 2\")\n\nxlabel(\"x-axis\")\nylabel(\"y-axis\")\nxticks([-pi/2, 0, pi/2], [\"π/2\", \"0\", \"π/2\"])\nylim(-1.5, 1.5)\nyticks(-1:0.25:1)\n\nlegend()One thing worth noting at this point is that we follow the julia Plots convention adding a ! after plot to indicate that it should modify the current graph without overwriting it (i.e. the curve is added on top of the existing one).(Image: )Now we can save this figure:savefig(fig, \"my_first_figure.pdf\")the command picks up the format (here .pdf) saves the file in the current folder.comment: Comment\nIf you got this far thinking that all this seems reasonable, have a look at the rest of the doc to learn how to plot what you want and how you want it 📊 , happy plotting!"
 },
 
 {
-    "location": "man/basicplots/#",
-    "page": "Basic 2D plots",
-    "title": "Basic 2D plots",
+    "location": "man/line-scatter/#",
+    "page": "Line & Scatter plots",
+    "title": "Line & Scatter plots",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "man/basicplots/#Basic-Plots-1",
-    "page": "Basic 2D plots",
-    "title": "Basic Plots",
+    "location": "man/line-scatter/#Line-and-scatter-plot-1",
+    "page": "Line & Scatter plots",
+    "title": "Line and scatter plot",
     "category": "section",
     "text": ""
 },
 
 {
-    "location": "man/basicplots/#Line-and-scatter-plot-1",
-    "page": "Basic 2D plots",
-    "title": "Line and scatter plot",
+    "location": "man/line-scatter/#Basic-syntax-1",
+    "page": "Line & Scatter plots",
+    "title": "Basic syntax",
     "category": "section",
-    "text": "TBDplot is tied to data, if data changes, the plot will change too, so should be careful. Note that this is ONLY if the data is modified in place. So for instancex = randn(5)\ny = randn(5)\nplot(x, y)\nx = zeros(5)\nxlabel(\"blah\") # the graph will not have changedhoweverx = randn(5)\ny = randn(5)\nplot(x, y)\nx[1] = 0.0\nxlabel(\"blah\") # here the first point will be (0.0, y[1])Inf, NaN and Missings are all considered in the same way (as missings)."
+    "text": "The relevant commands here are plot, plot!, scatter and scatter!. The key command is a plot which is just a 2D line connecting a set of points; where plot by default shows a line and no marker, scatter by default shows markers and no line.The general syntax is:command(data_to_plot...; options...)a command with an exclamation mark will add the corresponding plot to the current active axes while a command without will erase any existing plot on the current active axes and then display the plot.For instance:x = range(-2.5, stop=2.5, length=100)\ny = @. exp(-x^2) * sin(x)\nplot(x, y)\nmask = 1:5:100\nscatter!(x[mask], y[mask])overlays a scatterplot to a line plot:(Image: )"
 },
 
 {
-    "location": "man/basicplots/#Bar-plot-1",
-    "page": "Basic 2D plots",
+    "location": "man/line-scatter/#Data-formats-1",
+    "page": "Line & Scatter plots",
+    "title": "Data formats",
+    "category": "section",
+    "text": "These commands take vectors or matrices of points, as long as the number of rows match you should be fine.Single vector x: the plot will correspond to the pairs (i x_i).For instance:plot(randn(5))(Image: )Two vectors x, y: the plot will correspond to the pairs (x_i y_i) (see e.g. the example earlier)\nMultiple vectors x, y, z: this will create multiple plots corresponding to the pairs (x_i y_i), (x_i z_i) etc.For instance:x = range(0, 1, length=100)\nplot(x, x.^2, x.^3, x.^4)(Image: )Single matrix X: the plots will correspond to the pairs (i X_i1), (i X_i2) etc.For instance:plot(randn(10, 3))(Image: )vector and matrices or vector x, Y, Z: will form plots corresponding to the pairs of x and each column in Y, Z etc.For instance:x = range(0, 1, length=25)\ny = @. sin(x)\nz = @. cos(x)\nt = y .+ z\nscatter(x, hcat(y, z), t)(Image: )"
+},
+
+{
+    "location": "man/line-scatter/#Styling-options-1",
+    "page": "Line & Scatter plots",
+    "title": "Styling options",
+    "category": "section",
+    "text": "Line and scatter plots have effectively two things they can get styled:the line styles\nthe marker stylesNote the plural, so that if you are plotting multiple lines at once, each keyword accepts a vector of elements to style the individual plots. Note that if a styling option is specified with a scalar but multiple lines are being plotted, all will have that same option.For instance:plot(randn(10, 3), colors=[\"violet\", \"navyblue\", \"orange\"], lwidth=0.2)(Image: )"
+},
+
+{
+    "location": "man/line-scatter/#Line-style-options-1",
+    "page": "Line & Scatter plots",
+    "title": "Line style options",
+    "category": "section",
+    "text": "line style [ls , lstyle, linestyle, lstyles and linestyles]: take a string (or vector of strings) describing how the line(s) will look like.\nline width [lw, lwidth, linewidth, lwidths and linewidths]: takes a positive number (or vector of positive numbers) describing how thick the line should be in cm.\nline color [col, color, cols and colors]: take a string or a Color (from the Colors.jl package).\nsmoothness:"
+},
+
+{
+    "location": "man/line-scatter/#Marker-style-options-1",
+    "page": "Line & Scatter plots",
+    "title": "Marker style options",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "man/line-scatter/#Notes-1",
+    "page": "Line & Scatter plots",
+    "title": "Notes",
+    "category": "section",
+    "text": "Infinities, NaNs and Missing values are all treated the same way: they\'re not shown.TBDplot is tied to data, if data changes, the plot will change too, so should be careful. Note that this is ONLY if the data is modified in place. So for instancex = randn(5)\ny = randn(5)\nplot(x, y)\nx = zeros(5)\nxlabel(\"blah\") # the graph will not have changedhoweverx = randn(5)\ny = randn(5)\nplot(x, y)\nx[1] = 0.0\nxlabel(\"blah\") # here the first point will be (0.0, y[1])Inf, NaN and Missings are all considered in the same way (as missings)."
+},
+
+{
+    "location": "man/line-scatter/#Bar-plot-1",
+    "page": "Line & Scatter plots",
     "title": "Bar plot",
     "category": "section",
     "text": ""
+},
+
+{
+    "location": "man/hist-bar/#",
+    "page": "Hist & Bar plots",
+    "title": "Hist & Bar plots",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "man/hist-bar/#Advanced-Plots-1",
+    "page": "Hist & Bar plots",
+    "title": "Advanced Plots",
+    "category": "section",
+    "text": "TBALaTeX only pdflatex\ncan use basic Latex without actual tex mode (see appendix A3) for instance sub/super-scripts. This can work fine for a lot of simple things and avoids the overhead of pdflatex. Basically all greek letters, most standard maths ops, should link to extracted page 89 of the manual."
 },
 
 {
@@ -158,22 +214,6 @@ var documenterSearchIndex = {"docs": [
     "title": "LaTeX mode",
     "category": "section",
     "text": "In LaTeX mode, you\'re free to specify your own preamble which can include font packages to define how things should look. Anything that works with PdfLaTeX should work. Below is an example where we use sourcesanspro:preamble = texpreamble = tex\"\"\"\n    \\usepackage[T1]{fontenc}\n    \\usepackage[default]{sourcesanspro}\n    \\usepackage{amssymb}\n\"\"\"\nf = Figure(texpreamble=preamble)Note: specifying a tex preamble is sufficient to switch to LaTeX mode."
-},
-
-{
-    "location": "man/advancedplots/#",
-    "page": "Advanced plots",
-    "title": "Advanced plots",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "man/advancedplots/#Advanced-Plots-1",
-    "page": "Advanced plots",
-    "title": "Advanced Plots",
-    "category": "section",
-    "text": "TBALaTeX only pdflatex\ncan use basic Latex without actual tex mode (see appendix A3) for instance sub/super-scripts. This can work fine for a lot of simple things and avoids the overhead of pdflatex. Basically all greek letters, most standard maths ops, should link to extracted page 89 of the manual."
 },
 
 {
