@@ -56,15 +56,24 @@ end
 
 
 """
-    Heatmap <: Object2D
+    Colorbar <: Object2D
 
-Heatmap of a matrix.
+Add a colorbar.
 """
-@with_kw mutable struct Heatmap <: Object2D
-    data::Matrix{Float64}
-    colormap::Vector{Color} = colormap("RdBu", 10)
-    xnames::Vector{String} = String[]
-    x2names::Vector{String} = String[]
-    ynames::Vector{String} = String[]
-    y2names::Vector{String} = String[]
+@with_kw mutable struct Colorbar <: Object2D
+    zmin::Float64
+    zmax::Float64
+    cmap::Vector{Color}
+    # -- optional things
+    ticks::Ticks # constructed
+    # --
+    size::Option{T2F} = ∅ # (width, height)
+    # --
+    pixels::Int       = 100     # resolution for the color bar
+    nobox::Bool       = true    #
+    position::String  = "right" # left, right, bottom, top
+    offset::T2F       = (0.3, 0.0)
 end
+Colorbar(zmin::Float64, zmax::Float64, cmap::Vector{<:Color}) =
+    Colorbar(zmin=zmin, zmax=zmax, cmap=cmap,
+             ticks=Ticks(places=collect(range(zmin,zmax,length=5))[2:end-1]))

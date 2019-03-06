@@ -46,7 +46,7 @@ function histdata(x::AV{<:CanMiss{<:Real}})
     return (data=zip(x),
             hasmissing=(Missing <: eltype(x)),
             nobs=sum(e->1, sx),
-            range=fl((minimum(sx), maximum(sx))))
+            range=fl(extrema(sx)))
 end
 
 
@@ -195,96 +195,3 @@ end
 Erase previous drawings and add a bar plot. See also [`bar!`](@ref).
 """
 bar(a...; o...) =  bar!(a...; overwrite=true, o...)
-
-
-####
-#### this is for extra drawings that are not meant to be overlaid with anything
-#### else such as boxplot, polarplot, pieplot
-####
-
-"""
-    boxplot(...)
-
-Erase previous drawings and add a boxplot. Missing values are allowed but not Infinities or Nans.
-"""
-function boxplot(ys...; axes=nothing, o...)
-    axes = check_axes(axes)
-    reset!(axes) # always on fresh axes
-
-    isempty(first(ys)) && throw(ArgumentError("Cannot display empty vectors."))
-
-    # setting an empty struct first so that we can exploit the options
-    # the actual data will be provided after analysis
-    nobj = sum(size(y, 2) for y ∈ ys)
-    bp = Boxplot(Matrix{Float64}(undef,0,0), nobj)
-    set_properties!(bp; defer_preview=true, o...)
-
-    # analyse data
-    stats = Matrix{Float64}(undef, nobj, 6) # 1:wlow, 2:q25, 3:q50, 4:q75, 5:whigh, 6:mean
-    outliers = Vector{Vector{Float64}}(undef, nobj)
-
-    boxcounter = 1
-    overallmax = -Inf
-    overallmin = Inf
-
-    for y ∈ ys
-        for k ∈ Base.axes(y, 2)
-            yk = collect(skipmissing(view(y, :, k)))
-            if any(isnan, yk) || any(isinf, yk)
-                throw(ArgumentError("Inf or NaN values not allowed in boxplot."))
-            end
-
-            q00, q25, q50, q75, q100 = quantile(yk, [.0, .25, .5, .75, 1.0])
-            iqr   = q75 - q25
-            mean  = sum(yk)/length(yk)
-
-            wrlength = bp.boxstyles[k].wrlength
-            wlow  = q25 - wrlength * iqr
-            whigh = q75 + wrlength * iqr
-            if isinf(wrlength)
-                wlow, whigh = q00, q100 # min/max values
-            end
-
-            stats[k, :] = [wlow, q25, q50, q75, whigh, mean]
-
-            # outliers
-            outliers[k] = collect(filter(e->(e<wlow || whigh<e), yk))
-
-            # keep track of extremes to adjust axis limits later on
-            overallmin > q00  && (overallmin = q00)
-            overallmax < q100 && (overallmax = q100)
-            boxcounter += 1
-        end
-    end
-    #
-    bp.stats = stats
-    push!(axes.drawings, bp)
-
-    # adjust axis limits, show outliers if relevant
-    if bp.horiz # horizontal boxplot
-        ylim(0, nobj+1)
-        yticks(1:nobj)
-        xlim(overallmin - 0.5abs(overallmin), overallmax + 0.5abs(overallmax))
-        for k ∈ 1:nobj
-            bp.boxstyles[k].oshow || continue
-            nok = length(outliers[k])
-            s = bp.boxstyles[k].omstyle # style of outliers
-            if nok > 0
-                scatter!(outliers[k], fill(k, nok); marker=s.marker, msize=s.msize, mcol=s.color)
-            end
-        end
-    else # vertical boxplot
-        xlim(0, nobj+1)
-        xticks(1:nobj)
-        ylim(overallmin - 0.5abs(overallmin), overallmax + 0.5abs(overallmax))
-        for k ∈ 1:nobj
-            bp.boxstyles[k].oshow || continue
-            nok = length(outliers[k])
-            s = bp.boxstyles[k].omstyle # style of outliers
-            if nok > 0
-                scatter!(fill(k, nok), outliers[k]; marker=s.marker, msize=s.msize, mcol=s.color)
-            end
-        end
-    end
-    return preview() # not a handle, this does not have a legend
-end
