@@ -10,3 +10,11 @@ end
 # quickstart
 gen("qs_ex1")
 gen("qs_ex2")
+
+# line-scatter
+gen("ls_ex1")
+gen("ls_ex2")
+gen("ls_ex3")
+gen("ls_ex4")
+gen("ls_ex5")
+gen("ls_ex6")

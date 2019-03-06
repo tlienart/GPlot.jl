@@ -13,9 +13,9 @@ makedocs(
         "Manual" => [
             "Installation"   => "man/installation.md",  # GLE installation
             "Quick start"    => "man/quickstart.md",    # Simple Figure w plot + preview/save
-            "Basic 2D plots" => "man/basicplots.md",    # Scatter2D, Bar, Hist, ...
+            "Line & Scatter plots" => "man/line-scatter.md",
+            "Hist & Bar plots" => "man/hist-bar.md",
             "Styling"        => "man/styling.md",       # Figure, Axes, Axis, Fonts, LaTex,..
-            "Advanced plots" => "man/advancedplots.md", # Layout, 3D, ...
         ],
         "Appendix" => [
             "Fonts" => "appendix/fonts.md",

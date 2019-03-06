@@ -19,7 +19,7 @@ Let's now define a function which we would like to plot over the range `[-2.5, 2
 ```julia
 x = range(-2.5, stop=2.5, length=100)
 y = @. exp(-x^2) * sin(x)
-plot(x, f1.(x), label="plot 1")
+plot(x, y, label="plot 1")
 legend()
 ```
 
@@ -63,4 +63,4 @@ the command picks up the format (here `.pdf`) saves the file in the current fold
 
 !!! comment
 
-    If you got this far thinking that all this seems reasonable, have a look at the rest of the doc to learn how to plot what you want and how you want it 📊 .
+    If you got this far thinking that all this seems reasonable, have a look at the rest of the doc to learn how to plot what you want and how you want it 📊 , happy plotting!
