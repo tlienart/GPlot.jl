@@ -3,6 +3,18 @@
     text("blah", (0,0))
     @test gca().objects[1].anchor == (0.0,0.0)
     @test gca().objects[1].text == "blah"
+
+    # vline, hline
+    clo()
+    hline(0.5; lw=0.1)
+    vline(0.2; col="red")
+    @test gca().objects[1] isa G.StraightLine2D
+    @test gca().objects[1].anchor == 0.5
+    @test gca().objects[1].horiz == true
+    @test gca().objects[1].linestyle.lwidth == 0.1
+    @test gca().objects[2].anchor == 0.2
+    @test gca().objects[2].linestyle.color == c"red"
+    @test gca().objects[2].horiz == false
 end
 
 @testset "▶ apply_gle/object            " begin
