@@ -37,7 +37,7 @@ function boxplot(ys...; axes=nothing, o...)
 
             q00, q25, q50, q75, q100 = quantile(yk, [.0, .25, .5, .75, 1.0])
             iqr   = q75 - q25
-            mean  = sum(yk)/length(yk)
+            mean  = mean(yk)
 
             wrlength = bp.boxstyles[k].wrlength
             wlow  = q25 - wrlength * iqr

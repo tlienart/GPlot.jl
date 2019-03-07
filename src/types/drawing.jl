@@ -14,6 +14,11 @@ Overarching type for objects displayable on `Axes2D`.
 abstract type Drawing2D <: Drawing end
 
 
+"""
+    DrawingHandle{D<:Drawing}
+
+Container object for a drawing returned by any plotting function.
+"""
 struct DrawingHandle{D<:Drawing}
     drawing::D
 end

@@ -7,7 +7,7 @@ using DocStringExtensions: SIGNATURES
 using Parameters
 using Colors
 using DelimitedFiles: writedlm
-using Statistics: quantile
+using Statistics: quantile, mean
 
 import Base: |>, take!, isempty
 

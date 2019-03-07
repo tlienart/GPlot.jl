@@ -23,7 +23,9 @@ Heatmap of a matrix.
     data::Matrix{Int}
     cmap::Vector{Color} = colormap("RdBu", 10)
     cmiss::Color = c"white" # box filling for missing values
-    transpose::Bool = false # whether to write the matrix as a transpose
-                            # this is useful because GLE can deal only with 1000-cols
-                            # files at most (at least with the way we do the heatmap now)
+    # transpose
+    # whether to write the matrix as a transpose
+    # this is useful because GLE can deal only with 1000-cols
+    # files at most (at least with the way we do the heatmap now)
+    transpose::Bool = false
 end

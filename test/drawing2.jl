@@ -18,10 +18,34 @@
 end
 
 @testset "▶ /drawing2                   " begin
+    # -------
+    # BOXPLOT
+    # -------
     f = Figure()
-    X = randn(10, 3)
+
+    # error on empty
+    @test_throws ArgumentError boxplot()
+
+    nobj = 3
+    X = randn(20, nobj)
+    q00, q25, q50, q75, q100 = quantile(X[:,1], [.0,.25,.5,.75,1.0])
+    iqr = q75-q25
+    mean = Statistics.mean(X[:,1])
+    wlow = q25 - 1.5*iqr
+    whigh = q75 + 1.5*iqr
     dhb = boxplot(X)
-#    dhb.
+    @test dhb.drawing isa G.Boxplot
+    @test dhb.drawing.nobj == nobj
+    @test dhb.drawing.stats[1, :] == [wlow,q25,q50,q75,whigh,mean]
+    @test gca().xaxis.min == 0
+    @test gca().xaxis.max == nobj+1
+    @test gca().xaxis.ticks.places == collect(1:nobj)
+    @test gca().yaxis.min == minimum(X) - 0.5abs(minimum(X))
+    @test gca().yaxis.max == maximum(X) + 0.5abs(maximum(X))
+
+    dhb = boxplot(X, whiskers=Inf, horiz=true)
+    @test dhb.drawing.stats[1, :] == [q00,q25,q50,q75,q100,mean]
+
 end
 
 @testset "▶ set_prop/drawing2           " begin
