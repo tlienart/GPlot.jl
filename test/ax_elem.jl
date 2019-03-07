@@ -92,15 +92,18 @@ end
     @test gca().yaxis.ticks.linestyle.color == colorant"lightgray"
 
     x2ticks("off")
-    @test gca().x2axis.ticks.off
-    @test gca().x2axis.ticks.labels.off
+    @test gca().x2axis.ticks.off == true
+    @test gca().x2axis.ticks.labels.off == true
+    x2ticks("on")
+    @test gca().x2axis.ticks.labels.off == false
+    @test_throws ArgumentError xticks("not_reco")
 
     # more ax elem
     cla()
     xaxis("off")
-    @test gca().xaxis.off
+    @test gca().xaxis.off == true
     xaxis("on")
-    @test !gca().xaxis.off
+    @test gca().xaxis.off == false
 end
 
 @testset "▶ set_prop/ax_elem            " begin
