@@ -137,7 +137,7 @@ end
 
     # shorthands for axes
     cla()
-    axes("math")
+    axis("math")
     @test gca().math
 end
 

@@ -16,14 +16,15 @@ clo() = (gca().objects = Vector{Object2D}(); PreviewFigure(gcf()))
 ####
 #### axes
 ####
-function axes(short::String=""; ax=nothing)
-    ax = check_axes(ax)
+
+function axis(short::String=""; axes=nothing)
+    axes = check_axes(axes)
     if !isempty(short)
         s_lc = lowercase(short)
         if s_lc == "math"
-            ax.math = true
+            axes.math = true
         elseif s_lc == "nomath"
-            ax.math = false
+            axes.math = false
         elseif s_lc == "equal"
             throw(NotImplementedError("axis(equal)"))
             #= would need to
@@ -35,7 +36,7 @@ function axes(short::String=""; ax=nothing)
             Maybe just xaxis min xgmin*... max xgmax*...
             =#
         else
-            throw(OptionValueError("Unrecognised shorthand toggle for axes.", short))
+            throw(OptionValueError("Unrecognised shorthand toggle for axis.", short))
         end
     end
     return PreviewFigure(gcf())
