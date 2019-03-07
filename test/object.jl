@@ -33,7 +33,7 @@
     @test gca().objects[1].zmin == 0.0
     @test gca().objects[1].zmax == 1.0
     @test gca().objects[1].cmap == [c"blue", c"red", c"green"]
-    @test gca().objects[1].ticks.places == collect(range(0,1,length=5)[2:end-1])
+    @test gca().objects[1].ticks.places == collect(range(0,stop=1,length=5)[2:end-1])
     @test isnothing(gca().objects[1].size)
     @test gca().objects[1].pixels == 100
     @test gca().objects[1].nobox == true
