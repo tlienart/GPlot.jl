@@ -242,6 +242,16 @@ end
     isin(s, "bar d2 width 0.066")
     isin(s, "color rgba(1.0,0.0,0.0,1.0) fill rgba(0.0,0.0,1.0,1.0)")
 
+    clf()
+    # color is not defined
+    hist(x)
+    s = G.assemble_figure(gcf(), debug=true)
+    @test gca().drawings[1].barstyle.color == G.GP_ENV["PALETTE"][1]
+    clf()
+    hist(x, fill="red")
+    s = G.assemble_figure(gcf(), debug=true)
+    @test gca().drawings[1].barstyle.color == c"white"
+
     # BAR2D
     clf()
     x  = [1, 2, 3, 4, 5]
