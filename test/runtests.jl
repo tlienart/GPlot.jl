@@ -8,6 +8,7 @@ include("ax_elem.jl")
 include("legend.jl")
 
 include("drawing.jl")
+include("drawing2.jl")
 
 include("style.jl")
 
