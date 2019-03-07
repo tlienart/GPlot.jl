@@ -14,7 +14,7 @@ function _title(el::Symbol, text::String=""; axes=nothing, opts...)
     # create a new title object with the text and apply properties
     obj.title = Title(text=text)
     set_properties!(obj.title; defer_preview=true, opts...)
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 # Generate xtitle, and associated for each axis
@@ -46,7 +46,7 @@ function _ticks(axis_sym::Symbol, loc::Vector{Float64}=Float64[],
         isempty(lab) || throw(ArgumentError("Cannot pass ticks labels without specifying " *
                                             "ticks locations"))
         set_properties!(axis.ticks; defer_preview=true, opts...)
-        return preview()
+        return PreviewFigure(gcf())
     end
     axis.ticks.places = loc
     # process labels if any are passed
@@ -57,7 +57,7 @@ function _ticks(axis_sym::Symbol, loc::Vector{Float64}=Float64[],
     end
     # set remaining properties and return
     set_properties!(axis.ticks; defer_preview=true, opts...)
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 # Generate xticks!, xticks, and associated for each axis
@@ -83,7 +83,7 @@ for axs ∈ ("x", "y", "x2", "y2")
             else
                 throw(ArgumentError("Unrecognised shorthand: $s"))
             end
-            return preview()
+            return PreviewFigure(gcf())
         end
     end
     eval(ex)

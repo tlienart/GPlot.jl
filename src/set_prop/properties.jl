@@ -10,7 +10,7 @@ are functions that check that the values passed to properties are sensible and c
 to sensible types if relevant. This reduces code duplication and allows to reduce specialization.
 """
 function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
-                         defer_preview=false, opts...)::Option{PreviewFigure}
+                         defer_preview=false, opts...)
     for optname ∈ opts.itr
         argcheck, setprop! = get(dict, optname) do
             throw(UnknownOptionError(optname, obj))
@@ -18,7 +18,7 @@ function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
         setprop!(obj, argcheck(opts[optname], optname))
     end
     defer_preview && return nothing
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 set(obj; opts...) = set_properties!(obj; opts...)

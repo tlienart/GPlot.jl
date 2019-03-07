@@ -15,7 +15,7 @@ function text(text::String, anchor::Tuple; axes=nothing, o...)
     t = Text2D(text=text, anchor=fl(anchor))
     set_properties!(t; defer_preview=true, o...)
     push!(axes.objects, t)
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 """
@@ -29,7 +29,7 @@ function _line(anchor::Float64, horiz::Bool; axes=nothing, o...)
     l = StraightLine2D(anchor=anchor, horiz=horiz)
     set_properties!(l; defer_preview=true, o...)
     push!(axes.objects, l)
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 """
@@ -92,7 +92,7 @@ function box(size::Tuple, anchor::Tuple; axes=nothing, o...)
     b = Box2D(anchor=fl(anchor), size=fl(size))
     set_properties!(b; defer_preview=true, o...)
     push!(axes.objects, b)
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 
@@ -119,7 +119,7 @@ function colorbar(zmin::Real, zmax::Real, cmap::Vector{<:Color}; axes=nothing, o
     else
         push!(axes.objects, b)
     end
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 """
@@ -134,6 +134,6 @@ h = heatmap(randn(20, 20))
 colorbar(h)
 ```
 """
-function colorbar(dh::DrawingHandle{Heatmap,T}; o...) where {T}
+function colorbar(dh::DrawingHandle{Heatmap}; o...) where {T}
     return colorbar(extrema(dh.drawing.data)..., dh.drawing.cmap; o...)
 end
