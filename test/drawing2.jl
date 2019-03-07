@@ -18,6 +18,10 @@
 end
 
 @testset "▶ /drawing2                   " begin
+    f = Figure()
+    X = randn(10, 3)
+    dhb = boxplot(X)
+#    dhb.
 end
 
 @testset "▶ set_prop/drawing2           " begin

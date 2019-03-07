@@ -3,7 +3,7 @@
 
 Clears the current legend.
 """
-cll!() = (reset!(gca().legend); preview())
+cll!() = (reset!(gca().legend); PreviewFigure(gcf()))
 
 cll = cll!
 
@@ -69,6 +69,6 @@ function legend(vd::Option{Vector{DrawingHandle{T}}}=nothing,
         axes.legend.labels  = labels
     end
     set_properties!(axes.legend; defer_preview=true, opts...)
-    return preview()
+    return PreviewFigure(gcf())
 end
 legend(d::DrawingHandle{T}, s::String; o...) where T = legend([d],[s]; o...)

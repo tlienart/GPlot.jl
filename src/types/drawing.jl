@@ -14,10 +14,9 @@ Overarching type for objects displayable on `Axes2D`.
 abstract type Drawing2D <: Drawing end
 
 
-struct DrawingHandle{D<:Drawing,S}
+struct DrawingHandle{D<:Drawing}
     drawing::D
 end
-DrawingHandle(drawing) = DrawingHandle{typeof(drawing),GP_ENV["CONT_PREVIEW"]}(drawing)
 
 
 """
