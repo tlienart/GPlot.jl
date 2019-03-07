@@ -16,14 +16,14 @@ clo() = (gca().objects = Vector{Object2D}(); PreviewFigure(gcf()))
 ####
 #### axes
 ####
-function axis(short::String=""; axes=nothing)
-    axes = check_axes(axes)
+function axes(short::String=""; ax=nothing)
+    ax = check_axes(ax)
     if !isempty(short)
         s_lc = lowercase(short)
         if s_lc == "math"
-            axes.math = true
+            ax.math = true
         elseif s_lc == "nomath"
-            axes.math = false
+            ax.math = false
         elseif s_lc == "equal"
             throw(NotImplementedError("axis(equal)"))
             #= would need to
