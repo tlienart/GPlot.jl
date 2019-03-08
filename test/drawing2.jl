@@ -9,9 +9,10 @@
     @test bp.horiz == false
 
     # Heatmap
-    data = rand(Int, 3, 3)
-    h = G.Heatmap(data=data)
-    @test h.data == data
+    data = randn(5, 5)
+    h = (heatmap(data)).drawing
+    @test h.zmin == minimum(data)
+    @test h.zmax == maximum(data)
     @test h.cmap == colormap("RdBu", 10)
     @test h.cmiss == c"white"
     @test h.transpose == false
