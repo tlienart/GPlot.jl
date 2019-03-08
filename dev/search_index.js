@@ -13,7 +13,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GPlot.jl - Documentation",
     "category": "section",
-    "text": "#=\nTodo:\n- work out how to have syntax highlighting\n\n- Appendix/fonts\n  - link to tug.dk font catalogue, suggest the ones that work with pdflatex\n\n- preview mode: if in a wrapped scope, the continuous preview will\nnot happen, need to explicitly call preview for instance\n@elapsed text!(...) will not display unless preview is called explicitly\n\n- when adding text, there\'s no overwrite (ambiguous) so if it fails you\'ll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest\nunchanged\n\n- API\n\n-- plotting stuff with ! = append\n-- everything else doesn\'t have ! bc confusing\n\n- Latex\n\n-- t\"x^{\\star}\" will work but t\"\\sqrt\" won\'t unless you use TeX in the figure. (need to show examples for this)\n-- \\it , \\bf\n\n=#"
+    "text": "GPlot is a plotting package wrapping the Graphics Layout Engine (and possibly GnuPlot or Asymptote in the future). The focus is on speed, ease of use and high-quality output.Key features:loading time and time to first plot much faster than Plots.jl (a couple of seconds),\nhandles LaTeX seamlessly,\nhandles transparency,\nimperative syntax similar to Matplotlib, Plots.jl, etc.,\nmultiple output formats: PNG, PDF, SVG, JPG, EPS or PS.What it\'s not meant for:interactivity (panning, zooming, ...)Note: the package is still being actively developed, feature requests, feedback or contributions are welcome."
+},
+
+{
+    "location": "#Why-GPlot-1",
+    "page": "Home",
+    "title": "Why GPlot",
+    "category": "section",
+    "text": "I discovered GLE a while back and liked the library though not the syntax and thought a wrapper for GLE in Julia with a matplotlib-like syntax was an interesting project to work on to learn more about graphics and Julia. A few hundreds of commits later and GPlot.jl is there and may be of interests or even useful to others.Of course the package is not as mature or feature complete as the current main plotting packages such as Plots.jl, Makie.jl, PyPlot.jl, Gadfly.jl, PGFPlots.jl, PGFPlotsX.jl, etc which you may prefer if you would rather avoid an experimental library."
+},
+
+{
+    "location": "#How-it-works-1",
+    "page": "Home",
+    "title": "How it works",
+    "category": "section",
+    "text": "Basically GPlot translates plotting commands such as plot(1:5, randn(5)) intoauxiliary files containing the relevant data,\na GLE script corresponding to how the data must be drawn.This is then fed into the GLE engine which produces the desired output. If LaTeX is used, then the GLE engine uses pdflatex in the background (this incurs an overhead).The diagram below illustrates the workflow:                +----------------------+\n          +---> | Generated GLE code   +---+\nJulia     |     +----------------------+   +---> GLE engine\ncode   ---+                                |         +\n          |     +----------------------+   |         |\n          +---> | Auxiliary data files +---+         |\n                +----------------------+         (pdflatex)\n                                                     |\n                                                     |\n                                                     v\n                                              Output (PDF/PNG/...)"
+},
+
+{
+    "location": "#License-1",
+    "page": "Home",
+    "title": "License",
+    "category": "section",
+    "text": "This wrapper is made available under the MIT license. The GLE program is released under the BSD license (see the official website for more informations).#=\nTodo:\n- work out how to have syntax highlighting\n\n- Appendix/fonts\n  - link to tug.dk font catalogue, suggest the ones that work with pdflatex\n\n- preview mode: if in a wrapped scope, the continuous preview will\nnot happen, need to explicitly call preview for instance\n@elapsed text!(...) will not display unless preview is called explicitly\n\n- when adding text, there\'s no overwrite (ambiguous) so if it fails you\'ll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest\nunchanged\n\n- API\n\n-- plotting stuff with ! = append\n-- everything else doesn\'t have ! bc confusing\n\n- Latex\n\n-- t\"x^{\\star}\" will work but t\"\\sqrt\" won\'t unless you use TeX in the figure. (need to show examples for this)\n-- \\it , \\bf\n\n=#"
 },
 
 {
@@ -29,7 +53,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Installation",
     "title": "Installation",
     "category": "section",
-    "text": "TBA"
+    "text": "To work with GPlot, you will need three things:Julia ≥ 1.0\nthe GPlot package,\nthe GLE engine,Note: if you intend to use LaTeX, you will also need to have pdflatex.To install the package in Julia, the usual command for unregistered packages applies:] add https://github.com/tlienart/GPlot.jlTo get GLE working, please follow the instructions further below depending on your OS. After following the instructions, check in Julia that the following command works (the version number may differ a bit depending on your OS):julia> run(`gle -v`)\nGLE version 4.2.4c\nUsage: gle [options] filename.gle\nMore information: gle -help\nProcess(`gle -v`, ProcessExited(0))note: Note\nIf you encounter problems with the instructions below or believe that the instructions could be simplified, please open an issue. Also if you managed to follow the instructions successfully with an OS that\'s not explicitly on the list below, please let me know and I can add it here."
+},
+
+{
+    "location": "man/installation/#Installing-GLE-on-Linux-1",
+    "page": "Installation",
+    "title": "Installing GLE on Linux",
+    "category": "section",
+    "text": "TestedUbuntu: sudo apt-get install gle-graphicsUntestedFedora, CentOS via yum install gle\nOther distros (your help is appreciated!)"
+},
+
+{
+    "location": "man/installation/#Installing-GLE-on-MacOS-1",
+    "page": "Installation",
+    "title": "Installing GLE on MacOS",
+    "category": "section",
+    "text": "(There may be a simpler approach but I\'m sure this one works and fairly easy.)Tested: Mojave, High Sierra. (afaik, there\'s no reason it shouldn\'t work on older versions)The original instructions (here) are reproduced below for convenience:Get the Ghostscript dmg from sourceforge and copy-paste its content (Ghostscript.framework) in /Library/Frameworks/ (do that even if you already have GS)\nGet the QGLE dmg from sourceforge and put its content in your /Applications/ folderThis should now work in your terminal:~> /Applications/QGLE.app/Contents/bin/gle -v\nGLE version 4.2.4c\nUsage: gle [options] filename.gle\nMore information: gle -helpThe only thing left to do is to link the right parts to /usr/local/ so that gle can be called from Julia easily. (The following lines may tell you that the link to libpng already exists, that\'s fine.)ln -s /Applications/QGLE.app/Contents/bin/gle /usr/local/bin/.\nln -s /Applications/QGLE.app/Contents/bin/glegs /usr/local/bin/.\nln -s /Applications/QGLE.app/Contents/lib/libgle-graphics-4.2.4c.dylib /usr/local/lib/.\nln -s /Applications/QGLE.app/Contents/lib/libpng.dylib /usr/local/lib/.\nln -s /Applications/QGLE.app/Contents/share/gle-graphics/ /usr/local/share/."
+},
+
+{
+    "location": "man/installation/#Installing-GLE-on-Windows-1",
+    "page": "Installation",
+    "title": "Installing GLE on Windows",
+    "category": "section",
+    "text": "I haven\'t tested this on Windows but there are executables available on the GLE downdloads page which should-just-work™ (one has been updated quite recently).If you\'ve managed to make things work for you on Windows, please let me know so that I can improve these instructions!"
 },
 
 {
@@ -45,7 +93,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Quick start",
     "title": "Quickstart",
     "category": "section",
-    "text": "Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions refer to the rest of the manual. We will draw a simple plot with two curves, labels, and basic axis styling.Let\'s start by creating a simple figurefig = Figure()note: Note\nit is not required to explicitly call Figure(); if no figure currently exists, the first plotting command will generate one with default parameters.Let\'s now define a function which we would like to plot over the range [-2.5, 2.5]:x = range(-2.5, stop=2.5, length=100)\ny = @. exp(-x^2) * sin(x)\nplot(x, y, label=\"plot 1\")\nlegend()where we\'ve used the @. syntax to indicate that the operations are done pointwise on x. The syntax should hopefully feel reasonable thus far.(Image: )Let\'s add another curve on this figure and change the colour; let\'s also specify axis limits, where the ticks have to be etc:y2 = @. sin(x^2) * exp(-x/10)\nplot!(x, y2, col=\"blue\", lwidth=0.05, label=\"plot 2\")\n\nxlabel(\"x-axis\")\nylabel(\"y-axis\")\nxticks([-pi/2, 0, pi/2], [\"π/2\", \"0\", \"π/2\"])\nylim(-1.5, 1.5)\nyticks(-1:0.25:1)\n\nlegend()One thing worth noting at this point is that we follow the julia Plots convention adding a ! after plot to indicate that it should modify the current graph without overwriting it (i.e. the curve is added on top of the existing one).(Image: )Now we can save this figure:savefig(fig, \"my_first_figure.pdf\")the command picks up the format (here .pdf) saves the file in the current folder.comment: Comment\nIf you got this far thinking that all this seems reasonable, have a look at the rest of the doc to learn how to plot what you want and how you want it 📊 , happy plotting!"
+    "text": "Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions refer to the rest of the manual. We will draw a simple plot with two curves, labels, and basic axis styling.Let\'s start by creating a simple figure:fig = Figure()note: Note\nIt is not required to explicitly call Figure(); if no figure currently exists, the first plotting command will generate one with default parameters.Let\'s now define a function over the range [-2.5, 2.5] and plot it:x = range(-2.5, stop=2.5, length=100)\ny = @. exp(-x^2) * sin(x)\nplot(x, y, label=\"plot 1\")\nlegend()where we\'ve used the @. syntax to indicate that the operations are done pointwise on x (broadcasting). The syntax should hopefully feel reasonable thus far.(Image: )Let\'s add another curve on this figure and change the colour; let\'s also specify axis limits, where the ticks have to be etc:y2 = @. sin(x^2) * exp(-x/10)\nplot!(x, y2, col=\"blue\", lwidth=0.05, label=\"plot 2\")\n\nxlabel(\"x-axis\")\nylabel(\"y-axis\")\nxticks([-pi/2, 0, pi/2], [\"π/2\", \"0\", \"π/2\"])\nylim(-1.5, 1.5)\nyticks(-1:0.25:1)\n\nlegend()One thing worth noting at this point is that we follow Plots.jl\'s convention adding a ! after plot to indicate that it should modify the current graph without overwriting it (i.e. the new curve is added on top of the existing one).(Image: )Now we can save this figure:savefig(fig, \"my_first_figure.pdf\")the command picks up the format (here .pdf) saves the file in the current folder.comment: Comment\nIf you got this far thinking that all this seems reasonable, have a look at the rest of the doc to learn how to plot what you want and how you want it 📊 , happy plotting!"
 },
 
 {
@@ -69,7 +117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Basic syntax",
     "category": "section",
-    "text": "The relevant commands here are plot, plot!, scatter and scatter!. The key command is a plot which is just a 2D line connecting a set of points; where plot by default shows a line and no marker, scatter by default shows markers and no line.The general syntax is:command(data_to_plot...; options...)a command with an exclamation mark will add the corresponding plot to the current active axes while a command without will erase any existing plot on the current active axes and then display the plot.For instance:x = range(-2.5, stop=2.5, length=100)\ny = @. exp(-x^2) * sin(x)\nplot(x, y)\nmask = 1:5:100\nscatter!(x[mask], y[mask])overlays a scatterplot to a line plot:(Image: )"
+    "text": "The relevant commands here areplot and plot! (2D lines connecting points, no markers by default)\nscatter, scatter! (markers showing a set of points, no line by default)The general syntax is:command(data_to_plot...; options...)a command with an exclamation mark will add the corresponding plot to the current active axes while a command without will erase any existing plot on the current active axes and then display the plot.For instance:x = range(-2.5, stop=2.5, length=100)\ny = @. exp(-x^2) * sin(x)\nplot(x, y)\nmask = 1:5:100\nscatter!(x[mask], y[mask])overlays a scatterplot to a line plot:(Image: )"
 },
 
 {
@@ -77,7 +125,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Data formats",
     "category": "section",
-    "text": "These commands take vectors or matrices of points, as long as the number of rows match you should be fine.Single vector x: the plot will correspond to the pairs (i x_i).For instance:plot(randn(5))(Image: )Two vectors x, y: the plot will correspond to the pairs (x_i y_i) (see e.g. the example earlier)\nMultiple vectors x, y, z: this will create multiple plots corresponding to the pairs (x_i y_i), (x_i z_i) etc.For instance:x = range(0, 1, length=100)\nplot(x, x.^2, x.^3, x.^4)(Image: )Single matrix X: the plots will correspond to the pairs (i X_i1), (i X_i2) etc.For instance:plot(randn(10, 3))(Image: )vector and matrices or vector x, Y, Z: will form plots corresponding to the pairs of x and each column in Y, Z etc.For instance:x = range(0, 1, length=25)\ny = @. sin(x)\nz = @. cos(x)\nt = y .+ z\nscatter(x, hcat(y, z), t)(Image: )"
+    "text": "The table below summarises the different ways you can specify what data to plot, they are discussed in more details and with examples below.Form Example Comment\nsingle vector x plot(randn(5)) pairs (i x_i)\ntwo vectors xy plot(randn(5),randn(5)) pairs (x_iy_i)\nmultiple vectors xyz plot(randn(5),randn(5),randn(5)) pairs (x_iy_i), (x_iz_i), ...\nsingle matrix X plot(randn(5,2)) pairs (i x_i1), (i x_i2), ...\none vector then vectors or matrices plot(1:5, randn(5,2), randn(5)) pairs between the first vector and subsequent columns\nfunction f from to plot(sin, 0, pi) draws points x_i on the interval and plots pairs (x_i f(x_i))Single vector x: the plot will correspond to the pairs (i x_i).For instance:plot(randn(5))(Image: )Two vectors x, y: the plot will correspond to the pairs (x_i y_i) (see e.g. the example earlier)\nMultiple vectors x, y, z: this will create multiple plots corresponding to the pairs (x_i y_i), (x_i z_i) etc.For instance:x = range(0, 1, length=100)\nplot(x, x.^2, x.^3, x.^4)(Image: )Single matrix X: the plots will correspond to the pairs (i X_i1), (i X_i2) etc.For instance:plot(randn(10, 3))(Image: )vector and matrices or vector x, Y, Z: will form plots corresponding to the pairs of x and each column in Y, Z etc.For instance:x = range(0, 1, length=25)\ny = @. sin(x)\nz = @. cos(x)\nt = y .+ z\nscatter(x, hcat(y, z), t)(Image: )function: will draw points on the specified range and draw (x_i f(x_i)).For instance:scatter(sin, 0, 2π; msize=0.1)\nxlim(0,2π)(Image: )"
 },
 
 {
@@ -85,7 +133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Styling options",
     "category": "section",
-    "text": "Line and scatter plots have effectively two things they can get styled:the line styles\nthe marker stylesNote the plural, so that if you are plotting multiple lines at once, each keyword accepts a vector of elements to style the individual plots. If a styling option is specified with a scalar but multiple lines are being plotted, all will have that same option.For instance:plot(randn(10, 3), colors=[\"violet\", \"navyblue\", \"orange\"], lwidth=0.1)(Image: )"
+    "text": "Line and scatter plots have effectively two things they can get styled:the line styles\nthe marker stylesNote the plural, so that if you are plotting multiple lines at once, each keyword accepts a vector of elements to style the individual plots. If a styling option is specified with a single value but multiple lines are being plotted, all will have that same value for the relevant option.For instance:plot(randn(10, 3), colors=[\"violet\", \"navyblue\", \"orange\"], lwidth=0.1)(Image: )note: Note\nGPlot typically accepts multiple aliases for option names, pick whichever one you like, that sticks best to mind or that you find the most readable."
 },
 
 {

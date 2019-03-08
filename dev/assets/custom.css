@@ -2,6 +2,10 @@ nav.toc {
     width: 15em;
 }
 
+article {
+    margin-left: 17em;
+}
+
 img {
     display: block;
     margin-left: auto;
