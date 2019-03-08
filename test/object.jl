@@ -50,11 +50,73 @@ end
 
 @testset "▶ apply_gle/object            " begin
     f = Figure()
-    text("blah", (0,0))
-    s = G.assemble_figure(f, debug=true)
-    isin(s, "\ngsave")
-    isin(s, "\nset just cc")
-    isin(s, "\namove xg(0.0) yg(0.0)")
-    isin(s, "\nwrite \"blah\"")
-    isin(s, "\ngrestore")
+
+    begin # TEXT
+        clf()
+        text("blah", (0,0))
+        s = G.assemble_figure(f, debug=true)
+        isin(s, "\ngsave")
+        isin(s, "\nset just cc")
+        isin(s, "\namove xg(0.0) yg(0.0)")
+        isin(s, "\nwrite \"blah\"")
+        isin(s, "\ngrestore")
+    end
+
+    begin # STRAIGHTLINE
+        clf()
+        plot([0, 1],[0, 1])
+        hline(0.1; col="red")
+        vline(0.5; lw=0.5)
+        s = G.assemble_figure(f, debug=true)
+        isin(s, "d1 line color") # plot
+        # plot horizontal line
+        isin(s, "gsave")
+        isin(s, "set color rgba(1.0,0.0,0.0,1.0)")
+        isin(s, "amove xg(xgmin) yg(0.1)")
+        isin(s, "aline xg(xgmax) yg(0.1)")
+        isin(s, "grestore")
+        isin(s, "set lwidth 0.5")
+        isin(s, "amove xg(0.5) yg(ygmin)")
+        isin(s, "aline xg(0.5) yg(ygmax)")
+    end
+
+    begin # BOX2D
+        clf()
+        plot([0,1],[0,1])
+        box((0.4,0.6),(0.3,0.7);fill="red",alpha=0.1,col="blue",nobox=false)
+        s = G.assemble_figure(f, debug=true)
+        isin(s, "gsave")
+        isin(s, "set color rgba(0.0,0.0,1.0,1.0)") # blue
+        isin(s, "box xg(0.4)-xg(0) yg(0.6)-yg(0) fill rgba(1.0,0.0,0.0,0.102)")
+    end
+
+    begin # COLORBAR
+        clf()
+
+        X = [ 0.112125   1.83719    0.610405    -0.17842     0.117574;
+             0.340722   0.382532   1.0889      -0.0145842  -0.293014;
+             1.39024    0.140773   1.28426      0.79504     0.172258;
+             0.519013   0.471506  -0.904603     1.11415     0.359543;
+             0.813583  -0.495029  -0.00136247  -0.807024    1.04971 ]
+
+        h = heatmap(X)
+
+        # default colorbar on the right side
+        colorbar(h)
+        s = G.assemble_figure(f, debug=true)
+        for λ ∈ ["amove xg(xgmax)+0.3 yg(ygmin)+0.0",
+                 "begin box name cmap nobox",
+                 "colormap \"y\" 0 1 0 1 1 100 0.25 abs(yg(ygmax)-yg(ygmin)) palette",
+                 "end box",
+                 # ticks lines
+                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.25",
+                 "rline 0.25/3 0",
+                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.5",
+                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.749",
+                 # # ticks writing
+                 "set just lc"
+                 ]
+            isin(s, λ)
+        end
+    end
 end

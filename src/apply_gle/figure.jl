@@ -18,8 +18,7 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
 
     # >> apply latex
     # check if has latex
-    haslatex = false
-    any(isdef, (f.texscale, f.texpreamble)) && (haslatex = true)
+    haslatex = any(isdef, (f.texscale, f.texpreamble))
     isdef(f.texlabels) && (haslatex = f.texlabels)
     # line for texstyle, it may be empty if nothing is given
     apply_textstyle!(g, f.textstyle, addset=true)
@@ -74,5 +73,3 @@ end
 Print the GLE script associated with figure `f` for debugging.
 """
 debug_gle(f::Figure{GLE}=gcf()) = println(assemble_figure(f; debug=true))
-
-assemble_figure(f::Figure{Gnuplot}) = throw(NotImplementedError("assemble_figure:Gnuplot"))

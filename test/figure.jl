@@ -89,3 +89,15 @@ end
     @test_throws GPlot.UnknownOptionError Figure(something=5)
     @test_throws GPlot.OptionValueError Figure(texscale="not-fixed")
 end
+
+
+@testset "▶ apply_gle/figure            " begin
+    f = Figure(size=(10, 6), bgcol=c"red", bgalpha=0.1)
+    s = G.assemble_figure(f; debug=true)
+
+    isin(s, "size 10.0 6.0")
+    isin(s, "amove -0.05 -0.05")
+    # note the float rounding error, it's fine though
+    isin(s, "box 10.1 6.1 fill rgba(1.0,0.0,0.0,0.102) nobox")
+    isin(s, "set font texcmss hei 0.35") # default
+end

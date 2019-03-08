@@ -141,7 +141,9 @@ function heatmap(data::Matrix{<:CanMiss{Real}}; axes=nothing, o...)
     axes = check_axes(axes)
     reset!(axes) # always on fresh axes
 
-    h = Heatmap(data=Matrix{Int}(undef, 0, 0))
+    zmin, zmax = extrema(skipmissing(data))
+
+    h = Heatmap(data=Matrix{Int}(undef, 0, 0), zmin=zmin, zmax=zmax)
     h.transpose = (nrows < ncols)
     set_properties!(h; defer_preview=true, o...)
     push!(axes.drawings, h)

@@ -3,7 +3,7 @@
 Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions refer to the rest of the manual.
 We will draw a simple plot with two curves, labels, and basic axis styling.
 
-Let's start by creating a simple figure
+Let's start by creating a simple figure:
 
 ```julia
 fig = Figure()
@@ -11,13 +11,14 @@ fig = Figure()
 
 !!! note
 
-    it is not required to explicitly call `Figure()`; if no figure currently exists, the first plotting command will generate one with default parameters.
+    It is not required to explicitly call `Figure()`; if no figure currently exists, the first plotting command will generate one with default parameters.
 
-Let's now define a function which we would like to plot over the range `[-2.5, 2.5]`:
+Let's now define a function over the range `[-2.5, 2.5]` and plot it:
 
 @@CODE:qs_ex1
 
-where we've used the `@.` syntax to indicate that the operations are done pointwise on `x`. The syntax should hopefully feel reasonable thus far.
+where we've used the `@.` syntax to indicate that the operations are done pointwise on `x` ([broadcasting](https://docs.julialang.org/en/v1/manual/arrays/index.html#Broadcasting-1)).
+The syntax should hopefully feel reasonable thus far.
 
 @@IMG:qs_ex1
 
@@ -25,7 +26,7 @@ Let's add another curve on this figure and change the colour; let's also specify
 
 @@CODE:qs_ex2
 
-One thing worth noting at this point is that we follow the julia Plots convention adding a `!` after `plot` to indicate that it should modify the current graph without overwriting it (i.e. the curve is added on top of the existing one).
+One thing worth noting at this point is that we follow `Plots.jl`'s convention adding a `!` after `plot` to indicate that it should modify the current graph without overwriting it (i.e. the new curve is added on top of the existing one).
 
 @@IMG:qs_ex2
 

@@ -69,10 +69,10 @@ Add a colorbar.
     # --
     size::Option{T2F} = ∅ # (width, height)
     # --
-    pixels::Int       = 100     # resolution for the color bar
-    nobox::Bool       = true    #
-    position::String  = "right" # left, right, bottom, top
-    offset::T2F       = (0.3, 0.0)
+    pixels::Int      = 100        # resolution for the color bar
+    nobox::Bool      = true       #
+    position::String = "right"    # left, right, bottom, top
+    offset::T2F      = (0.3, 0.0) # h, v distance from closest corner of the graph
 end
 Colorbar(zmin::Float64, zmax::Float64, cmap::Vector{<:Color}) =
     Colorbar(zmin=zmin, zmax=zmax, cmap=cmap,
