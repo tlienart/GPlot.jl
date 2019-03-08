@@ -132,7 +132,7 @@ Line and scatter plots have effectively two things they can get styled:
 2. the marker styles
 
 Note the plural, so that if you are plotting multiple lines at once, each keyword accepts a vector of elements to style the individual plots.
-If a styling option is specified with a scalar but multiple lines are being plotted, all will have that same option.
+If a styling option is specified with a single value but multiple lines are being plotted, all will have that same value for the relevant option.
 
 For instance:
 
@@ -145,6 +145,10 @@ plot(randn(10, 3), colors=["violet", "navyblue", "orange"], lwidth=0.1)
 
 ![](../exgen/out/ls_ex6.svg)
 
+
+!!! note
+
+    GPlot typically accepts multiple aliases for option names, pick whichever one you like, that sticks best to mind or that you find the most readable.
 
 ### Line style options
 
