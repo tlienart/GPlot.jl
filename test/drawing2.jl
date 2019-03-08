@@ -52,4 +52,17 @@ end
 end
 
 @testset "▶ apply_gle/drawing2          " begin
+    f = Figure()
+    begin # BOXPLOT
+        clf()
+        X = randn(10, 3)
+        boxplot(X; box_lw=0.1, box_cols="red")
+                # med_ls="--", med_cols="seagreen",
+                #    mean_show=true, mean_markers="diamond", out_show=true,
+                #    out_markers="+", out_msize=0.2, out_mcols="red")
+
+    end
+
+    begin # HEATMAP
+    end
 end

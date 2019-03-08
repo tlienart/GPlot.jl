@@ -9,15 +9,17 @@
 Internal functions to set the color value `col` (after parsing) to the appropriate
 field of object `obj`.
 """
+set_color!(o::Union{TextStyle,LineStyle,MarkerStyle,BarStyle}, c::Color) = (o.color = c)
+
 set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
 
-set_color!(o::Hist2D, c) = (o.barstyle.color = c)
-set_color!(o::Union{Ticks,StraightLine2D,Box2D}, c) = (o.linestyle.color = c)
-set_color!(o::Colorbar, c) = set_color!(o.ticks, c)
+set_color!(o::Hist2D, c::Color) = set_color!(o.barstyle, c)
+set_color!(o::Union{Ticks,StraightLine2D,Box2D}, c::Color) = set_color!(o.linestyle, c)
+set_color!(o::Colorbar, c::Color) = set_color!(o.ticks, c)
 
-set_textcolor!(o::Ticks, c) = (o.labels.textstyle.color = c)
-set_textcolor!(o::Colorbar, c) = set_textcolor!(o.ticks, c)
-set_textcolor!(o::Union{Figure,Axis,Title}, c) = (o.textstyle.color = c)
+set_textcolor!(o::Ticks, c::Color) = set_color!(o.labels.textstyle, c)
+set_textcolor!(o::Colorbar, c::Color) = set_color!(o.ticks, c)
+set_textcolor!(o::Union{Figure,Axis,Title}, c::Color) = set_color!(o.textstyle, c)
 
 """
     set_fill!(obj, col)
@@ -25,23 +27,34 @@ set_textcolor!(o::Union{Figure,Axis,Title}, c) = (o.textstyle.color = c)
 Internal functions to set the fill color value `v` (after parsing) to the appropriate
 field of object `obj`.
 """
-set_fill!(o::Union{Fill2D,Box2D}, c) = (o.fillstyle = FillStyle(c))
-set_fill!(o::Hist2D, c) = (o.barstyle.fill = c)
+set_fill!(o::Union{FillStyle,BarStyle}, c::Color) = (o.fill = c)
+set_fill!(o::Fill2D, c::Color) = set_fill!(o.fillstyle, c)
+set_fill!(o::Hist2D, c::Color) = set_fill!(o.barstyle, c)
+
+function set_fill!(o::Box2D, c::Color)
+    isnothing(o.fillstyle) && (o.fillstyle = FillStyle())
+    set_fill!(o.fillstyle, c)
+end
 
 """
-    set_colors!(obj, cols, parent, field)
+    set_colors!(obj, cols)
 
-Internal function to set the color values `cols` (after parsing) to `obj.parent[i].field` where
-`i` covers the number of elements (e.g. vector of `LineStyle`).
+Internal function to set the color values `cols`.
 If a single value is passed, all fields will be assigned to that value.
 """
-function set_colors!(vs::Vector, c::Union{Color, Vector{<:Color}}, field::Symbol=:color)
+function set_colors!(vs::Vector, c::Union{Color, Vector{<:Color}}, field::Option{Symbol}=nothing)
     c isa Vector || (c = fill(c, length(vs)))
     # check dimensions match
     length(c) == length(vs) || throw(DimensionMismatch("colors // dimensions don't match"))
     # assign
-    for (i, col) ∈ enumerate(c)
-        setfield!(vs[i], field, col)
+    if isnothing(field)
+        for (i, col) ∈ enumerate(c)
+            set_color!(vs[i], col)
+        end
+    else
+        for (i, col) ∈ enumerate(c)
+            set_color!(getfield(vs[i], field), col)
+        end
     end
     return nothing
 end
@@ -49,10 +62,25 @@ end
 """
     set_fills!(obj, cols)
 
-Internal functions to set the fill color values `cols` (after parsing) to the appropriate
-fields of object `o`. If a single value is passed, all fields will be assigned to that value.
+Internal functions to set the fill color values `cols`.
+If a single value is passed, all fields will be assigned to that value.
 """
-set_fills!(vs::Vector, c) = set_colors!(vs, c, :fill)
+function set_fills!(vs::Vector, c::Union{Color, Vector{<:Color}}, field::Option{Symbol}=nothing)
+    c isa Vector || (c = fill(c, length(vs)))
+    # check dimensions match
+    length(c) == length(vs) || throw(DimensionMismatch("fills // dimensions don't match"))
+    # assign
+    if isnothing(field)
+        for (i, col) ∈ enumerate(c)
+            set_fill!(vs[i], col)
+        end
+    else
+        for (i, col) ∈ enumerate(c)
+            set_fill!(getfield(vs[i], field), col)
+        end
+    end
+    return nothing
+end
 
 
 """
@@ -79,24 +107,26 @@ set_alpha!(o::Union{Figure,Legend}, α::Float64) = (o.bgcolor = coloralpha(o.bgc
 
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
-function set_font!(obj, font::String)
+function set_font!(ts::TextStyle, font::String)
     @assert get_backend() == GLE "font // only GLE backend supported"
-    obj.textstyle.font = get(GLE_FONTS, font) do
+    ts.font = get(GLE_FONTS, font) do
         throw(OptionValueError("font", font))
     end
     return nothing
 end
-set_font!(o::Ticks, font::String) = set_font!(o.labels, font)
-set_font!(o::Colorbar, font::String) = set_font!(o.ticks, font)
+set_font!(o::Ticks, f::String)    = set_font!(o.labels.textstyle, f)
+set_font!(o::Colorbar, f::String) = set_font!(o.ticks, f)
+set_font!(o, f::String)           = set_font!(o.textstyle, f)
 
 """
     set_hei!(obj, fontsize)
 
 Internal function to set the font associated with an object `obj` to the value `font`.
 """
-set_hei!(o::Ticks, v::Float64) = (o.labels.textstyle.hei = v * PT_TO_CM)
+set_hei!(ts::TextStyle, v::Float64) = (ts.hei = v * PT_TO_CM)
+set_hei!(o::Ticks, v::Float64)    = set_hei!(o.labels.textstyle, v)
 set_hei!(o::Colorbar, v::Float64) = set_hei!(o.ticks, v)
-set_hei!(o, v::Float64)        = (o.textstyle.hei = v * PT_TO_CM)
+set_hei!(o, v::Float64)           = set_hei!(o.textstyle, v)
 
 ####
 #### Line related
