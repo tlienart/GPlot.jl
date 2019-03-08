@@ -2,8 +2,10 @@
 
 ## Basic syntax
 
-The relevant commands here are `plot`, `plot!`, `scatter` and `scatter!`.
-The key command is a `plot` which is just a 2D line connecting a set of points; where `plot` by default shows a line and no marker, `scatter` by default shows markers and no line.
+The relevant commands here are
+
+- `plot` and `plot!` (2D lines connecting points, no markers by default)
+- `scatter`, `scatter!` (markers showing a set of points, no line by default)
 
 The general syntax is:
 
@@ -23,7 +25,16 @@ overlays a scatterplot to a line plot:
 
 ## Data formats
 
-These commands take vectors or matrices of points, as long as the number of rows match you should be fine.
+The table below summarises the different ways you can specify what data to plot, they are discussed in more details and with examples below.
+
+| Form     | Example | Comment   |
+| :------: | :-----: | :--------: |
+| single vector $x$ | `plot(randn(5))` | pairs $(i, x_i)$ |
+| two vectors $x,y$ | `plot(randn(5),randn(5))` | pairs $(x_i,y_i)$ |
+| multiple vectors $x,y,z$ | `plot(randn(5),randn(5),randn(5))` | pairs $(x_i,y_i)$, $(x_i,z_i)$, ... |
+| single matrix $X$ | `plot(randn(5,2))` | pairs $(i, x_{i1})$, $(i, x_{i2})$, ... |
+| one vector then vectors or matrices | `plot(1:5, randn(5,2), randn(5))` | pairs between the first vector and subsequent columns |
+| function $f$ from to | `plot(sin, 0, pi)` | draws points $x_i$ on the interval and plots pairs $(x_i, f(x_i))$ |
 
 * **Single vector** $x$: the plot will correspond to the pairs $(i, x_i)$.
 
@@ -58,6 +69,14 @@ For instance:
 @@CODE:ls_ex5
 
 @@IMG:ls_ex5
+
+* **function**: will draw points on the specified range and draw $(x_i, f(x_i))$.
+
+For instance:
+
+@@CODE:ls_ex5b
+
+@@IMG:ls_ex5b
 
 ## Styling options
 

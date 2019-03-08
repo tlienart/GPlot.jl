@@ -1,3 +1,78 @@
 # Installation
 
-TBA
+To work with GPlot, you will need three things:
+
+* Julia ≥ 1.0
+* the GPlot package,
+* the GLE engine,
+
+**Note**: if you intend to use LaTeX, you will also need to have `pdflatex`.
+
+To install the package in Julia, the usual command for unregistered packages applies:
+
+```julia
+] add https://github.com/tlienart/GPlot.jl
+```
+
+To get GLE working, please follow the instructions further below depending on your OS.
+After following the instructions, check in Julia that the following command works (the version number may differ a bit depending on your OS):
+
+```julia-repl
+julia> run(`gle -v`)
+GLE version 4.2.4c
+Usage: gle [options] filename.gle
+More information: gle -help
+Process(`gle -v`, ProcessExited(0))
+```
+
+!!! note
+
+    If you encounter problems with the instructions below or believe that the instructions could be simplified, please [open an issue](https://github.com/isaacs/github/issues/new?title=[foo]&body=*please%20indicate%20your%20OS%20and%20steps%20followed...*). Also if you managed to follow the instructions successfully with an OS that's not explicitly on the list below, please let me know and I can add it here.
+
+### Installing GLE on Linux
+
+**Tested**
+
+* Ubuntu: `sudo apt-get install gle-graphics`
+
+**Untested**
+
+* Fedora, CentOS via `yum install gle`
+* Other distros (_your help is appreciated!_)
+
+### Installing GLE on MacOS
+
+(*There may be a simpler approach but I'm sure this one works and fairly easy.*)
+
+**Tested**: Mojave, High Sierra. (afaik, there's no reason it shouldn't work on older versions)
+
+The original instructions ([here](http://glx.sourceforge.net/tut/mac.html)) are reproduced below for convenience:
+
+1. Get the Ghostscript dmg [from sourceforge](http://prdownloads.sourceforge.net/glx/Ghostscript-8.63.dmg?download) and copy-paste its content (`Ghostscript.framework`) in `/Library/Frameworks/` (*do that even if you already have GS*)
+1. Get the QGLE dmg [from sourceforge](http://prdownloads.sourceforge.net/glx/gle-graphics-4.2.4c-exe-mac.dmg?download) and put its content in your `/Applications/` folder
+
+This should now work in your terminal:
+
+```bash
+~> /Applications/QGLE.app/Contents/bin/gle -v
+GLE version 4.2.4c
+Usage: gle [options] filename.gle
+More information: gle -help
+```
+
+The only thing left to do is to link the right parts to `/usr/local/` so that `gle` can be called from Julia easily.
+(The following lines may tell you that the link to `libpng` already exists, that's fine.)
+
+```bash
+ln -s /Applications/QGLE.app/Contents/bin/gle /usr/local/bin/.
+ln -s /Applications/QGLE.app/Contents/bin/glegs /usr/local/bin/.
+ln -s /Applications/QGLE.app/Contents/lib/libgle-graphics-4.2.4c.dylib /usr/local/lib/.
+ln -s /Applications/QGLE.app/Contents/lib/libpng.dylib /usr/local/lib/.
+ln -s /Applications/QGLE.app/Contents/share/gle-graphics/ /usr/local/share/.
+```
+
+### Installing GLE on Windows
+
+I haven't tested this on Windows but there are executables available on the [GLE downdloads page](http://glx.sourceforge.net/downloads/downloads.html) which should-just-work™ (one has been updated quite recently).
+
+_If you've managed to make things work for you on Windows, please let me know so that I can improve these instructions!_
