@@ -134,6 +134,11 @@ end
     @test !gca().xaxis.ticks.grid && !gca().yaxis.ticks.grid
     grid("on")
     @test gca().xaxis.ticks.grid && gca().yaxis.ticks.grid
+
+    # shorthands for axes
+    cla()
+    axis("math")
+    @test gca().math
 end
 
 @testset "▶ set_prop/ax                 " begin

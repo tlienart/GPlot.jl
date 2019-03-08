@@ -49,7 +49,7 @@ function boxplot(ys...; axes=nothing, o...)
             stats[k, :] = [wlow, q25, q50, q75, whigh, mu]
 
             # outliers
-            outliers[k] = collect(filter(e->(e<wlow || whigh<e), yk))
+            outliers[k] = filter(e->(e<wlow || whigh<e), yk)
 
             # keep track of extremes to adjust axis limits later on
             overallmin > q00  && (overallmin = q00)

@@ -16,6 +16,7 @@ clo() = (gca().objects = Vector{Object2D}(); PreviewFigure(gcf()))
 ####
 #### axes
 ####
+
 function axis(short::String=""; axes=nothing)
     axes = check_axes(axes)
     if !isempty(short)
@@ -35,7 +36,7 @@ function axis(short::String=""; axes=nothing)
             Maybe just xaxis min xgmin*... max xgmax*...
             =#
         else
-            throw(OptionValueError("Unrecognised shorthand toggle for axes.", short))
+            throw(OptionValueError("Unrecognised shorthand toggle for axis.", short))
         end
     end
     return PreviewFigure(gcf())

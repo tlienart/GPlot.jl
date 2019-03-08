@@ -10,7 +10,7 @@ function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
     # aux `.gle` folder
     rm(joinpath(GP_ENV["TMP_PATH"], fig.id * ".gle"), force=true)
     # aux `fig.id...` files
-    auxfiles = filter!(f -> startswith(f, fig.id), readdir(GP_ENV["TMP_PATH"]))
+    auxfiles = Iterators.filter(f -> startswith(f, fig.id), readdir(GP_ENV["TMP_PATH"]))
     for af ∈ auxfiles
         (af ∈ exclude) || rm(joinpath(GP_ENV["TMP_PATH"], af), force=true)
     end

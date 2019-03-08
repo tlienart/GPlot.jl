@@ -1,3 +1,18 @@
+# COMPAT
+
+if VERSION < v"1.1"
+    isnothing(o) = (o === nothing)
+    export isnothing
+    eachcol(A::AbstractArray) = (view(A, :, j) for j ∈ axes(A, 2))
+end
+
+if VERSION < v"1.2"
+    Base.startswith(s::AbstractString, r::Regex) = (rr = Regex("^"*r.pattern); occursin(rr, s))
+end
+
+#######################################
+
+
 abstract type Backend end
 
 struct GLE <: Backend
@@ -20,12 +35,6 @@ take!(b::Backend) = take!(b.io)
 |>(bin::Backend, bout::Backend) = write(bout.io, take!(bin))
 
 #######################################
-
-if VERSION < v"1.1"
-    isnothing(o) = (o === nothing)
-    export isnothing
-    eachcol(A::AbstractArray) = (view(A, :, j) for j ∈ axes(A, 2))
-end
 
 isdef(el) = (el !== nothing)
 
