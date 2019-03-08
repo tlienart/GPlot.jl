@@ -55,8 +55,17 @@ end
     f = Figure()
     begin # BOXPLOT
         clf()
-        Random.seed!(0)
-        X = vcat(randn(10, 3), [5 -5 3]) # force outliers
+        X = [0.214554    0.204954  -0.106862;
+             -1.96864     0.441998   0.862069;
+              0.355096    1.34095    0.94196;
+             -1.04456    -0.159273   0.542868;
+              0.698542    0.68037    0.130701;
+              0.136469    0.878217   1.19285;
+              0.811287   -0.526169   0.0629558;
+              0.498855    0.833732   0.668236;
+             -0.0956764   1.04196    0.548804;
+             -1.09126     1.27123   -1.58358;
+              5.0        -5.0        6.0  ] # forces outlier
         boxplot(X; box_lw=0.1, box_cols="red", med_ls="--", med_cols="seagreen",
                    mean_show=true, mean_markers="diamond", out_show=true,
                    out_markers="+", out_msize=0.2, out_mcols="red")
@@ -77,5 +86,14 @@ end
     end
 
     begin # HEATMAP
+        clf()
+        X = randn(5, 5)
+        heatmap(X)
+        s = G.assemble_figure(gcf(), debug=true)
+        isin(s, "d1=c0,c1 d2=c0,c2 d3=c0,c3 d4=c0,c4 d5=c0,c5")
+        isin(s, "draw hm_")
+        for i ∈ 1:5
+            isin(s, " $i d$i 0.2 0.2")
+        end
     end
 end
