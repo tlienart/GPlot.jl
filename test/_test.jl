@@ -1,4 +1,4 @@
-using Colors, DelimitedFiles, Test, Statistics
+using Colors, DelimitedFiles, Test, Statistics, Random
 const G = GPlot
 
 isin(s, str) = @test occursin(str, s)

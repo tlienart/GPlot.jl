@@ -55,12 +55,25 @@ end
     f = Figure()
     begin # BOXPLOT
         clf()
-        X = randn(10, 3)
-        boxplot(X; box_lw=0.1, box_cols="red")
-                # med_ls="--", med_cols="seagreen",
-                #    mean_show=true, mean_markers="diamond", out_show=true,
-                #    out_markers="+", out_msize=0.2, out_mcols="red")
-
+        Random.seed!(0)
+        X = vcat(randn(10, 3), [5 -5 3]) # force outliers
+        boxplot(X; box_lw=0.1, box_cols="red", med_ls="--", med_cols="seagreen",
+                   mean_show=true, mean_markers="diamond", out_show=true,
+                   out_markers="+", out_msize=0.2, out_mcols="red")
+        s = G.assemble_figure(gcf(), debug=true)
+        for i ∈ 1:3
+            q25,q50,q75 = quantile(X[:,i], [0.25,0.50,0.75])
+            iqr = q75-q25
+            μ = sum(X[:,i])/length(X[:,i])
+            iqr15 = 1.5iqr
+            isin(s, "draw bp_vert $i $(q25-iqr15) $q25 $q50 $q75 $(q75+iqr15) $μ")
+            isin(s, "0.6 0.3 1 0.1 \"rgba(1.0,0.0,0.0,1.0)\"") # box
+            isin(s, "9 0.0 \"rgba(0.18,0.545,0.341,1.0)\" 1 diamond") # med,mean
+        end
+        # outliers
+        for i ∈ 4:6
+            isin(s, "d$i marker plus msize 0.2 color rgba(1.0,0.0,0.0,1.0)")
+        end
     end
 
     begin # HEATMAP
