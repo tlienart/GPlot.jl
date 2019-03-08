@@ -92,7 +92,14 @@ end
 
     begin # COLORBAR
         clf()
-        h = heatmap(randn(5,5))
+
+        X = [ 0.112125   1.83719    0.610405    -0.17842     0.117574;
+             0.340722   0.382532   1.0889      -0.0145842  -0.293014;
+             1.39024    0.140773   1.28426      0.79504     0.172258;
+             0.519013   0.471506  -0.904603     1.11415     0.359543;
+             0.813583  -0.495029  -0.00136247  -0.807024    1.04971 ]
+
+        h = heatmap(X)
 
         # default colorbar on the right side
         colorbar(h)
@@ -105,8 +112,8 @@ end
                  "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.25",
                  "rline 0.25/3 0",
                  "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.5",
-                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.75",
-                 # ticks writing
+                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.749",
+                 # # ticks writing
                  "set just lc"
                  ]
             isin(s, λ)

@@ -93,7 +93,7 @@ function set_alpha!(o::Union{Fill2D,Hist2D,Box2D}, α::Float64, parent::Symbol)
     eval(:($o.$parent.fill = coloralpha($o.$parent.fill, $α)))
     return nothing
 end
-set_alpha!(o::Fill2D, α::Float64) = set_alpha!(o, α, :fillstyle)
+set_alpha!(o::Union{Fill2D,Box2D}, α::Float64) = set_alpha!(o, α, :fillstyle)
 set_alpha!(o::Hist2D, α::Float64) = set_alpha!(o, α, :barstyle)
 set_alpha!(o::Union{Figure,Legend}, α::Float64) = (o.bgcolor = coloralpha(o.bgcolor, α); ∅)
 
