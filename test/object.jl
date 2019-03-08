@@ -50,11 +50,36 @@ end
 
 @testset "▶ apply_gle/object            " begin
     f = Figure()
-    text("blah", (0,0))
-    s = G.assemble_figure(f, debug=true)
-    isin(s, "\ngsave")
-    isin(s, "\nset just cc")
-    isin(s, "\namove xg(0.0) yg(0.0)")
-    isin(s, "\nwrite \"blah\"")
-    isin(s, "\ngrestore")
+
+    begin # TEXT
+        clf()
+        text("blah", (0,0))
+        s = G.assemble_figure(f, debug=true)
+        isin(s, "\ngsave")
+        isin(s, "\nset just cc")
+        isin(s, "\namove xg(0.0) yg(0.0)")
+        isin(s, "\nwrite \"blah\"")
+        isin(s, "\ngrestore")
+    end
+
+    begin # STRAIGHTLINE
+        clf()
+        plot([0, 1],[0, 1])
+        hline(0.1; col="red")
+        vline(0.5; lw=0.5)
+        s = G.assemble_figure(f, debug=true)
+        isin(s, "d1 line color") # plot
+        # plot horizontal line
+        isin(s, "gsave")
+        isin(s, "set color rgba(1.0,0.0,0.0,1.0)")
+        isin(s, "amove xg(xgmin) yg(0.1)")
+        isin(s, "aline xg(xgmax) yg(0.1)")
+        isin(s, "grestore")
+        isin(s, "set lwidth 0.5")
+        isin(s, "amove xg(0.5) yg(ygmin)")
+        isin(s, "aline xg(0.5) yg(ygmax)")
+    end
+
+    begin #
+    end
 end
