@@ -66,6 +66,7 @@ end
              -0.0956764   1.04196    0.548804;
              -1.09126     1.27123   -1.58358;
               5.0        -5.0        6.0  ] # forces outlier
+
         boxplot(X; box_lw=0.1, box_cols="red", med_ls="--", med_cols="seagreen",
                    mean_show=true, mean_markers="diamond", out_show=true,
                    out_markers="+", out_msize=0.2, out_mcols="red")
@@ -83,7 +84,11 @@ end
         for i ∈ 4:6
             isin(s, "d$i marker plus msize 0.2 color rgba(1.0,0.0,0.0,1.0)")
         end
-    end
+
+        X[1,1] = NaN
+        @test_throws ArgumentError boxplot(X)
+
+    end # > BOXPLOT
 
     begin # HEATMAP
         clf()
@@ -95,5 +100,10 @@ end
         for i ∈ 1:5
             isin(s, " $i d$i 0.2 0.2")
         end
-    end
+        @test_throws ArgumentError heatmap_ticks("xxx")
+
+        cla()
+        @test_throws ArgumentError heatmap_ticks("x") # empty
+
+    end # > HEATMAP
 end
