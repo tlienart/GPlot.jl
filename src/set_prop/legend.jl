@@ -30,4 +30,4 @@ set_margins!(o::Legend, m::T2F) = (o.margins = m)
 
 Internal function to set the offset of the object (external distance from object to axis).
 """
-set_offset!(o::Union{Legend,Colorbar}, v::T2F) = (o.offset = v)
+set_offset!(o::Legend, v::T2F) = (o.offset = v)

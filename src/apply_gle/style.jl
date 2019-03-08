@@ -7,6 +7,7 @@ Internal function to apply the textstyle `s` in a GLE context.
     if !isdef(s.font) && !isempty(parent_font)
         s.font = parent_font
     end
+    isanydef(s) || return nothing
     addset         && "\nset"                     |> g
     isdef(s.font)  && "font $(s.font)"            |> g
     isdef(s.hei)   && "hei $(s.hei)"              |> g

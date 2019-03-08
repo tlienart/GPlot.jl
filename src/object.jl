@@ -134,6 +134,5 @@ h = heatmap(randn(20, 20))
 colorbar(h)
 ```
 """
-function colorbar(dh::DrawingHandle{Heatmap}; o...) where {T}
-    return colorbar(extrema(dh.drawing.data)..., dh.drawing.cmap; o...)
-end
+colorbar(dh::DrawingHandle{Heatmap}; o...) =
+    colorbar(dh.drawing.zmin, dh.drawing.zmax, dh.drawing.cmap; o...)

@@ -89,4 +89,27 @@ end
         isin(s, "set color rgba(0.0,0.0,1.0,1.0)") # blue
         isin(s, "box xg(0.4)-xg(0) yg(0.6)-yg(0) fill rgba(1.0,0.0,0.0,0.102)")
     end
+
+    begin # COLORBAR
+        clf()
+        h = heatmap(randn(5,5))
+
+        # default colorbar on the right side
+        colorbar(h)
+        s = G.assemble_figure(f, debug=true)
+        for λ ∈ ["amove xg(xgmax)+0.3 yg(ygmin)+0.0",
+                 "begin box name cmap nobox",
+                 "colormap \"y\" 0 1 0 1 1 100 0.25 abs(yg(ygmax)-yg(ygmin)) palette",
+                 "end box",
+                 # ticks lines
+                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.25",
+                 "rline 0.25/3 0",
+                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.5",
+                 "amove xg(xgmax)+0.3+0.25 yg(ygmin)+0.0+abs(yg(ygmax)-yg(ygmin))*0.75",
+                 # ticks writing
+                 "set just lc"
+                 ]
+            isin(s, λ)
+        end
+    end
 end
