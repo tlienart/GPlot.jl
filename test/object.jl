@@ -80,6 +80,13 @@ end
         isin(s, "aline xg(0.5) yg(ygmax)")
     end
 
-    begin #
+    begin # BOX2D
+        clf()
+        plot([0,1],[0,1])
+        box((0.4,0.6),(0.3,0.7);fill="red",alpha=0.1,col="blue",nobox=false)
+        s = G.assemble_figure(f, debug=true)
+        isin(s, "gsave")
+        isin(s, "set color rgba(0.0,0.0,1.0,1.0)") # blue
+        isin(s, "box xg(0.4)-xg(0) yg(0.6)-yg(0) fill rgba(1.0,0.0,0.0,0.102)")
     end
 end

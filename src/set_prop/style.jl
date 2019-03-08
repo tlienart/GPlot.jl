@@ -89,11 +89,11 @@ end
 Internal function to set the alpha value of `obj.field` to `α`. There must be a color
 value available, it will be reinterpreted with the given alpha value.
 """
-function set_alpha!(o::Union{Fill2D,Hist2D}, α::Float64, parent::Symbol)
+function set_alpha!(o::Union{Fill2D,Hist2D,Box2D}, α::Float64, parent::Symbol)
     eval(:($o.$parent.fill = coloralpha($o.$parent.fill, $α)))
     return nothing
 end
-set_alpha!(o::Union{Fill2D,Box2D}, α::Float64) = set_alpha!(o, α, :fillstyle)
+set_alpha!(o::Fill2D, α::Float64) = set_alpha!(o, α, :fillstyle)
 set_alpha!(o::Hist2D, α::Float64) = set_alpha!(o, α, :barstyle)
 set_alpha!(o::Union{Figure,Legend}, α::Float64) = (o.bgcolor = coloralpha(o.bgcolor, α); ∅)
 
