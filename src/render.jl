@@ -10,7 +10,7 @@ function cleanup(fig::Figure{GLE}, exclude=Vector{String}())
     # aux `.gle` folder
     rm(joinpath(GP_ENV["TMP_PATH"], fig.id * ".gle"), force=true)
     # aux `fig.id...` files
-    auxfiles = filter!(f -> startswith(f, fig.id), readdir(GP_ENV["TMP_PATH"]))
+    auxfiles = Iterators.filter(f -> startswith(f, fig.id), readdir(GP_ENV["TMP_PATH"]))
     for af ∈ auxfiles
         (af ∈ exclude) || rm(joinpath(GP_ENV["TMP_PATH"], af), force=true)
     end
@@ -94,15 +94,12 @@ savefig(fn::String=""; opts...) = savefig(gcf(), fn; opts...)
 
 Internal type to wrap around a figure that is to be previewed. A draft PNG file will be generated for quick preview in IJulia or Atom.
 """
-struct PreviewFigure{S}
+struct PreviewFigure
     fig::Figure
 end
 
-preview(fig::Figure) = PreviewFigure{GP_ENV["CONT_PREVIEW"]}(fig)
-preview() = preview(gcf())
-
 function Base.show(io::IO, ::MIME"image/png",
-                   obj::Union{PreviewFigure{true},DrawingHandle{D,true}}) where {D}
+                   obj::Union{PreviewFigure,DrawingHandle})
     GP_ENV["CONT_PREVIEW"] || return nothing
     disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
                 (isdefined(Main, :IJulia) && Main.IJulia.inited)
@@ -114,10 +111,5 @@ function Base.show(io::IO, ::MIME"image/png",
     # write to IO
     write(io, read(fname))
     GP_ENV["DEL_INTERM"] && rm(fname)
-    return nothing
-end
-
-function Base.show(io::IO, ::MIME"text/plain",
-                   obj::Union{PreviewFigure{false},DrawingHandle{D,false}}) where {D}
     return nothing
 end

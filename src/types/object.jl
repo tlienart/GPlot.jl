@@ -76,4 +76,4 @@ Add a colorbar.
 end
 Colorbar(zmin::Float64, zmax::Float64, cmap::Vector{<:Color}) =
     Colorbar(zmin=zmin, zmax=zmax, cmap=cmap,
-             ticks=Ticks(places=collect(range(zmin,zmax,length=5))[2:end-1]))
+             ticks=Ticks(places=collect(range(zmin, stop=zmax, length=5))[2:end-1]))

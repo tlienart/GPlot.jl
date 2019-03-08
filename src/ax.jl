@@ -3,19 +3,20 @@
 
 Clears the current axes, removing all drawings and resetting all options.
 """
-cla() = (reset!(gca()); preview())
+cla() = (reset!(gca()); PreviewFigure(gcf()))
 
 """
     clo()
 
 Clears all objects (annotations, arrows, ...) from the current axes, leaves everything else.
 """
-clo() = (gca().objects = Vector{Object2D}(); preview())
+clo() = (gca().objects = Vector{Object2D}(); PreviewFigure(gcf()))
 
 
 ####
 #### axes
 ####
+
 function axis(short::String=""; axes=nothing)
     axes = check_axes(axes)
     if !isempty(short)
@@ -35,10 +36,10 @@ function axis(short::String=""; axes=nothing)
             Maybe just xaxis min xgmin*... max xgmax*...
             =#
         else
-            throw(OptionValueError("Unrecognised shorthand toggle for axes.", short))
+            throw(OptionValueError("Unrecognised shorthand toggle for axis.", short))
         end
     end
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 ####
@@ -67,7 +68,7 @@ for axs ∈ ("x", "y", "x2", "y2")
                     throw(OptionValueError("Unrecognised shorthand toggle for axis.", short))
                 end
             end
-            return preview()
+            return PreviewFigure(gcf())
         end
     end
     eval(ex)
@@ -99,7 +100,7 @@ function math(short::String=""; axes=nothing)
     else
         throw(OptionValueError("Unrecognised shorthand toggle for math.", short))
     end
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 """
@@ -124,11 +125,11 @@ function grid(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
         if s_lc == "off"
             axes.xaxis.ticks.grid = false
             axes.yaxis.ticks.grid = false
-            return preview()
+            return PreviewFigure(gcf())
         elseif s_lc == "on"
             axes.xaxis.ticks.grid = true
             axes.yaxis.ticks.grid = true
-            return preview()
+            return PreviewFigure(gcf())
         else
             throw(OptionValueError("Unrecognised shorthand toggle for grid.", short))
         end
@@ -152,7 +153,7 @@ function grid(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
             end
         end
     end
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 ####
@@ -167,7 +168,7 @@ function _lim(axis_sym::Symbol, min::Option{Float64}, max::Option{Float64}; axes
     axis = getfield(axes, axis_sym)
     setfield!(axis, :min, min)
     setfield!(axis, :max, max)
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 # Generate *lim each axis
@@ -190,7 +191,7 @@ function _scale(axis_sym::Symbol, v::String; axes=nothing)
     axis.log = get(AXSCALE, v) do
         throw(OptionValueError("axis scale", v))
     end
-    return preview()
+    return PreviewFigure(gcf())
 end
 
 # Generate *scale for each axis

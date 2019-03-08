@@ -242,6 +242,16 @@ end
     isin(s, "bar d2 width 0.066")
     isin(s, "color rgba(1.0,0.0,0.0,1.0) fill rgba(0.0,0.0,1.0,1.0)")
 
+    clf()
+    # color is not defined
+    hist(x)
+    s = G.assemble_figure(gcf(), debug=true)
+    @test gca().drawings[1].barstyle.color == G.GP_ENV["PALETTE"][1]
+    clf()
+    hist(x, fill="red")
+    s = G.assemble_figure(gcf(), debug=true)
+    @test gca().drawings[1].barstyle.color == c"white"
+
     # BAR2D
     clf()
     x  = [1, 2, 3, 4, 5]
@@ -251,4 +261,14 @@ end
     s = G.assemble_figure(gcf(), debug=true)
     isin(s, "bar d1")
     isin(s, "bar d2 from d1")
+
+    # non-stacked
+    clf()
+    x  = [1, 2, 3, 4, 5]
+    y  = [3, 3, 4, 4, 3]
+    y2 = [5, 5, 6, 6, 5]
+    bar(x, y, y2, stacked=false)
+    s = G.assemble_figure(gcf(), debug=true)
+    isin(s, "bar d1,d2 color $(G.col2str(G.GP_ENV["PALETTE"][1])),$(G.col2str(G.GP_ENV["PALETTE"][2]))")
+    isin(s, "fill rgba(1.0,1.0,1.0,1.0),rgba(1.0,1.0,1.0,1.0)")
 end

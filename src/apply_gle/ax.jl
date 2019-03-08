@@ -35,7 +35,6 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
     a.off && return nothing
 
     isdef(a.origin) && "\namove $(a.origin[1]) $(a.origin[2])" |> g
-    scale = ""
     if a.scale != ""
         scale = ifelse(isdef(a.origin), "fullsize", "scale $(a.scale)")
     end

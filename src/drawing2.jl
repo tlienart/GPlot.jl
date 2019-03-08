@@ -36,8 +36,8 @@ function boxplot(ys...; axes=nothing, o...)
             end
 
             q00, q25, q50, q75, q100 = quantile(yk, [.0, .25, .5, .75, 1.0])
-            iqr   = q75 - q25
-            mean  = sum(yk)/length(yk)
+            iqr = q75 - q25
+            mu  = mean(yk)
 
             wrlength = bp.boxstyles[k].wrlength
             wlow  = q25 - wrlength * iqr
@@ -46,10 +46,10 @@ function boxplot(ys...; axes=nothing, o...)
                 wlow, whigh = q00, q100 # min/max values
             end
 
-            stats[k, :] = [wlow, q25, q50, q75, whigh, mean]
+            stats[k, :] = [wlow, q25, q50, q75, whigh, mu]
 
             # outliers
-            outliers[k] = collect(filter(e->(e<wlow || whigh<e), yk))
+            outliers[k] = filter(e->(e<wlow || whigh<e), yk)
 
             # keep track of extremes to adjust axis limits later on
             overallmin > q00  && (overallmin = q00)

@@ -85,7 +85,7 @@ Reset the current figure keeping only its current name and size, everything else
 set to the default parameters.
 See also [`erase!`](@ref) and [`reset!`](@ref)
 """
-clf() = (reset!(gcf()); preview())
+clf() = (f=gcf();reset!(f); PreviewFigure(f))
 
 """
     destroy(fig)
