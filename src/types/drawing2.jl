@@ -21,6 +21,9 @@ Heatmap of a matrix.
 """
 @with_kw mutable struct Heatmap <: Drawing2D
     data::Matrix{Int}
+    zmin::Float64
+    zmax::Float64
+    #
     cmap::Vector{Color} = colormap("RdBu", 10)
     cmiss::Color = c"white" # box filling for missing values
     # transpose

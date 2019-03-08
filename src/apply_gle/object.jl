@@ -107,19 +107,20 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
         if !(obj.ticks.labels.off)
             offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
             shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
-            "\ngsave"    |> g
+            "\ngsave"       |> g
             apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
+            "\nset just lc" |> g # justify center wrt anchor
             # retrieve the labels
             labels = obj.ticks.labels.names
             if isempty(labels)
-                labels = ["$(round(obj.ticks.places[i], digits=1))" for i ∈ 1:length(ticks)]
+                labels = ["$(round(ticks[i]*(obj.zmax-obj.zmin)+obj.zmin, digits=1))"
+                                for i ∈ 1:length(ticks)]
             end
             # write them
             for (i, tick) ∈ enumerate(ticks)
                 "\namove xg(xgmax)+$dx+$width yg(ygmin)+$dy+$height*$tick" |> g
-                "\nrmove $offset 0"    |> g # move a bit more to write the label
-                "\nrmove 0 $shift"     |> g # shift vertical
-                "\nset just lc"        |> g # justify center wrt anchor
+                "\nrmove $offset*1.3 0"    |> g # move a bit more to write the label
+                iszero(shift) || "\nrmove 0 $shift" |> g # shift vertical
                 "\nwrite $(labels[i])" |> g # write label
             end
             "\ngrestore" |> g
@@ -138,7 +139,8 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
         if !(obj.ticks.labels.off)
             offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
             shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
-            "\ngsave"    |> g
+            "\ngsave"       |> g
+            "\nset just lc" |> g # justify center wrt anchor
             apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
             # retrieve the labels
             labels = obj.ticks.labels.names
@@ -148,8 +150,8 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
             # write them
             for (i, tick) ∈ enumerate(ticks)
                 "\namove xg(xgmin)-$dx yg(ygmin)+$dy" |> g
-                "\nrmove -$offset 0"    |> g # move a bit more to write the label
-                "\nrmove 0 $shift"      |> g # shift vertical
+                "\nrmove -$offset*1.3 0"    |> g # move a bit more to write the label
+                iszero(shift) || "\nrmove 0 $shift"   |> g # shift vertical
                 "\nset just lc"         |> g # justify center wrt anchor
                 "\nwrite $(labels[i])"  |> g # write label
             end
@@ -169,8 +171,9 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
         if !(obj.ticks.labels.off)
             offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
             shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
-            "\ngsave"    |> g
+            "\ngsave"       |> g
             apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
+            "\nset just lc" |> g # justify center wrt anchor
             # retrieve the labels
             labels = obj.ticks.labels.names
             if isempty(labels)
@@ -179,8 +182,8 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
             # write them
             for (i, tick) ∈ enumerate(ticks)
                 "\namove xg(xgmin)+$dx yg(ygmin)-$dy-0.3-$height" |> g
-                "\nrmove 0 -$offset"    |> g # move a bit more to write the label
-                "\nrmove $shift 0"      |> g # shift horizontal
+                "\nrmove 0 -$offset*1.3"    |> g # move a bit more to write the label
+                iszero(shift) || "\nrmove $shift 0" |> g # shift horizontal
                 "\nset just lc"         |> g # justify center wrt anchor
                 "\nwrite $(labels[i])"  |> g # write label
             end
@@ -200,8 +203,9 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
         if !(obj.ticks.labels.off)
             offset = isdef(obj.ticks.labels.dist) ? obj.ticks.labels.dist : "$width/3"
             shift  = isdef(obj.ticks.labels.shift) ? obj.ticks.labels.shift : 0
-            "\ngsave"    |> g
+            "\ngsave"       |> g
             apply_textstyle!(g, obj.ticks.labels.textstyle; addset=true)
+            "\nset just lc" |> g # justify center wrt anchor
             # retrieve the labels
             labels = obj.ticks.labels.names
             if isempty(labels)
@@ -210,8 +214,8 @@ function apply_object!(g::GLE, obj::Colorbar, figid::String)
             # write them
             for (i, tick) ∈ enumerate(ticks)
                 "\namove xg(xgmin)+$dx yg(ygmax)+$dy" |> g
-                "\nrmove 0 $offset"     |> g # move a bit more to write the label
-                "\nrmove $shift 0"      |> g # shift horizontal
+                "\nrmove 0 $offset*1.3"     |> g # move a bit more to write the label
+                iszero(shift) || "\nrmove $shift 0"   |> g # shift horizontal
                 "\nset just lc"         |> g # justify center wrt anchor
                 "\nwrite $(labels[i])"  |> g # write label
             end
