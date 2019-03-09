@@ -6,6 +6,12 @@ article {
     margin-left: 17em;
 }
 
+@media only screen and (max-width: 768px) {
+    article {
+        margin-left: 0;
+    }
+}
+
 img {
     display: block;
     margin-left: auto;

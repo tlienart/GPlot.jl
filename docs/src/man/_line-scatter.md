@@ -102,7 +102,7 @@ For instance:
 
 For each of these options, it should be understood that you can either pass a single value or a vector of values.
 
-- **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` and `linestyles`]: take a string describing how the line(s) will look like.
+- **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` or `linestyles`]: take a string describing how the line(s) will look like. For instance:
 
 | Value    | Result  | Comment
 | :------: | :-----: | :-----:
@@ -112,7 +112,7 @@ For each of these options, it should be understood that you can either pass a si
 | `"none"`   |         | default for `scatter`
 
 
-- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` and `linewidths`]: take a positive number describing how thick the line should be in centimeters.
+- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` or `linewidths`]: take a positive number describing how thick the line should be in centimeters.
 
 | Value    | Result  | Comment
 | :------: | :-----: | :-----:
@@ -122,7 +122,7 @@ For each of these options, it should be understood that you can either pass a si
 | `0.1 `    |    ![](../assets/linestyle/lw_01.png)     |
 | `0 `  |    ![](../assets/linestyle/lw_0.png)     | default value, corresponds to `0.02`
 
-- **line color** [`col`, `color`, `cols` and `colors`]: take a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
+- **line color** [`lc`, `col`, `color`, `cols` or `colors`]: take a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
 
 | Value    | Result  
 | :------: | :-----:
@@ -133,7 +133,7 @@ For each of these options, it should be understood that you can either pass a si
 
 Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.
 
-- **smoothness**: [`smooth` and `smooths`]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
+- **smoothness** [`smooth` or `smooths`]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
 
 @@CODE:ls_ex7
 
@@ -147,31 +147,38 @@ Here's another example combining several options:
 
 ### Marker style options
 
+* **marker** [`marker` or `markers`]: take a string describing how the marker should look. Most markers have aliases. For instance:
+
+| Value    | Result  | Comment
+| :------: | :-----: | :-----:
+| `"o"` or `"circle"`   | XXXXX | default for `scatter`
+| `"^"` or `"triangle"` | XXXXX |
+| `"s"` or `"square"`   | XXXXX |
+| `"none"`   |         | default for `scatter`
+
+* **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]
+* **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]
+
 ## Notes
 
-Infinities, NaNs and Missing values are all treated the same way: they're not shown.
+### Missing, Inf, NaN
 
-TBD
-- plot is tied to data, if data changes, the plot will change too, so should be careful. Note that this is ONLY if the data is modified in place. So for instance
+If the data being plotted contains `missing` or `Inf` or `NaN`, these values will all be treated the same way: they will not be displayed.
 
-```julia
-x = randn(5)
-y = randn(5)
-plot(x, y)
-x = zeros(5)
-xlabel("blah") # the graph will not have changed
-```
+@@CODE:ls_ex9
 
-however
+@@IMG:ls_ex9
 
-```julia
-x = randn(5)
-y = randn(5)
-plot(x, y)
-x[1] = 0.0
-xlabel("blah") # here the first point will be (0.0, y[1])
-```
+### Modifying the underlying data
 
-- Inf, NaN and Missings are all considered in the same way (as missings).
+Plotting objects are tied to the data meaning that if you modify a vector that is plotted *in place* and refresh the plot, the plot will change accordingly.
 
-## Bar plot
+@@CODE:ls_ex10
+
+@@IMG:ls_ex10
+
+Note however that this only happens if you modify an existing vector in place. For instance:
+
+@@CODE:ls_ex11
+
+@@IMG:ls_ex11

@@ -221,10 +221,53 @@ end
 
 ## Notes
 
-Infinities, NaNs and Missing values are all treated the same way: they're not shown.
+### Missing, Inf, NaN
 
-TBD
-- plot is tied to data, if data changes, the plot will change too, so should be careful. Note that this is ONLY if the data is modified in place. So for instance
+If the data being plotted contains `missing` or `Inf` or `NaN`, these values will all be treated the same way: they will not be displayed.
+
+
+```julia
+y = [1, 2, 3, missing, 3, 2, 1, NaN, 0, 1]
+plot(y, marker="o")
+ylim(-1, 4)
+```
+
+
+
+![](../exgen/out/ls_ex9.svg)
+
+
+### Modifying the underlying data
+
+Plotting objects are tied to the data meaning that if you modify a vector that is plotted *in place* and refresh the plot, the plot will change accordingly.
+
+
+```julia
+y = [1, 2, 3, 4, 5, 6]
+plot(y, mcol="red")
+y[3] = 0
+```
+
+
+
+![](../exgen/out/ls_ex10.svg)
+
+
+Note however that this only happens if you modify an existing vector in place. For instance:
+
+
+```julia
+y = [1, 2, 3, 4, 5, 6]
+plot(y, mcol="red")
+y = 0
+```
+
+
+
+![](../exgen/out/ls_ex11.svg)
+
+
+
 
 ```julia
 x = randn(5)

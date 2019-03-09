@@ -167,6 +167,7 @@ const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :linewidths => posfl => set_lwidths! ⊙ pick_lstyles, # .
     :smooth     => id    => set_smooths! ⊙ pick_lstyles, # .
     :smooths    => id    => set_smooths! ⊙ pick_lstyles, # .
+    :lc         => col   => set_colors! ⊙ pick_lstyles,  # .
     :col        => col   => set_colors! ⊙ pick_lstyles,  # .
     :color      => col   => set_colors! ⊙ pick_lstyles,  # .
     :cols       => col   => set_colors! ⊙ pick_lstyles,  # .
@@ -176,10 +177,12 @@ const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
 const GMARKERSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :marker           => lc    => set_markers! ⊙ pick_mstyles, # set_style
     :markers          => lc    => set_markers! ⊙ pick_mstyles, # .
+    :ms               => posfl => set_markers! ⊙ pick_mstyles, # .
     :msize            => posfl => set_msizes! ⊙ pick_mstyles,  # .
     :msizes           => posfl => set_msizes! ⊙ pick_mstyles,  # .
     :markersize       => posfl => set_msizes! ⊙ pick_mstyles,  # .
     :markersizes      => posfl => set_msizes! ⊙ pick_mstyles,  # .
+    :mc               => col   => set_mcols! ⊙ pick_mstyles,   # .
     :mcol             => col   => set_mcols! ⊙ pick_mstyles,   # .
     :markercol        => col   => set_mcols! ⊙ pick_mstyles,   # .
     :markercolor      => col   => set_mcols! ⊙ pick_mstyles,   # .
