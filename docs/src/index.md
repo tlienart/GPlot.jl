@@ -17,7 +17,7 @@ The focus is on speed, ease of use and high-quality output.
 
 **Note**: the package is still being actively developed, feature requests, feedback or contributions are welcome.
 
-## Why GPlot
+## Why GPlot.jl?
 
 I discovered the Graphics Layout Engine (GLE) a while back and liked the library though not the syntax and thought a wrapper for GLE in Julia with a matplotlib-like syntax was an interesting project to work on to learn more about graphics and Julia.
 A few hundreds of commits later and GPlot.jl is there and may be of interests or even useful to others.
@@ -26,13 +26,13 @@ Of course the package is not as mature or feature complete as the current main p
 
 ## How it works
 
-Basically GPlot translates plotting commands such as `plot(1:5, randn(5))` into
+Basically GPlot.jl translates plotting commands such as `plot(1:5, randn(5))` into
 
-* auxiliary files containing the relevant data,
+* one or several auxiliary files containing the relevant data,
 * a GLE script corresponding to how the data must be drawn.
 
-This is then fed into the GLE engine which produces the desired output.
-If LaTeX is used, then the GLE engine uses `pdflatex` in the background (this incurs an overhead).
+This is then passed to the GLE engine which produces the desired output.
+If LaTeX is used, then the GLE engine also uses `pdflatex` in the background to produce the output (this incurs an overhead).
 
 The diagram below illustrates the workflow:
 
@@ -52,27 +52,5 @@ code   ---+                                |         +
 
 ## License
 
-This wrapper is made available under the MIT license.
-The GLE program is released under the BSD license (see [the official website](http://glx.sourceforge.net/main/faq.html#license) for more informations).
-
-
-```@meta
-#=
-- Appendix/fonts
-  - link to tug.dk font catalogue, suggest the ones that work with pdflatex
-
-- when adding text, there's no overwrite (ambiguous) so if it fails you'll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest
-unchanged
-
-- API
-
--- plotting stuff with ! = append
--- everything else doesn't have ! bc confusing
-
-- Latex
-
--- t"x^{\star}" will work but t"\sqrt" won't unless you use TeX in the figure. (need to show examples for this)
--- \it , \bf
-
-=#
-```
+* GPlot.jl is made available under the MIT license.
+* The GLE program is released under the BSD license (see [the official website](http://glx.sourceforge.net/main/faq.html#license) for more informations).
