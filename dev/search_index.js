@@ -141,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Line style options",
     "category": "section",
-    "text": "For each of these options, it should be understood that you can either pass a single value or a vector of values.line style [ls , lstyle, linestyle, lstyles or linestyles]: take a string describing how the line(s) will look like. For instance:Value Result\n\"-\" (Image: )\n\"--\" (Image: )\n\"-.\" (Image: )\n\"none\" line width [lw, lwidth, linewidth, lwidths or linewidths]: take a positive number describing how thick the line should be in centimeters. The value 0 is the default value and corresponds to a thickness of 0.02.Value Result\n0.001 (Image: )\n0.01 (Image: )\n0.05 (Image: )\n0.1 (Image: )\n0 (Image: )line color [lc, col, color, cols or colors]: take a string (most SVG color name) or a Color object (from the Colors.jl package) describing how the line should be coloured.Value Result\n\"cornflowerblue\" (Image: )\n\"forestgreen\" (Image: )\n\"indigo\" (Image: )\n\"RGB(0.5,0.7,0.2)\" (Image: )Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.smoothness [smooth or smooths]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, smooth=false) or out of interpolating splines (smooth=true). The latter may look nicer for plots that represent a continuous function when there aren\'t many points.x = range(-2, 2, length=20)\ny1 = @. sin(exp(-x)) + 0.5\ny2 = @. sin(exp(-x)) - 0.5\nplot(x, y1; label=\"unsmoothed\")\nplot!(x, y2; smooth=true, label=\"smoothed\")\nlegend()(Image: )Here\'s another example combining several options:x = range(0, 2, length=100)\nfor α ∈ 0.01:0.05:0.8\n    plot!(x, x.^α, lwidth=α/10, col=RGB(0.0,0.0,α), smooth=true)\nend(Image: )"
+    "text": "For each of these options, it should be understood that you can either pass a single value or a vector of values.line style [ls , lstyle, linestyle, lstyles or linestyles]: takes a string describing how the line(s) will look like. For instance:Value Result\n\"-\" (Image: )\n\"--\" (Image: )\n\"-.\" (Image: )\n\"none\" line width [lw, lwidth, linewidth, lwidths or linewidths]: takes a positive number describing how thick the line should be in centimeters. The value 0 is the default value and corresponds to a thickness of 0.02.Value Result\n0.001 (Image: )\n0.01 (Image: )\n0.05 (Image: )\n0.1 (Image: )\n0 (Image: )line color [lc, col, color, cols or colors]: takes a string (most SVG color name) or a Color object (from the Colors.jl package) describing how the line should be coloured.Value Result\n\"cornflowerblue\" (Image: )\n\"forestgreen\" (Image: )\n\"indigo\" (Image: )\n\"RGB(0.5,0.7,0.2)\" (Image: )Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.smoothness [smooth or smooths]: takes a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, smooth=false) or out of interpolating splines (smooth=true). The latter may look nicer for plots that represent a continuous function when there aren\'t many points.x = range(-2, 2, length=20)\ny1 = @. sin(exp(-x)) + 0.5\ny2 = @. sin(exp(-x)) - 0.5\nplot(x, y1; label=\"unsmoothed\")\nplot!(x, y2; smooth=true, label=\"smoothed\")\nlegend()(Image: )Here\'s another example combining several options:x = range(0, 2, length=100)\nfor α ∈ 0.01:0.05:0.8\n    plot!(x, x.^α, lwidth=α/10, col=RGB(0.0,0.0,α), smooth=true)\nend(Image: )"
 },
 
 {
@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Marker style options",
     "category": "section",
-    "text": "marker [marker or markers]: take a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an \"empty\" version and a \"filled\" version (the name of the latter being preceded by a f). For instance:Value Result\n\"o\" or \"circle\" (Image: )\n\".\" or \"fo\" or \"fcircle\" (Image: )\n\"^\" or \"triangle\" (Image: )\n\"f^\" or \"ftriangle\" (Image: )\n\"s\" or \"square\" (Image: )\n\"fs\" or \"fsquare\" (Image: )\n\"x\" or \"cross\" (Image: )\n\"+\" or \"plus\" (Image: )marker size [ms, msize, markersize, msizes or markersizes]: take a number indicative of the character height in centimeter.Value Result Comment\n0.1 (Image: ) \n0.25 (Image: ) \n0.5 (Image: ) marker color [mc, mcol, markercol, markercolor, mcols, markercols or markercolors]"
+    "text": "marker [marker or markers]: takes a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an \"empty\" version and a \"filled\" version (the name of the latter being preceded by a f). For instance:Value Result\n\"o\" or \"circle\" (Image: )\n\".\" or \"fo\" or \"fcircle\" (Image: )\n\"^\" or \"triangle\" (Image: )\n\"f^\" or \"ftriangle\" (Image: )\n\"s\" or \"square\" (Image: )\n\"fs\" or \"fsquare\" (Image: )\n\"x\" or \"cross\" (Image: )\n\"+\" or \"plus\" (Image: )marker size [ms, msize, markersize, msizes or markersizes]: takes a number indicative of the character height in centimeter.Value Result\n0.1 (Image: )\n0.25 (Image: )\n0.5 (Image: )marker color [mc, mcol, markercol, markercolor, mcols, markercols or markercolors]: see line colour."
 },
 
 {
@@ -173,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Modifying the underlying data",
     "category": "section",
-    "text": "Plotting objects are tied to the data meaning that if you modify a vector that is plotted in place and refresh the plot, the plot will change accordingly.y = [1, 2, 3, 4, 5, 6]\nplot(y, mcol=\"red\")\ny[3] = 0(Image: )Note however that this only happens if you modify an existing vector in place. For instance:y = [1, 2, 3, 4, 5, 6]\nplot(y, mcol=\"red\")\ny = 0(Image: )"
+    "text": "Plotting objects are tied to the data meaning that if you modify a vector that is currently plotted in place and refresh the plot, the plot will change accordingly.y = [1, 2, 3, 4, 5, 6]\nplot(y, mcol=\"red\")\ny[3] = 0(Image: )Note however that this only happens for in-place modification; note the difference with the example below:y = [1, 2, 3, 4, 5, 6]\nplot(y, mcol=\"red\")\ny = 0(Image: )"
 },
 
 {
@@ -185,11 +185,83 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "man/hist-bar/#Advanced-Plots-1",
+    "location": "man/hist-bar/#Histograms-and-bar-plots-1",
     "page": "Hist & Bar plots",
-    "title": "Advanced Plots",
+    "title": "Histograms and bar plots",
     "category": "section",
-    "text": "TBALaTeX only pdflatex\ncan use basic Latex without actual tex mode (see appendix A3) for instance sub/super-scripts. This can work fine for a lot of simple things and avoids the overhead of pdflatex. Basically all greek letters, most standard maths ops, should link to extracted page 89 of the manual."
+    "text": "This page assumes you\'re already roughly familiar with how things roll as per lines and scatters."
+},
+
+{
+    "location": "man/hist-bar/#Basic-syntax-1",
+    "page": "Hist & Bar plots",
+    "title": "Basic syntax",
+    "category": "section",
+    "text": "The relevant commands here arehist and hist!\nbar and bar!"
+},
+
+{
+    "location": "man/hist-bar/#Data-formats-1",
+    "page": "Hist & Bar plots",
+    "title": "Data formats",
+    "category": "section",
+    "text": "For bars, the situation is pretty much identical as for line and scatter plots (see here) with the exception of an implicit function.For instance:data = [1 2; 1 2; 5 7; 2 3]\nbar(data)(Image: )For histograms, for now histograms can only be drawn one at the time so that the syntax is always hist(x; opts...) where x is a vector:For instance:data = exp.(randn(200)/5)\nhist(data; nbins=20)(Image: )note: Note\nIf you believe that it would be good to be able to draw multiple histograms in one shot, please open a feature request."
+},
+
+{
+    "location": "man/hist-bar/#Styling-options-1",
+    "page": "Hist & Bar plots",
+    "title": "Styling options",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "man/hist-bar/#General-histogram-options-1",
+    "page": "Hist & Bar plots",
+    "title": "General histogram options",
+    "category": "section",
+    "text": "horizontal [horiz or horizontal]: takes a boolean indicating the orientation of the histogram.data = randn(100)\nhist(data; horiz=true)(Image: )number of bins [bins or nbins]: takes a positive integer indicating the number of bins that should be used (default uses Sturges\' formula).\nscaling [scaling]: takes a string describing how the bins should be scaled.Value Comment\n\"none\" or \"count\" number of entries in a range\n\"pdf\" area covered by the bins equals one\n\"prob\" or \"probability\" \n\"none\" count divided by the overall number of entriesIf you want to adjust a pdf plot on top of a histogram, pdf is usually the scaling you will want.x = randn(500)\nhist(x; nbins=50, scaling=\"pdf\")\nplot!(x -> exp(-x^2/2)/sqrt(2π), -3, 3)(Image: )"
+},
+
+{
+    "location": "man/hist-bar/#General-bar-options-1",
+    "page": "Hist & Bar plots",
+    "title": "General bar options",
+    "category": "section",
+    "text": "horizontal [horiz or horizontal]: same as for histograms.\nstacked [stacked]: takes a boolean indicating whether to stack the bars (true) or put them side by side (false) when drawing multiple bars. Note that when stacking bars, it is expected that subsequent bars are increasing (so for instance 7,8,10 and not 7,5,10).# percentages\ndata = [30 40 30; 50 25 25; 30 30 40; 10 50 40]\n# cumulative sum so that columns increase\ndata_cs = copy(data);\ndata_cs[:,2] = data_cs[:,1]+data_cs[:,2]\ndata_cs[:,3] .= 100\nbar(data_cs; stacked=true, fills=[\"midnightblue\", \"lightseagreen\", \"lightsalmon\"])(Image: )bar width [width, bwidth or barwidth]: takes a positive number indicating the width of all bars.data = [10, 50, 30]\nbar(data; width=1, fill=\"hotpink\")(Image: )"
+},
+
+{
+    "location": "man/hist-bar/#Bar-style-options-1",
+    "page": "Hist & Bar plots",
+    "title": "Bar style options",
+    "category": "section",
+    "text": "Both histograms and bars share styling options for the style of the bars (essentially: their edge and fill colour). Note that since bars can be drawn in groups, each option can take a vector of values corresponding to the number of bars drawn. If a single value is passed, all bars will share that option value.edge colour [ecol, edgecol, edgecolor, ecols, edgecols or edgecolors]: takes a colour for the edge of the bars. If it\'s specified but not the fill, then the fill is set to white.hist(randn(100); col=\"powderblue\")(Image: )fill colour [col, color, cols, colors, fill or fills]: takes a colour for the filling of the bars. If it\'s specified but not the edge colour, then the edge colour is set to white.hist(randn(100); ecol=\"red\", fill=\"wheat\")(Image: )"
+},
+
+{
+    "location": "man/hist-bar/#Notes-1",
+    "page": "Hist & Bar plots",
+    "title": "Notes",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "man/hist-bar/#Missing,-Inf-or-NaN-values-1",
+    "page": "Hist & Bar plots",
+    "title": "Missing, Inf or NaN values",
+    "category": "section",
+    "text": "For histograms, only missing values are allowed, attempting to plot a histogram with Inf or NaN will throw an error, if you still want to do it, you should pre-filter your array.\nFor bars, the same rule as for plot apply, these values will be ignored (meaning that some bar will not show)."
+},
+
+{
+    "location": "man/hist-bar/#Modifying-the-underlying-data-1",
+    "page": "Hist & Bar plots",
+    "title": "Modifying the underlying data",
+    "category": "section",
+    "text": "The same comment as the one made in line and scatter plots holds."
 },
 
 {
