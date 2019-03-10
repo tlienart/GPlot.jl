@@ -147,16 +147,18 @@ Here's another example combining several options:
 
 ### Marker style options
 
-* **marker** [`marker` or `markers`]: take a string describing how the marker should look. Most markers have aliases. For instance:
+* **marker** [`marker` or `markers`]: take a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an "empty" version and a "filled" version (the name of the latter being preceded by a `f`). For instance:
 
 | Value    | Result  | Comment
 | :------: | :-----: | :-----:
-| `"o"` or `"circle"`       | XXXXX |
-| `"." or "fo" or "fcircle"`| XXXXX |
-| `"^"` or `"triangle"`     | XXXXX |
-| `"s"` or `"square"`       | XXXXX |
-| `"x"` or `"cross"`        | XXXXX |
-| `"x+"` or `"plus"`        | XXXXX |
+| `"o"` or `"circle"`       | ![](../assets/linestyle/mk_circle.png) |
+| `"." or "fo" or "fcircle"`| ![](../assets/linestyle/mk_fcircle.png) |
+| `"^"` or `"triangle"`     | ![](../assets/linestyle/mk_triangle.png) |
+| `"f^"` or `"ftriangle"`   | ![](../assets/linestyle/mk_ftriangle.png) |
+| `"s"` or `"square"`       | ![](../assets/linestyle/mk_square.png) |
+| `"fs"` or `"fsquare"`     | ![](../assets/linestyle/mk_fsquare.png) |
+| `"x"` or `"cross"`        | ![](../assets/linestyle/mk_cross.png) |
+| `"+"` or `"plus"`         | ![](../assets/linestyle/mk_plus.png) |
 
 * **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]
 * **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]
