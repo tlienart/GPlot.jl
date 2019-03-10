@@ -156,23 +156,23 @@ For each of these options, it should be understood that you can either pass a si
 
 - **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` or `linestyles`]: take a string describing how the line(s) will look like. For instance:
 
-| Value    | Result  | Comment
-| :------: | :-----: | :-----:
-| `"-"`      | ![](../assets/linestyle/ls_-.png)  | default for `plot`
+| Value    | Result  |
+| :------: | :-----: |
+| `"-"`      | ![](../assets/linestyle/ls_-.png)  |
 | `"--"`     | ![](../assets/linestyle/ls_--.png) |
 | `"-."`     | ![](../assets/linestyle/ls_-..png) |
-| `"none"`   |         | default for `scatter`
+| `"none"`   |         |
 
 
-- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` or `linewidths`]: take a positive number describing how thick the line should be in centimeters.
+- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` or `linewidths`]: take a positive number describing how thick the line should be in centimeters. The value `0` is the default value and corresponds to a thickness of `0.02`.
 
-| Value    | Result  | Comment
-| :------: | :-----: | :-----:
+| Value    | Result  |
+| :------: | :-----: |
 | `0.001`      | ![](../assets/linestyle/lw_0001.png)        |
 | `0.01`     |   ![](../assets/linestyle/lw_001.png)      |
 | `0.05`     |    ![](../assets/linestyle/lw_005.png)     |
 | `0.1 `    |    ![](../assets/linestyle/lw_01.png)     |
-| `0 `  |    ![](../assets/linestyle/lw_0.png)     | default value, corresponds to `0.02`
+| `0 `  |    ![](../assets/linestyle/lw_0.png)     |
 
 - **line color** [`lc`, `col`, `color`, `cols` or `colors`]: take a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
 
@@ -219,12 +219,10 @@ end
 
 ### Marker style options
 
-* **marker** [`marker` or `markers`]: take a string describing how the marker should look. Most markers have aliases. For instance:
+* **marker** [`marker` or `markers`]: take a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an "empty" version and a "filled" version (the name of the latter being preceded by a `f`). For instance:
 
-**Note**: a number of standard shapes have an "empty" version and a "filled" version, the name of the latter being preceded by a `f` see examples below.
-
-| Value    | Result  | Comment
-| :------: | :-----: | :-----:
+| Value    | Result  |
+| :------: | :-----: |
 | `"o"` or `"circle"`       | ![](../assets/linestyle/mk_circle.png) |
 | `"." or "fo" or "fcircle"`| ![](../assets/linestyle/mk_fcircle.png) |
 | `"^"` or `"triangle"`     | ![](../assets/linestyle/mk_triangle.png) |
@@ -234,12 +232,19 @@ end
 | `"x"` or `"cross"`        | ![](../assets/linestyle/mk_cross.png) |
 | `"+"` or `"plus"`         | ![](../assets/linestyle/mk_plus.png) |
 
-* **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]
+* **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]: take a number indicative of the character height in centimeter.
+
+| Value    | Result  | Comment
+| :------: | :-----: | :-----:
+| `0.1` | ![](../assets/linestyle/ms_01.png) |
+| `0.25`| ![](../assets/linestyle/ms_025.png) |
+| `0.5` | ![](../assets/linestyle/ms_05.png) |
+
 * **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]
 
 ## Notes
 
-### Missing, Inf, NaN
+### Missing, Inf or NaN values
 
 If the data being plotted contains `missing` or `Inf` or `NaN`, these values will all be treated the same way: they will not be displayed.
 
