@@ -173,7 +173,7 @@ For each of these options, it should be understood that you can either pass a si
 
 Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.
 
-- **smoothness** [`smooth` or `smooths`]: takes a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
+- **smoothness** [`smooth` or `smooths`]: takes a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points. For instance:
 
 
 ```julia
@@ -225,7 +225,7 @@ end
 | `0.25`| ![](../assets/linestyle/ms_025.png) |
 | `0.5` | ![](../assets/linestyle/ms_05.png) |
 
-* **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]: see line colour.
+* **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]: takes a value describing the colour of the markers (see line color earlier).
 
 ## Notes
 
@@ -257,7 +257,7 @@ y[3] = 0
 ![](../exgen/out/ls_ex10.svg)
 
 
-Note however that this only happens for in-place modification; note the difference with the example below:
+Note however that this only happens for in-place modifications; note the difference with the example below:
 
 
 ```julia
@@ -267,4 +267,3 @@ y = 0
 ```
 
 ![](../exgen/out/ls_ex11.svg)
-

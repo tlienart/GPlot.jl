@@ -60,7 +60,7 @@ Now we can save this figure:
 savefig(fig, "my_first_figure.pdf")
 ```
 
-the command picks up the format (here `.pdf`) saves the file in the current folder.
+the command picks up the format (here `.pdf`) and saves the file in the current folder.
 
 !!! comment
 

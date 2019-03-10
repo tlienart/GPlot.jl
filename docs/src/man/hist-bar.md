@@ -6,13 +6,12 @@ This page assumes you're already roughly familiar with how things roll as per [l
 
 The relevant commands here are
 
-- `hist` and `hist!`
-- `bar` and `bar!`
+- `hist` and `hist!` (for histograms),
+- `bar` and `bar!` (for barplots).
 
 ## Data formats
 
-For **bars**, the situation is pretty much identical as for line and scatter plots ([see here](../../line-scatter/#Data-formats-1)) with the exception of an implicit function.
-
+For **bars**, the situation is pretty much identical as for line and scatter plots ([see here](../../line-scatter/#Data-formats-1)) with the exception that it doesn't accept a function.
 For instance:
 
 
@@ -24,8 +23,7 @@ bar(data)
 ![](../exgen/out/hb_ex1.svg)
 
 
-For **histograms**, for now histograms can only be drawn one at the time so that the syntax is always `hist(x; opts...)` where `x` is a vector:
-
+For **histograms**, the syntax is always `hist(x; opts...)` where `x` is a vector (for now histograms can only be drawn one at the time).
 For instance:
 
 
@@ -39,7 +37,7 @@ hist(data; nbins=20)
 
 !!! note
 
-    If you believe that it would be good to be able to draw multiple histograms in one shot, please open a feature request.
+    If you would like to be able to draw multiple histograms in one shot, please open a feature request explaining your use case. It shouldn't be hard to implement.
 
 ## Styling options
 
@@ -67,7 +65,8 @@ hist(data; horiz=true)
 | `"prob"` or `"probability"`     |
 | `"none"`   |  count divided by the overall number of entries  |
 
-If you want to adjust a pdf plot on top of a histogram, `pdf` is usually the scaling you will want.
+If you want to adjust a pdf plot on top of a histogram, `pdf` is usually the scaling you will want to use.
+For instance:
 
 
 ```julia
