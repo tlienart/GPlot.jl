@@ -9,4 +9,5 @@ The focus is on speed, ease of use and high-quality output.
 
 Have a look at [the docs](https://tlienart.github.io/GPlot.jl/dev) if you wish to try this package out.
 
-**Note**: this package is very much WIP. If you would like to help, I'll be happy to hear from you. One of the most helpful would simply be to use the code and report issues or request features here.
+**Note**: this package is very much WIP. If you would like to help, I'll be happy to hear from you.
+Simply using the package and report issues or request features here would be very useful.

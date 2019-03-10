@@ -15,27 +15,13 @@ For **bars**, the situation is pretty much identical as for line and scatter plo
 
 For instance:
 
-
-```julia
-data = [1 2; 1 2; 5 7; 2 3]
-bar(data)
-```
-
-![](../exgen/out/hb_ex1.svg)
-
+@@CODEIMG:hb_ex1
 
 For **histograms**, for now histograms can only be drawn one at the time so that the syntax is always `hist(x; opts...)` where `x` is a vector:
 
 For instance:
 
-
-```julia
-data = exp.(randn(200)/5)
-hist(data; nbins=20)
-```
-
-![](../exgen/out/hb_ex2.svg)
-
+@@CODEIMG:hb_ex2
 
 !!! note
 
@@ -47,14 +33,7 @@ hist(data; nbins=20)
 
 * **horizontal** [`horiz` or `horizontal`]: takes a boolean indicating the orientation of the histogram.
 
-
-```julia
-data = randn(100)
-hist(data; horiz=true)
-```
-
-![](../exgen/out/hb_ex3.svg)
-
+@@CODEIMG:hb_ex3
 
 * **number of bins** [`bins` or `nbins`]: takes a positive integer indicating the number of bins that should be used (default uses [Sturges' formula](https://en.wikipedia.org/wiki/Histogram#Sturges'_formula)).
 
@@ -69,45 +48,18 @@ hist(data; horiz=true)
 
 If you want to adjust a pdf plot on top of a histogram, `pdf` is usually the scaling you will want.
 
-
-```julia
-x = randn(500)
-hist(x; nbins=50, scaling="pdf")
-plot!(x -> exp(-x^2/2)/sqrt(2π), -3, 3)
-```
-
-![](../exgen/out/hb_ex4.svg)
-
+@@CODEIMG:hb_ex4
 
 ### General bar options
 
 * **horizontal** [`horiz` or `horizontal`]: same as for histograms.
 * **stacked** [`stacked`]: takes a boolean indicating whether to stack the bars (`true`) or put them side by side (`false`) when drawing multiple bars. Note that when stacking bars, it is expected that subsequent bars are increasing (so for instance `7,8,10` and not `7,5,10`).
 
-
-```julia
-# percentages
-data = [30 40 30; 50 25 25; 30 30 40; 10 50 40]
-# cumulative sum so that columns increase
-data_cs = copy(data);
-data_cs[:,2] = data_cs[:,1]+data_cs[:,2]
-data_cs[:,3] .= 100
-bar(data_cs; stacked=true, fills=["midnightblue", "lightseagreen", "lightsalmon"])
-```
-
-![](../exgen/out/hb_ex5.svg)
-
+@@CODEIMG:hb_ex5
 
 * **bar width** [`width`, `bwidth` or `barwidth`]: takes a positive number indicating the width of all bars.
 
-
-```julia
-data = [10, 50, 30]
-bar(data; width=1, fill="hotpink")
-```
-
-![](../exgen/out/hb_ex6.svg)
-
+@@CODEIMG:hb_ex6
 
 ### Bar style options
 
@@ -117,23 +69,11 @@ If a single value is passed, all bars will share that option value.
 
 * **edge colour** [`ecol`, `edgecol`, `edgecolor`, `ecols`, `edgecols` or `edgecolors`]: takes a colour for the edge of the bars. If it's specified but not the fill, then the fill is set to white.
 
-
-```julia
-hist(randn(100); col="powderblue")
-```
-
-![](../exgen/out/hb_ex7.svg)
-
+@@CODEIMG:hb_ex7
 
 * **fill colour** [`col`, `color`, `cols`, `colors`, `fill` or `fills`]: takes a colour for the filling of the bars. If it's specified but not the edge colour, then the edge colour is set to white.
 
-
-```julia
-hist(randn(100); ecol="red", fill="wheat")
-```
-
-![](../exgen/out/hb_ex8.svg)
-
+@@CODEIMG:hb_ex8
 
 ## Notes
 
