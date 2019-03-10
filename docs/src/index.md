@@ -1,11 +1,11 @@
 # GPlot.jl - Documentation
 
-GPlot is a plotting package wrapping the [Graphics Layout Engine](http://glx.sourceforge.net/index.html) (and possibly GnuPlot or Asymptote in the future).
+GPlot is a plotting package wrapping the [Graphics Layout Engine](http://glx.sourceforge.net/index.html) (and possibly GnuPlot and/or Asymptote in the future).
 The focus is on speed, ease of use and high-quality output.
 
 **Key features**:
 
-* loading time and time to first plot much faster than `Plots.jl` (a couple of seconds),
+* loading time and time-to-first-plot much faster than `Plots.jl` (a couple of seconds),
 * handles LaTeX seamlessly,
 * handles transparency,
 * imperative syntax similar to Matplotlib, Plots.jl, etc.,
@@ -19,10 +19,10 @@ The focus is on speed, ease of use and high-quality output.
 
 ## Why GPlot
 
-I discovered GLE a while back and liked the library though not the syntax and thought a wrapper for GLE in Julia with a matplotlib-like syntax was an interesting project to work on to learn more about graphics and Julia.
+I discovered the Graphics Layout Engine (GLE) a while back and liked the library though not the syntax and thought a wrapper for GLE in Julia with a matplotlib-like syntax was an interesting project to work on to learn more about graphics and Julia.
 A few hundreds of commits later and GPlot.jl is there and may be of interests or even useful to others.
 
-Of course the package is not as mature or feature complete as the current main plotting packages such as [Plots.jl](https://github.com/JuliaPlots/Plots.jl), [Makie.jl](https://github.com/JuliaPlots/Makie.jl), [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl), [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl), [PGFPlots.jl](https://github.com/JuliaTeX/PGFPlots.jl), [PGFPlotsX.jl](https://github.com/KristofferC/PGFPlotsX.jl), etc which you may prefer if you would rather avoid an experimental library.
+Of course the package is not as mature or feature complete as the current main plotting packages such as [Plots.jl](https://github.com/JuliaPlots/Plots.jl), [Makie.jl](https://github.com/JuliaPlots/Makie.jl), [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl), [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl), [PGFPlots.jl](https://github.com/JuliaTeX/PGFPlots.jl), [PGFPlotsX.jl](https://github.com/KristofferC/PGFPlotsX.jl), etc. which you may prefer if you would rather avoid an experimental library.
 
 ## How it works
 
@@ -58,15 +58,8 @@ The GLE program is released under the BSD license (see [the official website](ht
 
 ```@meta
 #=
-Todo:
-- work out how to have syntax highlighting
-
 - Appendix/fonts
   - link to tug.dk font catalogue, suggest the ones that work with pdflatex
-
-- preview mode: if in a wrapped scope, the continuous preview will
-not happen, need to explicitly call preview for instance
-@elapsed text!(...) will not display unless preview is called explicitly
 
 - when adding text, there's no overwrite (ambiguous) so if it fails you'll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest
 unchanged

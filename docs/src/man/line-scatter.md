@@ -154,27 +154,27 @@ plot(randn(10, 3), colors=["violet", "navyblue", "orange"], lwidth=0.1)
 
 For each of these options, it should be understood that you can either pass a single value or a vector of values.
 
-- **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` and `linestyles`]: take a string describing how the line(s) will look like.
+- **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` or `linestyles`]: take a string describing how the line(s) will look like. For instance:
 
-| Value    | Result  | Comment
-| :------: | :-----: | :-----:
-| `"-"`      | ![](../assets/linestyle/ls_-.png)  | default for `plot`
+| Value    | Result  |
+| :------: | :-----: |
+| `"-"`      | ![](../assets/linestyle/ls_-.png)  |
 | `"--"`     | ![](../assets/linestyle/ls_--.png) |
 | `"-."`     | ![](../assets/linestyle/ls_-..png) |
-| `"none"`   |         | default for `scatter`
+| `"none"`   |         |
 
 
-- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` and `linewidths`]: take a positive number describing how thick the line should be in centimeters.
+- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` or `linewidths`]: take a positive number describing how thick the line should be in centimeters. The value `0` is the default value and corresponds to a thickness of `0.02`.
 
-| Value    | Result  | Comment
-| :------: | :-----: | :-----:
+| Value    | Result  |
+| :------: | :-----: |
 | `0.001`      | ![](../assets/linestyle/lw_0001.png)        |
 | `0.01`     |   ![](../assets/linestyle/lw_001.png)      |
 | `0.05`     |    ![](../assets/linestyle/lw_005.png)     |
 | `0.1 `    |    ![](../assets/linestyle/lw_01.png)     |
-| `0 `  |    ![](../assets/linestyle/lw_0.png)     | default value, corresponds to `0.02`
+| `0 `  |    ![](../assets/linestyle/lw_0.png)     |
 
-- **line color** [`col`, `color`, `cols` and `colors`]: take a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
+- **line color** [`lc`, `col`, `color`, `cols` or `colors`]: take a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
 
 | Value    | Result  
 | :------: | :-----:
@@ -185,7 +185,7 @@ For each of these options, it should be understood that you can either pass a si
 
 Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.
 
-- **smoothness**: [`smooth` and `smooths`]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
+- **smoothness** [`smooth` or `smooths`]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
 
 
 ```julia
@@ -219,31 +219,73 @@ end
 
 ### Marker style options
 
+* **marker** [`marker` or `markers`]: take a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an "empty" version and a "filled" version (the name of the latter being preceded by a `f`). For instance:
+
+| Value    | Result  |
+| :------: | :-----: |
+| `"o"` or `"circle"`       | ![](../assets/linestyle/mk_circle.png) |
+| `"." or "fo" or "fcircle"`| ![](../assets/linestyle/mk_fcircle.png) |
+| `"^"` or `"triangle"`     | ![](../assets/linestyle/mk_triangle.png) |
+| `"f^"` or `"ftriangle"`   | ![](../assets/linestyle/mk_ftriangle.png) |
+| `"s"` or `"square"`       | ![](../assets/linestyle/mk_square.png) |
+| `"fs"` or `"fsquare"`     | ![](../assets/linestyle/mk_fsquare.png) |
+| `"x"` or `"cross"`        | ![](../assets/linestyle/mk_cross.png) |
+| `"+"` or `"plus"`         | ![](../assets/linestyle/mk_plus.png) |
+
+* **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]: take a number indicative of the character height in centimeter.
+
+| Value    | Result  | Comment
+| :------: | :-----: | :-----:
+| `0.1` | ![](../assets/linestyle/ms_01.png) |
+| `0.25`| ![](../assets/linestyle/ms_025.png) |
+| `0.5` | ![](../assets/linestyle/ms_05.png) |
+
+* **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]
+
 ## Notes
 
-Infinities, NaNs and Missing values are all treated the same way: they're not shown.
+### Missing, Inf or NaN values
 
-TBD
-- plot is tied to data, if data changes, the plot will change too, so should be careful. Note that this is ONLY if the data is modified in place. So for instance
+If the data being plotted contains `missing` or `Inf` or `NaN`, these values will all be treated the same way: they will not be displayed.
 
-```julia
-x = randn(5)
-y = randn(5)
-plot(x, y)
-x = zeros(5)
-xlabel("blah") # the graph will not have changed
-```
-
-however
 
 ```julia
-x = randn(5)
-y = randn(5)
-plot(x, y)
-x[1] = 0.0
-xlabel("blah") # here the first point will be (0.0, y[1])
+y = [1, 2, 3, missing, 3, 2, 1, NaN, 0, 1]
+plot(y, marker="o")
+ylim(-1, 4)
 ```
 
-- Inf, NaN and Missings are all considered in the same way (as missings).
 
-## Bar plot
+
+![](../exgen/out/ls_ex9.svg)
+
+
+### Modifying the underlying data
+
+Plotting objects are tied to the data meaning that if you modify a vector that is plotted *in place* and refresh the plot, the plot will change accordingly.
+
+
+```julia
+y = [1, 2, 3, 4, 5, 6]
+plot(y, mcol="red")
+y[3] = 0
+```
+
+
+
+![](../exgen/out/ls_ex10.svg)
+
+
+Note however that this only happens if you modify an existing vector in place. For instance:
+
+
+```julia
+y = [1, 2, 3, 4, 5, 6]
+plot(y, mcol="red")
+y = 0
+```
+
+
+
+![](../exgen/out/ls_ex11.svg)
+
