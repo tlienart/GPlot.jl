@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GPlot.jl - Documentation",
     "category": "section",
-    "text": "GPlot is a plotting package wrapping the Graphics Layout Engine (and possibly GnuPlot or Asymptote in the future). The focus is on speed, ease of use and high-quality output.Key features:loading time and time to first plot much faster than Plots.jl (a couple of seconds),\nhandles LaTeX seamlessly,\nhandles transparency,\nimperative syntax similar to Matplotlib, Plots.jl, etc.,\nmultiple output formats: PNG, PDF, SVG, JPG, EPS or PS.What it\'s not meant for:interactivity (panning, zooming, ...)Note: the package is still being actively developed, feature requests, feedback or contributions are welcome."
+    "text": "GPlot is a plotting package wrapping the Graphics Layout Engine (and possibly GnuPlot and/or Asymptote in the future). The focus is on speed, ease of use and high-quality output.Key features:loading time and time-to-first-plot much faster than Plots.jl (a couple of seconds),\nhandles LaTeX seamlessly,\nhandles transparency,\nimperative syntax similar to Matplotlib, Plots.jl, etc.,\nmultiple output formats: PNG, PDF, SVG, JPG, EPS or PS.What it\'s not meant for:interactivity (panning, zooming, ...)Note: the package is still being actively developed, feature requests, feedback or contributions are welcome."
 },
 
 {
@@ -21,7 +21,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Why GPlot",
     "category": "section",
-    "text": "I discovered GLE a while back and liked the library though not the syntax and thought a wrapper for GLE in Julia with a matplotlib-like syntax was an interesting project to work on to learn more about graphics and Julia. A few hundreds of commits later and GPlot.jl is there and may be of interests or even useful to others.Of course the package is not as mature or feature complete as the current main plotting packages such as Plots.jl, Makie.jl, PyPlot.jl, Gadfly.jl, PGFPlots.jl, PGFPlotsX.jl, etc which you may prefer if you would rather avoid an experimental library."
+    "text": "I discovered the Graphics Layout Engine (GLE) a while back and liked the library though not the syntax and thought a wrapper for GLE in Julia with a matplotlib-like syntax was an interesting project to work on to learn more about graphics and Julia. A few hundreds of commits later and GPlot.jl is there and may be of interests or even useful to others.Of course the package is not as mature or feature complete as the current main plotting packages such as Plots.jl, Makie.jl, PyPlot.jl, Gadfly.jl, PGFPlots.jl, PGFPlotsX.jl, etc. which you may prefer if you would rather avoid an experimental library."
 },
 
 {
@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "License",
     "category": "section",
-    "text": "This wrapper is made available under the MIT license. The GLE program is released under the BSD license (see the official website for more informations).#=\nTodo:\n- work out how to have syntax highlighting\n\n- Appendix/fonts\n  - link to tug.dk font catalogue, suggest the ones that work with pdflatex\n\n- preview mode: if in a wrapped scope, the continuous preview will\nnot happen, need to explicitly call preview for instance\n@elapsed text!(...) will not display unless preview is called explicitly\n\n- when adding text, there\'s no overwrite (ambiguous) so if it fails you\'ll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest\nunchanged\n\n- API\n\n-- plotting stuff with ! = append\n-- everything else doesn\'t have ! bc confusing\n\n- Latex\n\n-- t\"x^{\\star}\" will work but t\"\\sqrt\" won\'t unless you use TeX in the figure. (need to show examples for this)\n-- \\it , \\bf\n\n=#"
+    "text": "This wrapper is made available under the MIT license. The GLE program is released under the BSD license (see the official website for more informations).#=\n- Appendix/fonts\n  - link to tug.dk font catalogue, suggest the ones that work with pdflatex\n\n- when adding text, there\'s no overwrite (ambiguous) so if it fails you\'ll need to use `cla()` liberally. same if you want to change from notex to latex mode use cla or clf and then set(gcf, tex=true) and then go again. Can use `clo!` to remove objects leaving rest\nunchanged\n\n- API\n\n-- plotting stuff with ! = append\n-- everything else doesn\'t have ! bc confusing\n\n- Latex\n\n-- t\"x^{\\star}\" will work but t\"\\sqrt\" won\'t unless you use TeX in the figure. (need to show examples for this)\n-- \\it , \\bf\n\n=#"
 },
 
 {
@@ -53,29 +53,29 @@ var documenterSearchIndex = {"docs": [
     "page": "Installation",
     "title": "Installation",
     "category": "section",
-    "text": "To work with GPlot, you will need three things:Julia ≥ 1.0\nthe GPlot package,\nthe GLE engine,Note: if you intend to use LaTeX, you will also need to have pdflatex.To install the package in Julia, the usual command for unregistered packages applies:] add https://github.com/tlienart/GPlot.jlTo get GLE working, please follow the instructions further below depending on your OS. After following the instructions, check in Julia that the following command works (the version number may differ a bit depending on your OS):julia> run(`gle -v`)\nGLE version 4.2.4c\nUsage: gle [options] filename.gle\nMore information: gle -help\nProcess(`gle -v`, ProcessExited(0))note: Note\nIf you encounter problems with the instructions below or believe that the instructions could be simplified, please open an issue. Also if you managed to follow the instructions successfully with an OS that\'s not explicitly on the list below, please let me know and I can add it here."
+    "text": "To work with GPlot, you will need three things:Julia ≥ 1.0\nthe GPlot package,\nthe GLE engine,Note: if you intend to use LaTeX, you will also need to have pdflatex.To install the package in Julia, the usual command for unregistered packages applies:] add https://github.com/tlienart/GPlot.jlTo get GLE working, please follow the instructions further below depending on your OS. After following the instructions, check in Julia that the following command works:julia> run(`gle -v`)\nGLE version 4.2.4c\nUsage: gle [options] filename.gle\nMore information: gle -help\nProcess(`gle -v`, ProcessExited(0))note: Note\nIf you encounter problems with the instructions below or believe that the instructions could be simplified, please open an issue. Also if you managed to follow the instructions successfully with an OS that\'s not explicitly on the list below, please let me know and I can add it here."
 },
 
 {
-    "location": "man/installation/#Installing-GLE-on-Linux-1",
+    "location": "man/installation/#GLE-on-Linux-1",
     "page": "Installation",
-    "title": "Installing GLE on Linux",
+    "title": "GLE on Linux",
     "category": "section",
     "text": "TestedUbuntu: sudo apt-get install gle-graphicsUntestedFedora, CentOS via yum install gle\nOther distros (your help is appreciated!)"
 },
 
 {
-    "location": "man/installation/#Installing-GLE-on-MacOS-1",
+    "location": "man/installation/#GLE-on-MacOS-1",
     "page": "Installation",
-    "title": "Installing GLE on MacOS",
+    "title": "GLE on MacOS",
     "category": "section",
-    "text": "(There may be a simpler approach but I\'m sure this one works and fairly easy.)Tested: Mojave, High Sierra. (afaik, there\'s no reason it shouldn\'t work on older versions)The original instructions (here) are reproduced below for convenience:Get the Ghostscript dmg from sourceforge and copy-paste its content (Ghostscript.framework) in /Library/Frameworks/ (do that even if you already have GS)\nGet the QGLE dmg from sourceforge and put its content in your /Applications/ folderThis should now work in your terminal:~> /Applications/QGLE.app/Contents/bin/gle -v\nGLE version 4.2.4c\nUsage: gle [options] filename.gle\nMore information: gle -helpThe only thing left to do is to link the right parts to /usr/local/ so that gle can be called from Julia easily. (The following lines may tell you that the link to libpng already exists, that\'s fine.)ln -s /Applications/QGLE.app/Contents/bin/gle /usr/local/bin/.\nln -s /Applications/QGLE.app/Contents/bin/glegs /usr/local/bin/.\nln -s /Applications/QGLE.app/Contents/lib/libgle-graphics-4.2.4c.dylib /usr/local/lib/.\nln -s /Applications/QGLE.app/Contents/lib/libpng.dylib /usr/local/lib/.\nln -s /Applications/QGLE.app/Contents/share/gle-graphics/ /usr/local/share/."
+    "text": "(There may be a simpler approach but I\'m sure this one works and is straightforward.)Tested: Mojave, High Sierra. Untested: Older versions (please let me know if you\'ve managed to run the instructions successfully!)The original instructions to install GLE (available here) are reproduced below for convenience:Get the Ghostscript dmg from sourceforge and copy-paste its content (Ghostscript.framework) in /Library/Frameworks/ (do that even if you already have GS)\nGet the QGLE dmg from sourceforge and put its content in your /Applications/ folderThis should now work in your terminal:~> /Applications/QGLE.app/Contents/bin/gle -v\nGLE version 4.2.4c\nUsage: gle [options] filename.gle\nMore information: gle -helpThe only thing left to do is to copy the right files to /usr/local/ so that gle can be called from Julia easily. (The following lines may tell you that the link to libpng already exists, that\'s fine.)ln -s /Applications/QGLE.app/Contents/bin/gle /usr/local/bin/.\nln -s /Applications/QGLE.app/Contents/bin/glegs /usr/local/bin/.\nln -s /Applications/QGLE.app/Contents/lib/libgle-graphics-4.2.4c.dylib /usr/local/lib/.\nln -s /Applications/QGLE.app/Contents/lib/libpng.dylib /usr/local/lib/.\nln -s /Applications/QGLE.app/Contents/share/gle-graphics/ /usr/local/share/.Note: you can also copy the files using cp instead of ln -s in the lines above and then remove QGLE.app if you prefer that approach."
 },
 
 {
-    "location": "man/installation/#Installing-GLE-on-Windows-1",
+    "location": "man/installation/#GLE-on-Windows-1",
     "page": "Installation",
-    "title": "Installing GLE on Windows",
+    "title": "GLE on Windows",
     "category": "section",
     "text": "I haven\'t tested this on Windows but there are executables available on the GLE downdloads page which should-just-work™ (one has been updated quite recently).If you\'ve managed to make things work for you on Windows, please let me know so that I can improve these instructions!"
 },
@@ -141,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Line style options",
     "category": "section",
-    "text": "For each of these options, it should be understood that you can either pass a single value or a vector of values.line style [ls , lstyle, linestyle, lstyles and linestyles]: take a string describing how the line(s) will look like.Value Result Comment\n\"-\" (Image: ) default for plot\n\"--\" (Image: ) \n\"-.\" (Image: ) \n\"none\"  default for scatterline width [lw, lwidth, linewidth, lwidths and linewidths]: take a positive number describing how thick the line should be in centimeters.Value Result Comment\n0.001 (Image: ) \n0.01 (Image: ) \n0.05 (Image: ) \n0.1 (Image: ) \n0 (Image: ) default value, corresponds to 0.02line color [col, color, cols and colors]: take a string (most SVG color name) or a Color object (from the Colors.jl package) describing how the line should be coloured.Value Result\n\"cornflowerblue\" (Image: )\n\"forestgreen\" (Image: )\n\"indigo\" (Image: )\n\"RGB(0.5,0.7,0.2)\" (Image: )Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.smoothness: [smooth and smooths]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, smooth=false) or out of interpolating splines (smooth=true). The latter may look nicer for plots that represent a continuous function when there aren\'t many points.x = range(-2, 2, length=20)\ny1 = @. sin(exp(-x)) + 0.5\ny2 = @. sin(exp(-x)) - 0.5\nplot(x, y1; label=\"unsmoothed\")\nplot!(x, y2; smooth=true, label=\"smoothed\")\nlegend()(Image: )Here\'s another example combining several options:x = range(0, 2, length=100)\nfor α ∈ 0.01:0.05:0.8\n    plot!(x, x.^α, lwidth=α/10, col=RGB(0.0,0.0,α), smooth=true)\nend(Image: )"
+    "text": "For each of these options, it should be understood that you can either pass a single value or a vector of values.line style [ls , lstyle, linestyle, lstyles or linestyles]: take a string describing how the line(s) will look like. For instance:Value Result\n\"-\" (Image: )\n\"--\" (Image: )\n\"-.\" (Image: )\n\"none\" line width [lw, lwidth, linewidth, lwidths or linewidths]: take a positive number describing how thick the line should be in centimeters. The value 0 is the default value and corresponds to a thickness of 0.02.Value Result\n0.001 (Image: )\n0.01 (Image: )\n0.05 (Image: )\n0.1 (Image: )\n0 (Image: )line color [lc, col, color, cols or colors]: take a string (most SVG color name) or a Color object (from the Colors.jl package) describing how the line should be coloured.Value Result\n\"cornflowerblue\" (Image: )\n\"forestgreen\" (Image: )\n\"indigo\" (Image: )\n\"RGB(0.5,0.7,0.2)\" (Image: )Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.smoothness [smooth or smooths]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, smooth=false) or out of interpolating splines (smooth=true). The latter may look nicer for plots that represent a continuous function when there aren\'t many points.x = range(-2, 2, length=20)\ny1 = @. sin(exp(-x)) + 0.5\ny2 = @. sin(exp(-x)) - 0.5\nplot(x, y1; label=\"unsmoothed\")\nplot!(x, y2; smooth=true, label=\"smoothed\")\nlegend()(Image: )Here\'s another example combining several options:x = range(0, 2, length=100)\nfor α ∈ 0.01:0.05:0.8\n    plot!(x, x.^α, lwidth=α/10, col=RGB(0.0,0.0,α), smooth=true)\nend(Image: )"
 },
 
 {
@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Marker style options",
     "category": "section",
-    "text": ""
+    "text": "marker [marker or markers]: take a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an \"empty\" version and a \"filled\" version (the name of the latter being preceded by a f). For instance:Value Result\n\"o\" or \"circle\" (Image: )\n\".\" or \"fo\" or \"fcircle\" (Image: )\n\"^\" or \"triangle\" (Image: )\n\"f^\" or \"ftriangle\" (Image: )\n\"s\" or \"square\" (Image: )\n\"fs\" or \"fsquare\" (Image: )\n\"x\" or \"cross\" (Image: )\n\"+\" or \"plus\" (Image: )marker size [ms, msize, markersize, msizes or markersizes]: take a number indicative of the character height in centimeter.Value Result Comment\n0.1 (Image: ) \n0.25 (Image: ) \n0.5 (Image: ) marker color [mc, mcol, markercol, markercolor, mcols, markercols or markercolors]"
 },
 
 {
@@ -157,15 +157,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Line & Scatter plots",
     "title": "Notes",
     "category": "section",
-    "text": "Infinities, NaNs and Missing values are all treated the same way: they\'re not shown.TBDplot is tied to data, if data changes, the plot will change too, so should be careful. Note that this is ONLY if the data is modified in place. So for instancex = randn(5)\ny = randn(5)\nplot(x, y)\nx = zeros(5)\nxlabel(\"blah\") # the graph will not have changedhoweverx = randn(5)\ny = randn(5)\nplot(x, y)\nx[1] = 0.0\nxlabel(\"blah\") # here the first point will be (0.0, y[1])Inf, NaN and Missings are all considered in the same way (as missings)."
+    "text": ""
 },
 
 {
-    "location": "man/line-scatter/#Bar-plot-1",
+    "location": "man/line-scatter/#Missing,-Inf-or-NaN-values-1",
     "page": "Line & Scatter plots",
-    "title": "Bar plot",
+    "title": "Missing, Inf or NaN values",
     "category": "section",
-    "text": ""
+    "text": "If the data being plotted contains missing or Inf or NaN, these values will all be treated the same way: they will not be displayed.y = [1, 2, 3, missing, 3, 2, 1, NaN, 0, 1]\nplot(y, marker=\"o\")\nylim(-1, 4)(Image: )"
+},
+
+{
+    "location": "man/line-scatter/#Modifying-the-underlying-data-1",
+    "page": "Line & Scatter plots",
+    "title": "Modifying the underlying data",
+    "category": "section",
+    "text": "Plotting objects are tied to the data meaning that if you modify a vector that is plotted in place and refresh the plot, the plot will change accordingly.y = [1, 2, 3, 4, 5, 6]\nplot(y, mcol=\"red\")\ny[3] = 0(Image: )Note however that this only happens if you modify an existing vector in place. For instance:y = [1, 2, 3, 4, 5, 6]\nplot(y, mcol=\"red\")\ny = 0(Image: )"
 },
 
 {
