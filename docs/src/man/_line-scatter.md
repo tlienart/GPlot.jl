@@ -151,10 +151,12 @@ Here's another example combining several options:
 
 | Value    | Result  | Comment
 | :------: | :-----: | :-----:
-| `"o"` or `"circle"`   | XXXXX | default for `scatter`
-| `"^"` or `"triangle"` | XXXXX |
-| `"s"` or `"square"`   | XXXXX |
-| `"none"`   |         | default for `scatter`
+| `"o"` or `"circle"`       | XXXXX |
+| `"." or "fo" or "fcircle"`| XXXXX |
+| `"^"` or `"triangle"`     | XXXXX |
+| `"s"` or `"square"`       | XXXXX |
+| `"x"` or `"cross"`        | XXXXX |
+| `"x+"` or `"plus"`        | XXXXX |
 
 * **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]
 * **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]
