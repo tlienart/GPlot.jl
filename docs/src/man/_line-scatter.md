@@ -9,7 +9,7 @@ The relevant commands here are
 
 The general syntax is:
 
-```
+```julia
 command(data_to_plot...; options...)
 ```
 
@@ -40,9 +40,7 @@ The table below summarises the different ways you can specify what data to plot,
 
 For instance:
 
-@@CODE:ls_ex2
-
-@@IMG:ls_ex2
+@@CODEIMG:ls_ex2
 
 * **Two vectors** $x$, $y$: the plot will correspond to the pairs $(x_i, y_i)$ (see e.g. the example earlier)
 
@@ -50,33 +48,25 @@ For instance:
 
 For instance:
 
-@@CODE:ls_ex3
-
-@@IMG:ls_ex3
+@@CODEIMG:ls_ex3
 
 * **Single matrix** $X$: the plots will correspond to the pairs $(i, X_{i1})$, $(i, X_{i2})$ etc.
 
 For instance:
 
-@@CODE:ls_ex4
-
-@@IMG:ls_ex4
+@@CODEIMG:ls_ex4
 
 * **vector and matrices or vector** $x$, $Y$, $Z$: will form plots corresponding to the pairs of $x$ and each column in $Y$, $Z$ etc.
 
 For instance:
 
-@@CODE:ls_ex5
-
-@@IMG:ls_ex5
+@@CODEIMG:ls_ex5
 
 * **function**: will draw points on the specified range and draw $(x_i, f(x_i))$.
 
 For instance:
 
-@@CODE:ls_ex5b
-
-@@IMG:ls_ex5b
+@@CODEIMG:ls_ex5b
 
 ## Styling options
 
@@ -90,9 +80,7 @@ If a styling option is specified with a single value but multiple lines are bein
 
 For instance:
 
-@@CODE:ls_ex6
-
-@@IMG:ls_ex6
+@@CODEIMG:ls_ex6
 
 !!! note
 
@@ -102,7 +90,7 @@ For instance:
 
 For each of these options, it should be understood that you can either pass a single value or a vector of values.
 
-- **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` or `linestyles`]: take a string describing how the line(s) will look like. For instance:
+- **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` or `linestyles`]: takes a string describing how the line(s) will look like. For instance:
 
 | Value    | Result  |
 | :------: | :-----: |
@@ -112,7 +100,7 @@ For each of these options, it should be understood that you can either pass a si
 | `"none"`   |         |
 
 
-- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` or `linewidths`]: take a positive number describing how thick the line should be in centimeters. The value `0` is the default value and corresponds to a thickness of `0.02`.
+- **line width** [`lw`, `lwidth`, `linewidth`, `lwidths` or `linewidths`]: takes a positive number describing how thick the line should be in centimeters. The value `0` is the default value and corresponds to a thickness of `0.02`.
 
 | Value    | Result  |
 | :------: | :-----: |
@@ -122,7 +110,7 @@ For each of these options, it should be understood that you can either pass a si
 | `0.1 `    |    ![](../assets/linestyle/lw_01.png)     |
 | `0 `  |    ![](../assets/linestyle/lw_0.png)     |
 
-- **line color** [`lc`, `col`, `color`, `cols` or `colors`]: take a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
+- **line color** [`lc`, `col`, `color`, `cols` or `colors`]: takes a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
 
 | Value    | Result  
 | :------: | :-----:
@@ -133,21 +121,18 @@ For each of these options, it should be understood that you can either pass a si
 
 Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.
 
-- **smoothness** [`smooth` or `smooths`]: take a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
+- **smoothness** [`smooth` or `smooths`]: takes a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
 
-@@CODE:ls_ex7
-
-@@IMG:ls_ex7
+@@CODEIMG:ls_ex7
 
 Here's another example combining several options:
 
-@@CODE:ls_ex8
+@@CODEIMG:ls_ex8
 
-@@IMG:ls_ex8
 
 ### Marker style options
 
-* **marker** [`marker` or `markers`]: take a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an "empty" version and a "filled" version (the name of the latter being preceded by a `f`). For instance:
+* **marker** [`marker` or `markers`]: takes a string describing how the marker should look. Most markers have aliases. Note also that some shapes have an "empty" version and a "filled" version (the name of the latter being preceded by a `f`). For instance:
 
 | Value    | Result  |
 | :------: | :-----: |
@@ -160,7 +145,7 @@ Here's another example combining several options:
 | `"x"` or `"cross"`        | ![](../assets/linestyle/mk_cross.png) |
 | `"+"` or `"plus"`         | ![](../assets/linestyle/mk_plus.png) |
 
-* **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]: take a number indicative of the character height in centimeter.
+* **marker size** [`ms`, `msize`, `markersize`, `msizes` or `markersizes`]: takes a number indicative of the character height in centimeter.
 
 | Value    | Result  |
 | :------: | :-----: |
@@ -176,20 +161,14 @@ Here's another example combining several options:
 
 If the data being plotted contains `missing` or `Inf` or `NaN`, these values will all be treated the same way: they will not be displayed.
 
-@@CODE:ls_ex9
-
-@@IMG:ls_ex9
+@@CODEIMG:ls_ex9
 
 ### Modifying the underlying data
 
 Plotting objects are tied to the data meaning that if you modify a vector that is currently plotted *in place* and refresh the plot, the plot will change accordingly.
 
-@@CODE:ls_ex10
-
-@@IMG:ls_ex10
+@@CODEIMG:ls_ex10
 
 Note however that this only happens for in-place modification; note the difference with the example below:
 
-@@CODE:ls_ex11
-
-@@IMG:ls_ex11
+@@CODEIMG:ls_ex11

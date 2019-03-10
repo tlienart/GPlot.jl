@@ -27,12 +27,24 @@ begin # GENERATION OF FIGURES
     gen("ls_ex9")
     gen("ls_ex10")
     gen("ls_ex11")
+
+    # hist-bar
+    gen("hb_ex1")
+    gen("hb_ex2")
+    gen("hb_ex3")
+    gen("hb_ex4")
+    gen("hb_ex5")
+    gen("hb_ex6")
+    gen("hb_ex7")
+    gen("hb_ex8")
 end
 
 begin
     cdir = @__DIR__
 
-    for fname = ["quickstart.md", "line-scatter.md"]
+    for fname = ["quickstart.md",
+                 "line-scatter.md",
+                 "hist-bar.md"]
         open(joinpath(cdir, "src/man/$fname"), "w") do outf
             inf = read(joinpath(cdir, "src/man/_$fname"), String)
             matches = eachmatch(r"@@[A-Z]+:(.*\b)", inf)
@@ -48,7 +60,15 @@ begin
                     head = m.offset + length(m.match)
 
                     # WHAT KIND OF BLOCK IS IT?
-                    if startswith(m.match, "@@CODE")
+                    if startswith(m.match, "@@CODEIMG")
+                        # FIND THE FILE
+                        name = m.captures[1]
+                        incf = read(joinpath(cdir, "src/exgen/$name.jl"), String)
+                        # WRITE IT APPROPRIATELY GUARDED
+                        write(outf, "\n```julia\n$incf```\n")
+                        # WRITE THE IMG APPROPRIATELY GUARDED
+                        write(outf, "\n![](../exgen/out/$name.svg)\n")
+                    elseif startswith(m.match, "@@CODE")
                         # FIND THE FILE
                         name = m.captures[1]
                         incf = read(joinpath(cdir, "src/exgen/$name.jl"), String)
