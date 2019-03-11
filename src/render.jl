@@ -98,15 +98,30 @@ struct PreviewFigure
     fig::Figure
 end
 
-function Base.show(io::IO, ::MIME"image/png",
+# NOTE tricks to suppress automatic opening of plot panel in atom
+
+preview(f::Figure) = ImgPreview(f)
+preview() = preview(gcf())
+
+struct ImgPreview
+    fig::Figure
+end
+
+function Base.show(io::IO, ::MIME"text/plain",
                    obj::Union{PreviewFigure,DrawingHandle})
     GP_ENV["CONT_PREVIEW"] || return nothing
-    disp  = (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
-                (isdefined(Main, :IJulia) && Main.IJulia.inited)
-    disp || (@warn("Preview is only available in Juno and IJulia."); return nothing)
-    # trigger a draft build
     fig = isa(obj, PreviewFigure) ? obj.fig : gcf()
-    fname = savefig(fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
+    show(io, MIME("image/png"), ImgPreview(fig))
+    return nothing
+end
+
+function Base.show(io::IO, ::MIME"image/png", obj::ImgPreview)
+    # check if can display
+    (isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x) ||
+        (isdefined(Main, :IJulia) && Main.IJulia.inited)    ||
+            (@warn("Preview is only available in Juno and IJulia."); return nothing)
+    # trigger a draft build
+    fname = savefig(obj.fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
     isnothing(fname) && return nothing
     # write to IO
     write(io, read(fname))

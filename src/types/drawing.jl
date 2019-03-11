@@ -15,6 +15,14 @@ abstract type Drawing2D <: Drawing end
 
 
 """
+    Drawing
+
+Overarching type for objects displayable on `Axes3D`.
+"""
+abstract type Drawing3D <: Drawing end
+
+
+"""
     DrawingHandle{D<:Drawing}
 
 Container object for a drawing returned by any plotting function.

@@ -37,8 +37,27 @@ abstract type Axes{B <: Backend} end
     scale::String = "auto"
 end
 
-
-mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined
+@with_kw mutable struct Axes3D{B} <: Axes{B}
+    xaxis::Axis = Axis("x") # NOTE color = ticks, not spine
+    yaxis::Axis = Axis("y")
+    zaxis::Axis = Axis("z")
+    # ---
+    drawings::Vector{Drawing3D} = Vector{Drawing3D}()
+    objects ::Vector{Object3D}  = Vector{Object3D}()
+    # ---
+    title::Option{Title} = ∅
+    size ::T2F           = (20.,10.) # box size
+    # cube
+    nocube   ::Bool      = false # XXX if true, then xaxis have an expressed linestyle
+    cubedims ::T3F       = (20.,20.,10.) # cube sides x,y,z
+    linestyle::LineStyle = LineStyle() # XXX only lstyle, color, see set
+    # XXX legend::Legend ...
+    origin::Option{T2F} = ∅
+    # rotation and view
+    rotate::Option{T2F} = ∅
+    # XXX view x y p
+    off::Bool          = false # do not show
+end
 
 
 function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})

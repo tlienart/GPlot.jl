@@ -62,6 +62,14 @@ Internal function to add empty `Axes2D` to the current figure.
 add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
 
 """
+    add_axes3d!()
+
+Internal function to add empty `Axes3D` to the current figure.
+"""
+add_axes3d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes3D{B}()))
+
+
+"""
     erase!(fig)
 
 Replaces `fig`'s current axes by a fresh, empty axes container. Note that

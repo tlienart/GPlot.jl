@@ -6,7 +6,8 @@ if VERSION < v"1.1"
     eachcol(A::AbstractArray) = (view(A, :, j) for j ∈ axes(A, 2))
 end
 
-if VERSION < v"1.2"
+if VERSION <= v"1.1"
+    import Base:startswith
     Base.startswith(s::AbstractString, r::Regex) = (rr = Regex("^"*r.pattern); occursin(rr, s))
 end
 

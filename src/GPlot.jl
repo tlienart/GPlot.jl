@@ -12,7 +12,7 @@ using Statistics: quantile, mean
 import Base: |>, take!, isempty
 
 export Figure, gcf, gca, clf, cla, clo, cll, erase!,
-    continuous_preview,
+    continuous_preview, preview,
     # General set function
     set, set_palette,
     # Layout
@@ -65,6 +65,7 @@ const GP_ENV = Dict{String, Any}(
     "PALETTE"      => PALETTE_1,         # default color palette
     "SIZE_PALETTE" => length(PALETTE_1),
     "CONT_PREVIEW" => true,              # whether to continuously preview or not
+    "FORCE_PREVIEW" => false,            # even if cont prev is false (see render)
     )
 
 # ain't nobody got time to write long type names
@@ -74,7 +75,9 @@ const AVM = AbstractVecOrMat
 const AM  = AbstractMatrix
 const AVR = AV{<:Real}
 const T2F = NTuple{2,Float64}
+const T3F = NTuple{3,Float64}
 const T2R = NTuple{2,Real}
+const T3R = NTuple{3,Real}
 
 const PT_TO_CM   = 0.0352778         # 1pt in cm
 const Option{T}  = Union{Nothing, T} # a useful type for optional values

@@ -69,5 +69,85 @@ function apply_axes!(g::GLE, a::Axes2D, figid::String)
     return nothing
 end
 
-apply_axes!(g::GLE, a::Axes3D, figid::String) =
-    throw(NotImplementedError("apply_axes:GLE/3D"))
+function apply_axes!(g::GLE, a::Axes3D, figid::String)
+# TODO
+# -- title
+# -- perspective
+
+    a.off && return nothing
+
+    axid = "a3d_$(hash(a))"
+
+    #
+    # begin object ax3d_hash
+    #   begin surface
+    #       size x y
+    #       cube xlen 10 ylen 10 zlen 10 lstyle 9 color blue
+    #       xaxis ...
+    #       xtitle ...
+    #       yaxis ...
+    #       ytitle ...
+    #       zaxis ...
+    #       ztitle ...
+    #       (surface) ! not necessary
+    #   end surface
+    #   (objects)
+    # end object
+    #
+    # amove (appropriate location)
+    # draw ax3d_hash.cc
+    #
+
+    "\nbegin object $axid" |> g
+    "\n\tbegin surface"    |> g
+    "\n\t\tsize $(a.size[1]) $(a.size[2])" |> g
+    # ------------------------------------------
+    # CUBE
+    "\n\t\tcube"      |> g
+    a.nocube && "off" |> g
+    "xlen $(a.cubedims[1]) ylen $(a.cubedims[2]) zlen $(a.cubedims[3])"   |> g
+    a.nocube || apply_linestyle!(g, a.linestyle)
+
+    # ROTATION
+    isdef(a.rotate) && "\n\t\trotate $(a.rotation[1]) $(a.rotation[2])" |> g
+
+    # XXX AXIS
+    # parent_font = Figure(figid; _noreset=true).textstyle.font
+    # for axis in (a.xaxis, a.yaxis, a.zaxis)
+    #     apply_axis!(g, axis, parent_font)
+    # end
+
+    # SURFACE
+    origid = ifelse(isdef(a.origin), a.origin, (0.,0.))
+    if isempty(a.drawings)
+        # NOTE if there is no drawings, we MUST add dummy data
+        # otherwise ghostscript crashes.
+        fd = joinpath(GP_ENV["TMP_PATH"], "$(figid)_dummy.z")
+        write(fd, "! nx 2 ny 2 xmin 1 xmax 2 ymin 1 ymax 2\n1 2\n2 2\n")
+        "\n\t\tdata \"$fd\""   |> g
+        "\n\t\ttop off"        |> g
+        "\n\t\tunderneath off" |> g
+    else
+        apply_drawings!(g, a.drawings, origid, figid)
+    end
+
+    # -----------------------------------------
+    "\n\tend surface"      |> g
+
+    # OBJECTS
+    apply_objects!(g, a.objects, figid)
+
+    "\nend object"         |> g
+
+    if isdef(a.origin)
+        # move to center of container
+        cx = a.origin[1] + a.size[1]/2
+        cy = a.origin[2] + a.size[2]/2
+        "\namove $cx $cy" |> g
+    else
+        # move to center of page
+        "\namove pagewidth()/2 pageheight()/2" |> g
+    end
+    # draw the overall container centered
+    "\ndraw $axid.cc" |> g
+end
