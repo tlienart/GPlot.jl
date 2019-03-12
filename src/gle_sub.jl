@@ -221,3 +221,39 @@ function add_sub_palette!(f::Figure, vc::Vector{<:Color})
         """
     return nothing
 end
+
+
+###############################################################
+####
+#### Plot a 3D line
+####
+###############################################################
+
+function add_sub_plot3!(f::Figure)
+    "plot3" ∈ keys(f.subroutines) && return nothing
+    xs = "(xo-xmin)/xspan"
+    ys = "(yo-ymin)/yspan"
+    f.subroutines["plot3"] = """
+        sub plot3 data\$ xmin xspan ymin yspan
+            xo = 0
+            yo = 0
+            zo = 0
+            io = 0
+            fopen data\$ file read
+            until feof(file)
+                fread file x y z
+                xo = x
+                yo = y
+                zo = z
+                io = io+1
+                if (io<=1) then
+                    amove xg3d($xs,$ys,zo) yg3d($xs,$ys,zo)
+                else
+                    aline xg3d($xs,$ys,zo) yg3d($xs,$ys,zo)
+                end if
+            next
+            fclose file
+        end sub
+        """
+    return nothing
+end

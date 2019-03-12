@@ -22,6 +22,8 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     plot, scatter, fill_between, hist, bar,       # new/overwrite mode
     # -- special drawings
     boxplot, heatmap, heatmap_ticks,
+    # -- 3D drawings
+    plot3!,
     # Objects
     text, vline, hline, line, box, colorbar,
     # Axis / Axes
@@ -89,6 +91,7 @@ include("utils.jl")
 include("types/style.jl")
 include("types/drawing.jl")
 include("types/drawing2.jl")
+include("types/drawing3d.jl")
 include("types/ax_elems.jl")
 include("types/legend.jl")
 include("types/object.jl")
@@ -113,6 +116,7 @@ include("set_prop/properties.jl")
 include("apply_gle/style.jl")
 include("apply_gle/drawing.jl")
 include("apply_gle/drawing2.jl")
+include("apply_gle/drawing3d.jl")
 include("apply_gle/object.jl")
 include("apply_gle/ax_elems.jl")
 include("apply_gle/legend.jl")
@@ -122,6 +126,7 @@ include("apply_gle/figure.jl")
 # Main call for elements
 include("drawing.jl")   # plot, scatter, fill, hist, bar
 include("drawing2.jl")  # boxplot, heatmap
+include("drawing3d.jl") # plot3, scatter3, surface
 include("object.jl")    # text, hline, vline, box
 include("ax.jl")
 include("ax_elem.jl")

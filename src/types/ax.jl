@@ -13,7 +13,7 @@
     off   ::Bool = false # if true, axis is not shown
     log   ::Bool = false # log scale
 end
-Axis(p::String) = Axis(prefix=p)
+Axis(p::String; o...) = Axis(prefix=p; o...)
 
 abstract type Axes{B <: Backend} end
 
@@ -38,9 +38,9 @@ abstract type Axes{B <: Backend} end
 end
 
 @with_kw mutable struct Axes3D{B} <: Axes{B}
-    xaxis::Axis = Axis("x") # NOTE color = ticks, not spine
-    yaxis::Axis = Axis("y")
-    zaxis::Axis = Axis("z")
+    xaxis::Axis = Axis("x"; min=0, max=1) # NOTE color = ticks, not spine if box
+    yaxis::Axis = Axis("y"; min=0, max=1) # if nobox, then spine
+    zaxis::Axis = Axis("z"; min=0, max=1)
     # ---
     drawings::Vector{Drawing3D} = Vector{Drawing3D}()
     objects ::Vector{Object3D}  = Vector{Object3D}()
@@ -56,7 +56,7 @@ end
     # rotation and view
     rotate::Option{T2F} = ∅
     # XXX view x y p
-    off::Bool          = false # do not show
+    off::Bool = false # do not show
 end
 
 

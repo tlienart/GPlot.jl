@@ -40,7 +40,9 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
     # subroutines, these will be generated after applying axes
     # but need to be put before in the GLE script
     gtemp = GLE();
-    foreach(a -> apply_axes!(gtemp, a, f.id), f.axes)
+    for (i, aᵢ) ∈ enumerate(f.axes)
+        apply_axes!(gtemp, aᵢ, f.id, i)
+    end
     if !isempty(f.subroutines)
         ks = keys(f.subroutines)
         # subroutines for palettes
@@ -55,6 +57,10 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
         for key ∈ Iterators.filter(k->startswith(k, "mk_"), ks) # special markers
             f.subroutines[key] |> g
         end
+        # --------------
+        # 3D subroutines
+        # --------------
+        "plot3" ∈ ks && f.subroutines["plot3"] |> g
     end
     gtemp |> g
 

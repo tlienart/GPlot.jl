@@ -2,19 +2,16 @@
 #### Apply Boxplot
 ####
 
-function apply_drawing!(g::GLE, bp::Boxplot,
-                        el_counter::Int, origin::T2F, figid::String)
-
+function apply_drawing!(g::GLE, bp::Boxplot, el_cntr::Int, figid::String, axidx::Int)
     # 1. add boxplot subroutines (verticald and horizontal) if not there already
     subname = ifelse(bp.horiz, "bp_horiz", "bp_vert")
     f = Figure(figid; _noreset=true)
     if subname ∉ keys(f.subroutines)
         f.subroutines[subname] = GLE_DRAW_SUB[subname]
     end
-
+    
+    # draw the boxplots one by one
     for k ∈ 1:bp.nobj
-        # draw the boxplots one by one
-
         # 1. retrieve the statistics
         wlow, q25, q50, q75, whigh, mean = bp.stats[k, :]
 
@@ -33,24 +30,22 @@ function apply_drawing!(g::GLE, bp::Boxplot,
         sm = s.mmstyle
         "$(Int(s.mshow)) $(sm.marker) $(sm.msize/f.textstyle.hei) \"$(col2str(sm.color))\"" |> g
 
-        el_counter += 1
+        el_cntr += 1
     end
-    return el_counter
+    return el_cntr
 end
 
 ####
 #### Apply Heatmap
 ####
 
-function apply_drawing!(g::GLE, hm::Heatmap,
-                        el_counter::Int, origin::T2F, figid::String)
-
-    # 1. apply the subroutine with a hash depending on origin cum figid
-    hashid = hash((origin, figid))
+function apply_drawing!(g::GLE, hm::Heatmap, el_cntr::Int, figid::String, axidx::Int)
+    # 1. apply the subroutine with a hash depending on figid and axidx
+    hashid = hash((figid, axidx))
     add_sub_heatmap!(Figure(figid; _noreset=true), hm, hashid)
 
     # 2. write the zfile
-    faux = auxpath(hash(hm.data), origin, figid)
+    faux = auxpath(hash(hm.data), figid, axidx)
     isfile(faux) || csv_writer(faux, hm.transpose ? hm.data' : hm.data, false)
 
     nrows, ncols = size(hm.data)
@@ -67,5 +62,5 @@ function apply_drawing!(g::GLE, hm::Heatmap,
     for j ∈ 1:nct
         "\n\tdraw hm_$hashid $j d$j $bw $bh" |> g
     end
-    return el_counter + 1
+    return el_cntr + 1
 end

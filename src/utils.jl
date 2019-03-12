@@ -59,6 +59,16 @@ end
 
 #######################################
 
+rmin(x,::Nothing)  = x
+rmin(::Nothing, y) = y
+rmin(x,y) = min(x,y)
+
+rmax(x,::Nothing)  = x
+rmax(::Nothing, y) = y
+rmax(x,y) = max(x,y)
+
+#######################################
+
 fl(::Missing) = missing
 fl(::Nothing) = nothing
 fl(x::Real)   = Float64(x)

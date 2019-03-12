@@ -31,6 +31,17 @@ function check_axes(a::Option{Axes2D})
 end
 
 """
+    check_axes_3d(a)
+
+See [`check_axes`](@ref), the only difference here is that it's for 3D axes.
+"""
+function check_axes_3d(a::Option{Axes3D})
+    isdef(a) || (a = gca())
+    isdef(a) && isa(a, Axes3D) && return a
+    add_axes3d!()
+end
+
+"""
     get_backend(f)
 
 Return the backend type associated with figure `f`.
