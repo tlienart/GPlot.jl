@@ -98,20 +98,18 @@ struct PreviewFigure
     fig::Figure
 end
 
-# NOTE tricks to suppress automatic opening of plot panel in atom
-
-preview(f::Figure) = ImgPreview(f)
-preview() = preview(gcf())
-
 struct ImgPreview
     fig::Figure
 end
 
-function Base.show(io::IO, ::MIME"text/plain",
-                   obj::Union{PreviewFigure,DrawingHandle})
+# NOTE tricks to suppress automatic opening of plot panel in atom
+preview(f::Figure) = ImgPreview(f)
+preview() = preview(gcf())
+
+function Base.show(io::IO, obj::Union{PreviewFigure,DrawingHandle})
     GP_ENV["CONT_PREVIEW"] || return nothing
     fig = isa(obj, PreviewFigure) ? obj.fig : gcf()
-    show(io, MIME("image/png"), ImgPreview(fig))
+    display(ImgPreview(fig))
     return nothing
 end
 

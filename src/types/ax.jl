@@ -18,6 +18,8 @@ Axis(p::String; o...) = Axis(prefix=p; o...)
 abstract type Axes{B <: Backend} end
 
 @with_kw mutable struct Axes2D{B} <: Axes{B}
+    parent::String # id of the parent figure
+    # --
     xaxis ::Axis = Axis("x")
     x2axis::Axis = Axis("x2")
     yaxis ::Axis = Axis("y")
@@ -38,6 +40,8 @@ abstract type Axes{B <: Backend} end
 end
 
 @with_kw mutable struct Axes3D{B} <: Axes{B}
+    parent::String
+    # --
     xaxis::Axis = Axis("x"; min=0, max=1) # NOTE color = ticks, not spine if box
     yaxis::Axis = Axis("y"; min=0, max=1) # if nobox, then spine
     zaxis::Axis = Axis("z"; min=0, max=1)
@@ -59,6 +63,7 @@ end
     off::Bool = false # do not show
 end
 
+parent(a::Axes) = Figure(a.parent; _noreset=true)
 
 function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})
     s = "GPlot.Axes2D{GLE}" *

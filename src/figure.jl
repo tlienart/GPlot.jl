@@ -59,15 +59,14 @@ end
 
 Internal function to add empty `Axes2D` to the current figure.
 """
-add_axes2d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes2D{B}()))
+add_axes2d!() = (f=gcf(); add_axes!(f, Axes2D{get_backend(f)}(parent=f.id)))
 
 """
     add_axes3d!()
 
 Internal function to add empty `Axes3D` to the current figure.
 """
-add_axes3d!() = (f=gcf(); B=get_backend(f); add_axes!(f, Axes3D{B}()))
-
+add_axes3d!() = (f=gcf(); add_axes!(f, Axe3D{get_backend(f)}(parent=f.id)))
 
 """
     erase!(fig)
@@ -93,7 +92,7 @@ Reset the current figure keeping only its current name and size, everything else
 set to the default parameters.
 See also [`erase!`](@ref) and [`reset!`](@ref)
 """
-clf() = (f=gcf();reset!(f); PreviewFigure(f))
+clf() = (f=gcf(); reset!(f); PreviewFigure(f))
 
 """
     destroy(fig)

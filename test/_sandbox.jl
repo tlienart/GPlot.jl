@@ -63,3 +63,5 @@ y = r .* cos.(θ);
 
 plot3!(x,y,z)
 preview()
+
+plot(x, y)

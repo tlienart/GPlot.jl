@@ -8,7 +8,7 @@ function plot3!(x::AV{<:Real}, y::AV{<:Real}, z::AV{<:Real};
     if any(isnan, d) || any(isinf, d)
         throw(ArgumentError("x,y and z cannot have NaNs or Inf values."))
     end
-    axes = check_axes_3d(axes)
+    axes = check_axes(axes; dims=3)
     if overwrite
         all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
     end
