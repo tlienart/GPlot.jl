@@ -3,7 +3,7 @@
 
 Clears the current axes, removing all drawings and resetting all options.
 """
-cla() = (reset!(gca()); PreviewFigure(gcf()))
+cla() = (f=gcf(); reset!(gca(); parent=f.id); PreviewFigure(f))
 
 """
     clo()

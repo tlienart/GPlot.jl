@@ -12,18 +12,37 @@ function apply_drawing!(g::GLE, scatter::Scatter3D, el_cntr::Int, figid::String,
     ymin  = ax.yaxis.min
     yspan = ax.yaxis.max - ymin
 
-    # check if there's a line or not
-    if isdef(scatter.linestyle.lstyle)
-        # need to add our own sub
-        add_sub_plot3!(fig)
-        "\ngsave"    |> g
-        apply_linestyle!(g, scatter.linestyle; nosmooth=true, addset=true)
-        "\nplot3 \"$faux\" $xmin $xspan $ymin $yspan" |> g
-        "\ngrestore" |> g
+    add_sub_plot3!(fig)
+    "\ngsave"    |> g
+    apply_linestyle!(g, scatter.linestyle; nosmooth=true, addset=true)
+
+#=
+ XXX here
+
+ need to
+
+ - modify the glesub to have the markers as well
+ - if the mcol is specified, then like for scatter2d need
+ to define a special marker and call that (identical situation)
+
+ =#
+
+    showline = Int(scatter.linestyle.lstyle != -1)
+
+    "\nplot3 \"$faux\" $xmin $xspan $ymin $yspan $showline" |> g
+    ms = scatter.markerstyle
+    if isanydef(ms)
+        "1"  |> g # showmarker
+        isdef(ms.marker) || (ms.marker = "fcircle")
+        mcol = isdef(ms.color)
+        mcol && add_sub_marker!(fig, ms)
+        isdef(ms.msize) || (ms.msize = 0.1)
+        "$(ms.marker) $(ms.msize/fig.textstyle.hei)" |> g
     else
-        # just scatter, GLE handles most of it
-        # XXX points ...
+        "-1 fcircle 1" |> g # nothing shown
     end
+
+    "\ngrestore" |> g
     return el_cntr + 1
 end
 

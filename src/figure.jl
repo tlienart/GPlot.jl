@@ -66,7 +66,7 @@ add_axes2d!() = (f=gcf(); add_axes!(f, Axes2D{get_backend(f)}(parent=f.id)))
 
 Internal function to add empty `Axes3D` to the current figure.
 """
-add_axes3d!() = (f=gcf(); add_axes!(f, Axe3D{get_backend(f)}(parent=f.id)))
+add_axes3d!() = (f=gcf(); add_axes!(f, Axes3D{get_backend(f)}(parent=f.id)))
 
 """
     erase!(fig)

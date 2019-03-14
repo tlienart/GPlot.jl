@@ -103,14 +103,14 @@ plot(a...; o...) = plot!(a...; overwrite=true, o...)
 
 Add a scatter plot (no line joins the points). See also [`plot!`](@ref).
 """
-scatter!(a...; o...) = plot!(a...; ls="none", marker="o", o...)
+scatter!(a...; o...) = plot!(a...; ls="none", marker=".", o...)
 
 """
     scatter(...)
 
 Erase previous drawings and add a scatter plot (no line joins the points). See also [`plot`](@ref).
 """
-scatter(a...; o...)  = plot!(a...; ls="none", marker="o", overwrite=true, o...)
+scatter(a...; o...)  = scatter!(a...; overwrite=true, o...)
 
 ####
 #### fill_between!, fill_between

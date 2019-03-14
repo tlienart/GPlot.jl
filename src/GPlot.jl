@@ -23,7 +23,8 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     # -- special drawings
     boxplot, heatmap, heatmap_ticks,
     # -- 3D drawings
-    plot3!,
+    plot3!, scatter3!,
+    plot3, scatter3,
     # Objects
     text, vline, hline, line, box, colorbar,
     # Axis / Axes

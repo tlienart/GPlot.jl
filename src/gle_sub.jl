@@ -234,7 +234,7 @@ function add_sub_plot3!(f::Figure)
     xs = "(xo-xmin)/xspan"
     ys = "(yo-ymin)/yspan"
     f.subroutines["plot3"] = """
-        sub plot3 data\$ xmin xspan ymin yspan
+        sub plot3 data\$ xmin xspan ymin yspan showline showmarker marker\$ mscale
             xo = 0
             yo = 0
             zo = 0
@@ -248,8 +248,18 @@ function add_sub_plot3!(f::Figure)
                 io = io+1
                 if (io<=1) then
                     amove xg3d($xs,$ys,zo) yg3d($xs,$ys,zo)
+                    if (showmarker > 0) then
+                        marker marker\$ mscale
+                    end if
                 else
-                    aline xg3d($xs,$ys,zo) yg3d($xs,$ys,zo)
+                    if (showline >= 1) then
+                        aline xg3d($xs,$ys,zo) yg3d($xs,$ys,zo)
+                    else
+                        amove xg3d($xs,$ys,zo) yg3d($xs,$ys,zo)
+                    end if
+                    if (showmarker > 0) then
+                        marker marker\$ mscale
+                    end if
                 end if
             next
             fclose file
