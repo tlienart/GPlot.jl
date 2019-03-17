@@ -9,7 +9,7 @@ function apply_drawing!(g::GLE, bp::Boxplot, el_cntr::Int, figid::String, axidx:
     if subname ∉ keys(f.subroutines)
         f.subroutines[subname] = GLE_DRAW_SUB[subname]
     end
-    
+
     # draw the boxplots one by one
     for k ∈ 1:bp.nobj
         # 1. retrieve the statistics

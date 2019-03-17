@@ -7,7 +7,7 @@
 
 Internal function to set the label associated with an object `obj` to string `v`.
 """
-set_label!(o::Union{Hist2D,Fill2D}, v::String) = (o.label = v)
+set_label!(o::Union{Hist2D,Fill2D,Scatter3D}, v::String) = (o.label = v)
 
 # label of a drawing (cf legend)
 function set_labels!(o::Union{Scatter2D,Bar2D}, v::Vector{String})

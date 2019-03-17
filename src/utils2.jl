@@ -19,7 +19,7 @@ See also [`gcf`](@ref).
 gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 
 """
-    check_axes_2d(a)
+    check_axes(a)
 
 Internal function to check if `a` is defined, if not it calls `gca` if `gca` also
 returns `nothing`, it adds axes. Used in `plot!` etc.

@@ -10,7 +10,7 @@ function plot3!(x::AV{<:Real}, y::AV{<:Real}, z::AV{<:Real};
     end
     axes = check_axes(axes; dims=3)
     if overwrite
-        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes; parent=axes.parent)
     end
 
     # force axis limits, this is because GLE has a bug whereby it assumes everything is in the
@@ -36,12 +36,12 @@ function plot3!(x::AV{<:Real}, y::AV{<:Real}, z::AV{<:Real};
     axes.zaxis.max = rmax(axes.zaxis.max, zmax)
 
     # add the 3D scatter to the stack
-    scatter = Scatter3D(data=zip(x,y,z))
-    scatter.linestyle.lstyle = 1
-    scatter.markerstyle.marker = "fcircle"
-#XXX    set_properties!(scatter; defer_preview=true, o...)
-    push!(axes.drawings, scatter)
-    return DrawingHandle(scatter)
+    scatter3 = Scatter3D(data=zip(x,y,z))
+    # default = simple line (possibly modified by setprops)
+    scatter3.linestyle.lstyle = 1
+    set_properties!(scatter3; defer_preview=true, o...)
+    push!(axes.drawings, scatter3)
+    return DrawingHandle(scatter3)
 end
 
 """

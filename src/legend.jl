@@ -1,11 +1,9 @@
 """
-    cll!()
+    cll()
 
 Clears the current legend.
 """
-cll!() = (reset!(gca().legend); PreviewFigure(gcf()))
-
-cll = cll!
+cll() = (reset!(gca().legend); PreviewFigure(gcf()))
 
 """
     $SIGNATURES

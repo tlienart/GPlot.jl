@@ -17,7 +17,7 @@ function add_sub_marker!(f::Figure, m::MarkerStyle)
         sub _$(str(m)) size mdata
         	gsave
             set color $(col2str(m.color))
-            marker $(m.marker) 1
+            marker $(m.marker) size
         	grestore
         end sub
         define marker $(str(m)) _$(str(m))
