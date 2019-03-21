@@ -26,8 +26,9 @@ function layout(f::Figure{B}, anchors::Matrix{Float64}) where B<:Backend
     W, H = f.size
     # fill with Axes2D, if later there are axes3D it will just replace
     for i ∈ 1:size(anchors, 1)
-        add_axes!(f, Axes2D{B}(origin=(anchors[i, 1]*W, anchors[i, 2]*H),
-                                 size=(anchors[i, 3]*W, anchors[i, 4]*H)))
+        add_axes!(f, Axes2D{B}(parent=f.id,
+                               origin=(anchors[i, 1]*W, anchors[i, 2]*H),
+                               size=(anchors[i, 3]*W, anchors[i, 4]*H)))
     end
     return PreviewFigure(gcf())
 end

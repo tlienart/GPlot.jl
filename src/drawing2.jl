@@ -10,7 +10,7 @@ Erase previous drawings and add a boxplot. Missing values are allowed but not In
 """
 function boxplot(ys...; axes=nothing, o...)
     axes = check_axes(axes)
-    reset!(axes) # always on fresh axes
+    reset!(axes; parent=axes.parent) # always on fresh axes
 
     isempty(first(ys)) && throw(ArgumentError("Cannot display empty vectors."))
 
@@ -139,7 +139,7 @@ function heatmap(data::Matrix{<:CanMiss{Real}}; axes=nothing, o...)
                                                      "as a heatmap."))
 
     axes = check_axes(axes)
-    reset!(axes) # always on fresh axes
+    reset!(axes; parent=axes.parent) # always on fresh axes
 
     zmin, zmax = extrema(skipmissing(data))
 

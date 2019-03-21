@@ -77,7 +77,7 @@ function plot!(x, ys...; axes=nothing, overwrite=false, o...)
         # are current axes empty? if so don't do anything as the user may have pre-specified
         # things like xlim etc and want the plot to appear with those
         # if it's not empty, reset the axes (will destroy xlim settings etc as it should)
-        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes; parent=axes.parent)
     end
     pd = plotdata(x, ys...)
     scatter = Scatter2D(pd.data, pd.hasmissing, pd.nobj)
@@ -103,14 +103,14 @@ plot(a...; o...) = plot!(a...; overwrite=true, o...)
 
 Add a scatter plot (no line joins the points). See also [`plot!`](@ref).
 """
-scatter!(a...; o...) = plot!(a...; ls="none", marker="o", o...)
+scatter!(a...; o...) = plot!(a...; ls="none", marker=".", o...)
 
 """
     scatter(...)
 
 Erase previous drawings and add a scatter plot (no line joins the points). See also [`plot`](@ref).
 """
-scatter(a...; o...)  = plot!(a...; ls="none", marker="o", overwrite=true, o...)
+scatter(a...; o...)  = scatter!(a...; overwrite=true, o...)
 
 ####
 #### fill_between!, fill_between
@@ -125,7 +125,7 @@ be specified as single numbers (= horizontal line).
 function fill_between!(x, y1, y2; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
     if overwrite
-        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes; parent=axes.parent)
     end
     fill = Fill2D(data=filldata(x, y1, y2))
     set_properties!(fill; defer_preview=true, o...)
@@ -152,7 +152,7 @@ Add a histogram of `x` on the current axes.
 function hist!(x; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
     if overwrite
-        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes; parent=axes.parent)
     end
     hd = histdata(x)
     hist = Hist2D(data=hd.data, hasmissing=hd.hasmissing, nobs=hd.nobs, range=hd.range)
@@ -180,7 +180,7 @@ Add a bar plot.
 function bar!(x, ys...; axes=nothing, overwrite=false, o...)
     axes = check_axes(axes)
     if overwrite
-        all(isempty, (axes.drawings, axes.objects)) || reset!(axes)
+        all(isempty, (axes.drawings, axes.objects)) || reset!(axes; parent=axes.parent)
     end
     bd = plotdata(x, ys...)
     bar = Bar2D(bd.data, bd.hasmissing, bd.nobj)

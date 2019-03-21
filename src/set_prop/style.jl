@@ -14,7 +14,7 @@ set_color!(o::Union{TextStyle,LineStyle,MarkerStyle,BarStyle}, c::Color) = (o.co
 set_color!(o::Union{Figure,Legend}, c::Option{Color}) = (o.bgcolor = c)
 
 set_color!(o::Hist2D, c::Color) = set_color!(o.barstyle, c)
-set_color!(o::Union{Ticks,StraightLine2D,Box2D}, c::Color) = set_color!(o.linestyle, c)
+set_color!(o::Union{Ticks,StraightLine2D,Box2D,Scatter3D}, c::Color) = set_color!(o.linestyle, c)
 set_color!(o::Colorbar, c::Color) = set_color!(o.ticks, c)
 
 set_textcolor!(o::Ticks, c::Color) = set_color!(o.labels.textstyle, c)
@@ -166,6 +166,7 @@ set_lwidth!(o, v::Float64) = set_lwidth!(o.linestyle, v)
 Internal function to determine whether to use splines for a field of `obj`.
 """
 set_smooth!(o::LineStyle, v::Bool) = (o.smooth = v)
+set_smooth!(o::Scatter3D, v) = throw(NotImplementedError("smooth for 3d line"))
 
 ####
 #### Marker related
@@ -184,6 +185,7 @@ function set_marker!(o::MarkerStyle, v::String)
     end
     return nothing
 end
+set_marker!(o, v::String) = set_marker!(o.markerstyle, v)
 
 """
     set_msize!(obj, msize)
@@ -196,6 +198,7 @@ function set_msize!(o::MarkerStyle, v::Float64)
     o.msize = v
     return nothing
 end
+set_msize!(o, v::Float64) = set_msize!(o.markerstyle, v)
 
 """
     set_mcol!(obj, col)
@@ -207,6 +210,7 @@ function set_mcol!(o::MarkerStyle, c::Color)
     o.color = c
     return nothing
 end
+set_mcol!(o, v::Color) = set_mcol!(o.markerstyle, v)
 
 # generate functions that take vector inputs for linestyle and markerstyle
 for case ∈ ("lstyle", "lwidth", "smooth", "marker", "msize", "mcol")

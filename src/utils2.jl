@@ -24,10 +24,36 @@ gca() = GP_ENV["CURAXES"] # if nothing, whatever called it will create
 Internal function to check if `a` is defined, if not it calls `gca` if `gca` also
 returns `nothing`, it adds axes. Used in `plot!` etc.
 """
-function check_axes(a::Option{Axes2D})
+function check_axes(a::Option{Axes}; dims=2)
     isdef(a) || (a = gca())
-    isdef(a) || (a = add_axes2d!())
-    return a
+    if isdef(a)
+        # check if has the right dims otherwise overwrite
+        if dims == 3
+            if isa(a, Axes3D)
+                return a
+            else
+                f = parent(a)
+                ha = hash(a)
+                i = findlast(e->hash(e) === ha, f.axes)
+                f.axes[i] = Axes3D{get_backend(f)}(parent=f.id)
+            end
+        else
+            if isa(a, Axes2D)
+                return a
+            else
+                f = parent(a)
+                ha = hash(a)
+                i = findlast(e->hash(e) === ha, f.axes)
+                f.axes[i] = Axes2D{get_backend(f)}(parent=f.id)
+            end
+        end
+    else
+        if dims == 3
+            return add_axes3d!()
+        else
+            return add_axes2d!()
+        end
+    end
 end
 
 """
