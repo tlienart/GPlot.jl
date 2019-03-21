@@ -1,6 +1,8 @@
 # Line and Scatter plots
 
-## Basic syntax
+@@IMG:ls_demo
+
+## Syntax
 
 The relevant commands here are
 

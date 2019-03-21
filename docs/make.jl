@@ -17,6 +17,7 @@ makedocs(
             "Hist & Bar plots"     => "man/hist-bar.md",
             "Legend"               => "man/legend.md",
             "Axes and Axis"        => "man/figure-axes-axis.md",
+            "Fill between lines"   => "man/fill-between.md",
             "Styling"              => "man/styling.md",
             "Boxplot"              => "man/boxplot.md",
             "Heatmap"              => "man/heatmap.md",

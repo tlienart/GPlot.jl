@@ -1,4 +1,4 @@
-using GPlot, Colors
+using GPlot, Colors, Random
 
 continuous_preview(false)
 
@@ -17,6 +17,7 @@ begin # GENERATION OF FIGURES
 
     # -------------------------
     # line-scatter
+    gen("ls_demo")
     gen("ls_ex1")
     gen("ls_ex2")
     gen("ls_ex3")
@@ -32,6 +33,7 @@ begin # GENERATION OF FIGURES
 
     # -------------------------
     # hist-bar
+    gen("hb_demo")
     gen("hb_ex1")
     gen("hb_ex2")
     gen("hb_ex3")
@@ -40,6 +42,13 @@ begin # GENERATION OF FIGURES
     gen("hb_ex6")
     gen("hb_ex7")
     gen("hb_ex8")
+
+    # -------------------------
+    # fill-between
+    gen("fb_demo")
+    gen("fb_ex1")
+    gen("fb_ex2")
+    gen("fb_ex3")
 end
 
 begin
@@ -51,6 +60,7 @@ begin
                  "legend.md",
                  "styling.md",
                  "figure-axes-axis.md",
+                 "fill-between.md",
                  "boxplot.md",
                  "heatmap.md",
                  "annotations.md"]

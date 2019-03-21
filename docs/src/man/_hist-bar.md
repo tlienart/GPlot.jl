@@ -1,11 +1,13 @@
 # Histograms and Bar plots
 
-## Basic syntax
+@@IMG:hb_demo
+
+## Syntax
 
 The relevant commands here are
 
-- `hist` and `hist!`
-- `bar` and `bar!`
+- `hist` and `hist!`,
+- `bar` and `bar!`.
 
 ## Data formats
 

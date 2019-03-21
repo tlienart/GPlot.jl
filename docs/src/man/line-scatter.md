@@ -1,6 +1,10 @@
 # Line and Scatter plots
 
-## Basic syntax
+
+![](../exgen/out/ls_demo.svg)
+
+
+## Syntax
 
 The relevant commands here are
 
@@ -66,7 +70,7 @@ For instance:
 
 
 ```julia
-x = range(0, 1, length=100)
+x = range(0, stop=1, length=100)
 plot(x, x.^2, x.^3, x.^4)
 ```
 
@@ -91,7 +95,7 @@ For instance:
 
 
 ```julia
-x = range(0, 1, length=25)
+x = range(0, stop=1, length=25)
 y = @. sin(x)
 z = @. cos(x)
 t = y .+ z
@@ -177,7 +181,7 @@ Note that if the colour is not specified, a default colour will be taken by cycl
 
 
 ```julia
-x = range(-2, 2, length=20)
+x = range(-2, stop=2, length=20)
 y1 = @. sin(exp(-x)) + 0.5
 y2 = @. sin(exp(-x)) - 0.5
 plot(x, y1; label="unsmoothed")
@@ -192,7 +196,7 @@ Here's another example combining several options:
 
 
 ```julia
-x = range(0, 2, length=25)
+x = range(0, stop=2, length=25)
 for α ∈ 0.01:0.05:0.8
     plot!(x, x.^α, lwidth=α/10, col=RGB(0.0,0.0,α), smooth=true)
 end
