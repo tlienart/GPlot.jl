@@ -106,7 +106,7 @@ function apply_axes!(g::GLE, a::Axes3D, figid::String, axidx::Int)
     "xlen $(a.cubedims[1]) ylen $(a.cubedims[2]) zlen $(a.cubedims[3])"   |> g
     a.nocube || apply_linestyle!(g, a.linestyle)
 
-# XXX should be apply_axis3 or something
+# TODO should become apply_axis3 or something
     δx = round((a.xaxis.max - a.xaxis.min)/5, digits=1)
     "\n\t\txaxis min $(a.xaxis.min) max $(a.xaxis.max) dticks $δx" |> g
     δy = round((a.yaxis.max - a.yaxis.min)/5, digits=1)
@@ -115,7 +115,11 @@ function apply_axes!(g::GLE, a::Axes3D, figid::String, axidx::Int)
     "\n\t\tzaxis min $(a.zaxis.min) max $(a.zaxis.max) dticks $δz" |> g
 
     # ROTATION
-    isdef(a.rotate) && "\n\t\trotate $(a.rotation[1]) $(a.rotation[2])" |> g
+    if isdef(a.rotate)
+        "\n\t\trotate $(a.rotation[1]) $(a.rotation[2]) 0" |> g
+    else
+        "\n\t\trotate 65 20 0" |> g
+    end
 
     # XXX AXIS
     # parent_font = Figure(figid; _noreset=true).textstyle.font
