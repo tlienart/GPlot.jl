@@ -2,13 +2,13 @@
 
 To work with GPlot, you will need three things:
 
-1. Julia ≥ 1.0
+1. Julia ≥ 1.0,
 1. the GPlot.jl package,
 1. the GLE engine.
 
 **Note**: if you intend to use LaTeX, you will also need to have `pdflatex`.
 
-To install the package in Julia, the usual command for unregistered packages applies:
+To install GPlot in Julia, the usual command for unregistered packages applies:
 
 ```julia-repl
 ] add https://github.com/tlienart/GPlot.jl

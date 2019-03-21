@@ -1,9 +1,9 @@
 # Quickstart
 
-Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions refer to the rest of the manual.
-We will draw a simple plot with two curves, labels, and basic axis styling.
+Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions, please refer to the rest of the manual.
 
-Let's start by creating a simple figure:
+We will draw a simple plot with two curves, labels, and basic axis styling.
+Let's start by creating a figure:
 
 ```julia
 fig = Figure()
@@ -25,7 +25,7 @@ legend()
 
 
 where we've used the `@.` syntax to indicate that the operations are done pointwise on `x` ([broadcasting](https://docs.julialang.org/en/v1/manual/arrays/index.html#Broadcasting-1)).
-The syntax should hopefully feel reasonable thus far.
+The syntax should hopefully feel reasonable thus far and the output is illustrated below:
 
 
 ![](../exgen/out/qs_ex1.svg)

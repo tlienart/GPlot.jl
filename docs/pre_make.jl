@@ -10,10 +10,12 @@ begin # GENERATION OF FIGURES
 
     f = Figure(size=(10,8))
 
+    # -------------------------
     # quickstart
     gen("qs_ex1")
     gen("qs_ex2")
 
+    # -------------------------
     # line-scatter
     gen("ls_ex1")
     gen("ls_ex2")
@@ -28,6 +30,7 @@ begin # GENERATION OF FIGURES
     gen("ls_ex10")
     gen("ls_ex11")
 
+    # -------------------------
     # hist-bar
     gen("hb_ex1")
     gen("hb_ex2")
@@ -44,7 +47,13 @@ begin
 
     for fname = ["quickstart.md",
                  "line-scatter.md",
-                 "hist-bar.md"]
+                 "hist-bar.md",
+                 "legend.md",
+                 "styling.md",
+                 "figure-axes-axis.md",
+                 "boxplot.md",
+                 "heatmap.md",
+                 "annotations.md"]
         open(joinpath(cdir, "src/man/$fname"), "w") do outf
             inf = read(joinpath(cdir, "src/man/_$fname"), String)
             matches = eachmatch(r"@@[A-Z]+:(.*\b)", inf)
