@@ -138,7 +138,7 @@ end
     erase!(f)
     title("title")
     xlabel("xlabel", dist=0.5)
-    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id, 1); s = String(take!(g))
     isin(s, "title \"title\"")
     isin(s, "xtitle \"xlabel\" dist 0.5")
 
@@ -146,7 +146,7 @@ end
     erase!(f)
     y2ticks([1, 2])
     xticks([1, 2], off=true)
-    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id, 1); s = String(take!(g))
     isin(s, "y2places 1.0 2.0")
     isin(s, "xticks off")
     # XXX test symticks, length
@@ -154,7 +154,7 @@ end
     # tickslabels (see also apply_textstyle)
     erase!(f)
     x2ticks([1, 2], ["a", "b"], dist=0.5, angle=45, shift=1)
-    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id, 1); s = String(take!(g))
     isin(s, "x2places 1.0 2.0")
     isin(s, "x2names \"a\" \"b\"")
     isin(s, "x2labels  dist 0.5")

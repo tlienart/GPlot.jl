@@ -123,11 +123,11 @@ end
     el1 = gca().drawings[1]
     el2 = gca().drawings[2]
     @test el1.linestyles[1].lstyle == -1
-    @test el1.markerstyles[1].marker == "circle"
+    @test el1.markerstyles[1].marker == "fcircle"
     @test el2.linestyles[1].lstyle == -1
     @test el2.linestyles[2].lstyle == -1
-    @test el2.markerstyles[1].marker == "circle"
-    @test el2.markerstyles[2].marker == "circle"
+    @test el2.markerstyles[1].marker == "fcircle"
+    @test el2.markerstyles[2].marker == "fcircle"
 
     # FILL2D
     erase!(gcf())
@@ -210,7 +210,7 @@ end
     # Scatter2D (see also apply_linestyle)
     plot([1, 2], exp.([1, 2]), lwidth=2.0, label="line")
     legend()
-    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id, 1); s = String(take!(g))
     isin(s, "data")
     isin(s, "d1=c1,c2")
     isin(s, "d1 line lwidth 2.0")
@@ -221,14 +221,14 @@ end
 
     clf()
     scatter([1, 2], exp.([1, 2]), color="blue")
-    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id, 1); s = String(take!(g))
     isin(s, "d1=c1,c2")
-    isin(s, "d1 marker circle color rgba(0.0,0.0,1.0,1.0)")
+    isin(s, "d1 marker fcircle color rgba(0.0,0.0,1.0,1.0)")
 
     # FILL2D
     clf()
     fill_between([1, 2], 1, 2)
-    G.apply_axes!(g, f.axes[1], f.id); s = String(take!(g))
+    G.apply_axes!(g, f.axes[1], f.id, 1); s = String(take!(g))
     isin(s, "d1=c1,c2 d2=c1,c3")
     isin(s, "fill d1,d2 color rgba(0.392,0.584,0.929,1.0)")
 
