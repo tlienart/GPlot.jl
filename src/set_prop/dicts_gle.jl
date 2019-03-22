@@ -47,6 +47,7 @@ const GLE_MARKERS = Dict{String,String}(
     "star4"   => "star4" ,
     "flower"  => "flower",
     "snake"   => "snake" ,
+    "none"    => "none"  ,
     )
 add_dict_vals!(GLE_MARKERS)
 

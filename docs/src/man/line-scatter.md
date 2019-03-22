@@ -1,6 +1,10 @@
-# Line and scatter plot
+# Line and Scatter plots
 
-## Basic syntax
+
+![](../exgen/out/ls_demo.svg)
+
+
+## Syntax
 
 The relevant commands here are
 
@@ -10,10 +14,10 @@ The relevant commands here are
 The general syntax is:
 
 ```julia
-command(data_to_plot...; options...)
+plot(data_to_plot...; options...)
 ```
 
-a command *with* an exclamation mark will add the corresponding plot to the current active axes while a command *without* will erase any existing plot on the current active axes and then display the plot.
+A command *with* an exclamation mark will add the corresponding plot to the current active axes while a command *without* will erase any existing plot on the current active axes and then display the plot.
 
 For instance:
 
@@ -35,7 +39,7 @@ overlays a scatterplot to a line plot:
 
 ## Data formats
 
-The table below summarises the different ways you can specify what data to plot, they are discussed in more details and with examples below.
+The table below summarises the different ways you can specify what data to plot, they are discussed in more details and with examples further on.
 
 | Form     | Example | Comment   |
 | :------: | :-----: | :--------: |
@@ -66,7 +70,7 @@ For instance:
 
 
 ```julia
-x = range(0, 1, length=100)
+x = range(0, stop=1, length=100)
 plot(x, x.^2, x.^3, x.^4)
 ```
 
@@ -91,7 +95,7 @@ For instance:
 
 
 ```julia
-x = range(0, 1, length=25)
+x = range(0, stop=1, length=25)
 y = @. sin(x)
 z = @. cos(x)
 t = y .+ z
@@ -140,7 +144,7 @@ plot(randn(10, 3), colors=["violet", "navyblue", "orange"], lwidth=0.1)
 
 ### Line style options
 
-For each of these options, it should be understood that you can either pass a single value or a vector of values.
+For each of these options, it should be understood that you can either pass a single value or a vector of values (see the note at the beginning of the section).
 
 - **line style** [`ls` , `lstyle`, `linestyle`, `lstyles` or `linestyles`]: takes a string describing how the line(s) will look like. For instance:
 
@@ -162,7 +166,7 @@ For each of these options, it should be understood that you can either pass a si
 | `0.1 `    |    ![](../assets/linestyle/lw_01.png)     |
 | `0 `  |    ![](../assets/linestyle/lw_0.png)     |
 
-- **line color** [`lc`, `col`, `color`, `cols` or `colors`]: takes a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
+- **line colour** [`lc`, `col`, `color`, `cols` or `colors`]: takes a string (most [SVG color name](https://www.december.com/html/spec/colorsvg.html)) or a `Color` object (from the [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl) package) describing how the line should be coloured.
 
 | Value    | Result  
 | :------: | :-----:
@@ -173,11 +177,11 @@ For each of these options, it should be understood that you can either pass a si
 
 Note that if the colour is not specified, a default colour will be taken by cycling through a colour palette.
 
-- **smoothness** [`smooth` or `smooths`]: takes a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many points.
+- **smoothness** [`smooth` or `smooths`]: takes a boolean indicating whether the line interpolating between the points should be made out of straight lines (default, `smooth=false`) or out of interpolating splines (`smooth=true`). The latter may look nicer for plots that represent a continuous function when there aren't many sampling points (if there are many sampling points, typically more than 50, you usually won't see the difference and can omit this keyword).
 
 
 ```julia
-x = range(-2, 2, length=20)
+x = range(-2, stop=2, length=20)
 y1 = @. sin(exp(-x)) + 0.5
 y2 = @. sin(exp(-x)) - 0.5
 plot(x, y1; label="unsmoothed")
@@ -192,7 +196,7 @@ Here's another example combining several options:
 
 
 ```julia
-x = range(0, 2, length=100)
+x = range(0, stop=2, length=25)
 for α ∈ 0.01:0.05:0.8
     plot!(x, x.^α, lwidth=α/10, col=RGB(0.0,0.0,α), smooth=true)
 end
@@ -225,7 +229,7 @@ end
 | `0.25`| ![](../assets/linestyle/ms_025.png) |
 | `0.5` | ![](../assets/linestyle/ms_05.png) |
 
-* **marker color** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]: see line colour.
+* **marker colour** [`mc`, `mcol`, `markercol`, `markercolor`, `mcols`, `markercols` or `markercolors`]: describes the marker colour see line colour.
 
 ## Notes
 
@@ -257,7 +261,7 @@ y[3] = 0
 ![](../exgen/out/ls_ex10.svg)
 
 
-Note however that this only happens for in-place modification; note the difference with the example below:
+This _only_ happens for in-place modification; note the difference with the example below:
 
 
 ```julia

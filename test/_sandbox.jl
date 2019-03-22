@@ -54,3 +54,36 @@ debug_gle(gcf())
 
 ################################
 ################################
+
+continuous_preview(true)
+
+clf()
+
+θ = range(-4pi, 4pi, length=200);
+z = range(-2, 2, length=200);
+r = z.^2 .+ 1;
+x = r .* sin.(θ);
+y = r .* cos.(θ);
+
+xx = 4 * ones(10)
+yy = range(-4,4,length=10)
+zz = 0*yy .- 2
+
+xx2 = range(-4,4,length=10)
+yy2 = 4 * ones(10)
+zz2 = 0*yy2 .- 2
+
+#cla()
+
+plot3(x,y,z, marker=".", msize=.2, mcol="red")
+# plot3!(xx,yy,zz)
+# plot3!(xx2,yy2,zz2)
+
+
+plot3(x,y,z, marker=".", msize=0.01, mcol="salmon")
+
+plot(y,z)
+
+preview()
+
+plot(x, y)

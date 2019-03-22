@@ -13,11 +13,13 @@
     off   ::Bool = false # if true, axis is not shown
     log   ::Bool = false # log scale
 end
-Axis(p::String) = Axis(prefix=p)
+Axis(p::String; o...) = Axis(prefix=p; o...)
 
 abstract type Axes{B <: Backend} end
 
 @with_kw mutable struct Axes2D{B} <: Axes{B}
+    parent::String # id of the parent figure
+    # --
     xaxis ::Axis = Axis("x")
     x2axis::Axis = Axis("x2")
     yaxis ::Axis = Axis("y")
@@ -37,9 +39,31 @@ abstract type Axes{B <: Backend} end
     scale::String = "auto"
 end
 
+@with_kw mutable struct Axes3D{B} <: Axes{B}
+    parent::String
+    # --
+    xaxis::Axis = Axis("x"; min=0, max=1) # NOTE color = ticks, not spine if box
+    yaxis::Axis = Axis("y"; min=0, max=1) # if nobox, then spine
+    zaxis::Axis = Axis("z"; min=0, max=1)
+    # ---
+    drawings::Vector{Drawing3D} = Vector{Drawing3D}()
+    objects ::Vector{Object3D}  = Vector{Object3D}()
+    # ---
+    title::Option{Title} = ∅
+    size ::T2F           = (20.,10.) # box size
+    # cube
+    nocube   ::Bool      = false # XXX if true, then xaxis have an expressed linestyle
+    cubedims ::T3F       = (20.,20.,10.) # cube sides x,y,z
+    linestyle::LineStyle = LineStyle() # XXX only lstyle, color, see set
+    # XXX legend::Legend ...
+    origin::Option{T2F} = ∅
+    # rotation and view
+    rotate::Option{T2F} = ∅
+    # XXX view x y p
+    off::Bool = false # do not show
+end
 
-mutable struct Axes3D{B} <: Axes{B} end # XXX not yet defined
-
+parent(a::Axes) = Figure(a.parent; _noreset=true)
 
 function Base.show(io::IO, ::MIME"text/plain", a::Axes2D{GLE})
     s = "GPlot.Axes2D{GLE}" *

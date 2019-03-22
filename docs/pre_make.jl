@@ -1,8 +1,10 @@
-using GPlot, Colors
+using GPlot, Colors, Random
 
 continuous_preview(false)
 
 begin # GENERATION OF FIGURES
+    start = time()
+    print("Generating example figures...")
     function gen(s::String; format="svg")
         include(joinpath(@__DIR__, "src", "exgen", s*".jl"))
         savefig(gcf(), s; format=format, path=joinpath(@__DIR__, "src", "exgen", "out"), res=200)
@@ -10,11 +12,14 @@ begin # GENERATION OF FIGURES
 
     f = Figure(size=(10,8))
 
+    # -------------------------
     # quickstart
     gen("qs_ex1")
     gen("qs_ex2")
 
+    # -------------------------
     # line-scatter
+    gen("ls_demo")
     gen("ls_ex1")
     gen("ls_ex2")
     gen("ls_ex3")
@@ -28,7 +33,9 @@ begin # GENERATION OF FIGURES
     gen("ls_ex10")
     gen("ls_ex11")
 
+    # -------------------------
     # hist-bar
+    gen("hb_demo")
     gen("hb_ex1")
     gen("hb_ex2")
     gen("hb_ex3")
@@ -37,14 +44,40 @@ begin # GENERATION OF FIGURES
     gen("hb_ex6")
     gen("hb_ex7")
     gen("hb_ex8")
+
+    # -------------------------
+    gen("l_demo")
+    gen("l_ex1")
+    gen("l_ex1b")
+    gen("l_ex1c")
+    gen("l_ex2")
+    #gen("l_ex3")
+
+    # -------------------------
+    # fill-between
+    gen("fb_demo")
+    gen("fb_ex1")
+    gen("fb_ex2")
+    gen("fb_ex3")
+
+    println(" done ✅  [$(round(time()-start,digits=1))s]")
 end
 
 begin
+    start = time()
+    print("Generating doc pages...")
     cdir = @__DIR__
 
     for fname = ["quickstart.md",
                  "line-scatter.md",
-                 "hist-bar.md"]
+                 "hist-bar.md",
+                 "legend.md",
+                 "styling.md",
+                 "figure-axes-axis.md",
+                 "fill-between.md",
+                 "boxplot.md",
+                 "heatmap.md",
+                 "annotations.md"]
         open(joinpath(cdir, "src/man/$fname"), "w") do outf
             inf = read(joinpath(cdir, "src/man/_$fname"), String)
             matches = eachmatch(r"@@[A-Z]+:(.*\b)", inf)
@@ -85,5 +118,7 @@ begin
             end
         end
     end
+    println("       done ✅  [$(round(time()-start,digits=1))s]")
+    println("Generating docs...")
     include("make.jl")
 end # RUN PREMAKE

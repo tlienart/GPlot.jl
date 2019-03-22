@@ -1,11 +1,9 @@
 """
-    cll!()
+    cll()
 
 Clears the current legend.
 """
-cll!() = (reset!(gca().legend); PreviewFigure(gcf()))
-
-cll = cll!
+cll() = (reset!(gca().legend); PreviewFigure(gcf()))
 
 """
     $SIGNATURES
@@ -13,9 +11,10 @@ cll = cll!
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.
 """
-function legend(vd::Option{Vector{DrawingHandle{T}}}=nothing,
-                 labels::Option{Vector{<:Union{String,Vector{String}}}}=nothing;
-                 axes=nothing, opts...) where T
+function legend(vd::Option{Vector{DrawingHandle}}=nothing,
+                labels::Option{Vector{<:Union{String,Vector{String}}}}=nothing;
+                axes=nothing, opts...)
+    axes isa Axes3D && throw(NotImplementedError("Legend for Axes3D"))
     axes=check_axes(axes)
     # create a new legend object
     axes.legend = Legend()
@@ -36,7 +35,7 @@ function legend(vd::Option{Vector{DrawingHandle{T}}}=nothing,
         end
         if onehaslabel
             # remove the entries that don't have a label
-            mask = .!(isempty.(axes.legend.labels))
+            mask = @. !(isempty(axes.legend.labels))
             axes.legend.handles = axes.legend.handles[mask]
             axes.legend.labels  = axes.legend.labels[mask]
         else

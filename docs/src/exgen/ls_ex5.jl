@@ -1,4 +1,4 @@
-x = range(0, 1, length=25)
+x = range(0, stop=1, length=25)
 y = @. sin(x)
 z = @. cos(x)
 t = y .+ z

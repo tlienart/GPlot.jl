@@ -6,7 +6,8 @@ if VERSION < v"1.1"
     eachcol(A::AbstractArray) = (view(A, :, j) for j ∈ axes(A, 2))
 end
 
-if VERSION < v"1.2"
+if VERSION <= v"1.1"
+    import Base:startswith
     Base.startswith(s::AbstractString, r::Regex) = (rr = Regex("^"*r.pattern); occursin(rr, s))
 end
 
@@ -43,10 +44,10 @@ isdef(el) = (el !== nothing)
 isanydef(obj) = any(isdef, (getfield(obj, f) for f ∈ fieldnames(typeof(obj))))
 
 # see cla! (clear axes)
-function reset!(obj::T; exclude=Vector{Symbol}()) where T
+function reset!(obj::T; exclude=Vector{Symbol}(), inits...) where T
     # create a new object of the same type, assumes there is
     # a constructor that accepts empty input
-    fresh = T()
+    fresh = T(; inits...)
     for fn ∈ fieldnames(T)
         fn ∈ exclude && continue
         # set all fields to the field value given by the default
@@ -55,6 +56,16 @@ function reset!(obj::T; exclude=Vector{Symbol}()) where T
     end
     return obj
 end
+
+#######################################
+
+rmin(x,::Nothing)  = x
+rmin(::Nothing, y) = y
+rmin(x,y) = min(x,y)
+
+rmax(x,::Nothing)  = x
+rmax(::Nothing, y) = y
+rmax(x,y) = max(x,y)
 
 #######################################
 

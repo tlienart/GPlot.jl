@@ -5,13 +5,22 @@ Overarching type for objects displayable on `Axes`.
 """
 abstract type Object end
 
-# NOTE: most objects will be <: Object2D
+
 """
     Object
 
 Overarching type for objects displayable on `Axes2D`.
 """
 abstract type Object2D <: Object end
+
+
+"""
+    Object
+
+Overarching type for objects displayable on `Axes3D`.
+"""
+abstract type Object3D <: Object end
+
 
 """
     Text <: Object

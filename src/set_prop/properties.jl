@@ -132,7 +132,6 @@ pick_omstyle(b, v) = (b.boxstyles, v, :omstyle)
 ####
 ###############################################################
 
-
 const TEXTSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :font      => lc    => set_font!,      # set_style
     :fontsize  => posfl => set_hei!,       # .
@@ -172,6 +171,17 @@ const GLINESTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :color      => col   => set_colors! ⊙ pick_lstyles,  # .
     :cols       => col   => set_colors! ⊙ pick_lstyles,  # .
     :colors     => col   => set_colors! ⊙ pick_lstyles,  # .
+    )
+
+const MARKERSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    :marker           => lc    => set_marker!, # set_style
+    :ms               => posfl => set_marker!, # .
+    :msize            => posfl => set_msize!,  # .
+    :markersize       => posfl => set_msize!,  # .
+    :mc               => col   => set_mcol!,   # .
+    :mcol             => col   => set_mcol!,   # .
+    :markercol        => col   => set_mcol!,   # .
+    :markercolor      => col   => set_mcol!,   # .
     )
 
 const GMARKERSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
@@ -232,7 +242,6 @@ const FILLSTYLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
 #### Options for AX_ELEMS
 ####
 ###############################################################
-
 
 const TITLE_OPTS = Dict{Symbol,Pair{Function,Function}}(
     :dist => posfl => set_dist!
@@ -296,9 +305,7 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 ####
 ###############################################################
 
-
 const SCATTER2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
-    :name   => id => set_labels!, # set_drawing
     :key    => id => set_labels!, # .
     :keys   => id => set_labels!, # .
     :label  => id => set_labels!, # .
@@ -428,6 +435,13 @@ const HEATMAP_OPTS = Dict{Symbol,Pair{Function,Function}}(
     )
 set_properties!(h::Heatmap; opts...) = set_properties!(HEATMAP_OPTS, h; opts...)
 
+const SCATTER3D_OPTS = Dict{Symbol,Pair{Function,Function}}(
+    :key    => id => set_label!, # .
+    :label  => id => set_label!, # .
+    )
+merge!(SCATTER3D_OPTS, LINESTYLE_OPTS)
+merge!(SCATTER3D_OPTS, MARKERSTYLE_OPTS)
+set_properties!(s::Scatter3D; opts...) = set_properties!(SCATTER3D_OPTS, s; opts...)
 
 ###############################################################
 ####

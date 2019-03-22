@@ -12,7 +12,7 @@ using Statistics: quantile, mean
 import Base: |>, take!, isempty
 
 export Figure, gcf, gca, clf, cla, clo, cll, erase!,
-    continuous_preview,
+    continuous_preview, preview,
     # General set function
     set, set_palette,
     # Layout
@@ -22,6 +22,9 @@ export Figure, gcf, gca, clf, cla, clo, cll, erase!,
     plot, scatter, fill_between, hist, bar,       # new/overwrite mode
     # -- special drawings
     boxplot, heatmap, heatmap_ticks,
+    # -- 3D drawings
+    plot3!, scatter3!,
+    plot3, scatter3,
     # Objects
     text, vline, hline, line, box, colorbar,
     # Axis / Axes
@@ -65,6 +68,7 @@ const GP_ENV = Dict{String, Any}(
     "PALETTE"      => PALETTE_1,         # default color palette
     "SIZE_PALETTE" => length(PALETTE_1),
     "CONT_PREVIEW" => true,              # whether to continuously preview or not
+    "FORCE_PREVIEW" => false,            # even if cont prev is false (see render)
     )
 
 # ain't nobody got time to write long type names
@@ -74,7 +78,9 @@ const AVM = AbstractVecOrMat
 const AM  = AbstractMatrix
 const AVR = AV{<:Real}
 const T2F = NTuple{2,Float64}
+const T3F = NTuple{3,Float64}
 const T2R = NTuple{2,Real}
+const T3R = NTuple{3,Real}
 
 const PT_TO_CM   = 0.0352778         # 1pt in cm
 const Option{T}  = Union{Nothing, T} # a useful type for optional values
@@ -86,6 +92,7 @@ include("utils.jl")
 include("types/style.jl")
 include("types/drawing.jl")
 include("types/drawing2.jl")
+include("types/drawing3d.jl")
 include("types/ax_elems.jl")
 include("types/legend.jl")
 include("types/object.jl")
@@ -110,6 +117,7 @@ include("set_prop/properties.jl")
 include("apply_gle/style.jl")
 include("apply_gle/drawing.jl")
 include("apply_gle/drawing2.jl")
+include("apply_gle/drawing3d.jl")
 include("apply_gle/object.jl")
 include("apply_gle/ax_elems.jl")
 include("apply_gle/legend.jl")
@@ -119,6 +127,7 @@ include("apply_gle/figure.jl")
 # Main call for elements
 include("drawing.jl")   # plot, scatter, fill, hist, bar
 include("drawing2.jl")  # boxplot, heatmap
+include("drawing3d.jl") # plot3, scatter3, surface
 include("object.jl")    # text, hline, vline, box
 include("ax.jl")
 include("ax_elem.jl")
