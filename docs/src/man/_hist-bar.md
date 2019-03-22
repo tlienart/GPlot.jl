@@ -9,6 +9,12 @@ The relevant commands here are
 - `hist` and `hist!`,
 - `bar` and `bar!`.
 
+The general syntax is:
+
+```julia
+bar(data_to_plot...; options...)
+```
+
 ## Data formats
 
 For **bars**, the situation is pretty much identical as for line and scatter plots ([see here](../../line-scatter/#Data-formats-1)) with the exception of an implicit function (not allowed for bar or hist).

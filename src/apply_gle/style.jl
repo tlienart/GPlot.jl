@@ -37,6 +37,7 @@ Internal function to apply the markerstyle `s` in a GLE context.
 """
 @inline function apply_markerstyle!(g::GLE, s::MarkerStyle; mcol=false, mscale=1)
     isanydef(s) || return nothing
+    isdef(s.marker) && s.marker == "none" && return nothing
     if !mcol
         isdef(s.marker) && "marker $(s.marker)" |> g
         isdef(s.msize)  && "msize $(s.msize)"   |> g

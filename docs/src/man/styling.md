@@ -4,44 +4,13 @@
 Pages = ["styling.md"]
 ```
 
-## Figure
-
-- transparency should not be used unless you really need to as it restricts the device you can use to only PNG as well as the fonts you can use. Effectively transparency should only be used for fillbetween and possibly overlapping histograms.
-
-## Axes and Axis
-
-TBD:
-- note that x2axis/y2axis revert to xaxis/yaxis (GLE restriction)
-- cannot have xaxis off and x2axis on, same for y
-- if xticks happens after grid it will disable, should use xticks! if want to change position
-- ticks angle are in degrees, rotation is clockwise (e.g. 45)
-
-## Legend
-
-- can be constructed but watchout for grouped objects, it will currently fail, would need some thinking
-
-## Misc
-
-TBD
-- pass styles around using splatting, don't forget the `;` otherwise it will fail.
-```julia
-style = (smooth=true, lw=0.05, ls="--")
-plot(randn(50); style...)
-```
-
-## LineStyle
-
-TBD:
-- default to smooth if more than 20 points.
-
-## Fonts
 TBD:
 - if things look weird (e.g. the font does not look like the one you thought you had picked), it may be that the effective font size is too low, try increasing the size of the figure.
 
 The parent font of the figure can be defined by passing it as argument to the constructor `Figure(font=...)`.
 In non-LaTeX mode, different fonts can be selected for sub-elements (e.g. axis label); otherwise the parent font is used throughout.
 
-### Non-LaTeX mode
+## Text styling (non-LaTeX)
 
 In non-tex mode, a number of fonts and font-variants are supported, see [the appendix](/appendix/fonts/) for the full list.
 
@@ -71,9 +40,7 @@ are both valid way of defining the parent font.
 | ss       | sans serif | ![](../assets/fonts/ss.png)                      |   ✘   |
 | tt       | typewriter | ![](../assets/fonts/tt.png)                      |   ✘   |
 
-
-
-### LaTeX mode
+## Text styling (LaTeX)
 
 In LaTeX mode, you're free to specify your own preamble which can include font packages to define how things should look. Anything that works with PdfLaTeX should work.
 Below is an example where we use `sourcesanspro`:

@@ -21,3 +21,19 @@ img {
 table {
     margin: 0 auto;
 }
+
+.admonition.warning {
+    background-color: #fcece8;
+}
+.admonition.warning > .admonition-title {
+    background-color: #d9907a;
+}
+.admonition.comment {
+    background-color: #d1ded1;
+}
+.admonition.comment > .admonition-title {
+    background-color: #45ab41;
+}
+.admonition.wip > .admonition-title {
+    background-color: #e05a53;
+}

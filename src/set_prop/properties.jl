@@ -306,7 +306,6 @@ set_properties!(t::Ticks; opts...) = set_properties!(TICKS_OPTS, t; opts...)
 ###############################################################
 
 const SCATTER2D_OPTS = Dict{Symbol,Pair{Function,Function}}(
-    :name   => id => set_labels!, # set_drawing
     :key    => id => set_labels!, # .
     :keys   => id => set_labels!, # .
     :label  => id => set_labels!, # .
@@ -437,7 +436,6 @@ const HEATMAP_OPTS = Dict{Symbol,Pair{Function,Function}}(
 set_properties!(h::Heatmap; opts...) = set_properties!(HEATMAP_OPTS, h; opts...)
 
 const SCATTER3D_OPTS = Dict{Symbol,Pair{Function,Function}}(
-    :name   => id => set_label!, # set_drawing
     :key    => id => set_label!, # .
     :label  => id => set_label!, # .
     )

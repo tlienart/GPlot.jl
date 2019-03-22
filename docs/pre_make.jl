@@ -3,6 +3,8 @@ using GPlot, Colors, Random
 continuous_preview(false)
 
 begin # GENERATION OF FIGURES
+    start = time()
+    print("Generating example figures...")
     function gen(s::String; format="svg")
         include(joinpath(@__DIR__, "src", "exgen", s*".jl"))
         savefig(gcf(), s; format=format, path=joinpath(@__DIR__, "src", "exgen", "out"), res=200)
@@ -44,14 +46,26 @@ begin # GENERATION OF FIGURES
     gen("hb_ex8")
 
     # -------------------------
+    gen("l_demo")
+    gen("l_ex1")
+    gen("l_ex1b")
+    gen("l_ex1c")
+    gen("l_ex2")
+    #gen("l_ex3")
+
+    # -------------------------
     # fill-between
     gen("fb_demo")
     gen("fb_ex1")
     gen("fb_ex2")
     gen("fb_ex3")
+
+    println(" done ✅  [$(round(time()-start,digits=1))s]")
 end
 
 begin
+    start = time()
+    print("Generating doc pages...")
     cdir = @__DIR__
 
     for fname = ["quickstart.md",
@@ -104,5 +118,7 @@ begin
             end
         end
     end
+    println("       done ✅  [$(round(time()-start,digits=1))s]")
+    println("Generating docs...")
     include("make.jl")
 end # RUN PREMAKE

@@ -14,10 +14,10 @@ The relevant commands here are
 The general syntax is:
 
 ```julia
-command(data_to_plot...; options...)
+plot(data_to_plot...; options...)
 ```
 
-a command *with* an exclamation mark will add the corresponding plot to the current active axes while a command *without* will erase any existing plot on the current active axes and then display the plot.
+A command *with* an exclamation mark will add the corresponding plot to the current active axes while a command *without* will erase any existing plot on the current active axes and then display the plot.
 
 For instance:
 

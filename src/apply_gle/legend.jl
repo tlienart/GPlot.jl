@@ -10,7 +10,7 @@ function apply_legend_spec!(g::GLE, h::DrawingHandle{Scatter2D{T}},
     labels isa Vector || (labels = fill(labels, scatter.nobj))
     for k ∈ 1:scatter.nobj
         "\n\ttext \"$(labels[k])\"" |> g
-        if scatter.linestyles[k].lstyle != 1
+        if scatter.linestyles[k].lstyle != -1
             # line plot
             "line" |> g; apply_linestyle!(g, scatter.linestyles[k]; nosmooth=true)
             mcol = false
@@ -73,11 +73,9 @@ Internal function to apply a `Legend` object `leg` in a GLE context with entries
 function apply_legend!(g::GLE, l::Legend, parent_font::String, figid::String)
     l.off && return nothing
     isempty(l.handles) && return nothing
-    "\ngsave" |> g
-    apply_textstyle!(g, l.textstyle, parent_font; addset=true)
-
     # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     "\nbegin key"  |> g
+    apply_textstyle!(g, l.textstyle, parent_font; addset=true)
 
     # global commands
     "\n\tcompact"      |> g
@@ -93,7 +91,5 @@ function apply_legend!(g::GLE, l::Legend, parent_font::String, figid::String)
     #
     "\nend key"    |> g
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-    "\ngrestore" |> g
     return nothing
 end

@@ -57,7 +57,7 @@ xlim(0, π)
 
 * **fill colour** [`col`, `color`, `fill`]: takes a colour to use for the filling (see examples above).
 
-* **alpha** [`alpha`]: when considering a transparent-capable output, this takes a number between 0 and 1 indicating the level of transparency (towards 0 is more transparent, towards 1 more opaque).
+* **alpha** [`alpha`]: when considering a transparent-capable output format, this takes a number between 0 and 1 indicating the level of transparency (towards 0 is more transparent, towards 1 more opaque).
 
 
 ```julia
