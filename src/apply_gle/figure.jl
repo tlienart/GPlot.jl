@@ -50,7 +50,8 @@ function assemble_figure(f::Figure{GLE}; debug=false)::String
             f.subroutines[key] |> g
         end
         # subroutines for drawings
-        for key ∈ Iterators.filter(k->startswith(k, r"(bp_|hm_)"), ks) # boxplot, heatmap
+        # -- boxplot, heatmap
+        for key ∈ Iterators.filter(k->startswith(k, "bp_") || startswith(k, "hm_"), ks)
             f.subroutines[key] |> g
         end
         # subroutines for markercolors
