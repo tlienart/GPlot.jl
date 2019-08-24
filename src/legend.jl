@@ -11,9 +11,9 @@ cll() = (reset!(gca().legend); PreviewFigure(gcf()))
 Update the properties of an existing legend object present on `axes`. If none
 exist then a new one is created with the given properties.
 """
-function legend(vd::Option{Vector{DrawingHandle}}=nothing,
-                labels::Option{Vector{<:Union{String,Vector{String}}}}=nothing;
-                axes=nothing, opts...)
+function legend(vd::Option{Vector{DrawingHandle{T}}}=nothing,
+                labels::Option{Vector{String}}=nothing;
+                axes=nothing, opts...) where {T}
     axes isa Axes3D && throw(NotImplementedError("Legend for Axes3D"))
     axes=check_axes(axes)
     # create a new legend object

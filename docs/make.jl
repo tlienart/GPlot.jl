@@ -4,7 +4,8 @@ makedocs(
     modules = [GPlot],
     format = Documenter.HTML(
         # Use clean URLs, unless built as a "local" build
-        prettyurls = !("local" in ARGS)
+        prettyurls = !("local" in ARGS),
+        assets = ["assets/custom.css"],
         ),
     sitename = "GPlot.jl",
     authors  = "Thibaut Lienart",
@@ -22,6 +23,7 @@ makedocs(
             "Boxplot"              => "man/boxplot.md",
             "Heatmap"              => "man/heatmap.md",
             "Annotations"          => "man/annotations.md",
+            "Global settings"      => "man/global-settings.md",
             ],
         "Appendix" => [
             "Fonts" => "appendix/fonts.md",
@@ -31,7 +33,6 @@ makedocs(
             "Internals" => "lib/internals.md",
             ],
         ], # end pages
-    assets = ["assets/custom.css"],
 )
 
 deploydocs(

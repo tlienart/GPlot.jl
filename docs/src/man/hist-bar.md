@@ -68,10 +68,9 @@ hist(data; horiz=true)
 | :------: | :-----: |
 | `"none"` or `"count"` | number of entries in a range |
 | `"pdf"`     | area covered by the bins equals one |
-| `"prob"` or `"probability"`     |
-| `"none"`   |  count divided by the overall number of entries  |
+| `"prob"` or `"probability"`     | count divided by the overall number of entries |
 
-If you want to adjust a pdf plot on top of a histogram, `pdf` is usually the scaling you will want.
+If you want to add a probability density function plot on top of a histogram, `pdf` is usually the scaling you will want.
 
 
 ```julia
@@ -93,9 +92,7 @@ plot!(x -> exp(-x^2/2)/sqrt(2π), -3, 3)
 # percentages
 data = [30 40 30; 50 25 25; 30 30 40; 10 50 40]
 # cumulative sum so that columns increase
-data_cs = copy(data);
-data_cs[:,2] = data_cs[:,1]+data_cs[:,2]
-data_cs[:,3] .= 100
+data_cs = cumsum(data; dims=2)
 bar(data_cs; stacked=true, fills=["midnightblue", "lightseagreen", "lightsalmon"])
 ```
 
@@ -148,4 +145,4 @@ hist(randn(100); ecol="red", fill="wheat")
 
 ### Modifying the underlying data
 
-The same comment as the one made in [line and scatter plots](http://localhost:8080/man/line-scatter/#Modifying-the-underlying-data-1) holds for in-place modification of the data.
+The same comment as the one made in [line and scatter plots](/man/line-scatter/#Modifying-the-underlying-data-1) holds for in-place modification of the data.

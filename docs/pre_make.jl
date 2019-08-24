@@ -51,7 +51,7 @@ begin # GENERATION OF FIGURES
     gen("l_ex1b")
     gen("l_ex1c")
     gen("l_ex2")
-    #gen("l_ex3")
+    gen("l_ex3")
 
     # -------------------------
     # fill-between
@@ -59,6 +59,10 @@ begin # GENERATION OF FIGURES
     gen("fb_ex1")
     gen("fb_ex2")
     gen("fb_ex3")
+
+    # -------------------------
+    # global-parameters
+    cla(); gen("glob_1")
 
     println(" done ✅  [$(round(time()-start,digits=1))s]")
 end
@@ -77,7 +81,8 @@ begin
                  "fill-between.md",
                  "boxplot.md",
                  "heatmap.md",
-                 "annotations.md"]
+                 "annotations.md",
+                 "global-settings.md"]
         open(joinpath(cdir, "src/man/$fname"), "w") do outf
             inf = read(joinpath(cdir, "src/man/_$fname"), String)
             matches = eachmatch(r"@@[A-Z]+:(.*\b)", inf)

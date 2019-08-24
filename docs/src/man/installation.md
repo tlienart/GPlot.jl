@@ -27,7 +27,16 @@ Process(`gle -v`, ProcessExited(0))
 
 !!! note
 
-    If you encounter problems with the instructions below or believe that the instructions could be simplified, please [open an issue](https://github.com/isaacs/github/issues/new?title=[foo]&body=*please%20indicate%20your%20OS%20and%20steps%20followed...*). Also if you managed to follow the instructions successfully with an OS that's not explicitly on the list below, please let me know and I can add it here.
+    If you encounter problems with the instructions below or believe that the instructions could be simplified, please [open an issue](https://github.com/isaacs/github/issues/new?title=[foo]&body=*please%20indicate%20your%20OS%20and%20steps%20followed...*). Also if you managed to follow the instructions successfully with an OS that's not explicitly in the list below, please let me know and I can add it here.
+
+### Juno and IJulia setup
+
+You don't have to use either Juno or IJulia to use GPlot but, if you do, you will be able to see previews of the plots you're generating.
+These previews are lossy PNGs to increase the speed at which they can be displayed, you should keep that in mind if you see pixel-imperfections in the way curves or fonts are displayed.
+
+In Juno, you should make sure that the option _Enable Plot Pane_ is ticked in the _UI Options_ part of the julia-client settings [`Packages -> Julia -> Settings`].
+
+![](../assets/extras/juno-set-pane.png)
 
 ## GLE on Linux
 
@@ -46,8 +55,8 @@ See also [the official GLE website](http://glx.sourceforge.net/downloads/downloa
 
 (*There may be a simpler approach but I'm sure this one works and is straightforward.*)
 
-**Tested**: Mojave, High Sierra.
-**Untested**: Older versions.
+* **Tested**: Mojave, High Sierra.
+* **Untested**: Older versions.
 
 The original instructions to install GLE ([available here](http://glx.sourceforge.net/tut/mac.html)) are reproduced below for convenience:
 
@@ -74,10 +83,10 @@ ln -s /Applications/QGLE.app/Contents/lib/libpng.dylib /usr/local/lib/.
 ln -s /Applications/QGLE.app/Contents/share/gle-graphics/ /usr/local/share/.
 ```
 
-**Note**: you can also copy the files directly using `cp` instead of `ln -s` in the lines above and then remove `QGLE.app` from your computer if you prefer that approach.
+**Note**: you can also copy the files directly using `cp` instead of `ln -s` in the lines above and then remove `QGLE.app` from your computer as GPlot does not need it.
 
 ## GLE on Windows
 
-I haven't tested GLEs on Windows but there are executables available on the [GLE downloads page](http://glx.sourceforge.net/downloads/downloads.html) which should-just-work™ (one has been updated quite recently).
+I haven't tested GLEs on Windows but there are executables available on the [GLE downloads page](http://glx.sourceforge.net/downloads/downloads.html) which should-just-work™ (one has been updated recently).
 
 _If you've managed to make things work for you on Windows, please let me know so that I can improve these instructions!_

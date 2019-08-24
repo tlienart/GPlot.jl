@@ -126,10 +126,12 @@ function Base.show(io::IO, ::MIME"image/png", obj::ImgPreview)
         (isdefined(Main, :IJulia) && Main.IJulia.inited)    ||
             (@warn("Preview is only available in Juno and IJulia."); return nothing)
     # trigger a draft build
+    isdir(GP_ENV["TMP_PATH"]) || mkpath(GP_ENV["TMP_PATH"])
     fname = savefig(obj.fig, "__PREVIEW__"; res=100, path=GP_ENV["TMP_PATH"])
     isnothing(fname) && return nothing
     # write to IO
     write(io, read(fname))
     GP_ENV["DEL_INTERM"] && rm(fname)
+    println("BLAHBLAHBLAH")
     return nothing
 end

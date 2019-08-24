@@ -45,10 +45,9 @@ For instance:
 | :------: | :-----: |
 | `"none"` or `"count"` | number of entries in a range |
 | `"pdf"`     | area covered by the bins equals one |
-| `"prob"` or `"probability"`     |
-| `"none"`   |  count divided by the overall number of entries  |
+| `"prob"` or `"probability"`     | count divided by the overall number of entries |
 
-If you want to adjust a pdf plot on top of a histogram, `pdf` is usually the scaling you will want.
+If you want to add a probability density function plot on top of a histogram, `pdf` is usually the scaling you will want.
 
 @@CODEIMG:hb_ex4
 
@@ -86,4 +85,4 @@ If a single value is passed, all bars will share that option value.
 
 ### Modifying the underlying data
 
-The same comment as the one made in [line and scatter plots](http://localhost:8080/man/line-scatter/#Modifying-the-underlying-data-1) holds for in-place modification of the data.
+The same comment as the one made in [line and scatter plots](/man/line-scatter/#Modifying-the-underlying-data-1) holds for in-place modification of the data.
