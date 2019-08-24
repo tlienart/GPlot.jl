@@ -107,6 +107,8 @@ nvec(n::Int, T) = [T() for _ ∈ 1:n]
 #######################################
 
 function csv_writer(path::String, z, hasmissing::Bool)
+    dirpath = splitdir(path)[1]
+    isdir(dirpath) || mkpath(dirpath)
     if hasmissing
         tempio = IOBuffer()
         writedlm(tempio, z)

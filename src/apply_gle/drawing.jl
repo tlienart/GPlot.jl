@@ -39,6 +39,7 @@ are used to make the auxiliary file name unique.
 function apply_drawing!(g::GLE, scatter::Scatter2D, el_cntr::Int, figid::String, axidx::Int)
     # write data to a temporary CSV file
     faux = auxpath(hash(scatter.data), figid, axidx)
+    dir  = splitdir(faux)[1]
     # don't rewrite if it's the exact same zipper
     isfile(faux) || csv_writer(faux, scatter.data, scatter.hasmissing)
 
