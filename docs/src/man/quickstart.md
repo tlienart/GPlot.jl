@@ -3,6 +3,10 @@
 Once both GLE and GPlot are successfully installed, this short tutorial should give a feeling for how things work; for more detailed instructions, please refer to the rest of the manual.
 
 We will draw a simple plot with two curves, labels, and basic axis styling.
+
+If you are using Juno and have ticked the "enable plot pane" option (see the [installation instructions](/index.html)), the plot should just appear in your plot pane as you go.
+If you are using IJulia, use `preview()` when you want to see the plot. 
+
 Let's start by creating a figure:
 
 ```julia

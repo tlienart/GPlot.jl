@@ -50,6 +50,8 @@ The table below summarises the different ways you can specify what data to plot,
 | one vector then vectors or matrices | `plot(1:5, randn(5,2), randn(5))` | pairs between the first vector and subsequent columns |
 | function $f$ from to | `plot(sin, 0, pi)` | draws points $x_i$ on the interval and plots pairs $(x_i, f(x_i))$ |
 
+### Examples
+
 * **Single vector** $x$: the plot will correspond to the pairs $(i, x_i)$.
 
 For instance:
@@ -62,7 +64,7 @@ plot(randn(5))
 ![](../exgen/out/ls_ex2.svg)
 
 
-* **Two vectors** $x$, $y$: the plot will correspond to the pairs $(x_i, y_i)$ (see e.g. the example earlier)
+* **Two vectors** $x$, $y$: the plot will correspond to the pairs $(x_i, y_i)$ (see e.g. the example in the previous section)
 
 * **Multiple vectors** $x$, $y$, $z$: this will create multiple plots corresponding to the pairs $(x_i, y_i)$, $(x_i, z_i)$ etc.
 
@@ -249,7 +251,7 @@ ylim(-1, 4)
 
 ### Modifying the underlying data
 
-Plotting objects are tied to the data meaning that if you modify a vector that is currently plotted *in place* and refresh the plot, the plot will change accordingly.
+Plotting objects are tied to the data meaning that if you do an *in place modification* of a vector that is currently being plotted, and you refresh the plot, the plot will change accordingly.
 
 
 ```julia
