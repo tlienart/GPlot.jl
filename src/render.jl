@@ -132,6 +132,5 @@ function Base.show(io::IO, ::MIME"image/png", obj::ImgPreview)
     # write to IO
     write(io, read(fname))
     GP_ENV["DEL_INTERM"] && rm(fname)
-    println("BLAHBLAHBLAH")
     return nothing
 end
