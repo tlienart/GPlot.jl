@@ -356,7 +356,8 @@ set_properties!(gb::Bar2D; opts...) = set_properties!(BAR2D_OPTS, gb; opts...)
 
 const BOXPLOT_OPTS = Dict{Symbol,Pair{Function,Function}}(
     # -- global toggle
-    :horiz => id => set_horiz!, # set_drawing
+    :horiz      => id => set_horiz!, # set_drawing
+    :horizontal => id => set_horiz!,
     # -- now inside BOXSTYLES
     # box styling
     :box_width          => posfl => set_bwidths!, # set_drawing

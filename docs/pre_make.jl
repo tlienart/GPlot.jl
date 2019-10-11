@@ -127,3 +127,5 @@ begin
     println("Generating docs...")
     include("make.jl")
 end # RUN PREMAKE
+# reset the preview in case we keep using GPlot
+continuous_preview(true)

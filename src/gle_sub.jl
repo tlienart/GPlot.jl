@@ -118,7 +118,7 @@ GLE_DRAW_SUB["bp_vert"] = """
     """
 
 GLE_DRAW_SUB["bp_horiz"] = """
-    sub boxplot_horiz $(prod(boxplot_args))
+    sub bp_horiz $(prod(boxplot_args))
         $boxplot_core_horizontal
     end sub
     """

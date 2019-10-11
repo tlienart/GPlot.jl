@@ -52,8 +52,8 @@ function boxplot(ys...; axes=nothing, o...)
             outliers[k] = filter(e->(e<wlow || whigh<e), yk)
 
             # keep track of extremes to adjust axis limits later on
-            overallmin > q00  && (overallmin = q00)
-            overallmax < q100 && (overallmax = q100)
+            q00  < overallmin && (overallmin = q00)
+            q100 > overallmax && (overallmax = q100)
             boxcounter += 1
         end
     end
@@ -65,6 +65,8 @@ function boxplot(ys...; axes=nothing, o...)
     if bp.horiz # horizontal boxplot
         ylim(0, nobj+1)
         yticks(1:nobj)
+        @show overallmin - 0.5abs(overallmin)
+        @show overallmax + 0.5abs(overallmax)
         xlim(overallmin - 0.5abs(overallmin), overallmax + 0.5abs(overallmax))
         for k ∈ 1:nobj
             bp.boxstyles[k].oshow || continue
