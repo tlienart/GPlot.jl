@@ -30,8 +30,19 @@ const GLE_DRAW_SUB = Dict{String,String}()
 ###############################################################
 ####
 #### Boxplot subroutine
-####
-###############################################################
+#=
+NOTE: the outliers are drawn separately (see the boxplot function)
+
+ ===  ----  y: whigh            x: p-wwidth/2 <> p+wwidth/2
+  |
+ +=+  ----  y: q75              x: p-bwidth/2 <> p+bwidth/2
+ | |
+ | |
+ +=+  ----  y: q25
+  |
+ ===  ----  y: wlow
+
+=###############################################################
 
 const boxplot_box_lstyle = """set lstyle blstyle lwidth blwidth color blcolor\$"""
 const boxplot_med_lstyle = """set lstyle medlstyle lwidth medlwidth color medcolor\$"""
@@ -47,14 +58,19 @@ const boxplot_core_vertical = """
     \tgsave
     \tset cap round
     \t$boxplot_box_lstyle
+    \t! LOWER WHISKER
     \tamove xg(p-wwidth/2) yg(wlow)
     \taline xg(p+wwidth/2) yg(wlow)
+    \t! CONNECTION LOWER WHISKER-BOX
     \tamove xg(p) yg(wlow)
+    \t! BOX
     \taline xg(p) yg(q25)
-    \tamove xg(p-bwidth/2) yg(q25) ! bottom left corner
+    \tamove xg(p-bwidth/2) yg(q25)
     \tbox xg(p+bwidth/2)-xg(p-bwidth/2) yg(q75)-yg(q25)
+    \t! CONNECTION BOX-UPPER WHISKER
     \tamove xg(p) yg(q75)
     \taline xg(p) yg(whigh)
+    \t! UPPER WHISKER
     \tamove xg(p-wwidth/2) yg(whigh)
     \taline xg(p+wwidth/2) yg(whigh)
     \tgrestore
@@ -84,7 +100,7 @@ const boxplot_core_horizontal = """
     \taline xg(wlow) yg(p+wwidth/2)
     \tamove xg(wlow) yg(p)
     \taline xg(q25) yg(p)
-    \tamove xg(q25) yg(p-bwidth/2) ! bottom left corner
+    \tamove xg(q25) yg(p-bwidth/2)
     \tbox xg(q75)-xg(q25) yg(p+bwidth/2)-yg(p-bwidth/2)
     \tamove xg(q75) yg(p)
     \taline xg(whigh) yg(p)
@@ -110,13 +126,11 @@ const boxplot_args = ("p wlow q25 q50 q75 whigh mean ", # NOTE don't forget spac
                       "bwidth wwidth blstyle blwidth blcolor\$ ",
                       "medlstyle medlwidth medcolor\$ ",
                       "mshow mmarker\$ mmsize mmcol\$ ")
-
 GLE_DRAW_SUB["bp_vert"] = """
     sub bp_vert $(prod(boxplot_args))
         $boxplot_core_vertical
     end sub
     """
-
 GLE_DRAW_SUB["bp_horiz"] = """
     sub bp_horiz $(prod(boxplot_args))
         $boxplot_core_horizontal

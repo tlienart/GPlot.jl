@@ -25,8 +25,8 @@ function boxplot(ys...; axes=nothing, o...)
     outliers = Vector{Vector{Float64}}(undef, nobj)
 
     boxcounter = 1
-    overallmax = -Inf
-    overallmin = Inf
+    axmin = Inf
+    axmax = -Inf
 
     for y ∈ ys
         for k ∈ Base.axes(y, 2)
@@ -51,9 +51,14 @@ function boxplot(ys...; axes=nothing, o...)
             # outliers
             outliers[k] = filter(e->(e<wlow || whigh<e), yk)
 
-            # keep track of extremes to adjust axis limits later on
-            q00  < overallmin && (overallmin = q00)
-            q100 > overallmax && (overallmax = q100)
+            # Keep track of extremes to set axis limits afterwards
+            axmin_ = min(q00, wlow)
+            axmin_ -= 0.5abs(axmin_)
+            axmin_ < axmin && (axmin = axmin_)
+            axmax_ = max(q100, whigh)
+            axmax_ += 0.5abs(axmax_)
+            axmax_ > axmax && (axmax = axmax_)
+
             boxcounter += 1
         end
     end
@@ -61,13 +66,10 @@ function boxplot(ys...; axes=nothing, o...)
     bp.stats = stats
     push!(axes.drawings, bp)
 
-    # adjust axis limits, show outliers if relevant
     if bp.horiz # horizontal boxplot
         ylim(0, nobj+1)
         yticks(1:nobj)
-        @show overallmin - 0.5abs(overallmin)
-        @show overallmax + 0.5abs(overallmax)
-        xlim(overallmin - 0.5abs(overallmin), overallmax + 0.5abs(overallmax))
+        xlim(axmin, axmax)
         for k ∈ 1:nobj
             bp.boxstyles[k].oshow || continue
             nok = length(outliers[k])
@@ -79,7 +81,7 @@ function boxplot(ys...; axes=nothing, o...)
     else # vertical boxplot
         xlim(0, nobj+1)
         xticks(1:nobj)
-        ylim(overallmin - 0.5abs(overallmin), overallmax + 0.5abs(overallmax))
+        ylim(axmin, axmax)
         for k ∈ 1:nobj
             bp.boxstyles[k].oshow || continue
             nok = length(outliers[k])
