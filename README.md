@@ -1,5 +1,7 @@
 # GPlot
 
+**Note**: I'm not actively working on this at the moment but the project is working; I've been unfortunately too busy with other projects including [Franklin.jl](https://github.com/tlienart/Franklin.jl). I would very much like to get back to this though as I love GLE but no guarantees as to when that would happen...
+
 | Status | Coverage | Documentation |
 | :----: | :------: | :-----------: |
 | [![Build Status](https://travis-ci.org/tlienart/GPlot.jl.svg?branch=master)](https://travis-ci.org/tlienart/GPlot.jl) | [![codecov.io](http://codecov.io/github/tlienart/GPlot.jl/coverage.svg?branch=master)](http://codecov.io/github/tlienart/GPlot.jl?branch=master) | [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://tlienart.github.io/GPlot.jl/dev)
