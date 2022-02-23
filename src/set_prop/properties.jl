@@ -11,7 +11,7 @@ to sensible types if relevant. This reduces code duplication and allows to reduc
 """
 function set_properties!(dict::Dict{Symbol,Pair{Function,Function}}, obj;
                          defer_preview=false, opts...)
-    for optname ∈ opts.itr
+    for optname ∈ keys(opts)
         argcheck, setprop! = get(dict, optname) do
             throw(UnknownOptionError(optname, obj))
         end

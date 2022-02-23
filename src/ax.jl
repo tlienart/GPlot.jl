@@ -146,7 +146,7 @@ function grid(short::String=""; axes=nothing, axis::Vector{String}=["x", "y"],
         axsym = Symbol(ax_lc * "axis")
         ticks = eval(:($axes.$axsym.ticks))
         ticks.grid = true
-        for optname ∈ opts.itr
+        for optname ∈ keys(opts)
             if optname ∈ (:col, :color)
                 set_color!(ticks, col(opts[optname], optname))
             elseif optname ∈ (:ls, :lstyle, :linestyle)

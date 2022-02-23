@@ -1,24 +1,24 @@
 function __init__()
-    # very simple warmup
-    # XXX this doesn't look like it help time to first plot
-    # because the slowest part is actually opening and activating the
-    # JUNO panel...
+    have_gle = try success(`gle -v`); catch; false; end
 
+    if have_gle
+        GP_ENV["BACKEND"]     = GLE
+        GP_ENV["HAS_BACKEND"] = true
+    else
+        @warn "GLE could not be loaded. Make sure you have installed it and that it is accessible via
+               the shell. You will not be able to preview or save figures."
+        GP_ENV["BACKEND"] = GLE # still setting a default backend (only for type purposes + tests)
+        println(stderr, "  not found 🚫 ")
+    end
 
-    # t = @elapsed begin
-    #     continuous_preview(false)
-    #     f = Figure("_")
-    #     plot([1, 2], [1, 2], ls="--", color="blue")
-    #     plot!([1, 2], lw=0.05, label="blah")
-    #     scatter([1, 2], mcol="red")
-    #     if GP_ENV["HAS_BACKEND"]
-    #         savefig(f, "_", res=100, format="png", path=GP_ENV["TMP_PATH"],_noout=true)
-    #     end
-    #     destroy(f)
-    # end; println("Init done in $(round(t, digits=2))s.")
+    for dep ∈ ["latex", "pdflatex", "dvips", "gs"]
+        have_dep = try success(`$dep -v`); catch; false; end
+        if !have_dep
+            @warn "Dependency $dep is missing, you may have issues previewing or saving figures."
+        end
+    end
 
-    # check if in IJulia, and if that's the case disable the continuous_preview by default
     isdefined(Main, :IJulia) && Main.IJulia.inited && continuous_preview(false)
-    isdefined(Main, :Atom) && Main.Atom.PlotPaneEnabled.x && continuous_preview(true)
+    isdefined(Main, :Atom)   && Main.Atom.PlotPaneEnabled.x && continuous_preview(true)
     return nothing
 end

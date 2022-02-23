@@ -142,9 +142,6 @@ include("render.jl")
 # Extra few utils now that all types have been defined
 include("utils2.jl")
 
-include("build.jl")
-
-# warmup script
 include("init.jl")
 
 end # module

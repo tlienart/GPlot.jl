@@ -102,7 +102,7 @@ end
     ImgPreview
 
 Internal type to wrap around a figure that is to be previewed as an image. Note the distinction
-with `PreviewFigure` which precedes it and ends up being shown as an image only if the continuous
+with `PreviewFigure` which precedes it, and ends up being shown as an image only if the continuous
 preview toggle is on (`GP_ENV["CONT_PREVIEW"]`).
 """
 struct ImgPreview

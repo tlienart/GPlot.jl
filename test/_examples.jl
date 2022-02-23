@@ -56,7 +56,7 @@ begin
         plot!(x3, y5, ls="-", color="orange", lwidth=0.05, marker="o", label="yolo")
         plot!(x3, y6, ls="-", color="darkcyan", lwidth=0.05, marker=".")
         # tex strings for the titles
-        xtitle!(tex"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$", color="blue",
+        xtitle(tex"The $x$ axis $\int_0^\infty f(x)\mathrm{d}x$", color="blue",
             fontsize=12)
         x2title(tex"$x_2$")
         y2title(tex"axis $y_2$")
